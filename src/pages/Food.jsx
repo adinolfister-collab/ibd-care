@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Utensils, Trash2, Pencil } from 'lucide-react';
+import { Plus, Utensils, Trash2, Pencil, BookMarked } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import MealTemplateManager from '@/components/MealTemplateManager';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
@@ -42,6 +43,8 @@ export default function Food() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [templates, setTemplates] = useState([]);
+  const [tplMgrOpen, setTplMgrOpen] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -49,7 +52,11 @@ export default function Food() {
     setItems(data);
     setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  const loadTemplates = async () => {
+    const data = await base44.entities.MealTemplate.list('-created_date', 100);
+    setTemplates(data);
+  };
+  useEffect(() => { load(); loadTemplates(); }, []);
 
   const openNew = () => { setEditing({ entry_date: todayStr(), tolerated: true }); setOpen(true); };
   const openEdit = (item) => { setEditing(item); setOpen(true); };
@@ -60,6 +67,13 @@ export default function Food() {
     setOpen(false); load();
   };
   const handleDelete = async (id) => { await base44.entities.FoodEntry.delete(id); load(); };
+  const openFromTemplate = (tpl) => {
+    setEditing({ entry_date: todayStr(), meal_type: tpl.meal_type, foods: tpl.foods, notes: tpl.notes || '', tolerated: true });
+    setOpen(true);
+  };
+  const saveTemplate = async (data) => { await base44.entities.MealTemplate.create(data); loadTemplates(); };
+  const updateTemplate = async (id, data) => { await base44.entities.MealTemplate.update(id, data); loadTemplates(); };
+  const deleteTemplate = async (id) => { await base44.entities.MealTemplate.delete(id); loadTemplates(); };
 
   // group by date
   const grouped = items.reduce((acc, it) => {
@@ -73,8 +87,23 @@ export default function Food() {
       <PageHeader
         title={t('food.title')}
         subtitle={t('food.subtitle')}
-        action={<Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('food.add')}</Button>}
+        action={
+          <div className="flex gap-2">
+            <Button onClick={() => setTplMgrOpen(true)} variant="outline" className="rounded-xl"><BookMarked className="w-4 h-4 mr-1.5" />{t('food.templates')}</Button>
+            <Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('food.add')}</Button>
+          </div>
+        }
       />
+      {templates.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
+          {templates.map((tpl) => (
+            <button key={tpl.id} onClick={() => openFromTemplate(tpl)} className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-accent text-accent-foreground text-sm hover:bg-accent/70 transition-colors">
+              <BookMarked className="w-3.5 h-3.5 text-primary" />
+              <span>{tpl.name}</span>
+            </button>
+          ))}
+        </div>
+      )}
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
       ) : items.length === 0 ? (
@@ -117,6 +146,14 @@ export default function Food() {
         fields={fields(t)}
         initialData={editing}
         onSubmit={handleSubmit}
+      />
+      <MealTemplateManager
+        open={tplMgrOpen}
+        onOpenChange={setTplMgrOpen}
+        templates={templates}
+        onCreate={saveTemplate}
+        onUpdate={updateTemplate}
+        onDelete={deleteTemplate}
       />
     </AppLayout>
   );
