@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { base44 } from '@/api/base44Client';
+import VoiceButton from '@/components/VoiceButton';
 import { cn } from '@/lib/utils';
 
 const fieldClass =
@@ -37,7 +38,10 @@ export default function EntityFormDialog({ open, onOpenChange, title, submitLabe
               <div key={f.name}>
                 <Label className="text-sm font-medium text-muted-foreground">{f.label}</Label>
                 {f.type === 'textarea' && (
-                  <Textarea value={val} onChange={(e) => set(f.name, e.target.value)} className={fieldClass} rows={3} />
+                  <div className="mt-1.5 flex items-end gap-2">
+                    <Textarea value={val} onChange={(e) => set(f.name, e.target.value)} className={cn(fieldClass, 'flex-1')} rows={3} />
+                    <VoiceButton onResult={(txt) => set(f.name, (val ? val + ' ' : '') + txt)} />
+                  </div>
                 )}
                 {f.type === 'select' && (
                   <select value={val} onChange={(e) => set(f.name, e.target.value)} className={fieldClass}>
