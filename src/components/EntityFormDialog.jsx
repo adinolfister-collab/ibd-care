@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { base44 } from '@/api/base44Client';
 import VoiceButton from '@/components/VoiceButton';
 import { cn } from '@/lib/utils';
@@ -44,14 +45,24 @@ export default function EntityFormDialog({ open, onOpenChange, title, submitLabe
                   </div>
                 )}
                 {f.type === 'select' && (
-                  <select value={val} onChange={(e) => set(f.name, e.target.value)} className={fieldClass}>
-                    <option value="">—</option>
-                    {f.options.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    value={val === '' || val == null ? undefined : String(val)}
+                    onValueChange={(v) => {
+                      const opt = f.options.find((o) => String(o.value) === v);
+                      set(f.name, opt ? opt.value : v);
+                    }}
+                  >
+                    <SelectTrigger className={cn(fieldClass, 'mt-1.5 h-12 text-base font-normal')}>
+                      <SelectValue placeholder="—" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {f.options.map((o) => (
+                        <SelectItem key={String(o.value)} value={String(o.value)}>
+                          {o.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
                 {f.type === 'checkbox' && (
                   <button
