@@ -1,0 +1,30 @@
+{
+  "name": "CommunityMessage",
+  "type": "object",
+  "properties": {
+    "content": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "parent_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "content"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, HeartPulse, LineChart as LineChartIcon, Bot } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, HeartPulse, LineChart as LineChartIcon, Bot, Users } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
@@ -12,6 +12,7 @@ const navItems = [
   { to: '/meds', key: 'nav.meds', icon: Pill },
   { to: '/records', key: 'nav.records', icon: FileText },
   { to: '/assistant', key: 'nav.assistant', icon: Bot },
+  { to: '/community', key: 'nav.community', icon: Users },
   { to: '/trends', key: 'nav.trends', icon: LineChartIcon },
   { to: '/map', key: 'nav.map', icon: MapPin },
   { to: '/summary', key: 'nav.summary', icon: FileBarChart },

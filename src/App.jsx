@@ -16,6 +16,7 @@ import Records from '@/pages/Records';
 import ServicesMap from '@/pages/ServicesMap';
 import Trends from '@/pages/Trends';
 import Assistant from '@/pages/Assistant';
+import Community from '@/pages/Community';
 import Summary from '@/pages/Summary';
 import Settings from '@/pages/Settings';
 import Login from '@/pages/Login';
@@ -65,6 +66,7 @@ const AuthenticatedApp = () => {
         <Route path="/map" element={<ServicesMap />} />
         <Route path="/trends" element={<Trends />} />
         <Route path="/assistant" element={<Assistant />} />
+        <Route path="/community" element={<Community />} />
         <Route path="/summary" element={<Summary />} />
         <Route path="/settings" element={<Settings />} />
       </Route>
