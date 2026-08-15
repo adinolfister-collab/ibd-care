@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import WeeklyReport from '@/components/WeeklyReport';
 
 function defaultFrom() {
   const d = new Date();
@@ -145,6 +146,7 @@ export default function Summary() {
       <PageHeader title={t('summary.title')} subtitle={t('summary.subtitle')} />
 
       <div className="grid gap-4">
+        <WeeklyReport />
         <Card className="border-0 shadow-sm">
           <CardContent className="p-5 space-y-4">
             <div className="grid grid-cols-2 gap-3">
