@@ -33,16 +33,20 @@ export default function Settings() {
                 <p className="font-semibold">{t('settings.language')}</p>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {[
                 { code: 'it', label: 'Italiano', flag: '🇮🇹' },
                 { code: 'en', label: 'English', flag: '🇬🇧' },
+                { code: 'es', label: 'Español', flag: '🇪🇸' },
+                { code: 'fr', label: 'Français', flag: '🇫🇷' },
+                { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+                { code: 'pt', label: 'Português', flag: '🇵🇹' },
               ].map((l) => (
                 <button
                   key={l.code}
                   onClick={() => setLang(l.code)}
                   className={cn(
-                    'flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-base font-medium transition-colors',
+                    'flex items-center justify-center gap-2 py-3 rounded-xl text-base font-medium transition-colors',
                     lang === l.code ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
                   )}
                 >
