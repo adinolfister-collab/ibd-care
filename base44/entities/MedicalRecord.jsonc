@@ -1,0 +1,61 @@
+{
+  "name": "MedicalRecord",
+  "type": "object",
+  "properties": {
+    "record_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "visita",
+        "esame",
+        "esame_sangue",
+        "referto",
+        "controllo"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "result_summary": {
+      "type": "string"
+    },
+    "report_file_url": {
+      "type": "string"
+    },
+    "next_appointment": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "record_date",
+    "title",
+    "type"
+  ],
+  "rls": {
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}
