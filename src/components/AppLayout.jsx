@@ -4,8 +4,6 @@ import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Setting
 import { useI18n } from '@/lib/i18n';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
-import { useSubscription } from '@/hooks/useSubscription';
-import Paywall from '@/components/Paywall';
 
 const navItems = [
   { to: '/', key: 'nav.home', icon: Home, exact: true },
@@ -24,7 +22,6 @@ const navItems = [
 export default function AppLayout({ children }) {
   const { t } = useI18n();
   const navigate = useNavigate();
-  const { isSubscribed, loading: subLoading, reload } = useSubscription();
 
   const handleLogout = async () => {
     await base44.auth.logout();
@@ -92,15 +89,7 @@ export default function AppLayout({ children }) {
       {/* Main content */}
       <div className="md:pl-64">
         <main className="min-h-screen pb-24 md:pb-8 px-4 md:px-10 py-6 md:py-10 max-w-4xl mx-auto">
-          {subLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="w-8 h-8 border-4 border-slate-200 border-t-primary rounded-full animate-spin" />
-            </div>
-          ) : isSubscribed ? (
-            children
-          ) : (
-            <Paywall onSubscribed={reload} />
-          )}
+          {children}
         </main>
       </div>
 

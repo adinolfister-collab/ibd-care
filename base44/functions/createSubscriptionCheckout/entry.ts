@@ -13,8 +13,8 @@ export default async function(req: Request): Promise<Response> {
     if (!secretKey || !priceId) return Response.json({ error: 'Stripe non configurato' }, { status: 500 });
 
     const origin = new URL(req.url).origin;
-    const successUrl = `${origin}/settings?checkout=success`;
-    const cancelUrl = `${origin}/settings?checkout=cancel`;
+    const successUrl = `${origin}/abbonamento?checkout=success`;
+    const cancelUrl = `${origin}/abbonamento?checkout=cancel`;
 
     // 14-day free trial applied automatically only to genuinely new users.
     // If the email already belongs to a Stripe customer with any past/active

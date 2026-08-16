@@ -21,6 +21,8 @@ import Assistant from '@/pages/Assistant';
 import Community from '@/pages/Community';
 import Summary from '@/pages/Summary';
 import Settings from '@/pages/Settings';
+import Abbonamento from '@/pages/Abbonamento';
+import SubscriptionRoute from '@/components/SubscriptionRoute';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -57,14 +59,16 @@ const AuthenticatedApp = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* Public landing + subscription */}
+        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+        <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
         {/* Auth routes */}
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
         <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
         <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
-        {/* Authenticated pages */}
-        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+        {/* Authenticated + subscribed pages */}
+        <Route element={<SubscriptionRoute redirect={<Navigate to="/abbonamento" replace />} />}>
           <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
           <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
           <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
