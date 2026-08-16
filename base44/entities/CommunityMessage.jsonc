@@ -10,6 +10,17 @@
     },
     "parent_id": {
       "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "generale",
+        "consigli",
+        "alimentazione",
+        "sintomi",
+        "emotivo"
+      ],
+      "default": "generale"
     }
   },
   "required": [
