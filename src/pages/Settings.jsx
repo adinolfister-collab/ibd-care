@@ -6,6 +6,7 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import SubscriptionCard from '@/components/SubscriptionCard';
 
 export default function Settings() {
   const { t, lang, setLang } = useI18n();
@@ -24,6 +25,9 @@ export default function Settings() {
       <PageHeader title={t('settings.title')} />
 
       <div className="space-y-4">
+        {/* Subscription */}
+        <SubscriptionCard />
+
         {/* Language */}
         <Card className="border-0 shadow-sm">
           <CardContent className="p-5">
