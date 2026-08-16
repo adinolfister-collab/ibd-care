@@ -64,9 +64,13 @@ export default function SubscriptionCard() {
 
           <ul className="space-y-2 text-sm">
             <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Diario sintomi e alimentare illimitati</li>
-            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Assistente AI e analisi trend</li>
-            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Riepilogo PDF con grafici</li>
-            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Mappa servizi e promemoria terapie</li>
+            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Assistente AI e analisi trend personalizzati</li>
+            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Modello pasti e lista cibi tollerati/sconsigliati</li>
+            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Riepilogo PDF con grafici per il medico</li>
+            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Mappa servizi IBD, farmacie e bagni più vicini</li>
+            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Promemoria terapie e gestione farmaci</li>
+            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Board community di supporto</li>
+            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Backup sicuro e protezione dati (GDPR)</li>
           </ul>
 
           <div className="flex items-center gap-2 rounded-xl bg-primary/5 px-3 py-2.5 text-sm text-primary">
