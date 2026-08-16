@@ -44,6 +44,10 @@ function parseTimes(raw) {
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const meds = await base44.asServiceRole.entities.Medication.filter({ active: true });
     const p = romeMinutes(new Date());
     const floor = Math.floor(p.totalMin / WINDOW) * WINDOW;
