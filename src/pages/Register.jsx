@@ -8,6 +8,7 @@ import { UserPlus, Mail, Lock, Loader2 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/use-toast";
 import { safeReturnTo } from "@/lib/authReturnTo";
 
@@ -19,12 +20,17 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+  const [consent, setConsent] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      return;
+    }
+    if (!consent) {
+      setError("Devi accettare l'informativa sulla privacy per registrarti");
       return;
     }
     setLoading(true);
@@ -46,6 +52,9 @@ export default function Register() {
       if (result?.access_token) {
         base44.auth.setToken(result.access_token);
       }
+      try {
+        await base44.auth.updateMe({ privacy_consent_accepted: true, privacy_consent_date: new Date().toISOString() });
+      } catch (e) { /* non blocking */ }
       window.location.href = safeReturnTo();
     } catch (err) {
       setError(err.message || "Invalid verification code");
@@ -216,7 +225,13 @@ export default function Register() {
             />
           </div>
         </div>
-        <Button type="submit" className="w-full h-12 font-medium" disabled={loading}>
+        <div className="flex items-start gap-2.5">
+          <Checkbox id="consent" checked={consent} onCheckedChange={setConsent} className="mt-0.5" />
+          <label htmlFor="consent" className="text-xs text-muted-foreground leading-relaxed select-text">
+            Ho letto e accetto l'Informativa sulla privacy e acconsento al trattamento dei miei dati di salute personali ai sensi del GDPR (Reg. UE 2016/679) per la gestione del mio diario IBD. Posso revocare il consenso in qualsiasi momento dall'area Account.
+          </label>
+        </div>
+        <Button type="submit" className="w-full h-12 font-medium" disabled={loading || !consent}>
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
