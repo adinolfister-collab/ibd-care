@@ -9,6 +9,7 @@ import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import PullToRefresh from '@/components/PullToRefresh';
 
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
@@ -29,36 +30,37 @@ export default function Home() {
   const [recent, setRecent] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const me = await base44.auth.me();
-        setUser(me);
-      } catch (e) {
-        /* ignore */
-      }
-      try {
-        const items = await base44.entities.SymptomEntry.filter({ entry_date: todayStr() }, '-created_date', 1);
-        setTodaySymptom(items[0] || null);
-      } catch (e) {}
-      try {
-        setMeds(await base44.entities.Medication.filter({ active: true }, '-created_date', 50));
-      } catch (e) {}
-      try {
-        const syms = await base44.entities.SymptomEntry.list('-created_date', 3);
-        const foods = await base44.entities.FoodEntry.list('-created_date', 3);
-        const merged = [
-          ...syms.map((s) => ({ kind: 'symptom', date: s.entry_date, id: s.id })),
-          ...foods.map((f) => ({ kind: 'food', date: f.entry_date, id: f.id, foods: f.foods })),
-        ].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-        setRecent(merged.slice(0, 5));
-      } catch (e) {}
-      setLoading(false);
-    })();
-  }, []);
+  const loadHome = async (initial) => {
+    if (initial) setLoading(true);
+    try {
+      const me = await base44.auth.me();
+      setUser(me);
+    } catch (e) {
+      /* ignore */
+    }
+    try {
+      const items = await base44.entities.SymptomEntry.filter({ entry_date: todayStr() }, '-created_date', 1);
+      setTodaySymptom(items[0] || null);
+    } catch (e) {}
+    try {
+      setMeds(await base44.entities.Medication.filter({ active: true }, '-created_date', 50));
+    } catch (e) {}
+    try {
+      const syms = await base44.entities.SymptomEntry.list('-created_date', 3);
+      const foods = await base44.entities.FoodEntry.list('-created_date', 3);
+      const merged = [
+        ...syms.map((s) => ({ kind: 'symptom', date: s.entry_date, id: s.id })),
+        ...foods.map((f) => ({ kind: 'food', date: f.entry_date, id: f.id, foods: f.foods })),
+      ].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      setRecent(merged.slice(0, 5));
+    } catch (e) {}
+    if (initial) setLoading(false);
+  };
+  useEffect(() => { loadHome(true); }, []);
 
   return (
     <AppLayout>
+      <PullToRefresh onRefresh={() => loadHome(false)}>
       <PageHeader title={`${t('home.welcome')}${user?.full_name ? ', ' + user.full_name.split(' ')[0] : ''} 👋`} subtitle={t('app.tagline')} />
 
       {/* Today status */}
@@ -151,6 +153,7 @@ export default function Home() {
           </Card>
         </div>
       </div>
+      </PullToRefresh>
     </AppLayout>
   );
 }

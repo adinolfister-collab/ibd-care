@@ -9,6 +9,8 @@ import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
+import PullToRefresh from '@/components/PullToRefresh';
 
 const painLocations = [
   { value: 'nessuno', label: 'Nessuno' },
@@ -55,6 +57,7 @@ function todayStr() {
 
 export default function Symptoms() {
   const { t } = useI18n();
+  const { toast } = useToast();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -66,16 +69,37 @@ export default function Symptoms() {
     setItems(data);
     setLoading(false);
   };
+  const refresh = async () => {
+    const data = await base44.entities.SymptomEntry.list('-entry_date', 200);
+    setItems(data);
+  };
   useEffect(() => { load(); }, []);
 
   const openNew = () => { setEditing({ entry_date: todayStr() }); setOpen(true); };
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
-  const handleSubmit = async (data) => {
-    if (editing?.id) await base44.entities.SymptomEntry.update(editing.id, data);
-    else await base44.entities.SymptomEntry.create({ ...data, pain_level: data.pain_level ?? 0, fatigue_level: data.fatigue_level ?? 0 });
+  const handleSubmit = (data) => {
     setOpen(false);
-    load();
+    const payload = { ...data, pain_level: data.pain_level ?? 0, fatigue_level: data.fatigue_level ?? 0 };
+    if (editing?.id) {
+      const previous = items.find((it) => it.id === editing.id) || editing;
+      setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
+      base44.entities.SymptomEntry.update(editing.id, data).catch(() => {
+        setItems((prev) => prev.map((it) => (it.id === editing.id ? previous : it)));
+        toast({ title: 'Errore', description: 'Modifica non salvata, riprova.', variant: 'destructive' });
+      });
+    } else {
+      const tempId = `temp_${Date.now()}`;
+      setItems((prev) =>
+        [{ ...payload, id: tempId }, ...prev].sort((a, b) => (b.entry_date || '').localeCompare(a.entry_date || ''))
+      );
+      base44.entities.SymptomEntry.create(payload)
+        .then((created) => setItems((prev) => prev.map((it) => (it.id === tempId ? created : it))))
+        .catch(() => {
+          setItems((prev) => prev.filter((it) => it.id !== tempId));
+          toast({ title: 'Errore', description: 'Aggiunta non riuscita, riprova.', variant: 'destructive' });
+        });
+    }
   };
 
   const handleDelete = async (id) => {
@@ -90,6 +114,7 @@ export default function Symptoms() {
         subtitle={t('symptoms.subtitle')}
         action={<Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('symptoms.add')}</Button>}
       />
+      <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
       ) : items.length === 0 ? (
@@ -121,6 +146,7 @@ export default function Symptoms() {
           ))}
         </div>
       )}
+      </PullToRefresh>
 
       <EntityFormDialog
         open={open}

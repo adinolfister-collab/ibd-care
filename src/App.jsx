@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -25,10 +25,13 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
+import { AnimatePresence } from 'framer-motion';
+import PageTransition from '@/components/PageTransition';
 // Add page imports here
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const location = useLocation();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -52,28 +55,30 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <Routes>
-      {/* Auth routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      {/* Authenticated pages */}
-      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/symptoms" element={<Symptoms />} />
-        <Route path="/food" element={<Food />} />
-        <Route path="/meds" element={<Meds />} />
-        <Route path="/records" element={<Records />} />
-        <Route path="/map" element={<ServicesMap />} />
-        <Route path="/trends" element={<Trends />} />
-        <Route path="/assistant" element={<Assistant />} />
-        <Route path="/community" element={<Community />} />
-        <Route path="/summary" element={<Summary />} />
-        <Route path="/settings" element={<Settings />} />
-      </Route>
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {/* Auth routes */}
+        <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+        <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+        <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
+        <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
+        {/* Authenticated pages */}
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+          <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
+          <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
+          <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
+          <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
+          <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
+          <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
+          <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
+          <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
+          <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
+          <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
+        </Route>
+        <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
   );
 };
 

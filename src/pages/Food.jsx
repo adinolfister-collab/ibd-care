@@ -10,6 +10,8 @@ import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
+import PullToRefresh from '@/components/PullToRefresh';
 
 const mealTypes = [
   { value: 'colazione', label: 'Colazione' },
@@ -39,6 +41,7 @@ const reactionTone = { nessuna: 'text-emerald-600', lieve: 'text-amber-600', mod
 
 export default function Food() {
   const { t } = useI18n();
+  const { toast } = useToast();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -52,6 +55,10 @@ export default function Food() {
     setItems(data);
     setLoading(false);
   };
+  const refresh = async () => {
+    const data = await base44.entities.FoodEntry.list('-entry_date', 200);
+    setItems(data);
+  };
   const loadTemplates = async () => {
     const data = await base44.entities.MealTemplate.list('-created_date', 100);
     setTemplates(data);
@@ -61,10 +68,25 @@ export default function Food() {
   const openNew = () => { setEditing({ entry_date: todayStr(), tolerated: true }); setOpen(true); };
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
-  const handleSubmit = async (data) => {
-    if (editing?.id) await base44.entities.FoodEntry.update(editing.id, data);
-    else await base44.entities.FoodEntry.create(data);
-    setOpen(false); load();
+  const handleSubmit = (data) => {
+    setOpen(false);
+    if (editing?.id) {
+      const previous = items.find((it) => it.id === editing.id) || editing;
+      setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...data } : it)));
+      base44.entities.FoodEntry.update(editing.id, data).catch(() => {
+        setItems((prev) => prev.map((it) => (it.id === editing.id ? previous : it)));
+        toast({ title: 'Errore', description: 'Modifica non salvata, riprova.', variant: 'destructive' });
+      });
+    } else {
+      const tempId = `temp_${Date.now()}`;
+      setItems((prev) => [{ ...data, id: tempId }, ...prev]);
+      base44.entities.FoodEntry.create(data)
+        .then((created) => setItems((prev) => prev.map((it) => (it.id === tempId ? created : it))))
+        .catch(() => {
+          setItems((prev) => prev.filter((it) => it.id !== tempId));
+          toast({ title: 'Errore', description: 'Aggiunta non riuscita, riprova.', variant: 'destructive' });
+        });
+    }
   };
   const handleDelete = async (id) => { await base44.entities.FoodEntry.delete(id); load(); };
   const openFromTemplate = (tpl) => {
@@ -104,6 +126,7 @@ export default function Food() {
           ))}
         </div>
       )}
+      <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
       ) : items.length === 0 ? (
@@ -137,6 +160,7 @@ export default function Food() {
           ))}
         </div>
       )}
+      </PullToRefresh>
 
       <EntityFormDialog
         open={open}
