@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import PullToRefresh from '@/components/PullToRefresh';
+import NewsIBD from '@/components/NewsIBD';
 
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
@@ -159,6 +160,10 @@ export default function Home() {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      <div className="mt-6 md:mt-8">
+        <NewsIBD />
       </div>
       </PullToRefresh>
     </AppLayout>
