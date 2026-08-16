@@ -23,6 +23,8 @@ import Summary from '@/pages/Summary';
 import Settings from '@/pages/Settings';
 import Abbonamento from '@/pages/Abbonamento';
 import Account from '@/pages/Account';
+import About from '@/pages/About';
+import Contact from '@/pages/Contact';
 import SubscriptionRoute from '@/components/SubscriptionRoute';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -63,6 +65,8 @@ const AuthenticatedApp = () => {
         {/* Public landing + subscription */}
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
+        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         {/* Auth routes */}
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />

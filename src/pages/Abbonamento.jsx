@@ -52,6 +52,10 @@ export default function Abbonamento() {
         <p className="text-center text-xs text-muted-foreground mt-6">
           <Link to="/" className="hover:underline">← Torna alla home</Link>
         </p>
+        <div className="mt-6 flex justify-center gap-5 text-sm text-muted-foreground">
+          <Link to="/about" className="hover:text-primary hover:underline">Chi siamo</Link>
+          <Link to="/contact" className="hover:text-primary hover:underline">Contatti</Link>
+        </div>
       </div>
     </div>
   );
