@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Utensils, Trash2, Pencil, BookMarked } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import MealTemplateManager from '@/components/MealTemplateManager';
+import DietaryTips from '@/components/DietaryTips';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
@@ -161,6 +162,10 @@ export default function Food() {
         </div>
       )}
       </PullToRefresh>
+
+      <div className="mt-6">
+        <DietaryTips />
+      </div>
 
       <EntityFormDialog
         open={open}
