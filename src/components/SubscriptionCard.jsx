@@ -7,11 +7,20 @@ export default function SubscriptionCard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
+  const [subscription, setSubscription] = useState(null);
+
+  const fetchStatus = async () => {
+    try {
+      const res = await base44.functions.invoke('getSubscriptionStatus', {});
+      if (res.data?.status) setSubscription(res.data);
+    } catch (e) {}
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('checkout') === 'success') setStatus('success');
     if (params.get('checkout') === 'cancel') setStatus('cancel');
+    fetchStatus();
   }, []);
 
   const subscribe = async () => {
@@ -73,16 +82,31 @@ export default function SubscriptionCard() {
           )}
           {error && <p className="text-sm text-rose-600 bg-rose-50 rounded-xl px-3 py-2">{error}</p>}
 
-          <button
-            onClick={subscribe}
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60"
-          >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
-            {loading ? 'Reindirizzamento…' : 'Abbonati con 14 giorni gratuiti'}
-          </button>
-
-          <p className="text-center text-xs text-muted-foreground">Pagamento sicuro tramite Stripe. Cancella in qualsiasi momento.</p>
+          {subscription && (subscription.status === 'trialing' || subscription.status === 'active') ? (
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 space-y-1">
+              <p className="text-sm font-semibold text-emerald-700">
+                {subscription.status === 'trialing' ? 'Prova gratuita attiva' : 'Abbonamento Premium attivo'}
+              </p>
+              {subscription.status === 'trialing' && subscription.trialRemaining > 0 && (
+                <p className="text-sm text-emerald-700">Mancano {subscription.trialRemaining} giorni alla fine della prova gratuita.</p>
+              )}
+              {subscription.cancelAtPeriodEnd && (
+                <p className="text-xs text-muted-foreground">Disdetto: scade al termine del periodo corrente.</p>
+              )}
+            </div>
+          ) : (
+            <>
+              <button
+                onClick={subscribe}
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60"
+              >
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
+                {loading ? 'Reindirizzamento…' : 'Abbonati con 14 giorni gratuiti'}
+              </button>
+              <p className="text-center text-xs text-muted-foreground">Pagamento sicuro tramite Stripe. Cancella in qualsiasi momento.</p>
+            </>
+          )}
         </div>
       </CardContent>
     </Card>
