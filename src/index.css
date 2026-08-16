@@ -89,5 +89,30 @@
 
   body {
     @apply bg-background text-foreground font-body;
+    overscroll-behavior-y: none;
+  }
+
+  /* Native WebView UX: disable text selection on chrome/interactive elements */
+  h1, h2, h3, h4, nav, header, button, [role="button"], a {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Keep selection for user notes, inputs and educational content */
+  textarea, input, .prose, [data-selectable], [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+  }
+
+  /* Wider tap targets for icon buttons on mobile */
+  @media (max-width: 767px) {
+    button.h-9.w-9 {
+      min-height: 44px;
+      min-width: 44px;
+      height: 44px;
+      width: 44px;
+    }
   }
 }

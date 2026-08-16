@@ -68,7 +68,7 @@ export default function AppLayout({ children }) {
       </aside>
 
       {/* Mobile secondary top bar */}
-      <div className="md:hidden flex items-center gap-2 overflow-x-auto px-4 py-2 border-b border-border bg-card/90 backdrop-blur sticky top-0 z-30">
+      <div className="md:hidden flex items-center gap-2 overflow-x-auto px-4 py-2 border-b border-border bg-card/90 backdrop-blur sticky top-0 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         {navItems.slice(5).map((item) => (
           <NavLink
             key={item.to}
@@ -94,7 +94,7 @@ export default function AppLayout({ children }) {
       </div>
 
       {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-card border-t border-border">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-card border-t border-border" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <div className="grid grid-cols-5">
           {navItems.slice(0, 5).map((item) => (
             <NavLink

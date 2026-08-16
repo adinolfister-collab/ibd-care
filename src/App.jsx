@@ -9,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 import { BiometricLockProvider } from '@/lib/biometric';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { LanguageProvider } from '@/lib/i18n';
+import { ThemeProvider } from 'next-themes';
 import Home from '@/pages/Home';
 import Symptoms from '@/pages/Symptoms';
 import Food from '@/pages/Food';
@@ -84,10 +85,12 @@ function App() {
       <BiometricLockProvider>
         <LanguageProvider>
           <QueryClientProvider client={queryClientInstance}>
-            <Router>
-              <ScrollToTop />
-              <AuthenticatedApp />
-            </Router>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <Router>
+                <ScrollToTop />
+                <AuthenticatedApp />
+              </Router>
+            </ThemeProvider>
             <Toaster />
           </QueryClientProvider>
         </LanguageProvider>

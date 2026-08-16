@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Globe, LogOut, User as UserIcon, Fingerprint, Database } from 'lucide-react';
+import { ShieldCheck, Globe, LogOut, User as UserIcon, Fingerprint, Database, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
+import {
+  AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel,
+} from '@/components/ui/alert-dialog';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
@@ -13,9 +18,13 @@ import { useBiometric } from '@/lib/biometric';
 
 export default function Settings() {
   const { t, lang, setLang } = useI18n();
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const { supported, enabled, enable, disable } = useBiometric();
   const [bioBusy, setBioBusy] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteAck, setDeleteAck] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const toggleBio = async (checked) => {
     setBioBusy(true);
     try { if (checked) await enable(); else disable(); } catch (e) {}
@@ -29,6 +38,26 @@ export default function Settings() {
   }, []);
 
   const handleLogout = async () => { await base44.auth.logout(); };
+
+  const handleDeleteAccount = async (e) => {
+    e.preventDefault();
+    setDeleting(true);
+    try {
+      await Promise.all([
+        base44.entities.SymptomEntry.deleteMany({}),
+        base44.entities.FoodEntry.deleteMany({}),
+        base44.entities.Medication.deleteMany({}),
+        base44.entities.MedicalRecord.deleteMany({}),
+        base44.entities.MealTemplate.deleteMany({}),
+      ]);
+    } catch (err) {
+      console.error('Errore durante la cancellazione dei dati', err);
+    }
+    setDeleting(false);
+    setDeleteOpen(false);
+    await base44.auth.logout();
+    navigate('/login');
+  };
 
   return (
     <AppLayout>
@@ -130,8 +159,44 @@ export default function Settings() {
             <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-base font-medium bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors">
               <LogOut className="w-5 h-5" /> {t('settings.logout')}
             </button>
+            <button
+              onClick={() => { setDeleteAck(false); setDeleteOpen(true); }}
+              className="w-full flex items-center justify-center gap-2 py-3 mt-2 rounded-xl text-sm font-medium border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" /> Elimina account
+            </button>
           </CardContent>
         </Card>
+
+        <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Elimina account e dati sanitari</AlertDialogTitle>
+              <AlertDialogDescription>
+                Stai per cancellare definitivamente il tuo account IBD Care insieme a tutti i sintomi, pasti, terapie, referti e modelli salvati. Questa azione è irreversibile e i dati non potranno essere recuperati.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <label className="flex items-start gap-3 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={deleteAck}
+                onChange={(e) => setDeleteAck(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-border accent-destructive"
+              />
+              <span>Ho compreso che l'eliminazione è permanente e cancellerà tutti i miei dati sanitari.</span>
+            </label>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={deleting} className="min-h-[44px]">Annulla</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={!deleteAck || deleting}
+                onClick={handleDeleteAccount}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 min-h-[44px]"
+              >
+                {deleting ? 'Eliminazione…' : 'Elimina definitivamente'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </AppLayout>
   );
