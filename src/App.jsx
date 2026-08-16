@@ -22,6 +22,7 @@ import Community from '@/pages/Community';
 import Summary from '@/pages/Summary';
 import Settings from '@/pages/Settings';
 import Abbonamento from '@/pages/Abbonamento';
+import Account from '@/pages/Account';
 import SubscriptionRoute from '@/components/SubscriptionRoute';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -79,6 +80,7 @@ const AuthenticatedApp = () => {
           <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
           <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
+          <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
         </Route>
         <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />
       </Routes>
