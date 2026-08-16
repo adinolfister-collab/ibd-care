@@ -28,7 +28,11 @@ export default function EntityFormDialog({ open, onOpenChange, title, submitLabe
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg rounded-2xl flex flex-col max-h-[88vh] gap-0 p-0">
+      <DialogContent
+        className="max-w-lg rounded-2xl flex flex-col max-h-[88vh] gap-0 p-0"
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader className="px-6 pt-6 pb-3 shrink-0">
           <DialogTitle className="text-xl">{title}</DialogTitle>
         </DialogHeader>
