@@ -28,11 +28,12 @@ export default function EntityFormDialog({ open, onOpenChange, title, submitLabe
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg rounded-2xl">
-        <DialogHeader>
+      <DialogContent className="max-w-lg rounded-2xl flex flex-col max-h-[88vh] gap-0 p-0">
+        <DialogHeader className="px-6 pt-6 pb-3 shrink-0">
           <DialogTitle className="text-xl">{title}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 max-h-[65vh] overflow-y-auto px-1">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+          <div className="space-y-4 overflow-y-auto px-6 py-3 flex-1 min-h-0">
           {fields.map((f) => {
             const val = data[f.name] ?? (f.type === 'checkbox' ? false : f.type === 'number' ? '' : '');
             return (
@@ -123,7 +124,8 @@ export default function EntityFormDialog({ open, onOpenChange, title, submitLabe
               </div>
             );
           })}
-          <DialogFooter className="gap-2 pt-2">
+          </div>
+          <DialogFooter className="gap-2 pt-3 px-6 pb-5 shrink-0 border-t border-border">
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Annulla
             </Button>
