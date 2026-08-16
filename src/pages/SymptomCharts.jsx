@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { BarChart3, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { BarChart3, TrendingUp, TrendingDown, Minus, Utensils } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import EmptyState from '@/components/EmptyState';
+import MealSymptomCorrelation from '@/components/MealSymptomCorrelation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
@@ -53,18 +54,24 @@ function ChartTooltip({ active, payload, t }) {
 export default function SymptomCharts() {
   const { t, lang } = useI18n();
   const [entries, setEntries] = useState(null);
+  const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState('weekly');
+  const [view, setView] = useState('trend');
 
   useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const symp = await base44.entities.SymptomEntry.list('-entry_date', 1000);
+        const [symp, food] = await Promise.all([
+          base44.entities.SymptomEntry.list('-entry_date', 1000),
+          base44.entities.FoodEntry.list('-entry_date', 1000),
+        ]);
         if (!alive) return;
         setEntries(symp);
+        setFoods(food);
       } catch {
-        if (alive) setEntries([]);
+        if (alive) { setEntries([]); setFoods([]); }
       } finally {
         if (alive) setLoading(false);
       }
@@ -142,6 +149,22 @@ export default function SymptomCharts() {
       <PageHeader title={t('symptom_charts.title')} subtitle={t('symptom_charts.subtitle')} />
 
       <div className="flex items-center gap-2 mb-4">
+        {['trend', 'correlation'].map((v) => (
+          <button
+            key={v}
+            onClick={() => setView(v)}
+            className={cn(
+              'px-4 py-2 rounded-full text-sm font-medium transition-colors',
+              view === v ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
+            )}
+          >
+            {v === 'trend' ? t('symptom_charts.view_trend') : <span className="inline-flex items-center gap-1.5"><Utensils className="w-4 h-4" />{t('symptom_charts.view_correlation')}</span>}
+          </button>
+        ))}
+      </div>
+
+      {view === 'trend' && (
+      <div className="flex items-center gap-2 mb-4">
         {['weekly', 'monthly'].map((m) => (
           <button
             key={m}
@@ -155,8 +178,11 @@ export default function SymptomCharts() {
           </button>
         ))}
       </div>
+      )}
 
-      {loading ? (
+      {view === 'correlation' && !loading && (entries?.length || foods.length) ? (
+        <MealSymptomCorrelation entries={entries} foods={foods} />
+      ) : loading ? (
         <div className="py-20 text-center text-muted-foreground">{t('common.loading')}</div>
       ) : !hasData ? (
         <EmptyState icon={BarChart3} title={t('symptom_charts.no_data')} />
