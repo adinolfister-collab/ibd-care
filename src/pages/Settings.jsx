@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Globe, LogOut, User as UserIcon, Fingerprint } from 'lucide-react';
+import { ShieldCheck, Globe, LogOut, User as UserIcon, Fingerprint, Database } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import SubscriptionCard from '@/components/SubscriptionCard';
+import HistoryExport from '@/components/HistoryExport';
 import { useBiometric } from '@/lib/biometric';
 
 export default function Settings() {
@@ -84,6 +85,20 @@ export default function Settings() {
               <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> Il riepilogo PDF è generato sul dispositivo, non sui server.</li>
               <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> L'accesso è protetto da login; puoi attivare il blocco biometrico del dispositivo dalle impostazioni di sistema.</li>
             </ul>
+          </CardContent>
+        </Card>
+
+        {/* Full data export */}
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><Database className="w-5 h-5 text-primary" /></div>
+              <div>
+                <p className="font-semibold">Esporta tutti i tuoi dati</p>
+                <p className="text-sm text-muted-foreground leading-snug mt-0.5">Scarica l'intero storico di sintomi, pasti e referti in un unico file CSV o PDF.</p>
+              </div>
+            </div>
+            <HistoryExport />
           </CardContent>
         </Card>
 
