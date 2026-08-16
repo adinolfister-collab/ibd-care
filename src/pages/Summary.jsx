@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import WeeklyReport from '@/components/WeeklyReport';
+import MonthlyReport from '@/components/MonthlyReport';
 
 function defaultFrom() {
   const d = new Date();
@@ -147,6 +148,7 @@ export default function Summary() {
 
       <div className="grid gap-4">
         <WeeklyReport />
+        <MonthlyReport />
         <Card className="border-0 shadow-sm">
           <CardContent className="p-5 space-y-4">
             <div className="grid grid-cols-2 gap-3">
