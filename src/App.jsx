@@ -17,6 +17,7 @@ import Meds from '@/pages/Meds';
 import Records from '@/pages/Records';
 import ServicesMap from '@/pages/ServicesMap';
 import Trends from '@/pages/Trends';
+import SymptomCharts from '@/pages/SymptomCharts';
 import Assistant from '@/pages/Assistant';
 import Community from '@/pages/Community';
 import Summary from '@/pages/Summary';
@@ -80,6 +81,7 @@ const AuthenticatedApp = () => {
           <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
           <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
           <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
+          <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
           <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
           <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
           <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />

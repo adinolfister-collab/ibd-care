@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { TrendingUp, TrendingDown, Minus, Utensils, AlertTriangle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { TrendingUp, TrendingDown, Minus, Utensils, AlertTriangle, BarChart3 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -201,6 +202,10 @@ export default function Trends() {
   return (
     <div>
       <PageHeader title={t('trends.title')} subtitle={t('trends.subtitle')} />
+
+      <Link to="/symptom-charts" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline mb-4">
+        <BarChart3 className="w-4 h-4" /> {t('symptom_charts.title')} →
+      </Link>
 
       <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
         {RANGES.map((r) => (
