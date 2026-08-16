@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Plus, FileText, Trash2, Pencil, ExternalLink, Stethoscope, FlaskConical, CalendarClock } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Plus, FileText, Trash2, Pencil, ExternalLink, Stethoscope, FlaskConical, CalendarClock, Search, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
@@ -8,6 +8,7 @@ import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 const types = [
@@ -47,6 +48,11 @@ export default function Records() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [locFilter, setLocFilter] = useState('');
 
   const load = async () => {
     setLoading(true);
@@ -55,6 +61,25 @@ export default function Records() {
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const lf = locFilter.trim().toLowerCase();
+    return items.filter((r) => {
+      if (typeFilter !== 'all' && r.type !== typeFilter) return false;
+      if (dateFrom && (r.record_date || '') < dateFrom) return false;
+      if (dateTo && (r.record_date || '') > dateTo) return false;
+      if (lf && !(r.location || '').toLowerCase().includes(lf) && !(r.provider || '').toLowerCase().includes(lf)) return false;
+      if (q) {
+        const blob = [r.title, r.provider, r.location, r.result_summary, r.notes].filter(Boolean).join(' ').toLowerCase();
+        if (!blob.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [items, search, typeFilter, dateFrom, dateTo, locFilter]);
+
+  const hasFilters = !!(search || typeFilter !== 'all' || dateFrom || dateTo || locFilter);
+  const resetFilters = () => { setSearch(''); setTypeFilter('all'); setDateFrom(''); setDateTo(''); setLocFilter(''); };
 
   const openNew = () => { setEditing({ record_date: todayStr() }); setOpen(true); };
   const openEdit = (item) => { setEditing(item); setOpen(true); };
@@ -73,13 +98,62 @@ export default function Records() {
         subtitle={t('records.subtitle')}
         action={<Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('records.add')}</Button>}
       />
+
+      {/* Search & advanced filters */}
+      <Card className="border-0 shadow-sm mb-4">
+        <CardContent className="p-4 space-y-3">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Cerca referti per titolo, medico, struttura o note…"
+              className="w-full rounded-xl border border-input bg-background pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="rounded-xl bg-background text-sm"><SelectValue placeholder="Tutti i tipi" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tutti i tipi</SelectItem>
+                {types.map((tp) => (<SelectItem key={tp.value} value={tp.value}>{tp.label}</SelectItem>))}
+              </SelectContent>
+            </Select>
+            <input
+              value={locFilter}
+              onChange={(e) => setLocFilter(e.target.value)}
+              placeholder="Nome struttura o medico"
+              className="rounded-xl border border-input bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-[11px] text-muted-foreground">Dal</label>
+              <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+            <div>
+              <label className="text-[11px] text-muted-foreground">Al</label>
+              <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+          </div>
+          {hasFilters && (
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">{filtered.length} referti trovati</span>
+              <button onClick={resetFilters} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+                <X className="w-3.5 h-3.5" /> Azzera filtri
+              </button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
-      ) : items.length === 0 ? (
-        <EmptyState icon={FileText} title={t('common.empty')} description={t('records.subtitle')} />
+      ) : filtered.length === 0 ? (
+        <EmptyState icon={FileText} title={hasFilters ? 'Nessun referto corrisponde ai filtri' : t('common.empty')} description={hasFilters ? 'Modifica la ricerca o azzera i filtri.' : t('records.subtitle')} />
       ) : (
         <div className="space-y-3">
-          {items.map((r) => {
+          {filtered.map((r) => {
             const Icon = typeIcon[r.type] || FileText;
             return (
               <Card key={r.id} className="border-0 shadow-sm">
