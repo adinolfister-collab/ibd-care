@@ -105,7 +105,7 @@ export default function AppLayout({ children }) {
               end={item.exact}
               className={({ isActive }) =>
                 cn(
-                  'flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] transition-colors',
+                  'flex flex-col items-center justify-center gap-1 py-2.5 text-xs transition-colors',
                   isActive ? 'text-primary font-medium' : 'text-muted-foreground'
                 )
               }

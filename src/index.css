@@ -108,6 +108,9 @@
 
   /* Wider tap targets for icon buttons on mobile */
   @media (max-width: 767px) {
+    html {
+      font-size: 17px;
+    }
     button.h-9.w-9 {
       min-height: 44px;
       min-width: 44px;
