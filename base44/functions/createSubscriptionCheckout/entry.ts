@@ -16,11 +16,34 @@ export default async function(req: Request): Promise<Response> {
     const successUrl = `${origin}/settings?checkout=success`;
     const cancelUrl = `${origin}/settings?checkout=cancel`;
 
+    // 14-day free trial applied automatically only to genuinely new users.
+    // If the email already belongs to a Stripe customer with any past/active
+    // subscription, the trial is skipped to prevent repeated free periods.
+    let isNewUser = true;
+    if (user.email) {
+      try {
+        const custRes = await fetch(`https://api.stripe.com/v1/customers?email=${encodeURIComponent(user.email)}&limit=20`, {
+          headers: { 'Authorization': `Bearer ${secretKey}`, 'Stripe-Version': '2025-10-29.clover' }
+        });
+        const custData = await custRes.json();
+        const customers = (custData.data || []).filter((c) => (c.email || '').toLowerCase() === user.email.toLowerCase());
+        for (const c of customers) {
+          const subRes = await fetch(`https://api.stripe.com/v1/customers/${c.id}/subscriptions?limit=50`, {
+            headers: { 'Authorization': `Bearer ${secretKey}`, 'Stripe-Version': '2025-10-29.clover' }
+          });
+          const subData = await subRes.json();
+          if ((subData.data || []).length > 0) { isNewUser = false; break; }
+        }
+      } catch (e) {
+        console.error('trial eligibility check failed', e);
+      }
+    }
+
     const body = new URLSearchParams();
     body.set('mode', 'subscription');
     body.set('line_items[0][price]', priceId);
     body.set('line_items[0][quantity]', '1');
-    body.set('subscription_data[trial_period_days]', '14');
+    if (isNewUser) body.set('subscription_data[trial_period_days]', '14');
     body.set('metadata[base44_app_id]', appId || '');
     body.set('subscription_data[metadata][base44_app_id]', appId || '');
     body.set('success_url', successUrl);
