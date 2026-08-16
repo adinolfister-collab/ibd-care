@@ -8,7 +8,7 @@ export default async function(req: Request): Promise<Response> {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const secretKey = secrets.get('STRIPE_SECRET_KEY');
-    const priceId = secrets.get('STRIPE_PRICE_ID');
+    const priceId = secrets.get('STRIPE_PREMIUM_PRICE_ID') || secrets.get('STRIPE_PRICE_ID');
     const appId = Deno.env.get('BASE44_APP_ID');
     if (!secretKey || !priceId) return Response.json({ error: 'Stripe non configurato' }, { status: 500 });
 
