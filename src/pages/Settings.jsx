@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Globe, LogOut, User as UserIcon } from 'lucide-react';
+import { ShieldCheck, Globe, LogOut, User as UserIcon, Fingerprint } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import SubscriptionCard from '@/components/SubscriptionCard';
+import { useBiometric } from '@/lib/biometric';
 
 export default function Settings() {
   const { t, lang, setLang } = useI18n();
   const [user, setUser] = useState(null);
+  const { supported, enabled, enable, disable } = useBiometric();
+  const [bioBusy, setBioBusy] = useState(false);
+  const toggleBio = async (checked) => {
+    setBioBusy(true);
+    try { if (checked) await enable(); else disable(); } catch (e) {}
+    setBioBusy(false);
+  };
 
   useEffect(() => {
     (async () => {
@@ -75,6 +84,21 @@ export default function Settings() {
               <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> Il riepilogo PDF è generato sul dispositivo, non sui server.</li>
               <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> L'accesso è protetto da login; puoi attivare il blocco biometrico del dispositivo dalle impostazioni di sistema.</li>
             </ul>
+          </CardContent>
+        </Card>
+
+        {/* Biometric lock */}
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><Fingerprint className="w-5 h-5 text-primary" /></div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold">Blocco biometrico</p>
+                <p className="text-sm text-muted-foreground leading-snug">Sblocca l'app con impronta o riconoscimento facciale per proteggere i tuoi dati sanitari privati.</p>
+              </div>
+              <Switch checked={enabled} disabled={!supported || bioBusy} onCheckedChange={toggleBio} />
+            </div>
+            {!supported && <p className="text-xs text-muted-foreground mt-3">Il dispositivo non supporta lo sblocco biometrico nel browser.</p>}
           </CardContent>
         </Card>
 
