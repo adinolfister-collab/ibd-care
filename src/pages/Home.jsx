@@ -6,6 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import ShareApp from '@/components/ShareApp';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -62,7 +63,12 @@ export default function Home() {
   return (
     <AppLayout>
       <PullToRefresh onRefresh={() => loadHome(false)}>
-      <PageHeader title={`${t('home.welcome')}${user?.full_name ? ', ' + user.full_name.split(' ')[0] : ''} 👋`} subtitle={t('app.tagline')} action={<ShareApp variant="icon" />} />
+      <PageHeader title={`${t('home.welcome')}${user?.full_name ? ', ' + user.full_name.split(' ')[0] : ''} 👋`} subtitle={t('app.tagline')} action={
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher className="w-[112px] h-9 rounded-full" />
+          <ShareApp variant="icon" />
+        </div>
+      } />
 
       {/* Today status */}
       <Card className="mb-6 border-0 shadow-sm bg-gradient-to-br from-primary/5 to-accent/40">
