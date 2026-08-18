@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { Newspaper, ExternalLink, RefreshCw, ChevronRight, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -56,7 +57,7 @@ export default function NewsIBD() {
           <ul className="divide-y divide-border">
             {articles.slice(0, 5).map((a, i) => (
               <li key={i} className="py-3 first:pt-0 last:pb-0">
-                <a href={a.url} target="_blank" rel="noopener noreferrer" className="group block">
+                <Link to={`/news/${a.id}`} className="group block">
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="text-sm font-medium leading-snug group-hover:text-primary transition-colors">{a.title}</h3>
                     <ChevronRight className="w-4 h-4 shrink-0 mt-0.5 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -74,8 +75,8 @@ export default function NewsIBD() {
                       </>
                     )}
                   </div>
-                </a>
-                <NewsShareButtons title={a.title} summary={a.summary} />
+                </Link>
+                <NewsShareButtons title={a.title} summary={a.summary} shareUrl={`https://ibd-care.it/news/${a.id}`} />
               </li>
             ))}
           </ul>

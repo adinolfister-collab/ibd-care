@@ -24,14 +24,14 @@ const InstagramGlyph = (p) => (
 const btnBase =
   'inline-flex items-center justify-center w-8 h-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors';
 
-export default function NewsShareButtons({ title, summary }) {
+export default function NewsShareButtons({ title, summary, shareUrl }) {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
 
   const shareText = summary ? `${title} — ${summary}` : title;
-  const shareUrl = APP_URL;
+  const url = shareUrl || APP_URL;
   const enc = (s) => encodeURIComponent(s || '');
-  const encUrl = encodeURIComponent(shareUrl);
+  const encUrl = encodeURIComponent(url);
 
   const intents = {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encUrl}`,
@@ -45,7 +45,7 @@ export default function NewsShareButtons({ title, summary }) {
   const handleNative = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title, text: shareText, url: shareUrl });
+        await navigator.share({ title, text: shareText, url });
         return;
       } catch (e) {
         /* cancelled — fall through to copy */
@@ -56,7 +56,7 @@ export default function NewsShareButtons({ title, summary }) {
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+      await navigator.clipboard.writeText(`${shareText} ${url}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2200);
     } catch (e) {

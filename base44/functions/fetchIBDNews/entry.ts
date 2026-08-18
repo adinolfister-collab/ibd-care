@@ -4,13 +4,22 @@ import { normalizeLang } from '../../shared/ibdNews.ts';
 // Public endpoint: the NewsArticle cache is informational content with no
 // user data, so it is served to every visitor (including unauthenticated ones
 // on the public Home page) without an auth check.
+// - No `id`: returns the latest cached articles for the requested language.
+// - With `id`: returns the single cached article (any language) so deep links
+//   to /news/:id work for every visitor.
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
 
-    const rawLang = await req.json().then((b) => b && b.lang).catch(() => undefined);
-    const lang = normalizeLang(rawLang);
+    const body = await req.json().catch(() => ({}));
+    const id = body && body.id;
 
+    if (id) {
+      const article = await base44.entities.NewsArticle.get(id);
+      return Response.json({ article: article || null });
+    }
+
+    const lang = normalizeLang(body && body.lang);
     const articles = await base44.entities.NewsArticle.filter({ lang }, '-date', 6);
     return Response.json({ articles: articles || [] });
   } catch (error) {
