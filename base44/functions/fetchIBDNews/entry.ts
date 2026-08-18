@@ -6,7 +6,9 @@ export default async function(req) {
     const authed = await base44.auth.isAuthenticated();
     if (!authed) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const lang = await req.json().then(b => b?.lang || 'it').catch(() => 'it');
+    const SUPPORTED_LANGS = new Set(['it', 'en', 'es', 'fr', 'de']);
+    const rawLang = await req.json().then(b => b?.lang).catch(() => undefined);
+    const lang = typeof rawLang === 'string' && SUPPORTED_LANGS.has(rawLang) ? rawLang : 'it';
 
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt:
