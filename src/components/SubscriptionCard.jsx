@@ -58,7 +58,7 @@ export default function SubscriptionCard() {
 
         <div className="p-5 space-y-4">
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold">€2,99</span>
+            <span className="text-3xl font-bold">€0,99</span>
             <span className="text-muted-foreground">/ mese</span>
           </div>
 
