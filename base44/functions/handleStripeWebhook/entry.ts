@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import Stripe from 'npm:stripe@17.7.0';
-import { secrets } from 'base44:runtime';
+import { secrets, waitUntil } from 'base44:runtime';
+import { profileFieldsFromSubscription } from '../../shared/subscriptionSync.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -32,6 +33,10 @@ export default async function(req: Request): Promise<Response> {
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted':
         console.log(`Stripe event ${event.type} | app=${appId || ''} | customer=${obj && obj.customer ? obj.customer : ''}`);
+        // Real-time sync: resolve the subscription + customer email, then
+        // update the matching Base44 user's profile access level. Runs after
+        // the response so Stripe gets a fast 2xx.
+        waitUntil(syncProfileFromStripeEvent(secretKey, event.type, obj));
         break;
       default:
         break;
@@ -41,5 +46,45 @@ export default async function(req: Request): Promise<Response> {
   } catch (error) {
     console.error('handleStripeWebhook', error);
     return Response.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// Resolve the subscription object + customer email for an event and update
+// the matching Base44 user's profile access level (service role, no user auth).
+async function syncProfileFromStripeEvent(secretKey: string, type: string, obj: any) {
+  try {
+    const headers = { 'Authorization': `Bearer ${secretKey}`, 'Stripe-Version': '2025-10-29.clover' };
+    const customerId = obj?.customer;
+    if (!customerId) return;
+
+    // For subscription events the object IS the subscription; for checkout/
+    // invoice events we fetch the subscription by id.
+    let sub: any = null;
+    if (type === 'customer.subscription.updated' || type === 'customer.subscription.deleted') {
+      sub = obj;
+    } else {
+      const subId = obj?.subscription;
+      if (subId) {
+        const subRes = await fetch(`https://api.stripe.com/v1/subscriptions/${subId}`, { headers });
+        if (subRes.ok) sub = await subRes.json();
+      }
+    }
+
+    // Resolve the customer email.
+    const custRes = await fetch(`https://api.stripe.com/v1/customers/${customerId}`, { headers });
+    if (!custRes.ok) return;
+    const cust = await custRes.json();
+    const email = (cust.email || '').toLowerCase();
+    if (!email) return;
+
+    const base44 = createClientFromRequest(new Request('https://ibd-care.base44.app'));
+    const fields = profileFieldsFromSubscription(sub);
+    await base44.asServiceRole.entities.User.updateMany(
+      { email },
+      { $set: fields }
+    );
+    console.log(`synced profile ${email} -> ${fields.subscription_status} (${type})`);
+  } catch (e) {
+    console.error('syncProfileFromStripeEvent failed', e);
   }
 }

@@ -9,6 +9,18 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import SubscriptionCard from '@/components/SubscriptionCard';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { cn } from '@/lib/utils';
+
+const ACCESS_LABELS = {
+  none: { label: 'Nessun abbonamento', cls: 'bg-muted text-muted-foreground' },
+  trialing: { label: 'Prova gratuita', cls: 'bg-amber-100 text-amber-700' },
+  active: { label: 'Premium attivo', cls: 'bg-emerald-100 text-emerald-700' },
+  past_due: { label: 'Pagamento in sospeso', cls: 'bg-rose-100 text-rose-700' },
+  canceled: { label: 'Abbonamento disdetto', cls: 'bg-muted text-muted-foreground' },
+};
+function accessBadge(status) {
+  return ACCESS_LABELS[status] || ACCESS_LABELS.none;
+}
 
 export default function Account() {
   const { t } = useI18n();
@@ -48,6 +60,9 @@ export default function Account() {
                   <p className="font-semibold text-foreground">{user?.full_name || 'Utente'}</p>
                   <p className="text-sm text-muted-foreground">{user?.role || 'user'}</p>
                 </div>
+              <span className={cn('ml-auto text-xs font-medium px-2.5 py-1 rounded-full', accessBadge(user?.subscription_status).cls)}>
+                {accessBadge(user?.subscription_status).label}
+              </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Mail className="w-4 h-4 text-muted-foreground" />

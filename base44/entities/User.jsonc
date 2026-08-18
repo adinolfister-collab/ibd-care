@@ -7,6 +7,28 @@
         "admin",
         "user"
       ]
+    },
+    "subscription_status": {
+      "type": "string",
+      "description": "Synced Stripe subscription access level",
+      "enum": [
+        "none",
+        "trialing",
+        "active",
+        "past_due",
+        "canceled"
+      ]
+    },
+    "subscription_trial_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "subscription_period_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "subscription_cancel_at_period_end": {
+      "type": "boolean"
     }
   },
   "required": [
