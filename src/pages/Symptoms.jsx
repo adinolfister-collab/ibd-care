@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Activity, Trash2, Pencil } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Plus, Activity, Trash2, Pencil, Lock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useSubscription } from '@/hooks/useSubscription';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import EmptyState from '@/components/EmptyState';
@@ -11,6 +13,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import PullToRefresh from '@/components/PullToRefresh';
+
+const FREE_DAILY_LIMIT = 2;
 
 const painLocations = [
   { value: 'nessuno', label: 'Nessuno' },
@@ -58,10 +62,14 @@ function todayStr() {
 export default function Symptoms() {
   const { t } = useI18n();
   const { toast } = useToast();
+  const { isSubscribed, loading: subLoading } = useSubscription();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+
+  const todayCount = items.filter((it) => it.entry_date === todayStr() && !String(it.id).startsWith('temp_')).length;
+  const limitReached = !subLoading && !isSubscribed && todayCount >= FREE_DAILY_LIMIT;
 
   const load = async () => {
     setLoading(true);
@@ -75,7 +83,11 @@ export default function Symptoms() {
   };
   useEffect(() => { load(); }, []);
 
-  const openNew = () => { setEditing({ entry_date: todayStr() }); setOpen(true); };
+  const openNew = () => {
+    if (limitReached) return;
+    setEditing({ entry_date: todayStr() });
+    setOpen(true);
+  };
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
   const handleSubmit = (data) => {
@@ -112,8 +124,31 @@ export default function Symptoms() {
       <PageHeader
         title={t('symptoms.title')}
         subtitle={t('symptoms.subtitle')}
-        action={<Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('symptoms.add')}</Button>}
+        action={
+          limitReached ? (
+            <Link to="/abbonamento">
+              <Button className="rounded-xl" variant="outline">
+                <Lock className="w-4 h-4 mr-1.5" /> Passa a Premium
+              </Button>
+            </Link>
+          ) : (
+            <Button onClick={openNew} className="rounded-xl">
+              <Plus className="w-4 h-4 mr-1.5" />{t('symptoms.add')}
+            </Button>
+          )
+        }
       />
+      {limitReached && (
+        <Card className="mb-4 border-amber-200 bg-amber-50 border shadow-sm">
+          <CardContent className="p-4 flex items-start gap-3">
+            <Lock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div className="text-sm">
+              <p className="font-medium text-amber-800">Hai raggiunto il limite gratuito di {FREE_DAILY_LIMIT} inserimenti al giorno.</p>
+              <p className="text-amber-700 mt-0.5">Con <Link to="/abbonamento" className="font-medium underline">IBD Care Premium</Link> registri sintomi, alimenti, farmaci e molto altro senza limiti.</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>

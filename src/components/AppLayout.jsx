@@ -1,9 +1,23 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3 } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, Lock } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
+import { useSubscription } from '@/hooks/useSubscription';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
+
+// Pages reserved to Premium subscribers. Free (registered) users can still
+// see them in the nav, but clicking redirects to the subscription page.
+const PREMIUM_ROUTES = new Set([
+  '/food',
+  '/meds',
+  '/records',
+  '/assistant',
+  '/community',
+  '/trends',
+  '/symptom-charts',
+  '/summary',
+]);
 
 const navItems = [
   { to: '/', key: 'nav.home', icon: Home, exact: true },
@@ -23,7 +37,11 @@ const navItems = [
 
 export default function AppLayout({ children }) {
   const { t } = useI18n();
+  const { isSubscribed } = useSubscription();
   const navigate = useNavigate();
+
+  const isPremium = (to) => PREMIUM_ROUTES.has(to);
+  const navTo = (to) => (!isSubscribed && isPremium(to) ? '/abbonamento' : to);
 
   const handleLogout = async () => {
     await base44.auth.logout();
@@ -43,22 +61,27 @@ export default function AppLayout({ children }) {
           </div>
         </div>
         <nav className="flex-1 px-3 space-y-1">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.exact}
-              className={({ isActive }) =>
-                cn(
-                  'flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-colors',
-                  isActive ? 'bg-primary text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                )
-              }
-            >
-              <item.icon className="w-5 h-5 shrink-0" />
-              <span>{t(item.key)}</span>
-            </NavLink>
-          ))}
+          {navItems.map((item) => {
+            const locked = !isSubscribed && isPremium(item.to);
+            return (
+              <NavLink
+                key={item.to}
+                to={navTo(item.to)}
+                end={item.exact}
+                className={({ isActive }) =>
+                  cn(
+                    'flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-colors',
+                    locked && 'opacity-60',
+                    isActive ? 'bg-primary text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  )
+                }
+              >
+                <item.icon className="w-5 h-5 shrink-0" />
+                <span>{t(item.key)}</span>
+                {locked && <Lock className="w-3.5 h-3.5 ml-auto text-muted-foreground/70" />}
+              </NavLink>
+            );
+          })}
         </nav>
         <button
           onClick={handleLogout}
@@ -71,21 +94,26 @@ export default function AppLayout({ children }) {
 
       {/* Mobile secondary top bar */}
       <div className="md:hidden flex items-center gap-2 overflow-x-auto px-4 py-2 border-b border-border bg-card/90 backdrop-blur sticky top-0 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-        {navItems.slice(5).map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={({ isActive }) =>
-              cn(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors',
-                isActive ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
-              )
-            }
-          >
-            <item.icon className="w-4 h-4" />
-            <span>{t(item.key)}</span>
-          </NavLink>
-        ))}
+        {navItems.slice(5).map((item) => {
+          const locked = !isSubscribed && isPremium(item.to);
+          return (
+            <NavLink
+              key={item.to}
+              to={navTo(item.to)}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors',
+                  locked && 'opacity-60',
+                  isActive ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
+                )
+              }
+            >
+              <item.icon className="w-4 h-4" />
+              <span>{t(item.key)}</span>
+              {locked && <Lock className="w-3 h-3 text-muted-foreground" />}
+            </NavLink>
+          );
+        })}
       </div>
 
       {/* Main content */}
@@ -98,22 +126,29 @@ export default function AppLayout({ children }) {
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-card border-t border-border" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <div className="grid grid-cols-5">
-          {navItems.slice(0, 5).map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.exact}
-              className={({ isActive }) =>
-                cn(
-                  'flex flex-col items-center justify-center gap-1 py-2.5 text-xs transition-colors',
-                  isActive ? 'text-primary font-medium' : 'text-muted-foreground'
-                )
-              }
-            >
-              <item.icon className="w-6 h-6" />
-              <span>{t(item.key)}</span>
-            </NavLink>
-          ))}
+          {navItems.slice(0, 5).map((item) => {
+            const locked = !isSubscribed && isPremium(item.to);
+            return (
+              <NavLink
+                key={item.to}
+                to={navTo(item.to)}
+                end={item.exact}
+                className={({ isActive }) =>
+                  cn(
+                    'flex flex-col items-center justify-center gap-1 py-2.5 text-xs transition-colors',
+                    locked && 'opacity-60',
+                    isActive ? 'text-primary font-medium' : 'text-muted-foreground'
+                  )
+                }
+              >
+                <div className="relative">
+                  <item.icon className="w-6 h-6" />
+                  {locked && <Lock className="w-3 h-3 absolute -top-1 -right-1.5 text-muted-foreground bg-card rounded-full p-0.5 box-border" />}
+                </div>
+                <span>{t(item.key)}</span>
+              </NavLink>
+            );
+          })}
         </div>
       </nav>
     </div>

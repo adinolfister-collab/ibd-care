@@ -73,20 +73,23 @@ const AuthenticatedApp = () => {
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
         <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
         <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
-        {/* Authenticated + subscribed pages */}
-        <Route element={<SubscriptionRoute redirect={<Navigate to="/abbonamento" replace />} />}>
+        {/* Free tier: auth required, no subscription needed */}
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
+          <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
+          <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
+          <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
+        </Route>
+        {/* Premium tier: auth + active subscription required */}
+        <Route element={<SubscriptionRoute redirect={<Navigate to="/abbonamento" replace />} />}>
           <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
           <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
           <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
-          <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
           <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
           <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
           <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
           <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
           <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
-          <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
-          <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
         </Route>
         <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />
       </Routes>
