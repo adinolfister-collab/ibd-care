@@ -3,6 +3,10 @@ import { SUPPORTED_LANGS, buildNewsPrompt, ARTICLE_JSON_SCHEMA } from '../../sha
 
 export default async function(req) {
   const base44 = createClientFromRequest(req);
+  const user = await base44.auth.me();
+  if (!user || user.role !== 'admin') {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   // Esegue tutte le ricerche web in parallelo (una per lingua)
   const fetched = await Promise.all(SUPPORTED_LANGS.map(async (lang) => {
