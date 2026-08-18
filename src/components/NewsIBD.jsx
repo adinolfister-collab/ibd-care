@@ -74,8 +74,8 @@ export default function NewsIBD() {
                       </>
                     )}
                   </div>
-                  <NewsShareButtons title={a.title} summary={a.summary} />
                 </a>
+                <NewsShareButtons title={a.title} summary={a.summary} />
               </li>
             ))}
           </ul>
