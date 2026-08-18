@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import NewsShareButtons from '@/components/NewsShareButtons';
 
 const REFRESH_MS = 30 * 60 * 1000; // 30 minuti
 
@@ -73,6 +74,7 @@ export default function NewsIBD() {
                       </>
                     )}
                   </div>
+                  <NewsShareButtons title={a.title} summary={a.summary} />
                 </a>
               </li>
             ))}
