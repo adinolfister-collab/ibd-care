@@ -6,6 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import ShareApp from '@/components/ShareApp';
+import DownloadApp from '@/components/DownloadApp';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
@@ -67,6 +68,7 @@ export default function Home() {
       <PageHeader title={`${t('home.welcome')}${user?.full_name ? ', ' + user.full_name.split(' ')[0] : ''} 👋`} subtitle={t('app.tagline')} action={
         <div className="flex items-center gap-2">
           <LanguageSwitcher className="w-[112px] h-9 rounded-full" />
+          <DownloadApp variant="icon" />
           <ShareApp variant="icon" />
         </div>
       } />
