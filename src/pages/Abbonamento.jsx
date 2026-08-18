@@ -34,7 +34,7 @@ export default function Abbonamento() {
             <Sparkles className="w-7 h-7 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">IBD Care Premium</h1>
-          <p className="text-muted-foreground mt-1.5">14 giorni gratuiti, poi €2,99/mese. Disdici quando vuoi.</p>
+          <p className="text-muted-foreground mt-1.5">14 giorni gratuiti, poi €0,99/mese. Disdici quando vuoi.</p>
         </div>
 
         {isAuthenticated ? (
