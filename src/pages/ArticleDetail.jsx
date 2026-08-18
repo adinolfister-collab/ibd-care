@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const APP_URL = 'https://ibd-care.it';
 
-export default function NewsDetail() {
+export default function ArticleDetail() {
   const { id } = useParams();
   const { t, lang } = useI18n();
   const [article, setArticle] = useState(null);

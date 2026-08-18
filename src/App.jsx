@@ -26,7 +26,7 @@ import Abbonamento from '@/pages/Abbonamento';
 import Account from '@/pages/Account';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
-import NewsDetail from '@/pages/NewsDetail';
+import ArticleDetail from '@/pages/ArticleDetail';
 import SubscriptionRoute from '@/components/SubscriptionRoute';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -69,7 +69,7 @@ const AuthenticatedApp = () => {
         <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-        <Route path="/news/:id" element={<PageTransition><NewsDetail /></PageTransition>} />
+        <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
         {/* Auth routes */}
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
