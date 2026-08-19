@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Bot, Send, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { useI18n } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -8,6 +10,7 @@ import { cn } from '@/lib/utils';
 
 export default function AppSupportChat() {
   const { t } = useI18n();
+  const { isAuthenticated } = useAuth();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -42,6 +45,14 @@ export default function AppSupportChat() {
       setBusy(false);
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <Link to={`/login?returnTo=${encodeURIComponent('/abbonamento')}`} className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold border border-primary/30 bg-primary/5 text-primary hover:bg-primary/10 transition-colors">
+        <Bot className="w-4 h-4" /> Accedi per chiedere all&rsquo;assistente
+      </Link>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

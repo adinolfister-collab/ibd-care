@@ -12,9 +12,10 @@ export default async function(req) {
     const base44 = createClientFromRequest(req);
 
     const body = await req.json().catch(() => ({}));
-    const id = body && body.id;
+    const id = body && typeof body.id === 'string' ? body.id.trim() : undefined;
 
     if (id) {
+      if (id.length > 64 || !/^[A-Za-z0-9_-]+$/.test(id)) return Response.json({ error: 'id non valido' }, { status: 400 });
       const article = await base44.entities.NewsArticle.get(id);
       return Response.json({ article: article || null });
     }

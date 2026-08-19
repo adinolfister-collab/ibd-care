@@ -25,6 +25,9 @@ Compito: rispondi in modo breve, chiaro e rassicurante, consigliando le funzioni
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
     const body = await req.json().catch(() => ({}));
     const question = body && body.question && String(body.question).trim().slice(0, 500);
     if (!question) return Response.json({ error: 'Domanda mancante' }, { status: 400 });

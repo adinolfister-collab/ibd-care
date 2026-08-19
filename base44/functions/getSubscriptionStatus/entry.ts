@@ -46,10 +46,6 @@ export default async function(req: Request): Promise<Response> {
     });
   } catch (error) {
     console.error('getSubscriptionStatus', error);
-    try {
-      if (!base44) base44 = createClientFromRequest(req);
-      await base44.auth.updateMe(profileFieldsFromSubscription(null));
-    } catch (e) {}
-    return Response.json({ status: 'none' });
+    return Response.json({ error: 'Impossibile verificare lo stato abbonamento' }, { status: 502 });
   }
 }

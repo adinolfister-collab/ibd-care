@@ -15,6 +15,13 @@ export default async function(req) {
     if (!fileUrl || typeof fileUrl !== 'string') return Response.json({ error: 'file_url mancante' }, { status: 400 });
     if (!category || !CATEGORIES.has(category)) return Response.json({ error: 'categoria non valida' }, { status: 400 });
 
+    const ALLOWED_HOSTS = new Set(['media.base44.com', 'static.wixstatic.com']);
+    let parsedUrl;
+    try { parsedUrl = new URL(fileUrl); } catch (e) { return Response.json({ error: 'file_url non valido' }, { status: 400 }); }
+    if (parsedUrl.protocol !== 'https:' || !ALLOWED_HOSTS.has(parsedUrl.hostname) || fileUrl.length > 2048) {
+      return Response.json({ error: 'file_url non valido' }, { status: 400 });
+    }
+
     const guidance = {
       esame_sangue: 'Esame del sangue. Estrai ogni parametro con valore numerico, unità di misura e range di riferimento (valori normali min-max). Esempi: PCR, VES, emoglobina, ferritina, leucociti, piastrine, albumina, GSR. Imposta flag "high" se valore > ref_high, "low" se < ref_low, "normal" altrimenti.',
       calprotectina: 'Calprotectina fecale. Estrai il valore principale (mg/kg o µg/g) con range di riferimento. Flag come per esame del sangue.',
