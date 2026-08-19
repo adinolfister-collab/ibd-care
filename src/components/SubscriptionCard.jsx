@@ -67,6 +67,7 @@ export default function SubscriptionCard() {
             <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Assistente AI e analisi trend personalizzati</li>
             <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Modello pasti e lista cibi tollerati/sconsigliati</li>
             <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Riepilogo PDF con grafici per il medico</li>
+            <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Scanner esami sanitari con confronto nel tempo</li>
             <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Mappa servizi IBD, farmacie e bagni più vicini</li>
             <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Promemoria terapie e gestione farmaci</li>
             <li className="flex items-center gap-2"><Check className="w-4 h-4 text-primary" /> Board community di supporto</li>

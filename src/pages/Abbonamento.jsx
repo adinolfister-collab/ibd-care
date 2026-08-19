@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useI18n } from '@/lib/i18n';
 import SubscriptionCard from '@/components/SubscriptionCard';
 import LoginSubscriptionPromo from '@/components/LoginSubscriptionPromo';
+import AppSupportChat from '@/components/AppSupportChat';
 
 // Public subscription page. Serves as the redirect target when a visitor
 // tries to use a protected page without being logged in / subscribed.
@@ -48,6 +49,10 @@ export default function Abbonamento() {
             </div>
           </div>
         )}
+
+        <div className="mt-4">
+          <AppSupportChat />
+        </div>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
           <Link to="/" className="hover:underline">← Torna alla home</Link>

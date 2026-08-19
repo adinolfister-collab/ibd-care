@@ -6,6 +6,7 @@ const benefits = [
   'Diario sintomi e alimentare illimitati',
   'Assistente AI e analisi dei trend',
   'Riepilogo PDF con grafici per le visite',
+  'Scanner esami sanitari con confronto e PDF',
   'Mappa servizi IBD e promemoria terapie',
 ];
 
