@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useI18n } from '@/lib/i18n';
 import SubscriptionCard from '@/components/SubscriptionCard';
 import LoginSubscriptionPromo from '@/components/LoginSubscriptionPromo';
 import AppSupportChat from '@/components/AppSupportChat';
+import PageHeader from '@/components/PageHeader';
 
 // Public subscription page. Serves as the redirect target when a visitor
 // tries to use a protected page without being logged in / subscribed.
@@ -30,13 +30,7 @@ export default function Abbonamento() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-md">
-        <div className="text-center mb-6">
-          <div className="inline-flex w-14 h-14 rounded-2xl bg-primary items-center justify-center mb-3">
-            <Sparkles className="w-7 h-7 text-primary-foreground" />
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">IBD Care Premium</h1>
-          <p className="text-muted-foreground mt-1.5">14 giorni gratuiti, poi €0,99/mese. Disdici quando vuoi.</p>
-        </div>
+        <PageHeader title="IBD Care Premium" subtitle="14 giorni gratuiti, poi €0,99/mese. Disdici quando vuoi." />
 
         {isAuthenticated ? (
           <SubscriptionCard />

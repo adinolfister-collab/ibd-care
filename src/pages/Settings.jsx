@@ -61,7 +61,7 @@ export default function Settings() {
 
   return (
     <AppLayout>
-      <PageHeader title={t('settings.title')} />
+      <PageHeader title={t('settings.title')} subtitle="Privacy, lingua ed esportazione dei tuoi dati sanitari." />
 
       <div className="space-y-4">
         {/* Subscription */}

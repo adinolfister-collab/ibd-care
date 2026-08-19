@@ -1,17 +1,12 @@
 import React from 'react';
-import { Info } from 'lucide-react';
 import PublicFooter from '@/components/PublicFooter';
+import PageHeader from '@/components/PageHeader';
 
 export default function About() {
   return (
     <div className="min-h-screen bg-background px-4 py-10">
       <div className="w-full max-w-2xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <Info className="w-6 h-6 text-primary" />
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Chi siamo</h1>
-        </div>
+        <PageHeader title="Chi siamo" subtitle="Chi c'è dietro IBD Care e la nostra missione di cura per chi vive con l'IBD." />
 
         <div className="prose max-w-none select-text text-foreground/90 leading-relaxed space-y-4">
           <p>

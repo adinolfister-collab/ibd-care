@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, MessageSquare, Send } from 'lucide-react';
+import { Mail, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import PublicFooter from '@/components/PublicFooter';
+import PageHeader from '@/components/PageHeader';
 
 const CONTACT_EMAIL = 'supporto@ibdcare.app';
 
@@ -23,12 +24,7 @@ export default function Contact() {
   return (
     <div className="min-h-screen bg-background px-4 py-10">
       <div className="w-full max-w-2xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <MessageSquare className="w-6 h-6 text-primary" />
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Contatti</h1>
-        </div>
+        <PageHeader title="Contatti" subtitle="Siamo qui per ascoltarti: supporto, suggerimenti e segnala la tua esperienza con IBD Care." />
 
         <p className="text-muted-foreground mb-6 leading-relaxed select-text">
           Siamo qui per ascoltarti. Scrivici per supporto tecnico, suggerimenti o per segnalarci

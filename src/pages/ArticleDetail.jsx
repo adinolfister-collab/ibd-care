@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink, Loader2, Newspaper } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import NewsShareButtons from '@/components/NewsShareButtons';
+import PageHeader from '@/components/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
 
 const APP_URL = 'https://ibd-care.it';
@@ -64,15 +65,10 @@ export default function ArticleDetail() {
             </CardContent>
           </Card>
         ) : (
+          <>
+          <PageHeader title={article.title} subtitle={article.source ? `${article.source}` : undefined} />
           <Card className="border-0 shadow-sm">
             <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Newspaper className="w-5 h-5 text-primary" />
-                <span className="text-sm font-semibold text-primary">{t('news.title')}</span>
-              </div>
-
-              <h1 className="text-xl font-semibold leading-snug mb-3">{article.title}</h1>
-
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4">
                 <span className="inline-flex items-center gap-1 font-medium">
                   <ExternalLink className="w-3 h-3" />
@@ -108,6 +104,7 @@ export default function ArticleDetail() {
               </div>
             </CardContent>
           </Card>
+          </>
         )}
       </div>
     </div>
