@@ -7,6 +7,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
@@ -194,6 +195,7 @@ export default function Symptoms() {
         initialData={editing}
         onSubmit={handleSubmit}
       />
+      <EditorialBlock sectionKey="symptoms_journal" align="left" />
     </AppLayout>
   );
 }

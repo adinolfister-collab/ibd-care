@@ -6,6 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -206,6 +207,7 @@ export default function Summary() {
           </CardContent>
         </Card>
       </div>
+      <EditorialBlock sectionKey="summary_pdf" align="right" />
     </AppLayout>
   );
 }

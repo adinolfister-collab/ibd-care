@@ -6,6 +6,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import MealSpikes from '@/components/MealSpikes';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -338,6 +339,7 @@ export default function Trends() {
           )}
         </div>
       )}
+      <EditorialBlock sectionKey="trends_triggers" align="right" />
     </div>
   );
 }

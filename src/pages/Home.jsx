@@ -6,6 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 import ShareApp from '@/components/ShareApp';
 import DownloadApp from '@/components/DownloadApp';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -170,6 +171,7 @@ export default function Home() {
         <NewsIBD />
       </div>
       </PullToRefresh>
+      <EditorialBlock sectionKey="home_insight" align="right" />
     </AppLayout>
   );
 }

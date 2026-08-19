@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import PublicFooter from '@/components/PublicFooter';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 
 const CONTACT_EMAIL = 'supporto@ibdcare.app';
 
@@ -68,6 +69,8 @@ export default function Contact() {
             <p className="text-xs text-muted-foreground text-center">Il messaggio verrà aperto nel tuo client di posta.</p>
           </form>
         </div>
+
+        <EditorialBlock sectionKey="contact_care" align="left" />
 
         <PublicFooter />
       </div>

@@ -6,6 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import NewsShareButtons from '@/components/NewsShareButtons';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 import { Card, CardContent } from '@/components/ui/card';
 
 const APP_URL = 'https://ibd-care.it';
@@ -108,6 +109,7 @@ export default function ArticleDetail() {
           </Card>
           </>
         )}
+        <EditorialBlock sectionKey="article_share" align="right" />
       </div>
     </div>
   );

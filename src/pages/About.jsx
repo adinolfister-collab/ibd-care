@@ -2,6 +2,7 @@ import React from 'react';
 import PublicFooter from '@/components/PublicFooter';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 
 export default function About() {
   return (
@@ -42,6 +43,8 @@ export default function About() {
             po' più semplice.
           </p>
         </div>
+
+        <EditorialBlock sectionKey="about_privacy" align="right" />
 
         <PublicFooter />
       </div>

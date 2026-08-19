@@ -6,6 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import MealSymptomCorrelation from '@/components/MealSymptomCorrelation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -233,6 +234,7 @@ export default function SymptomCharts() {
           </Card>
         </div>
       )}
+      <EditorialBlock sectionKey="symptomcharts_detail" align="left" />
     </AppLayout>
   );
 }

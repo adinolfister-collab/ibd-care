@@ -7,6 +7,7 @@ import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
@@ -186,6 +187,7 @@ export default function Food() {
         onUpdate={updateTemplate}
         onDelete={deleteTemplate}
       />
+      <EditorialBlock sectionKey="food_reactions" align="right" />
     </AppLayout>
   );
 }

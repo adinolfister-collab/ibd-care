@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
 import VoiceButton from '@/components/VoiceButton';
@@ -371,6 +372,7 @@ export default function Community() {
           })}
         </div>
       )}
+      <EditorialBlock sectionKey="community_voice" align="right" />
     </div>
   );
 }

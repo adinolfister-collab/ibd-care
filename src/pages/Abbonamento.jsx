@@ -7,6 +7,7 @@ import LoginSubscriptionPromo from '@/components/LoginSubscriptionPromo';
 import AppSupportChat from '@/components/AppSupportChat';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 
 // Public subscription page. Serves as the redirect target when a visitor
 // tries to use a protected page without being logged in / subscribed.
@@ -57,6 +58,7 @@ export default function Abbonamento() {
           <Link to="/about" className="hover:text-primary hover:underline">Chi siamo</Link>
           <Link to="/contact" className="hover:text-primary hover:underline">Contatti</Link>
         </div>
+        <EditorialBlock sectionKey="abbonamento_trial" align="left" compact />
       </div>
     </div>
   );

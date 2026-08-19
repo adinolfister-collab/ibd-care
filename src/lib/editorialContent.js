@@ -151,6 +151,146 @@ const EDITORIAL = {
   },
 };
 
+// Sezioni editoriali "Sereno mediterraneo" da inserire dentro le singole pagine.
+// Ogni voce: { theme, <lang>: { title, body } }.
+const SECTIONS = {
+  home_insight: {
+    theme: 'sintomi',
+    it: { title: "Un quadro del tuo oggi", body: "Dalla prima schermata vedi stato, promemoria farmaci e attività recente: tutto ciò che conti, in un colpo d'occhio." },
+    en: { title: "A picture of your today", body: "From the first screen you see status, medication reminders and recent activity: everything you track, at a glance." },
+    es: { title: "Un cuadro de tu hoy", body: "En la primera pantalla ves estado, recordatorios y actividad reciente: todo lo que cuentas, de un vistazo." },
+    fr: { title: "Un aperçu de votre jour", body: "Dès le premier écran, état, rappels de médicaments et activité récente : tout ce qui compte, d'un coup d'œil." },
+    de: { title: "Dein Tag im Blick", body: "Auf dem ersten Screen Status, Medikamenten-Erinnerungen und letzte Aktivität: alles Wichtige auf einen Blick." },
+    pt: { title: "Um quadro do seu hoje", body: "Na primeira tela você vê estado, lembretes e atividade recente: tudo o que importa, num relance." },
+  },
+  symptoms_journal: {
+    theme: 'sintomi',
+    it: { title: "Il diario che racconta te", body: "Poche tappe al giorno bastano a costruire un racconto onesto della tua settimana, utile da mostrare al medico." },
+    en: { title: "The diary that tells your story", body: "A few taps a day build an honest account of your week, ready to share with your doctor." },
+    es: { title: "El diario que te cuenta", body: "Unos toques al día bastan para construir un relato honesto de tu semana, útil para el médico." },
+    fr: { title: "Le journal qui vous raconte", body: "Quelques gestes par jour suffisent à bâtir un récit honnête de votre semaine, utile pour le médecin." },
+    de: { title: "Das Tagebuch, das dich erzählt", body: "Ein paar Eingaben am Tag ergeben ein ehrliches Bild deiner Woche, nützlich für die Ärztin." },
+    pt: { title: "O diário que te conta", body: "Poucos toques por dia bastam para um relato honesto da sua semana, útil para o médico." },
+  },
+  food_reactions: {
+    theme: 'alimentazione',
+    it: { title: "Cibi amici, cibi sospetti", body: "Segna le reazioni dopo ogni pasto: nel tempo emergeranno pattern chiari su cosa ti fa stare bene." },
+    en: { title: "Friendly foods, suspect foods", body: "Note reactions after each meal: over time clear patterns emerge on what suits you." },
+    es: { title: "Comidas amigas, comidas sospechosas", body: "Anota las reacciones tras cada comida: con el tiempo aparecerán patrones claros." },
+    fr: { title: "Aliments amis, aliments suspects", body: "Notez les réactions après chaque repas : des schémas clairs émergent avec le temps." },
+    de: { title: "Verträgliche, verdächtige Speisen", body: "Notiere Reaktionen nach jeder Mahlzeit: mit der Zeit zeigen sich klare Muster." },
+    pt: { title: "Comidas amigas, suspeitas", body: "Anotar reações após cada refeição: com o tempo surgem padrões claros." },
+  },
+  meds_adherence: {
+    theme: 'terapie',
+    it: { title: "Una routine che resta", body: "Ricorda dosaggi e orari senza ansia: promemoria calmi ti accompagnano nella cura di ogni giorno." },
+    en: { title: "A routine that lasts", body: "Remember dosages and times without anxiety: calm reminders support your daily care." },
+    es: { title: "Una rutina que permanece", body: "Recuerda dosis y horarios sin ansiedad: recordatorios serenos te acompañan cada día." },
+    fr: { title: "Une routine qui dure", body: "Gardez dosages et horaires sans anxiété : des rappels apaisés vous accompagnent." },
+    de: { title: "Eine Routine, die bleibt", body: "Dosierungen und Zeiten ohne Stress merken: ruhige Erinnerungen begleiten dich täglich." },
+    pt: { title: "Uma rotina que permanece", body: "Lembre doses e horários sem ansiedade: lembretes calmos apoiam seu dia." },
+  },
+  records_archive: {
+    theme: 'esami',
+    it: { title: "Tutto al suo posto", body: "Referti e controlli archiviati con calma: li ritrovi subito quando servono, anche tra mesi." },
+    en: { title: "Everything in its place", body: "Reports and check-ups archived calmly: you find them at once when needed, even months later." },
+    es: { title: "Todo en su lugar", body: "Informes y controles archivados con calma: los encuentras enseguida, incluso meses después." },
+    fr: { title: "Tout à sa place", body: "Comptes rendus et contrôles archivés sereinement : retrouvés aussitôt, même des mois après." },
+    de: { title: "Alles an seinem Ort", body: "Befunde und Kontrollen ruhig archiviert: du findest sie sofort, auch Monate später." },
+    pt: { title: "Tudo no seu lugar", body: "Laudos e controles arquivados com calma: você os encontra logo, até meses depois." },
+  },
+  esami_compare: {
+    theme: 'esami',
+    it: { title: "Valori che parlano nel tempo", body: "Scannerizza e confronta i tuoi esami: i cambiamenti emergono chiari, pronti per la prossima visita." },
+    en: { title: "Values that speak over time", body: "Scan and compare your exams: changes emerge clearly, ready for the next visit." },
+    es: { title: "Valores que hablan en el tiempo", body: "Escanea y compara tus exámenes: los cambios aparecen claros para la próxima visita." },
+    fr: { title: "Des valeurs qui parlent dans le temps", body: "Scannez et comparez vos examens : les changements ressortent clairement." },
+    de: { title: "Werte, die über die Zeit sprechen", body: "Scanne und vergleiche Befunde: Veränderungen werden klar sichtbar für den nächsten Termin." },
+    pt: { title: "Valores que falam no tempo", body: "Escanee e compare seus exames: mudanças ficam claras para a próxima consulta." },
+  },
+  trends_triggers: {
+    theme: 'alimentazione',
+    it: { title: "Connessioni nascoste", body: "I grafici intrecciano ciò che mangi e come stai: riconosci i trigger che si ripetono." },
+    en: { title: "Hidden connections", body: "Charts weave what you eat and how you feel: you recognise repeating triggers." },
+    es: { title: "Conexiones ocultas", body: "Los gráficos entrelazan lo que comes y cómo te sientes: reconoces los desencadenantes." },
+    fr: { title: "Des liens cachés", body: "Les graphiques croisent ce que vous mangez et comment vous allez : vous repérez les déclencheurs." },
+    de: { title: "Verborgene Zusammenhänge", body: "Diagramme verweben Essen und Befinden: du erkennst wiederkehrende Auslöser." },
+    pt: { title: "Conexões ocultas", body: "Gráficos unem o que você come e como se sente: você reconhece gatilhos que se repetem." },
+  },
+  symptomcharts_detail: {
+    theme: 'sintomi',
+    it: { title: "Il dettaglio che conta", body: "Giorno per giorno, dolore, stanchezza e scariche: i picchi diventano storia visibile." },
+    en: { title: "The detail that matters", body: "Day by day, pain, fatigue and bowel movements: peaks become a visible story." },
+    es: { title: "El detalle que importa", body: "Día a día, dolor, cansancio y deposiciones: los picos se vuelven historia visible." },
+    fr: { title: "Le détail qui compte", body: "Jour après jour, douleur, fatigue et selles : les pics deviennent une histoire visible." },
+    de: { title: "Das Detail, das zählt", body: "Tag für Tag Schmerzen, Erschöpfung, Stuhlgang: Spitzen werden sichtbare Geschichte." },
+    pt: { title: "O detalhe que importa", body: "Dia a dia, dor, cansaço e evacuações: os picos viram história visível." },
+  },
+  community_voice: {
+    theme: 'community',
+    it: { title: "La forza di condividere", body: "Consigli, emozioni e piccole vittorie: nella board trovi chi capisce davvero." },
+    en: { title: "The strength of sharing", body: "Tips, emotions and small wins: in the board you find people who truly understand." },
+    es: { title: "La fuerza de compartir", body: "Consejos, emociones y pequeñas victorias: en el foro encuentra quien entiende de verdad." },
+    fr: { title: "La force de partager", body: "Conseils, émotions et petites victoires : sur le forum, des gens qui comprennent vraiment." },
+    de: { title: "Die Kraft des Teilens", body: "Tipps, Emotionen, kleine Erfolge: im Board findest du Menschen, die wirklich verstehen." },
+    pt: { title: "A força de compartilhar", body: "Conselhos, emoções e pequenas vitórias: no quadro você encontra quem entende de verdade." },
+  },
+  summary_pdf: {
+    theme: 'esami',
+    it: { title: "Parla meglio, in meno tempo", body: "Un PDF ordinato con i tuoi dati: la visita scorre leggera e mirata." },
+    en: { title: "Talk better, in less time", body: "A tidy PDF of your data: the visit flows light and focused." },
+    es: { title: "Habla mejor, en menos tiempo", body: "Un PDF ordenado con tus datos: la visita fluye ligera y centrada." },
+    fr: { title: "Mieux parler, en moins de temps", body: "Un PDF ordonné de vos données : la visite coule légère et ciblée." },
+    de: { title: "Besser reden, in weniger Zeit", body: "Ein ordentliches PDF deiner Daten: der Termin bleibt leicht und fokussiert." },
+    pt: { title: "Converse melhor, em menos tempo", body: "Um PDF organizado com seus dados: a visita flui leve e direcionada." },
+  },
+  map_safe: {
+    theme: 'mappa',
+    it: { title: "Sapere dove andare", body: "Centri IBD, farmacie e bagni vicini: meno ansia quando sei fuori casa." },
+    en: { title: "Knowing where to go", body: "Nearby IBD centres, pharmacies and toilets: less anxiety when you're away from home." },
+    es: { title: "Saber a dónde ir", body: "Centros de EII, farmacias y baños cercanos: menos ansiedad fuera de casa." },
+    fr: { title: "Savoir où aller", body: "Centres MICI, pharmacies et toilettes proches : moins d'angoisse hors de chez vous." },
+    de: { title: "Wissen, wohin", body: "IBD-Zentren, Apotheken und Toiletten in der Nähe: weniger Angst unterwegs." },
+    pt: { title: "Saber aonde ir", body: "Centros de DII, farmácias e banheiros por perto: menos ansiedade fora de casa." },
+  },
+  about_privacy: {
+    theme: 'serena',
+    it: { title: "La tua riservatezza al centro", body: "I tuoi dati restano tuoi: niente pubblicità, niente vendita a terzi." },
+    en: { title: "Your privacy at the centre", body: "Your data stays yours: no ads, no selling to third parties." },
+    es: { title: "Tu privacidad en el centro", body: "Tus datos son tuyos: sin publicidad, sin venta a terceros." },
+    fr: { title: "Votre vie privée au centre", body: "Vos données restent vôtres : ni publicité, ni revente à des tiers." },
+    de: { title: "Deine Privatsphäre im Mittelpunkt", body: "Deine Daten bleiben deine: keine Werbung, kein Verkauf an Dritte." },
+    pt: { title: "Sua privacidade no centro", body: "Seus dados são seus: sem anúncios, sem venda a terceiros." },
+  },
+  contact_care: {
+    theme: 'serena',
+    it: { title: "Ti ascoltiamo con cura", body: "Ogni messaggio è letto: rispondiamo con attenzione, perché la tua voce conti." },
+    en: { title: "We listen with care", body: "Every message is read: we reply attentively, so your voice matters." },
+    es: { title: "Te escuchamos con cuidado", body: "Cada mensaje se lee: respondemos con atención, porque tu voz importa." },
+    fr: { title: "Nous écoutons avec soin", body: "Chaque message est lu : nous répondons attentivement, votre voix compte." },
+    de: { title: "Wir hören sorgfältig zu", body: "Jede Nachricht wird gelesen: wir antworten aufmerksam, deine Stimme zählt." },
+    pt: { title: "Ouvimos com cuidado", body: "Cada mensagem é lida: respondemos com atenção, sua voz importa." },
+  },
+  abbonamento_trial: {
+    theme: 'serena',
+    it: { title: "Prova senza pensieri", body: "14 giorni gratuiti per esplorare ogni strumento: decidi con calma, disdici quando vuoi." },
+    en: { title: "Try without worries", body: "14 free days to explore every tool: decide calmly, cancel anytime." },
+    es: { title: "Prueba sin preocupaciones", body: "14 días gratis para explorar cada herramienta: decide con calma, cancela cuando quieras." },
+    fr: { title: "Essayez sans souci", body: "14 jours gratuits pour explorer chaque outil : décidez sereinement, annulez à tout moment." },
+    de: { title: "Sorgenfrei testen", body: "14 gratis Tage, um jedes Werkzeug zu entdecken: ruhig entscheiden, jederzeit kündbar." },
+    pt: { title: "Experimente sem preocupações", body: "14 dias grátis para explorar cada ferramenta: decida com calma, cancele quando quiser." },
+  },
+  article_share: {
+    theme: 'serena',
+    it: { title: "Condividi con chi vuoi bene", body: "Notizie utili da inviare a chi ti è vicino: la consapevolezza cresce, insieme." },
+    en: { title: "Share with those you love", body: "Useful news to send to those close to you: awareness grows, together." },
+    es: { title: "Comparte con quien quieres", body: "Noticias útiles para enviar a los cercanos: la conciencia crece, juntos." },
+    fr: { title: "Partagez avec vos proches", body: "Des actualités utiles à envoyer à vos proches : la conscience grandit, ensemble." },
+    de: { title: "Teile mit deinen Liebsten", body: "Nützliche Nachrichten für Menschen in deiner Nähe: Bewusstsein wächst, gemeinsam." },
+    pt: { title: "Compartilhe com quem você ama", body: "Notícias úteis para enviar a quem está perto: a consciência cresce, juntos." },
+  },
+};
+
 const SUPPORTED = new Set(LANGS);
 
 // Ritorna { theme, label, desc } per la pagina richiesta, fallback sull'italiano.
@@ -159,4 +299,12 @@ export function getEditorial(lang, pageKey) {
   const l = SUPPORTED.has(lang) ? lang : 'it';
   const text = entry[l] || entry.it;
   return { theme: entry.theme, label: text.label, desc: text.desc };
+}
+
+// Ritorna { theme, title, body } per la sezione editoriale richiesta, fallback IT.
+export function getEditorialSection(lang, sectionKey) {
+  const entry = SECTIONS[sectionKey] || SECTIONS.home_insight;
+  const l = SUPPORTED.has(lang) ? lang : 'it';
+  const text = entry[l] || entry.it;
+  return { theme: entry.theme, title: text.title, body: text.body };
 }

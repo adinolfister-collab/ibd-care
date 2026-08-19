@@ -4,6 +4,7 @@ import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import EditorialBlock from '@/components/EditorialBlock';
 import ExamScanner from '@/components/exams/ExamScanner';
 import ExamTimeline from '@/components/exams/ExamTimeline';
 import ExamCompare from '@/components/exams/ExamCompare';
@@ -43,6 +44,7 @@ export default function Esami() {
       {tab === 'scan' && <ExamScanner onSaved={reload} />}
       {tab === 'timeline' && <ExamTimeline reloadKey={signal} />}
       {tab === 'compare' && <ExamCompare reloadKey={signal} />}
+      <EditorialBlock sectionKey="esami_compare" align="left" />
     </AppLayout>
   );
 }
