@@ -16,6 +16,15 @@
         "controllo"
       ]
     },
+    "exam_category": {
+      "type": "string",
+      "enum": [
+        "esame_sangue",
+        "calprotectina",
+        "colonscopia",
+        "ecografia"
+      ]
+    },
     "title": {
       "type": "string"
     },
@@ -26,6 +35,43 @@
       "type": "string"
     },
     "result_summary": {
+      "type": "string"
+    },
+    "markers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "ref_low": {
+            "type": "string"
+          },
+          "ref_high": {
+            "type": "string"
+          },
+          "flag": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "high",
+              "low"
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "findings": {
       "type": "string"
     },
     "report_file_url": {

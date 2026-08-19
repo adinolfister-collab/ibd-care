@@ -27,6 +27,7 @@ import Account from '@/pages/Account';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import ArticleDetail from '@/pages/ArticleDetail';
+import Esami from '@/pages/Esami';
 import SubscriptionRoute from '@/components/SubscriptionRoute';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -87,6 +88,7 @@ const AuthenticatedApp = () => {
           <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
           <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
           <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
+          <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
           <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
           <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
           <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
