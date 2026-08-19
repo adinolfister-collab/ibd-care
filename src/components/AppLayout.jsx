@@ -54,11 +54,11 @@ export default function AppLayout({ children }) {
       {/* Desktop sidebar */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 w-64 flex-col border-r border-border bg-card">
         <div className="px-6 py-7 flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center">
             <HeartPulse className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <p className="text-lg font-semibold tracking-tight">{t('app.name')}</p>
+            <p className="text-lg font-heading font-semibold tracking-tight">{t('app.name')}</p>
             <p className="text-xs text-muted-foreground leading-tight">{t('app.tagline')}</p>
           </div>
         </div>
