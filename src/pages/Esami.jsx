@@ -3,6 +3,7 @@ import { ScanLine, History, BarChart3 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import ExamScanner from '@/components/exams/ExamScanner';
 import ExamTimeline from '@/components/exams/ExamTimeline';
 import ExamCompare from '@/components/exams/ExamCompare';
@@ -23,6 +24,7 @@ export default function Esami() {
   return (
     <AppLayout>
       <PageHeader title={t('exams.title')} subtitle={t('exams.subtitle')} />
+      <PageEditorial pageKey="esami" />
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1 -mx-1 px-1">
         {tabs.map(({ id, label, Icon }) => (
           <button

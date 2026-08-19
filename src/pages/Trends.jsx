@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import EmptyState from '@/components/EmptyState';
 import MealSpikes from '@/components/MealSpikes';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -202,6 +203,7 @@ export default function Trends() {
   return (
     <div>
       <PageHeader title={t('trends.title')} subtitle={t('trends.subtitle')} />
+      <PageEditorial pageKey="trends" />
 
       <Link to="/symptom-charts" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline mb-4">
         <BarChart3 className="w-4 h-4" /> {t('symptom_charts.title')} →

@@ -6,6 +6,7 @@ import DietaryTips from '@/components/DietaryTips';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
@@ -117,6 +118,7 @@ export default function Food() {
           </div>
         }
       />
+      <PageEditorial pageKey="food" />
       {templates.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
           {templates.map((tpl) => (

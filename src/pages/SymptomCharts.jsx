@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import EmptyState from '@/components/EmptyState';
 import MealSymptomCorrelation from '@/components/MealSymptomCorrelation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -147,6 +148,7 @@ export default function SymptomCharts() {
   return (
     <AppLayout>
       <PageHeader title={t('symptom_charts.title')} subtitle={t('symptom_charts.subtitle')} />
+      <PageEditorial pageKey="symptomcharts" />
 
       <div className="flex items-center gap-2 mb-4">
         {['trend', 'correlation'].map((v) => (

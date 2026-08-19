@@ -6,6 +6,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -53,6 +54,7 @@ export default function ServicesMap() {
   return (
     <AppLayout>
       <PageHeader title={t('map.title')} subtitle={t('map.subtitle')} />
+      <PageEditorial pageKey="map" />
 
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
         <FilterChip active={filter === 'all'} onClick={() => setFilter('all')} label={t('map.all')} />

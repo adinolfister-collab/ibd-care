@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -145,6 +146,7 @@ export default function Summary() {
   return (
     <AppLayout>
       <PageHeader title={t('summary.title')} subtitle={t('summary.subtitle')} />
+      <PageEditorial pageKey="summary" />
 
       <div className="grid gap-4">
         <WeeklyReport />

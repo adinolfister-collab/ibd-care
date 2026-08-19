@@ -6,6 +6,7 @@ import SubscriptionCard from '@/components/SubscriptionCard';
 import LoginSubscriptionPromo from '@/components/LoginSubscriptionPromo';
 import AppSupportChat from '@/components/AppSupportChat';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 
 // Public subscription page. Serves as the redirect target when a visitor
 // tries to use a protected page without being logged in / subscribed.
@@ -31,6 +32,7 @@ export default function Abbonamento() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-md">
         <PageHeader title="IBD Care Premium" subtitle="14 giorni gratuiti, poi €0,99/mese. Disdici quando vuoi." />
+        <PageEditorial pageKey="abbonamento" />
 
         {isAuthenticated ? (
           <SubscriptionCard />

@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import NewsShareButtons from '@/components/NewsShareButtons';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import { Card, CardContent } from '@/components/ui/card';
 
 const APP_URL = 'https://ibd-care.it';
@@ -67,6 +68,7 @@ export default function ArticleDetail() {
         ) : (
           <>
           <PageHeader title={article.title} subtitle={article.source ? `${article.source}` : undefined} />
+          <PageEditorial pageKey="article" />
           <Card className="border-0 shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4">

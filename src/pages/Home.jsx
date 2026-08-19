@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import ShareApp from '@/components/ShareApp';
 import DownloadApp from '@/components/DownloadApp';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -72,6 +73,7 @@ export default function Home() {
           <ShareApp variant="icon" />
         </div>
       } />
+      <PageEditorial pageKey="home" />
 
       {/* Today status */}
       <Card className="mb-6 border-0 shadow-sm bg-gradient-to-br from-primary/5 to-accent/40">

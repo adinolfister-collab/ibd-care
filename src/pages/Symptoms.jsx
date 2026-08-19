@@ -6,6 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
@@ -138,6 +139,7 @@ export default function Symptoms() {
           )
         }
       />
+      <PageEditorial pageKey="symptoms" />
       {limitReached && (
         <Card className="mb-4 border-amber-200 bg-amber-50 border shadow-sm">
           <CardContent className="p-4 flex items-start gap-3">

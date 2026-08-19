@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import PublicFooter from '@/components/PublicFooter';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 
 const CONTACT_EMAIL = 'supporto@ibdcare.app';
 
@@ -25,6 +26,7 @@ export default function Contact() {
     <div className="min-h-screen bg-background px-4 py-10">
       <div className="w-full max-w-2xl mx-auto">
         <PageHeader title="Contatti" subtitle="Siamo qui per ascoltarti: supporto, suggerimenti e segnala la tua esperienza con IBD Care." />
+        <PageEditorial pageKey="contact" />
 
         <p className="text-muted-foreground mb-6 leading-relaxed select-text">
           Siamo qui per ascoltarti. Scrivici per supporto tecnico, suggerimenti o per segnalarci

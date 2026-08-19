@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import VoiceButton from '@/components/VoiceButton';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -75,6 +76,7 @@ export default function Assistant() {
         title={t('assistant.title')}
         subtitle={t('assistant.subtitle')}
       />
+      <PageEditorial pageKey="assistant" compact />
 
       <Card className="flex-1 flex flex-col overflow-hidden rounded-2xl">
         {/* Messages */}

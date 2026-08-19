@@ -3,6 +3,7 @@ import { Users, Send, MessageSquare, Trash2, CornerDownRight, ShieldCheck, Shiel
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
 import VoiceButton from '@/components/VoiceButton';
@@ -145,6 +146,7 @@ export default function Community() {
         subtitle={t('community.subtitle')}
         icon={Users}
       />
+      <PageEditorial pageKey="community" />
 
       {/* Solidarity card */}
       <Card className="mb-5 border-primary/20 bg-primary/5">

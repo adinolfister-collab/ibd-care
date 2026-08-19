@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
@@ -98,6 +99,7 @@ export default function Records() {
         subtitle={t('records.subtitle')}
         action={<Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('records.add')}</Button>}
       />
+      <PageEditorial pageKey="records" />
 
       {/* Search & advanced filters */}
       <Card className="border-0 shadow-sm mb-4">

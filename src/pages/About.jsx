@@ -1,12 +1,14 @@
 import React from 'react';
 import PublicFooter from '@/components/PublicFooter';
 import PageHeader from '@/components/PageHeader';
+import PageEditorial from '@/components/PageEditorial';
 
 export default function About() {
   return (
     <div className="min-h-screen bg-background px-4 py-10">
       <div className="w-full max-w-2xl mx-auto">
         <PageHeader title="Chi siamo" subtitle="Chi c'è dietro IBD Care e la nostra missione di cura per chi vive con l'IBD." />
+        <PageEditorial pageKey="about" />
 
         <div className="prose max-w-none select-text text-foreground/90 leading-relaxed space-y-4">
           <p>
