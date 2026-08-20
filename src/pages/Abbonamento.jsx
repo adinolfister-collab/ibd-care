@@ -8,6 +8,8 @@ import AppSupportChat from '@/components/AppSupportChat';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import TopRightActions from '@/components/TopRightActions';
+import LanguageMenu from '@/components/LanguageMenu';
 
 // Public subscription page. Serves as the redirect target when a visitor
 // tries to use a protected page without being logged in / subscribed.
@@ -31,6 +33,10 @@ export default function Abbonamento() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
+      <div className="fixed top-3 right-3 z-40 flex items-center gap-2" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
+        <LanguageMenu />
+        <TopRightActions />
+      </div>
       <div className="w-full max-w-md">
         <PageHeader title="IBD Care Premium" subtitle="1 mese gratuito, poi €1,99/mese. Disdici quando vuoi." />
         <PageEditorial pageKey="abbonamento" />

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Activity, Utensils, FileBarChart, MapPin, Pill, Plus, Calendar } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
+import HomeMarketing from '@/components/HomeMarketing';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -11,7 +13,6 @@ import EditorialSlider from '@/components/EditorialSlider';
 import MagazineEssay from '@/components/MagazineEssay';
 import ShareApp from '@/components/ShareApp';
 import DownloadApp from '@/components/DownloadApp';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,7 @@ const quickActions = [
 
 export default function Home() {
   const { t } = useI18n();
+  const { isAuthenticated, authChecked } = useAuth();
   const [user, setUser] = useState(null);
   const [todaySymptom, setTodaySymptom] = useState(null);
   const [meds, setMeds] = useState([]);
@@ -64,8 +66,18 @@ export default function Home() {
     } catch (e) {}
     if (initial) setLoading(false);
   };
-  useEffect(() => { loadHome(true); }, []);
+  useEffect(() => { if (authChecked && isAuthenticated) loadHome(true); }, [authChecked, isAuthenticated]);
 
+  if (!authChecked) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-border border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+  if (!isAuthenticated) {
+    return <HomeMarketing />;
+  }
   return (
     <AppLayout>
       <PullToRefresh onRefresh={() => loadHome(false)}>
@@ -74,7 +86,6 @@ export default function Home() {
         subtitle={t('app.tagline')}
         action={
           <div className="flex items-center gap-2">
-            <LanguageSwitcher className="w-[112px] h-9 rounded-full" />
             <DownloadApp variant="icon" />
             <ShareApp variant="icon" />
           </div>

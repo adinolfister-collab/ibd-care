@@ -70,12 +70,13 @@ const AuthenticatedApp = () => {
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
         <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
         <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
+        {/* Public pages (no login required) */}
+        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+        <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
         {/* Everything else requires login */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-          <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
-          <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-          <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
           <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
           <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
           <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />

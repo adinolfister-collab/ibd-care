@@ -6,7 +6,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
 import PromoBanner from '@/components/PromoBanner';
-import LanguageButtons from '@/components/LanguageButtons';
+import LanguageMenu from '@/components/LanguageMenu';
 import TopRightActions from '@/components/TopRightActions';
 
 // Pages reserved to Premium subscribers. Free (registered) users can still
@@ -88,9 +88,6 @@ export default function AppLayout({ children }) {
             );
           })}
         </nav>
-        <div className="px-4 pb-2">
-          <LanguageButtons />
-        </div>
         <button
           onClick={handleLogout}
           className="m-3 flex items-center gap-3 px-4 py-3 rounded-xl text-base text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
@@ -124,20 +121,19 @@ export default function AppLayout({ children }) {
             );
           })}
         </div>
+        <LanguageMenu />
         <TopRightActions />
       </div>
 
       {/* Desktop top-right actions */}
       <div className="hidden md:flex fixed top-4 right-6 z-40">
+        <LanguageMenu />
         <TopRightActions />
       </div>
 
       {/* Main content */}
       <div className="md:pl-64">
         <main className="min-h-screen pb-24 md:pb-8 px-4 md:px-10 py-6 md:py-10 max-w-4xl mx-auto">
-          <div className="md:hidden flex justify-center mb-3">
-            <LanguageButtons />
-          </div>
           <PromoBanner />
           {children}
         </main>

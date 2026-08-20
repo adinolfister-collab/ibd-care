@@ -1,11 +1,12 @@
 import React from "react";
-import LanguageButtons from "@/components/LanguageButtons";
+import LanguageMenu from "@/components/LanguageMenu";
 import TopRightActions from "@/components/TopRightActions";
 
 export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="fixed top-3 right-3 z-40" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
+      <div className="fixed top-3 right-3 z-40 flex items-center gap-2" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
+        <LanguageMenu />
         <TopRightActions />
       </div>
       <div className="w-full max-w-md">
@@ -22,9 +23,6 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         {footer && (
           <p className="text-center text-sm text-muted-foreground mt-6">{footer}</p>
         )}
-        <div className="flex justify-center mt-6">
-          <LanguageButtons />
-        </div>
       </div>
     </div>
   );
