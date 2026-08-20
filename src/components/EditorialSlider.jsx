@@ -4,8 +4,8 @@ import { Image } from '@/components/ui/image';
 import { themeImage } from '@/lib/themeImages';
 import { cn } from '@/lib/utils';
 
-// Slider editoriale in home: foto + descrizioni tematiche curate
-// (Sereno mediterraneo). Auto-avanzamento con frecce e dot.
+// Carousel editoriale "Rivista mediterranea": foto + didascalie tematiche
+// con kicker "N. 0X", auto-avanzamento, frecce e dot terracotta.
 const slides = [
   {
     img: themeImage('serena'),
@@ -41,11 +41,14 @@ export default function EditorialSlider() {
 
   const slide = slides[i];
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-primary/15 shadow-sm mb-6 select-none">
-      <div className="relative h-56 md:h-64">
+    <div className="relative overflow-hidden rounded-2xl border border-border shadow-sm mb-8 select-none">
+      <div className="relative h-56 md:h-72">
         <Image src={slide.img} fittingType="fill" alt={slide.title} className="w-full h-full block" />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/25 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 pb-7">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/30 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 p-5 md:p-7">
+          <p className="text-[0.65rem] font-heading font-semibold uppercase tracking-[0.25em] text-primary-foreground/80">
+            N. {String(i + 1).padStart(2, '0')}
+          </p>
           <h3 className="font-heading text-xl md:text-2xl font-semibold text-primary-foreground leading-tight drop-shadow-sm">
             {slide.title}
           </h3>
@@ -77,7 +80,7 @@ export default function EditorialSlider() {
               aria-label={`Slide ${idx + 1}`}
               className={cn(
                 'h-1.5 rounded-full transition-all',
-                idx === i ? 'w-5 bg-primary-foreground' : 'w-1.5 bg-primary-foreground/50'
+                idx === i ? 'w-5 bg-terracotta' : 'w-1.5 bg-primary-foreground/50'
               )}
             />
           ))}

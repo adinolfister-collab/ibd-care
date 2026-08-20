@@ -36,6 +36,10 @@ module.exports = {
   				DEFAULT: 'hsl(var(--accent))',
   				foreground: 'hsl(var(--accent-foreground))'
   			},
+  			terracotta: {
+  				DEFAULT: 'hsl(var(--terracotta))',
+  				foreground: 'hsl(var(--terracotta-foreground))'
+  			},
   			destructive: {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'

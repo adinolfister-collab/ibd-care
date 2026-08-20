@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, Utensils, FileBarChart, MapPin, Pill, FileText, Plus, Calendar } from 'lucide-react';
+import { Activity, Utensils, FileBarChart, MapPin, Pill, Plus, Calendar } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
@@ -8,6 +8,7 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import EditorialSlider from '@/components/EditorialSlider';
+import MagazineEssay from '@/components/MagazineEssay';
 import ShareApp from '@/components/ShareApp';
 import DownloadApp from '@/components/DownloadApp';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -68,112 +69,115 @@ export default function Home() {
   return (
     <AppLayout>
       <PullToRefresh onRefresh={() => loadHome(false)}>
-      <PageHeader title={`${t('home.welcome')}${user?.full_name ? ', ' + user.full_name.split(' ')[0] : ''} 👋`} subtitle={t('app.tagline')} action={
-        <div className="flex items-center gap-2">
-          <LanguageSwitcher className="w-[112px] h-9 rounded-full" />
-          <DownloadApp variant="icon" />
-          <ShareApp variant="icon" />
-        </div>
-      } />
+      <PageHeader
+        title={`${t('home.welcome')}${user?.full_name ? ', ' + user.full_name.split(' ')[0] : ''} 👋`}
+        subtitle={t('app.tagline')}
+        action={
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher className="w-[112px] h-9 rounded-full" />
+            <DownloadApp variant="icon" />
+            <ShareApp variant="icon" />
+          </div>
+        }
+      />
       <PageEditorial pageKey="home" />
       <EditorialSlider />
 
-      {/* Today status */}
-      <Card className="mb-6 border-0 shadow-sm bg-gradient-to-br from-primary/5 to-accent/40">
-        <CardContent className="p-6">
-          <p className="text-sm font-medium text-muted-foreground mb-1">{t('home.today_status')}</p>
-          {todaySymptom ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3">
-              <Stat label={t('symptoms.pain')} value={`${todaySymptom.pain_level ?? 0}/10`} tone={tone(todaySymptom.pain_level)} />
-              <Stat label={t('symptoms.fatigue')} value={`${todaySymptom.fatigue_level ?? 0}/10`} tone={tone(todaySymptom.fatigue_level)} />
-              <Stat label={t('symptoms.bowel')} value={todaySymptom.bowel_movements_count ?? 0} />
-              <Stat label={t('symptoms.stool')} value={`Tipo ${todaySymptom.stool_consistency ?? '-'}`} />
-            </div>
-          ) : (
-            <div className="mt-2 flex items-center justify-between gap-3 flex-wrap">
-              <p className="text-muted-foreground">Nessuna registrazione per oggi.</p>
-              <Link to="/symptoms">
-                <Button className="rounded-xl">
-                  <Plus className="w-4 h-4 mr-1.5" /> {t('home.log_symptom')}
-                </Button>
-              </Link>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* N. 01 — Stato di oggi */}
+      <MagazineEssay theme="sintomi" number="01" eyebrow="Diario · oggi" title={t('home.today_status')}>
+        <Card className="border-0 shadow-sm bg-gradient-to-br from-primary/5 to-accent/40">
+          <CardContent className="p-6">
+            {todaySymptom ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Stat label={t('symptoms.pain')} value={`${todaySymptom.pain_level ?? 0}/10`} tone={tone(todaySymptom.pain_level)} />
+                <Stat label={t('symptoms.fatigue')} value={`${todaySymptom.fatigue_level ?? 0}/10`} tone={tone(todaySymptom.fatigue_level)} />
+                <Stat label={t('symptoms.bowel')} value={todaySymptom.bowel_movements_count ?? 0} />
+                <Stat label={t('symptoms.stool')} value={`Tipo ${todaySymptom.stool_consistency ?? '-'}`} />
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <p className="text-muted-foreground">{t('home.no_today') || 'Nessuna registrazione per oggi.'}</p>
+                <Link to="/symptoms">
+                  <Button className="rounded-xl">
+                    <Plus className="w-4 h-4 mr-1.5" /> {t('home.log_symptom')}
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </MagazineEssay>
 
-      {/* Quick actions */}
-      <h2 className="text-lg font-semibold mb-3">{t('home.quick_actions')}</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-        {quickActions.map((a) => (
-          <Link key={a.to} to={a.to}>
-            <Card className="h-full border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="p-5 flex flex-col gap-3">
-                <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center', a.bg)}>
-                  <a.icon className={cn('w-6 h-6', a.color)} />
-                </div>
-                <span className="text-sm font-medium leading-snug">{t(a.key)}</span>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Med reminders */}
-        <div>
-          <h2 className="text-lg font-semibold mb-3">{t('home.med_reminders')}</h2>
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-4">
-              {meds.length === 0 ? (
-                <EmptyState icon={Pill} title={t('home.no_reminders')} />
-              ) : (
-                <ul className="divide-y divide-border">
-                  {meds.map((m) => (
-                    <li key={m.id} className="py-3 flex items-center justify-between gap-3">
-                      <div>
-                        <p className="font-medium">{m.name}</p>
-                        <p className="text-sm text-muted-foreground">{m.dosage || m.type} · {m.times || m.frequency}</p>
-                      </div>
-                      <span className="text-sm font-medium text-primary whitespace-nowrap">{m.times?.split(',')[0]?.trim() || ''}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
+      {/* N. 02 — Accesso rapido */}
+      <MagazineEssay theme="alimentazione" number="02" eyebrow="Tavolo quotidiano" title={t('home.quick_actions')}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {quickActions.map((a) => (
+            <Link key={a.to} to={a.to}>
+              <Card className="h-full border border-border shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-card">
+                <CardContent className="p-5 flex flex-col gap-3">
+                  <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center', a.bg)}>
+                    <a.icon className={cn('w-6 h-6', a.color)} />
+                  </div>
+                  <span className="text-sm font-medium leading-snug">{t(a.key)}</span>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
         </div>
+      </MagazineEssay>
 
-        {/* Recent */}
-        <div>
-          <h2 className="text-lg font-semibold mb-3">{t('home.recent')}</h2>
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-4">
-              {recent.length === 0 ? (
-                <EmptyState icon={Calendar} title={t('common.empty')} />
-              ) : (
-                <ul className="divide-y divide-border">
-                  {recent.map((r) => (
-                    <li key={r.kind + r.id} className="py-3 flex items-center gap-3">
-                      {r.kind === 'symptom' ? <Activity className="w-5 h-5 text-rose-400" /> : <Utensils className="w-5 h-5 text-amber-500" />}
-                      <div>
-                        <p className="text-sm font-medium">{r.kind === 'symptom' ? t('nav.symptoms') : r.foods?.slice(0, 32) || t('nav.food')}</p>
-                        <p className="text-xs text-muted-foreground">{r.date}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      {/* N. 03 — Promemoria terapie */}
+      <MagazineEssay theme="terapie" number="03" eyebrow="Cura quotidiana" title={t('home.med_reminders')}>
+        <Card className="border border-border shadow-sm bg-card">
+          <CardContent className="p-4">
+            {meds.length === 0 ? (
+              <EmptyState icon={Pill} title={t('home.no_reminders')} />
+            ) : (
+              <ul className="divide-y divide-border">
+                {meds.map((m) => (
+                  <li key={m.id} className="py-3 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="font-medium">{m.name}</p>
+                      <p className="text-sm text-muted-foreground">{m.dosage || m.type} · {m.times || m.frequency}</p>
+                    </div>
+                    <span className="text-sm font-medium text-primary whitespace-nowrap">{m.times?.split(',')[0]?.trim() || ''}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </MagazineEssay>
 
-      <div className="mt-6 md:mt-8">
+      {/* N. 04 — Registrazioni recenti */}
+      <MagazineEssay theme="serena" number="04" eyebrow="Cronologia" title={t('home.recent')}>
+        <Card className="border border-border shadow-sm bg-card">
+          <CardContent className="p-4">
+            {recent.length === 0 ? (
+              <EmptyState icon={Calendar} title={t('common.empty')} />
+            ) : (
+              <ul className="divide-y divide-border">
+                {recent.map((r) => (
+                  <li key={r.kind + r.id} className="py-3 flex items-center gap-3">
+                    {r.kind === 'symptom' ? <Activity className="w-5 h-5 text-rose-400" /> : <Utensils className="w-5 h-5 text-amber-500" />}
+                    <div>
+                      <p className="text-sm font-medium">{r.kind === 'symptom' ? t('nav.symptoms') : r.foods?.slice(0, 32) || t('nav.food')}</p>
+                      <p className="text-xs text-muted-foreground">{r.date}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </MagazineEssay>
+
+      {/* Notizie IBD */}
+      <div className="mb-8 md:mb-10">
         <NewsIBD />
       </div>
       </PullToRefresh>
-      <EditorialBlock sectionKey="home_insight" align="right" />
+      <EditorialBlock sectionKey="home_insight" align="right" number="05" />
     </AppLayout>
   );
 }
