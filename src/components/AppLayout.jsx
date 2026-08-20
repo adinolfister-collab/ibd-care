@@ -7,6 +7,7 @@ import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
 import PromoBanner from '@/components/PromoBanner';
 import LanguageButtons from '@/components/LanguageButtons';
+import TopRightActions from '@/components/TopRightActions';
 
 // Pages reserved to Premium subscribers. Free (registered) users can still
 // see them in the nav, but clicking redirects to the subscription page.
@@ -100,27 +101,35 @@ export default function AppLayout({ children }) {
       </aside>
 
       {/* Mobile secondary top bar */}
-      <div className="md:hidden flex items-center gap-2 overflow-x-auto px-4 py-2 border-b border-border bg-card/90 backdrop-blur sticky top-0 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-        {navItems.slice(5).map((item) => {
-          const locked = !isSubscribed && isPremium(item.to);
-          return (
-            <NavLink
-              key={item.to}
-              to={navTo(item.to)}
-              className={({ isActive }) =>
-                cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors',
-                  locked && 'opacity-60',
-                  isActive ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
-                )
-              }
-            >
-              <item.icon className="w-4 h-4" />
-              <span>{t(item.key)}</span>
-              {locked && <Lock className="w-3 h-3 text-muted-foreground" />}
-            </NavLink>
-          );
-        })}
+      <div className="md:hidden flex items-center gap-2 px-4 py-2 border-b border-border bg-card/90 backdrop-blur sticky top-0 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+        <div className="flex-1 flex items-center gap-2 overflow-x-auto">
+          {navItems.slice(5).map((item) => {
+            const locked = !isSubscribed && isPremium(item.to);
+            return (
+              <NavLink
+                key={item.to}
+                to={navTo(item.to)}
+                className={({ isActive }) =>
+                  cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors',
+                    locked && 'opacity-60',
+                    isActive ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
+                  )
+                }
+              >
+                <item.icon className="w-4 h-4" />
+                <span>{t(item.key)}</span>
+                {locked && <Lock className="w-3 h-3 text-muted-foreground" />}
+              </NavLink>
+            );
+          })}
+        </div>
+        <TopRightActions />
+      </div>
+
+      {/* Desktop top-right actions */}
+      <div className="hidden md:flex fixed top-4 right-6 z-40">
+        <TopRightActions />
       </div>
 
       {/* Main content */}
