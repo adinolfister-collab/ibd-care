@@ -65,35 +65,34 @@ const AuthenticatedApp = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* Public landing + subscription */}
-        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-        <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
-        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-        <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
-        {/* Auth routes */}
+        {/* Auth routes (public) */}
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
         <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
         <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
-        {/* Free tier: auth required, no subscription needed */}
+        {/* Everything else requires login */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+          <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
+          <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+          <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+          <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
           <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
           <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
-        </Route>
-        {/* Premium tier: auth + active subscription required */}
-        <Route element={<SubscriptionRoute redirect={<Navigate to="/abbonamento" replace />} />}>
-          <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
-          <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
-          <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
-          <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
-          <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
-          <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
-          <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
-          <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
-          <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
+          {/* Premium tier: auth (above) + active subscription or promo */}
+          <Route element={<SubscriptionRoute redirect={<Navigate to="/abbonamento" replace />} />}>
+            <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
+            <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
+            <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
+            <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
+            <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
+            <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
+            <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
+            <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
+            <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
+          </Route>
         </Route>
         <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />
       </Routes>

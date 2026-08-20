@@ -29,6 +29,11 @@
     },
     "subscription_cancel_at_period_end": {
       "type": "boolean"
+    },
+    "promo_start_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Inizio della prova gratuita in-app di 1 mese per i moduli premium"
     }
   },
   "required": [

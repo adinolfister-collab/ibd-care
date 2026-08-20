@@ -8,7 +8,7 @@ export default async function(req: Request): Promise<Response> {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const secretKey = secrets.get('STRIPE_SECRET_KEY');
-    const priceId = secrets.get('STRIPE_LIVE_PRICE_ID_099') || secrets.get('STRIPE_LIVE_PRICE_ID') || secrets.get('STRIPE_PREMIUM_PRICE_ID_299') || secrets.get('STRIPE_PREMIUM_PRICE_ID') || secrets.get('STRIPE_PRICE_ID');
+    const priceId = secrets.get('STRIPE_LIVE_PRICE_ID_199');
     const appId = Deno.env.get('BASE44_APP_ID');
     if (!secretKey || !priceId) return Response.json({ error: 'Stripe non configurato' }, { status: 500 });
 
@@ -43,7 +43,7 @@ export default async function(req: Request): Promise<Response> {
     body.set('mode', 'subscription');
     body.set('line_items[0][price]', priceId);
     body.set('line_items[0][quantity]', '1');
-    if (isNewUser) body.set('subscription_data[trial_period_days]', '14');
+    if (isNewUser) body.set('subscription_data[trial_period_days]', '30');
     body.set('metadata[base44_app_id]', appId || '');
     body.set('subscription_data[metadata][base44_app_id]', appId || '');
     body.set('success_url', successUrl);

@@ -5,6 +5,7 @@ import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
+import PromoBanner from '@/components/PromoBanner';
 
 // Pages reserved to Premium subscribers. Free (registered) users can still
 // see them in the nav, but clicking redirects to the subscription page.
@@ -121,6 +122,7 @@ export default function AppLayout({ children }) {
       {/* Main content */}
       <div className="md:pl-64">
         <main className="min-h-screen pb-24 md:pb-8 px-4 md:px-10 py-6 md:py-10 max-w-4xl mx-auto">
+          <PromoBanner />
           {children}
         </main>
       </div>

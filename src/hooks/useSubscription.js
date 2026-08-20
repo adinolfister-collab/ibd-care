@@ -37,6 +37,6 @@ export function useSubscription() {
     }
   }, [load]);
 
-  const isSubscribed = state.data?.status === 'active' || state.data?.status === 'trialing';
+  const isSubscribed = ['active', 'trialing', 'promo'].includes(state.data?.status);
   return { ...state, isSubscribed, reload: load };
 }

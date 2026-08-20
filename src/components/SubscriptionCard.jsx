@@ -53,12 +53,12 @@ export default function SubscriptionCard() {
             <Sparkles className="w-5 h-5" />
             <p className="font-semibold text-lg">IBD Care Premium</p>
           </div>
-          <p className="text-primary-foreground/90 text-sm leading-relaxed">Tutte le funzionalità dell'app con 14 giorni di prova gratuiti al download.</p>
+          <p className="text-primary-foreground/90 text-sm leading-relaxed">Tutte le funzionalità dell'app con 1 mese di prova gratuita.</p>
         </div>
 
         <div className="p-5 space-y-4">
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold">€0,99</span>
+            <span className="text-3xl font-bold">€1,99</span>
             <span className="text-muted-foreground">/ mese</span>
           </div>
 
@@ -76,11 +76,11 @@ export default function SubscriptionCard() {
 
           <div className="flex items-center gap-2 rounded-xl bg-primary/5 px-3 py-2.5 text-sm text-primary">
             <CalendarClock className="w-4 h-4 shrink-0" />
-            <span><strong>14 giorni gratuiti</strong> — nessun addebito per i primi 14 giorni, disdici quando vuoi.</span>
+            <span><strong>1 mese gratuito</strong> — nessun addebito per i primi 30 giorni, disdici quando vuoi.</span>
           </div>
 
           {status === 'success' && (
-            <p className="text-sm text-emerald-600 bg-emerald-50 rounded-xl px-3 py-2">Abbonamento attivato! La prova gratuita di 14 giorni è iniziata.</p>
+            <p className="text-sm text-emerald-600 bg-emerald-50 rounded-xl px-3 py-2">Abbonamento attivato! La prova gratuita di 1 mese è iniziata.</p>
           )}
           {status === 'cancel' && (
             <p className="text-sm text-muted-foreground bg-accent rounded-xl px-3 py-2">Pagamento annullato. Puoi abbonarti in qualsiasi momento.</p>
@@ -107,7 +107,7 @@ export default function SubscriptionCard() {
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
-                {loading ? 'Reindirizzamento…' : 'Abbonati con 14 giorni gratuiti'}
+                {loading ? 'Reindirizzamento…' : 'Abbonati con 1 mese gratuito'}
               </button>
               <p className="text-center text-xs text-muted-foreground">Pagamento sicuro tramite Stripe. Cancella in qualsiasi momento.</p>
             </>
