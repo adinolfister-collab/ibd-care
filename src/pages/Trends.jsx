@@ -7,6 +7,7 @@ import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
 import MealSpikes from '@/components/MealSpikes';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -205,7 +206,7 @@ export default function Trends() {
     <div>
       <PageHeader title={t('trends.title')} subtitle={t('trends.subtitle')} />
       <PageEditorial pageKey="trends" />
-
+      <MagazineEssay theme="alimentazione" number="01" eyebrow="Trend" title="I tuoi grafici">
       <Link to="/symptom-charts" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline mb-4">
         <BarChart3 className="w-4 h-4" /> {t('symptom_charts.title')} →
       </Link>
@@ -339,6 +340,7 @@ export default function Trends() {
           )}
         </div>
       )}
+      </MagazineEssay>
       <EditorialBlock sectionKey="trends_triggers" align="right" />
     </div>
   );

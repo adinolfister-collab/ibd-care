@@ -7,6 +7,7 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import MagazineEssay from '@/components/MagazineEssay';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -148,7 +149,7 @@ export default function Summary() {
     <AppLayout>
       <PageHeader title={t('summary.title')} subtitle={t('summary.subtitle')} />
       <PageEditorial pageKey="summary" />
-
+      <MagazineEssay theme="esami" number="01" eyebrow="Report" title="Report e PDF">
       <div className="grid gap-4">
         <WeeklyReport />
         <MonthlyReport />
@@ -207,6 +208,7 @@ export default function Summary() {
           </CardContent>
         </Card>
       </div>
+      </MagazineEssay>
       <EditorialBlock sectionKey="summary_pdf" align="right" />
     </AppLayout>
   );

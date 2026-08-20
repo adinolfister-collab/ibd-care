@@ -5,6 +5,7 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import MagazineEssay from '@/components/MagazineEssay';
 import ExamScanner from '@/components/exams/ExamScanner';
 import ExamTimeline from '@/components/exams/ExamTimeline';
 import ExamCompare from '@/components/exams/ExamCompare';
@@ -26,6 +27,7 @@ export default function Esami() {
     <AppLayout>
       <PageHeader title={t('exams.title')} subtitle={t('exams.subtitle')} />
       <PageEditorial pageKey="esami" />
+      <MagazineEssay theme="esami" number="01" eyebrow="Esami" title="Scansione e confronto">
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1 -mx-1 px-1">
         {tabs.map(({ id, label, Icon }) => (
           <button
@@ -44,6 +46,7 @@ export default function Esami() {
       {tab === 'scan' && <ExamScanner onSaved={reload} />}
       {tab === 'timeline' && <ExamTimeline reloadKey={signal} />}
       {tab === 'compare' && <ExamCompare reloadKey={signal} />}
+      </MagazineEssay>
       <EditorialBlock sectionKey="esami_compare" align="left" />
     </AppLayout>
   );

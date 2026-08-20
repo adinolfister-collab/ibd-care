@@ -8,6 +8,7 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -56,7 +57,7 @@ export default function ServicesMap() {
     <AppLayout>
       <PageHeader title={t('map.title')} subtitle={t('map.subtitle')} />
       <PageEditorial pageKey="map" />
-
+      <MagazineEssay theme="mappa" number="01" eyebrow="Servizi" title="Mappa dei servizi">
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
         <FilterChip active={filter === 'all'} onClick={() => setFilter('all')} label={t('map.all')} />
         {Object.entries(typeMeta).map(([k, m]) => (
@@ -123,6 +124,7 @@ export default function ServicesMap() {
           ))}
         </div>
       )}
+      </MagazineEssay>
       <EditorialBlock sectionKey="map_safe" align="left" />
     </AppLayout>
   );

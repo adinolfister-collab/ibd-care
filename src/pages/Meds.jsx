@@ -6,6 +6,7 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
@@ -77,6 +78,7 @@ export default function Meds() {
         action={<Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('meds.add')}</Button>}
       />
       <PageEditorial pageKey="meds" />
+      <MagazineEssay theme="terapie" number="01" eyebrow="Cura" title="I tuoi farmaci">
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
       ) : items.length === 0 ? (
@@ -114,6 +116,7 @@ export default function Meds() {
           ))}
         </div>
       )}
+      </MagazineEssay>
 
       <EntityFormDialog
         open={open}

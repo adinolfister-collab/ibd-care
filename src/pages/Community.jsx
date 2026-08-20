@@ -5,6 +5,7 @@ import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
 import VoiceButton from '@/components/VoiceButton';
@@ -148,7 +149,7 @@ export default function Community() {
         icon={Users}
       />
       <PageEditorial pageKey="community" />
-
+      <MagazineEssay theme="community" number="01" eyebrow="Board" title="La board">
       {/* Solidarity card */}
       <Card className="mb-5 border-primary/20 bg-primary/5">
         <CardContent className="p-4">
@@ -372,6 +373,7 @@ export default function Community() {
           })}
         </div>
       )}
+      </MagazineEssay>
       <EditorialBlock sectionKey="community_voice" align="right" />
     </div>
   );

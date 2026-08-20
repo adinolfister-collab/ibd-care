@@ -8,6 +8,7 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
@@ -120,6 +121,7 @@ export default function Food() {
         }
       />
       <PageEditorial pageKey="food" />
+      <MagazineEssay theme="alimentazione" number="01" eyebrow="Tavolo" title="Pasti e reazioni">
       {templates.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
           {templates.map((tpl) => (
@@ -169,6 +171,7 @@ export default function Food() {
       <div className="mt-6">
         <DietaryTips />
       </div>
+      </MagazineEssay>
 
       <EntityFormDialog
         open={open}

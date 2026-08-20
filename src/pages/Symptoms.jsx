@@ -8,6 +8,7 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
@@ -141,6 +142,7 @@ export default function Symptoms() {
         }
       />
       <PageEditorial pageKey="symptoms" />
+      <MagazineEssay theme="sintomi" number="01" eyebrow="Diario" title="Le tue registrazioni">
       {limitReached && (
         <Card className="mb-4 border-amber-200 bg-amber-50 border shadow-sm">
           <CardContent className="p-4 flex items-start gap-3">
@@ -185,6 +187,7 @@ export default function Symptoms() {
         </div>
       )}
       </PullToRefresh>
+      </MagazineEssay>
 
       <EntityFormDialog
         open={open}
