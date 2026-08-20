@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Loader2, Newspaper } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Loader2, Newspaper, Home as HomeIcon } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import NewsShareButtons from '@/components/NewsShareButtons';
+import TopRightActions from '@/components/TopRightActions';
+import LanguageMenu from '@/components/LanguageMenu';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
@@ -41,9 +43,13 @@ export default function ArticleDetail() {
 
   return (
     <div className="min-h-screen bg-background">
+      <div className="fixed top-3 right-3 z-40 flex items-center gap-2" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
+        <LanguageMenu />
+        <TopRightActions />
+      </div>
       <div className="max-w-2xl mx-auto px-4 py-6">
         <Link
-          to="/"
+          to="/news"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -104,6 +110,13 @@ export default function ArticleDetail() {
               <div className="mt-6 pt-5 border-t border-border">
                 <p className="text-xs font-medium text-muted-foreground mb-2">{t('news.share')}</p>
                 <NewsShareButtons title={article.title} summary={article.summary} shareUrl={deepLink} />
+              </div>
+
+              <div className="mt-6">
+                <Link to="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
+                  <HomeIcon className="w-4 h-4" />
+                  {t('news.home_cta')}
+                </Link>
               </div>
             </CardContent>
           </Card>

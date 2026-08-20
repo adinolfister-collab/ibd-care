@@ -27,6 +27,7 @@ import Account from '@/pages/Account';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import ArticleDetail from '@/pages/ArticleDetail';
+import News from '@/pages/News';
 import Esami from '@/pages/Esami';
 import SubscriptionRoute from '@/components/SubscriptionRoute';
 import Login from '@/pages/Login';
@@ -75,9 +76,10 @@ const AuthenticatedApp = () => {
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
+        <Route path="/news" element={<PageTransition><News /></PageTransition>} />
+        <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
         {/* Everything else requires login */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-          <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
           <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
           <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />

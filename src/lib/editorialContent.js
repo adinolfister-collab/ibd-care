@@ -140,6 +140,15 @@ const EDITORIAL = {
     de: { label: "Schreib uns", desc: "Fragen, Unsicherheiten oder Supportwünsche: wir antworten sorgfältig, damit deine Stimme gehört wird." },
     pt: { label: "Escreva para nós", desc: "Dúvidas, perguntas ou suporte: respondemos com cuidado, para que sua voz seja ouvida." },
   },
+  news: {
+    theme: 'serena',
+    it: { label: "Notizie IBD", desc: "Aggiornamenti curati sulla malattia infiammatoria intestinale, in sei lingue, con aggiornamento automatico delle notizie." },
+    en: { label: "IBD news", desc: "Curated updates on inflammatory bowel disease, in six languages, with automatic news refresh." },
+    es: { label: "Noticias EII", desc: "Actualizaciones cuidadas sobre la enfermedad inflamatoria intestinal, en seis idiomas, con actualización automática." },
+    fr: { label: "Actus MICI", desc: "Actualités sélectionnées sur les MICI, en six langues, avec actualisation automatique." },
+    de: { label: "IBD-News", desc: "Kuratierte Updates zu chronisch-entzündlichen Darmerkrankungen, in sechs Sprachen, mit automatischer Aktualisierung." },
+    pt: { label: "Notícias DII", desc: "Atualizações selecionadas sobre a doença inflamatória intestinal, em seis idiomas, com atualização automática." },
+  },
   article: {
     theme: 'serena',
     it: { label: "Notizie IBD", desc: "Aggiornamenti affidabili e curati sulla malattia infiammatoria intestinale, tradotti per te, da leggere con calma." },
