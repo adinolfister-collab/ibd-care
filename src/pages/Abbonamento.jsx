@@ -32,7 +32,7 @@ export default function Abbonamento() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-md">
-        <PageHeader title="IBD Care Premium" subtitle="14 giorni gratuiti, poi €0,99/mese. Disdici quando vuoi." />
+        <PageHeader title="IBD Care Premium" subtitle="1 mese gratuito, poi €1,99/mese. Disdici quando vuoi." />
         <PageEditorial pageKey="abbonamento" />
 
         {isAuthenticated ? (

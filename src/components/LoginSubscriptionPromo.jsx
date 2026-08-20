@@ -18,10 +18,10 @@ export default function LoginSubscriptionPromo({ returnTo = '/' }) {
     <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-5">
       <div className="flex items-center gap-2 mb-2">
         <Sparkles className="w-4 h-4 text-primary" />
-        <p className="font-semibold text-primary">IBD Care Premium · 14 giorni gratuiti</p>
+        <p className="font-semibold text-primary">IBD Care Premium · 1 mese gratuito</p>
       </div>
       <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
-        Creando un account si attiva automaticamente una prova gratuita di 14 giorni: nessun addebito per i primi 14 giorni, poi €0,99/mese. Disdici quando vuoi.
+        Creando un account si attiva automaticamente una prova gratuita di 1 mese: nessun addebito per i primi 30 giorni, poi €1,99/mese. Disdici quando vuoi.
       </p>
       <ul className="space-y-1.5 text-sm mb-3">
         {benefits.map((b) => (

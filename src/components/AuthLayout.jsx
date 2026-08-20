@@ -1,4 +1,5 @@
 import React from "react";
+import LanguageButtons from "@/components/LanguageButtons";
 
 export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
   return (
@@ -17,6 +18,9 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         {footer && (
           <p className="text-center text-sm text-muted-foreground mt-6">{footer}</p>
         )}
+        <div className="flex justify-center mt-6">
+          <LanguageButtons />
+        </div>
       </div>
     </div>
   );
