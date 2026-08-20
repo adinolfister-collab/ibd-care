@@ -8,7 +8,7 @@ import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import LoginSubscriptionPromo from "@/components/LoginSubscriptionPromo";
+import LoginTrialBanner from "@/components/LoginTrialBanner";
 import { safeReturnTo } from "@/lib/authReturnTo";
 import { useI18n } from "@/lib/i18n";
 
@@ -136,7 +136,7 @@ export default function Login() {
         </Button>
       </form>
 
-      <LoginSubscriptionPromo returnTo={returnTo} />
+      <LoginTrialBanner returnTo={returnTo} />
     </AuthLayout>
   );
 }

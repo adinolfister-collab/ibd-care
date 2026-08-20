@@ -7,6 +7,7 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import EditorialSlider from '@/components/EditorialSlider';
 import ShareApp from '@/components/ShareApp';
 import DownloadApp from '@/components/DownloadApp';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -75,6 +76,7 @@ export default function Home() {
         </div>
       } />
       <PageEditorial pageKey="home" />
+      <EditorialSlider />
 
       {/* Today status */}
       <Card className="mb-6 border-0 shadow-sm bg-gradient-to-br from-primary/5 to-accent/40">
