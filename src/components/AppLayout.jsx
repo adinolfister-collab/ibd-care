@@ -96,8 +96,8 @@ export default function AppLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Desktop sidebar */}
-      <aside className="hidden md:flex fixed inset-y-0 left-0 w-64 flex-col border-r border-border bg-card">
+      {/* Sidebar (desktop layout forced at all widths) */}
+      <aside className="flex fixed inset-y-0 left-0 w-64 flex-col border-r border-border bg-card">
         <div className="px-6 py-7 flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center">
             <HeartPulse className="w-6 h-6 text-primary" />
@@ -156,94 +156,21 @@ export default function AppLayout({ children }) {
         )}
       </aside>
 
-      {/* Mobile secondary top bar */}
-      <div className="md:hidden flex items-center gap-2 px-4 py-2 border-b border-border bg-card/90 backdrop-blur sticky top-0 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-        <div className="flex-1 flex items-center gap-2 overflow-x-auto">
-          {navItems.slice(5).map((item) => {
-            const locked = isLocked(item.to);
-            if (locked) {
-              return (
-                <div key={item.to} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap bg-accent text-muted-foreground opacity-70 cursor-default">
-                  <item.icon className="w-4 h-4" />
-                  <span>{t(item.key)}</span>
-                  <LockBadge className="w-3 h-3 text-muted-foreground" />
-                </div>
-              );
-            }
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors',
-                    isActive ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
-                  )
-                }
-              >
-                <item.icon className="w-4 h-4" />
-                <span>{t(item.key)}</span>
-              </NavLink>
-            );
-          })}
-        </div>
-        <LanguageMenu />
-        <NativeAppButton />
-        <TopRightActions />
-      </div>
-
-      {/* Desktop top-right actions */}
-      <div className="hidden md:flex fixed top-4 right-6 z-40">
+      {/* Top-right actions (desktop layout, always visible) */}
+      <div className="flex fixed top-4 right-6 z-40">
         <LanguageMenu />
         <NativeAppButton />
         <TopRightActions />
       </div>
 
       {/* Main content */}
-      <div className="md:pl-64">
-        <main className="min-h-screen pb-24 md:pb-8 px-4 md:px-10 py-6 md:py-10 max-w-4xl mx-auto">
+      <div className="pl-64">
+        <main className="min-h-screen pb-8 px-4 md:px-10 py-6 md:py-10 max-w-4xl mx-auto">
           <PromoBanner />
           {children}
         </main>
       </div>
 
-      {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-card border-t border-border" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-        <div className="grid grid-cols-5">
-          {navItems.slice(0, 5).map((item) => {
-            const locked = isLocked(item.to);
-            if (locked) {
-              return (
-                <div key={item.to} className="flex flex-col items-center justify-center gap-1 py-2.5 text-xs text-muted-foreground opacity-70 cursor-default">
-                  <div className="relative">
-                    <item.icon className="w-6 h-6" />
-                    <LockBadge variant="corner" />
-                  </div>
-                  <span>{t(item.key)}</span>
-                </div>
-              );
-            }
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.exact}
-                className={({ isActive }) =>
-                  cn(
-                    'flex flex-col items-center justify-center gap-1 py-2.5 text-xs transition-colors',
-                    isActive ? 'text-primary font-medium' : 'text-muted-foreground'
-                  )
-                }
-              >
-                <div className="relative">
-                  <item.icon className="w-6 h-6" />
-                </div>
-                <span>{t(item.key)}</span>
-              </NavLink>
-            );
-          })}
-        </div>
-      </nav>
     </div>
   );
 }
