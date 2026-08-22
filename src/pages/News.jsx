@@ -10,6 +10,7 @@ import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import NewsShareButtons from '@/components/NewsShareButtons';
 import PageShareButtons from '@/components/PageShareButtons';
+import CopyLinkBox from '@/components/CopyLinkBox';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 import PublicFooter from '@/components/PublicFooter';
@@ -106,6 +107,7 @@ export default function News() {
           )}
         />
         <PageEditorial pageKey="news" />
+        <CopyLinkBox url="https://ibd-care.it/news" />
 
         <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
           <FilterChip active={filter === 'all'} onClick={() => setFilter('all')} label={t('news.all')} />
