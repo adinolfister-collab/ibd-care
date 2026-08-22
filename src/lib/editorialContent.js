@@ -1,8 +1,8 @@
 // Strisce editoriali "Sereno mediterraneo": per ogni pagina una foto tematica
 // + una breve etichetta serif e una descrizione localizzata.
-// Lingue: it, en, es, fr, de, pt. Fallback sull'italiano se la chiave/lang manca.
+// Lingue: it, en, es, fr, de, pt, ru, pl, ro, sq. Fallback sull'italiano se la chiave/lang manca.
 
-const LANGS = ['it', 'en', 'es', 'fr', 'de', 'pt'];
+const LANGS = ['it', 'en', 'es', 'fr', 'de', 'pt', 'ru', 'pl', 'ro', 'sq'];
 
 const EDITORIAL = {
   home: {
@@ -13,6 +13,10 @@ const EDITORIAL = {
     fr: { label: "Votre espace apaisé", desc: "IBD Care vous accompagne chaque jour avec des outils doux pour écouter votre corps : journal des symptômes, alimentation, thérapies et examens, réunis en un lieu privé et ordonné." },
     de: { label: "Dein ruhiger Ort", desc: "IBD Care begleitet dich täglich mit sanften Werkzeugen, um deinen Körper zu verstehen: Symptomtagebuch, Ernährung, Therapien und Befunde an einem privaten, ordentlichen Ort." },
     pt: { label: "Seu espaço sereno", desc: "IBD Care acompaña você todos os dias com ferramentas calmas para ouvir seu corpo: diário de sintomas, alimentação, terapias e exames, em um lugar privado e organizado." },
+    ru: { label: "Твоё спокойное пространство", desc: "IBD Care сопровождает вас каждый день мягкими инструментами, чтобы прислушиваться к телу: дневник симптомов, питание, терапии и анализы — в одном приватном и упорядоченном месте." },
+    pl: { label: "Twoja spokojna przestrzeń", desc: "IBD Care towarzyszy ci każdego dnia łagodnymi narzędziami, by słuchać ciała: dziennik objawów, dieta, terapie i wyniki w jednym prywatnym, uporządkowanym miejscu." },
+    ro: { label: "Spațiul tău liniștit", desc: "IBD Care te însoțește zilnic cu instrumente blânde pentru a-ți asculta corpul: jurnal de simptome, alimentație, terapii și analize într-un loc privat și ordonat." },
+    sq: { label: "Hapësira jote e qetë", desc: "IBD Care të shoqëron çdo ditë me mjete të buta për të dëgjuar trupin: ditar simptomash, ushqim, terapi dhe analiza në një vend privat dhe të rregullt." },
   },
   symptoms: {
     theme: 'sintomi',
@@ -22,6 +26,10 @@ const EDITORIAL = {
     fr: { label: "Écoutez votre corps", desc: "Noter douleur, fatigue, selles et consistance vous aide à repérer des schémas et à raconter votre histoire au médecin avec des mots clairs." },
     de: { label: "Höre auf deinen Körper", desc: "Schmerzen, Erschöpfung, Stuhlgang und Konsistenz zu notieren, hilft dir, Muster zu erkennen und deine Ärztin klar zu informieren." },
     pt: { label: "Ouça seu corpo", desc: "Anotar dor, cansaço, evacuações e consistência ajuda a identificar padrões e contar sua história ao médico com clareza." },
+    ru: { label: "Слушайте своё тело", desc: "Запись боли, усталости, стула и консистенции помогает увидеть закономерности и рассказать врачу свою историю ясными словами." },
+    pl: { label: "Słuchaj swojego ciała", desc: "Notowanie bólu, zmęczenia, wypróżnień i konsystencji pomaga dostrzec wzorce i opowiedzieć lekarzowi swoją historię jasnymi słowami." },
+    ro: { label: "Ascultă-ți corpul", desc: "Să notezi durerea, oboseala, scaunele și consistența te ajută să recunoști tipare și să-i spui medicului povestea ta cu vorbe clare." },
+    sq: { label: "Dëgjo trupin tënd", desc: "Regjistrimi i dhimbjes, lodhjes, jashtëqitjeve dhe konsistencës të ndihmon të dallosh modelet dhe t'i tregosh mjekut historinë me fjalë të qarta." },
   },
   food: {
     theme: 'alimentazione',
@@ -31,6 +39,10 @@ const EDITORIAL = {
     fr: { label: "Manger en conscience", desc: "Noter repas et réactions révèle quels aliments vous conviennent et lesquels peuvent, à la longue, déclencher des gênes." },
     de: { label: "Bewusst essen", desc: "Mahlzeiten und Reaktionen festzuhalten zeigt, welche Speisen dir gut tun und welche mit der Zeit Beschwerden auslösen können." },
     pt: { label: "Coma com consciência", desc: "Anotar refeições e reações revela quais alimentos fazem bem e quais podem, com o tempo, causar desconfortos." },
+    ru: { label: "Ешьте осознанно", desc: "Отмечая приёмы пищи и реакции, вы поймёте, какие продукты полезны, а какие со временем вызывают дискомфорт." },
+    pl: { label: "Jedz świadomie", desc: "Notowanie posiłków i reakcji pokazuje, które produkty ci służą, a które z czasem mogą wywoływać dolegliwości." },
+    ro: { label: "Mănâncă cu luare-aminte", desc: "Notând mesele și reacțiile descoperi ce alimente te fac bine și care, în timp, pot declanșa disconfort." },
+    sq: { label: "Hani me vetëdije", desc: "Shënim i vakteve dhe i reaksioneve zbulon cilat ushqime të bëjnë mirë dhe cilat, me kalimin e kohës, mund të shkaktojnë siklete." },
   },
   meds: {
     theme: 'terapie',
@@ -40,6 +52,10 @@ const EDITORIAL = {
     fr: { label: "Vos thérapies, sereinement", desc: "Gardez à portée de main horaires, dosages et type de prise : une routine apaisée rend le traitement plus simple au quotidien." },
     de: { label: "Deine Therapien, ruhig", desc: "Behalte Zeiten, Dosierungen und Art der Einnahme griffbereit: eine ruhige Routine macht die tägliche Behandlung einfacher." },
     pt: { label: "Suas terapias, com calma", desc: "Tenha à mão horários, doses e tipo de toma: uma rotina serena facilita o tratamento dia após dia." },
+    ru: { label: "Ваша терапия, спокойно", desc: "Держите под рукой время, дозировку и тип приёма: спокойный режим облегчает лечение изо дня в день." },
+    pl: { label: "Twoje terapie, ze spokojem", desc: "Miej pod ręką godziny, dawki i typ przyjmowania: spokojna rutyna ułatwia codzienne leczenie." },
+    ro: { label: "Terapiile tale, liniștit", desc: "Ține la îndemână ore, doze și tip de administrare: o rutină liniștită face tratamentul mai ușor în fiecare zi." },
+    sq: { label: "Terapitë tuaja, me qetësi", desc: "Kini pranë oraret, dozat dhe llojin e marrjes: një rutinë e qetë e bën trajtimin më të lehtë çdo ditë." },
   },
   records: {
     theme: 'esami',
@@ -49,6 +65,10 @@ const EDITORIAL = {
     fr: { label: "Votre histoire clinique", desc: "Archivez comptes rendus, analyses et contrôles au même endroit : dates, résultats et prochains rendez-vous à portée de main." },
     de: { label: "Deine Krankengeschichte", desc: "Archiviere Befunde, Analysen und Kontrolltermine an einem Ort: Daten, Ergebnisse und nächste Termine sind schnell griffbereit." },
     pt: { label: "Sua história clínica", desc: "Arquive laudos, exames e consultas num só lugar: datas, resultados e próximos compromissos à mão quando precisar." },
+    ru: { label: "Ваша история болезни", desc: "Архивируйте заключения, анализы и осмотры в одном месте: даты, результаты и ближайшие записи под рукой." },
+    pl: { label: "Twoja historia kliniczna", desc: "Archiwizuj raporty, wyniki i kontrole w jednym miejscu: daty, wyniki i kolejne wizyty pod ręką, gdy potrzebne." },
+    ro: { label: "Povestea ta clinică", desc: "Arhivează rapoarte, analize și controale într-un singur loc: date, rezultate și următoarele programări la îndemână." },
+    sq: { label: "Historia juaj klinike", desc: "Arkivo raporte, analiza dhe kontrol në një vend: data, rezultatet dhe takimet e ardhshme pranë kur ju duhen." },
   },
   esami: {
     theme: 'esami',
@@ -58,6 +78,10 @@ const EDITORIAL = {
     fr: { label: "Examens maîtrisés", desc: "Scannez prises de sang, calprotectine et imagerie : l'IA extrait les valeurs et vous les comparez dans le temps via un PDF prêt pour la consultation." },
     de: { label: "Befunde im Blick", desc: "Scanne Blutwerte, Calprotectin und Bildgebung: die KI zieht die Werte, du vergleichst sie über die Zeit mit einer PDF für den Termin." },
     pt: { label: "Exames sob controle", desc: "Escanee exames de sangue, calprotectina e imagem: a IA extrai os valores e você compara ao tempo com um PDF pronto para a consulta." },
+    ru: { label: "Анализы под контролем", desc: "Сканируйте анализы крови, кальпротектин и визуализацию: ИИ извлекает значения, а вы сравниваете их во времени с PDF для визита." },
+    pl: { label: "Wyniki pod kontrolą", desc: "Skanuj badania krwi, kalprotektynę i obrazowanie: AI wyciąga wartości, a ty porównujesz je w czasie z PDF na wizytę." },
+    ro: { label: "Analize sub control", desc: "Scanează analize de sânge, calprotectină și imagistică: AI extrage valorile, iar tu le compari în timp cu un PDF pentru vizită." },
+    sq: { label: "Analizat nën kontroll", desc: "Skano analiza gjaku, kalprotektinë dhe imazhe: AI nxjerr vlerat dhe ti i krahasosh me kalimin e kohës me një PDF për vizitën." },
   },
   trends: {
     theme: 'sintomi',
@@ -67,6 +91,10 @@ const EDITORIAL = {
     fr: { label: "Lisez vos tendances", desc: "Les graphiques relient symptômes et repas : des liens entre ce que vous mangez et comment vous vous sentez émergent sur les semaines." },
     de: { label: "Lies deine Trends", desc: "Diagramme verbinden Symptome und Mahlzeiten: Zusammenhänge zwischen Essen und Befinden zeigen sich über die Wochen." },
     pt: { label: "Leia suas tendências", desc: "Gráficos unem sintomas e refeições: surgem conexões entre o que você come e como se sente ao longo das semanas." },
+    ru: { label: "Читайте свои тренды", desc: "Графики объединяют симптомы и приёмы пищи: за неделями проступают связи между едой и самочувствием." },
+    pl: { label: "Czytaj swoje trendy", desc: "Wykresy łączą objawy i posiłki: z czasem wyłaniają się związki między jedzeniem a samopoczuciem." },
+    ro: { label: "Citește-ți tendințele", desc: "Graficele unesc simptome și mese: pe săptămâni apar legături între ce mănânci și cum te simți." },
+    sq: { label: "Lexo tendencat e tua", desc: "Grafikët bashkojnë simptomat dhe vaktet: me kalim javësh shfaqen lidhje mes ushqimit dhe mirëqenies." },
   },
   symptomcharts: {
     theme: 'sintomi',
@@ -76,6 +104,10 @@ const EDITORIAL = {
     fr: { label: "Graphiques dédiés", desc: "Visualisez douleur, fatigue et selles jour après jour pour repérer vos changements soudains." },
     de: { label: "Eigene Diagramme", desc: "Sieh Schmerzen, Erschöpfung und Stuhlgang tagtäglich im Detail, um plötzliche Veränderungen zu erkennen." },
     pt: { label: "Gráficos dedicados", desc: "Veja dor, cansaço e evacuações dia a dia em detalhe para perceber suas mudanças súbitas." },
+    ru: { label: "Детальные графики", desc: "Смотрите боль, усталость и стул день за днём, чтобы замечать резкие изменения." },
+    pl: { label: "Szczegółowe wykresy", desc: "Zobacz ból, zmęczenie i wypróżnienia dzień po dniu, by zauważać nagłe zmiany." },
+    ro: { label: "Grafice detaliate", desc: "Vezi durerea, oboseala și scaunele zi de zi, ca să observi schimbările bruște." },
+    sq: { label: "Grafikë të detajuar", desc: "Shiko dhimbjen, lodhjen dhe jashtëqitjet ditë për ditë për të dalluar ndryshimet e papritura." },
   },
   assistant: {
     theme: 'serena',
@@ -85,6 +117,10 @@ const EDITORIAL = {
     fr: { label: "Parlez à l'assistant", desc: "Une voix amie pour vos questions sur les MICI, l'alimentation et les signaux d'alerte : des réponses claires, sans remplacer votre médecin." },
     de: { label: "Sprich mit dem Assistenten", desc: "Eine freundliche Stimme für Fragen zu IBD, Ernährung und Warnsignalen: klare Antworten, ohne deine Ärztin zu ersetzen." },
     pt: { label: "Fale com o assistente", desc: "Uma voz amiga para perguntas sobre DII, alimentação e sinais de alerta: respostas claras, sem substituir seu médico." },
+    ru: { label: "Поговорите с ассистентом", desc: "Дружелюбный голос для вопросов об IBD, питании и тревожных сигналах: ясные ответы, не заменяющие врача." },
+    pl: { label: "Porozmawiaj z asystentem", desc: "Przyjazny głos do pytań o IBD, dietę i sygnały alarmowe: jasne odpowiedzi, bez zastępowania lekarza." },
+    ro: { label: "Vorbește cu asistentul", desc: "O voce prietenoasă pentru întrebări despre IBD, alimentație și semnale de alarmă: răspunsuri clare, fără să-l înlocuiască pe medicul tău." },
+    sq: { label: "Fol me asistentin", desc: "Një zë miqësor për pyetje mbi IBD, ushqimin dhe sinjalet e alarmit: përgjigje të qarta, pa zëvendësuar mjekun." },
   },
   community: {
     theme: 'community',
@@ -94,6 +130,10 @@ const EDITORIAL = {
     fr: { label: "Vous n'êtes pas seul", desc: "Un espace calme pour échanger avec ceux qui vivent la même route : conseils, émotions et petites victoires, ensemble." },
     de: { label: "Du bist nicht allein", desc: "Ein ruhiges Board zum Austausch mit anderen auf demselben Weg: Tipps, Emotionen und kleine Erfolge, gemeinsam." },
     pt: { label: "Você não está sozinho", desc: "Um quadro sereno para compartilhar com quem vive a mesma jornada: conselhos, emoções e pequenas vitórias, juntos." },
+    ru: { label: "Вы не одни", desc: "Спокойная доска, где можно общаться с теми, кто идёт тем же путём: советы, эмоции и маленькие победы — вместе." },
+    pl: { label: "Nie jesteś sam", desc: "Spokojne forum, by dzielić się z tymi na tej samej drodze: porady, emocje i małe sukcesy — razem." },
+    ro: { label: "Nu ești singur", desc: "Un forum liniștit unde schimbi cu cei pe același drum: sfaturi, emoții și mici victorii, împreună." },
+    sq: { label: "Nuk je vetëm", desc: "Një bord i qetë ku shkëmbesh me të tjerët në të njëjtën rrugë: këshilla, emocione dhe fitore të vogla, bashkë." },
   },
   summary: {
     theme: 'serena',
@@ -103,6 +143,10 @@ const EDITORIAL = {
     fr: { label: "Le résumé pour le médecin", desc: "Choisissez la période et les rubriques, ajoutez une note et téléchargez un PDF clair pour la prochaine visite : mieux parler, en moins de temps." },
     de: { label: "Die Zusammenfassung für die Ärztin", desc: "Wähle Zeitraum und Einträge, füge eine Notiz hinzu und lade ein klares PDF für den nächsten Termin: besser reden, in weniger Zeit." },
     pt: { label: "O resumo para o médico", desc: "Escolha o período e os itens, adicione uma nota e baixe um PDF claro para a próxima consulta: conversa melhor, em menos tempo." },
+    ru: { label: "Сводка для врача", desc: "Выберите период и пункты, добавьте заметку и скачайте понятный PDF для визита: говорить лучше, за меньшее время." },
+    pl: { label: "Podsumowanie dla lekarza", desc: "Wybierz okres i pozycje, dodaj notatkę i pobierz jasny PDF na wizytę: mów lepiej, w krótszym czasie." },
+    ro: { label: "Rezumatul pentru medic", desc: "Alege perioada și rubricile, adaugă o notă și descarcă un PDF clar pentru vizită: vorbești mai bine, în mai puțin timp." },
+    sq: { label: "Përmbledhja për mjekun", desc: "Zgjidh periudhën dhe zërat, shto një shënim dhe shkarko një PDF të qartë për vizitën: flet më mirë, në më pak kohë." },
   },
   map: {
     theme: 'mappa',
@@ -112,6 +156,10 @@ const EDITORIAL = {
     fr: { label: "Services à portée", desc: "Trouvez centres MICI, pharmacies, toilettes et urgences proches : vous savez où aller en cas de besoin, même loin de chez vous." },
     de: { label: "Dienste in der Nähe", desc: "Finde nahe IBD-Zentren, Apotheken, Toiletten und Notaufnahmen: du weißt sofort, wohin, auch unterwegs." },
     pt: { label: "Serviços à mão", desc: "Encontre centros de DII, farmácias, banheiros e emergência por perto: saiba aonde ir quando precisar, até fora de casa." },
+    ru: { label: "Сервисы под рукой", desc: "Найдите ближайшие центры IBD, аптеки, туалеты и скорую: всегда знаете, куда пойти, даже вне дома." },
+    pl: { label: "Usługi pod ręką", desc: "Znajdź pobliskie centra IBD, apteki, toalety i SOR: wiesz, gdzie iść, nawet poza domem." },
+    ro: { label: "Servicii la îndemână", desc: "Găsește centre IBD, farmacii, toalete și urgențe apropiate: știi unde să mergi, chiar și departe de casă." },
+    sq: { label: "Shërbimet në dorë", desc: "Gjej qendra IBD, farmaci, tualete dhe urgjenca aty pranë: e di ku të shkosh, edhe jashtë shtëpisë." },
   },
   abbonamento: {
     theme: 'serena',
@@ -121,6 +169,10 @@ const EDITORIAL = {
     fr: { label: "De nombreux outils, un abonnement", desc: "Débloquez journal illimité, assistant IA, résumés PDF, scanner d'examens et communauté : 1 mois gratuit, annulez à tout moment." },
     de: { label: "Viele Werkzeuge, ein Abo", desc: "Freischalten: unlimitiertes Tagebuch, KI-Assistent, PDF-Zusammenfassungen, Befund-Scanner und Community: 1 Monat gratis, jederzeit kündbar." },
     pt: { label: "Muitas ferramentas, uma assinatura", desc: "Desbloqueie diário ilimitado, assistente IA, resumos PDF, scanner de exames e comunidade: 1 mês grátis, cancele quando quiser." },
+    ru: { label: "Много инструментов, одна подписка", desc: "Откройте безлимитный дневник, ИИ-ассистента, PDF-сводки, сканер анализов и сообщество: 1 месяц бесплатно, отмена в любое время." },
+    pl: { label: "Wiele narzędzi, jedna subskrypcja", desc: "Odblokuj nielimitowany dziennik, asystenta AI, podsumowania PDF, skaner wyników i społeczność: 1 miesiąc gratis, anuluj kiedy chcesz." },
+    ro: { label: "Multe instrumente, un abonament", desc: "Deblochează jurnal nelimitat, asistent AI, rezumate PDF, scanner de analize și comunitate: 1 lună gratuit, anulezi oricând." },
+    sq: { label: "Shumë mjete, një abonim", desc: "Zhblloko ditar të pakufizuar, asistent AI, përmbledhje PDF, skaner analizash dhe komunitet: 1 muaj falas, anulo kur të duash." },
   },
   about: {
     theme: 'serena',
@@ -130,6 +182,10 @@ const EDITORIAL = {
     fr: { label: "Découvrez IBD Care", desc: "Conçue pour qui vit avec une MICI, l'app réunit discrétion, calme et outils utiles autour de votre quotidien." },
     de: { label: "Lerne IBD Care kennen", desc: "Für Menschen mit chronisch-entzündlichen Darmerkrankungen: die App verbindet Diskretion, Ruhe und nützliche Werkzeuge im Alltag." },
     pt: { label: "Conheça o IBD Care", desc: "Feito para quem convive com a doença inflamatória intestinal, o app une discrição, calma e ferramentas úteis no seu dia a dia." },
+    ru: { label: "Познакомьтесь с IBD Care", desc: "Создано для тех, кто живёт с воспалительным заболеванием кишечника: приложение соединяет деликатность, спокойствие и полезные инструменты в повседневности." },
+    pl: { label: "Poznaj IBD Care", desc: "Stworzone dla osób żyjących z zapalnymi chorobami jelit: aplikacja łączy dyskrecję, spokój i przydatne narzędzia w codzienności." },
+    ro: { label: "Descoperă IBD Care", desc: "Conceput pentru cei care trăiesc cu boli intestinale inflamatorii: aplicația unește discriție, calm și instrumente utile în cotidian." },
+    sq: { label: "Njih IBD Care", desc: "Krijuar për ata që jetojnë me sëmundjet inflamatore të zorrëve: aplikacioni bashkon diskrecionin, qetësinë dhe mjete të dobishme në jetën e përditshme." },
   },
   contact: {
     theme: 'serena',
@@ -139,15 +195,23 @@ const EDITORIAL = {
     fr: { label: "Écrivez-nous", desc: "Questions, doutes ou demandes d'assistance : nous répondons avec soin, pour que votre voix soit entendue." },
     de: { label: "Schreib uns", desc: "Fragen, Unsicherheiten oder Supportwünsche: wir antworten sorgfältig, damit deine Stimme gehört wird." },
     pt: { label: "Escreva para nós", desc: "Dúvidas, perguntas ou suporte: respondemos com cuidado, para que sua voz seja ouvida." },
+    ru: { label: "Напишите нам", desc: "Вопросы, сомнения или запросы в поддержку: отвечаем внимательно, чтобы ваш голос был услышан." },
+    pl: { label: "Napisz do nas", desc: "Pytania, wątpliwości lub prośby o wsparcie: odpowiadamy z uwagą, byś był wysłuchany." },
+    ro: { label: "Scrie-ne", desc: "Întrebări, nelămuriri sau cereri de suport: răspundem cu grijă, pentru ca vocea ta să fie auzită." },
+    sq: { label: "Na shkruani", desc: "Pyetje, dyshime ose kërkesa suporti: përgjigjemi me kujdes, që zëri juaj të dëgjohet." },
   },
   news: {
     theme: 'serena',
-    it: { label: "Notizie IBD", desc: "Aggiornamenti curati sulla malattia infiammatoria intestinale, in sei lingue, con aggiornamento automatico delle notizie." },
-    en: { label: "IBD news", desc: "Curated updates on inflammatory bowel disease, in six languages, with automatic news refresh." },
-    es: { label: "Noticias EII", desc: "Actualizaciones cuidadas sobre la enfermedad inflamatoria intestinal, en seis idiomas, con actualización automática." },
-    fr: { label: "Actus MICI", desc: "Actualités sélectionnées sur les MICI, en six langues, avec actualisation automatique." },
-    de: { label: "IBD-News", desc: "Kuratierte Updates zu chronisch-entzündlichen Darmerkrankungen, in sechs Sprachen, mit automatischer Aktualisierung." },
-    pt: { label: "Notícias DII", desc: "Atualizações selecionadas sobre a doença inflamatória intestinal, em seis idiomas, com atualização automática." },
+    it: { label: "Notizie IBD", desc: "Aggiornamenti curati sulla malattia infiammatoria intestinale, in più lingue, con aggiornamento automatico delle notizie." },
+    en: { label: "IBD news", desc: "Curated updates on inflammatory bowel disease, in several languages, with automatic news refresh." },
+    es: { label: "Noticias EII", desc: "Actualizaciones cuidadas sobre la enfermedad inflamatoria intestinal, en varios idiomas, con actualización automática." },
+    fr: { label: "Actus MICI", desc: "Actualités sélectionnées sur les MICI, en plusieurs langues, avec actualisation automatique." },
+    de: { label: "IBD-News", desc: "Kuratierte Updates zu chronisch-entzündlichen Darmerkrankungen, in mehreren Sprachen, mit automatischer Aktualisierung." },
+    pt: { label: "Notícias DII", desc: "Atualizações selecionadas sobre a doença inflamatória intestinal, em vários idiomas, com atualização automática." },
+    ru: { label: "Новости IBD", desc: "Подобранные обновления о воспалительных заболеваниях кишечника на нескольких языках, с автоматическим обновлением." },
+    pl: { label: "Wiadomości IBD", desc: "Aktualności o zapalnych chorobach jelit w kilku językach, z automatycznym odświeżaniem." },
+    ro: { label: "Știri IBD", desc: "Actualități selectate despre bolile intestinale inflamatorii, în mai multe limbi, cu actualizare automată." },
+    sq: { label: "Lajme IBD", desc: "Përditësime të zgjedhura mbi sëmundjet inflamatore të zorrëve, në disa gjuhë, me rifreskim automatik." },
   },
   article: {
     theme: 'serena',
@@ -157,6 +221,10 @@ const EDITORIAL = {
     fr: { label: "Actus MICI", desc: "Des actualités fiables et sélectionnées sur les MICI, traduites pour vous, à lire tranquillement." },
     de: { label: "IBD-News", desc: "Zuverlässige, kuratierte Updates zu chronisch-entzündlichen Darmerkrankungen, für dich übersetzt, in Ruhe lesen." },
     pt: { label: "Notícias DII", desc: "Atualizações confiáveis e selecionadas sobre a doença inflamatória intestinal, traduzidas para você, para ler com calma." },
+    ru: { label: "Новости IBD", desc: "Надёжные и подобранные обновления о воспалительных заболеваниях кишечника, переведённые для вас, читать спокойно." },
+    pl: { label: "Wiadomości IBD", desc: "Niezawodne, dobrane aktualności o zapalnych chorobach jelit, przetłumaczone dla ciebie, do spokojnej lektury." },
+    ro: { label: "Știri IBD", desc: "Actualități de încredere și selectate despre bolile intestinale inflamatorii, traduse pentru tine, de citit liniștit." },
+    sq: { label: "Lajme IBD", desc: "Lajme të besueshme dhe të zgjedhura mbi sëmundjet inflamatore të zorrëve, të përkthyera për ju, për t'i lexuar me qetësi." },
   },
 };
 
@@ -171,6 +239,10 @@ const SECTIONS = {
     fr: { title: "Un aperçu de votre jour", body: "Dès le premier écran, état, rappels de médicaments et activité récente : tout ce qui compte, d'un coup d'œil." },
     de: { title: "Dein Tag im Blick", body: "Auf dem ersten Screen Status, Medikamenten-Erinnerungen und letzte Aktivität: alles Wichtige auf einen Blick." },
     pt: { title: "Um quadro do seu hoje", body: "Na primeira tela você vê estado, lembretes e atividade recente: tudo o que importa, num relance." },
+    ru: { title: "Картина вашего сегодня", body: "На первом экране — состояние, напоминания о лекарствах и недавняя активность: всё важное с первого взгляда." },
+    pl: { title: "Obraz twojego dnia", body: "Na pierwszym ekranie stan, przypomnienia i ostatnia aktywność: wszystko, co śledzisz, w jednym rzucie oka." },
+    ro: { title: "O imagine a zilei tale", body: "De pe primul ecran vezi starea, memento-urile și activitatea recentă: tot ce contează, dintr-o privire." },
+    sq: { title: "Një pasqyrë e sotmes sate", body: "Në ekranin e parë gjendja, kujtueset dhe aktiviteti i fundit: gjithçka e rëndësishme me një vështrim." },
   },
   symptoms_journal: {
     theme: 'sintomi',
@@ -180,6 +252,10 @@ const SECTIONS = {
     fr: { title: "Le journal qui vous raconte", body: "Quelques gestes par jour suffisent à bâtir un récit honnête de votre semaine, utile pour le médecin." },
     de: { title: "Das Tagebuch, das dich erzählt", body: "Ein paar Eingaben am Tag ergeben ein ehrliches Bild deiner Woche, nützlich für die Ärztin." },
     pt: { title: "O diário que te conta", body: "Poucos toques por dia bastam para um relato honesto da sua semana, útil para o médico." },
+    ru: { title: "Дневник, рассказывающий вас", body: "Несколько касаний в день строят честный рассказ о неделе — его можно показать врачу." },
+    pl: { title: "Dziennik, który cię opowiada", body: "Kilka wpisów dziennie tworzy szczery obraz tygodnia, gotowy do pokazania lekarzowi." },
+    ro: { title: "Jurnalul care te povestește", body: "Câteva atingeri pe zi construiesc o relatare sinceră a săptămânii, utilă medicului." },
+    sq: { title: "Ditari që të tregon", body: "Disa prekje në ditë krijojnë një rrëfim të sinqertë të javës, të dobishëm për mjekun." },
   },
   food_reactions: {
     theme: 'alimentazione',
@@ -189,6 +265,10 @@ const SECTIONS = {
     fr: { title: "Aliments amis, aliments suspects", body: "Notez les réactions après chaque repas : des schémas clairs émergent avec le temps." },
     de: { title: "Verträgliche, verdächtige Speisen", body: "Notiere Reaktionen nach jeder Mahlzeit: mit der Zeit zeigen sich klare Muster." },
     pt: { title: "Comidas amigas, suspeitas", body: "Anotar reações após cada refeição: com o tempo surgem padrões claros." },
+    ru: { title: "Дружественные и подозрительные продукты", body: "Отмечайте реакции после каждого приёма пищи: со временем проявятся ясные закономерности." },
+    pl: { title: "Przyjazne i podejrzane produkty", body: "Notuj reakcje po każdym posiłku: z czasem wyłaniają się jasne wzorce." },
+    ro: { title: "Alimente prietene, suspecte", body: "Notează reacțiile după fiecare masă: în timp apar tipare clare." },
+    sq: { title: "Ushqime miqësore, të dyshimta", body: "Shëno reaksionet pas çdo vakti: me kalimin e kohës dalin modele të qarta." },
   },
   meds_adherence: {
     theme: 'terapie',
@@ -198,6 +278,10 @@ const SECTIONS = {
     fr: { title: "Une routine qui dure", body: "Gardez dosages et horaires sans anxiété : des rappels apaisés vous accompagnent." },
     de: { title: "Eine Routine, die bleibt", body: "Dosierungen und Zeiten ohne Stress merken: ruhige Erinnerungen begleiten dich täglich." },
     pt: { title: "Uma rotina que permanece", body: "Lembre doses e horários sem ansiedade: lembretes calmos apoiam seu dia." },
+    ru: { title: "Режим, который остаётся", body: "Запоминайте дозировки и время без тревоги: спокойные напоминания сопровождают вас каждый день." },
+    pl: { title: "Rutyna, która trwa", body: "Pamiętaj dawki i godziny bez stresu: spokojne przypomnienia towarzyszą ci każdego dnia." },
+    ro: { title: "O rutină care durează", body: "Ține dozele și orele fără anxietate: memento-uri liniștite te însoțesc zilnic." },
+    sq: { title: "Një rutinë që mbetet", body: "Mbaj mend dozat dhe oraret pa ankth: kujtues të qetë të shoqërojnë çdo ditë." },
   },
   records_archive: {
     theme: 'esami',
@@ -207,6 +291,10 @@ const SECTIONS = {
     fr: { title: "Tout à sa place", body: "Comptes rendus et contrôles archivés sereinement : retrouvés aussitôt, même des mois après." },
     de: { title: "Alles an seinem Ort", body: "Befunde und Kontrollen ruhig archiviert: du findest sie sofort, auch Monate später." },
     pt: { title: "Tudo no seu lugar", body: "Laudos e controles arquivados com calma: você os encontra logo, até meses depois." },
+    ru: { title: "Всё на своём месте", body: "Заключения и осмотры, архивированные спокойно: находятся сразу, даже спустя месяцы." },
+    pl: { title: "Wszystko na swoim miejscu", body: "Raporty i kontrole archiwizowane spokojnie: znajdziesz je od razu, nawet miesiące później." },
+    ro: { title: "Totul la locul lui", body: "Rapoarte și controale arhivate liniștit: le găsești imediat, chiar și luni mai târziu." },
+    sq: { title: "Gjithçka në vendin e saj", body: "Raporte dhe kontrole të arkivuara me qetësi: i gjen menjëherë, edhe muaj më pas." },
   },
   esami_compare: {
     theme: 'esami',
@@ -216,6 +304,10 @@ const SECTIONS = {
     fr: { title: "Des valeurs qui parlent dans le temps", body: "Scannez et comparez vos examens : les changements ressortent clairement." },
     de: { title: "Werte, die über die Zeit sprechen", body: "Scanne und vergleiche Befunde: Veränderungen werden klar sichtbar für den nächsten Termin." },
     pt: { title: "Valores que falam no tempo", body: "Escanee e compare seus exames: mudanças ficam claras para a próxima consulta." },
+    ru: { title: "Значения, говорящие во времени", body: "Сканируйте и сравнивайте анализы: изменения видны ясно, готовы для визита." },
+    pl: { title: "Wartości, które mówią w czasie", body: "Skanuj i porównuj wyniki: zmiany widać wyraźnie, gotowe na wizytę." },
+    ro: { title: "Valori care vorbesc în timp", body: "Scanează și compară analizele: schimbările ies în evidență, gata pentru vizită." },
+    sq: { title: "Vlera që flasin me kalimin e kohës", body: "Skano dhe krahaso analizat: ndryshimet duhen qartë, gati për vizitën." },
   },
   trends_triggers: {
     theme: 'alimentazione',
@@ -225,6 +317,10 @@ const SECTIONS = {
     fr: { title: "Des liens cachés", body: "Les graphiques croisent ce que vous mangez et comment vous allez : vous repérez les déclencheurs." },
     de: { title: "Verborgene Zusammenhänge", body: "Diagramme verweben Essen und Befinden: du erkennst wiederkehrende Auslöser." },
     pt: { title: "Conexões ocultas", body: "Gráficos unem o que você come e como se sente: você reconhece gatilhos que se repetem." },
+    ru: { title: "Скрытые связи", body: "Графики сплетают еду и самочувствие: вы узнаёте повторяющиеся триггеры." },
+    pl: { title: "Ukryte związki", body: "Wykresy splatają jedzenie i samopoczucie: rozpoznajesz powtarzające się wyzwalacze." },
+    ro: { title: "Legături ascunse", body: "Graficele împletesc ce mănânci cu cum te simți: recunoști declanșatoarele care se repetă." },
+    sq: { title: "Lidhje të fshehura", body: "Grafikët endin ushqimin dhe mirëqenien: dallo shkaktarët që përsëriten." },
   },
   symptomcharts_detail: {
     theme: 'sintomi',
@@ -234,6 +330,10 @@ const SECTIONS = {
     fr: { title: "Le détail qui compte", body: "Jour après jour, douleur, fatigue et selles : les pics deviennent une histoire visible." },
     de: { title: "Das Detail, das zählt", body: "Tag für Tag Schmerzen, Erschöpfung, Stuhlgang: Spitzen werden sichtbare Geschichte." },
     pt: { title: "O detalhe que importa", body: "Dia a dia, dor, cansaço e evacuações: os picos viram história visível." },
+    ru: { title: "Деталь, которая важна", body: "Изо дня в день — боль, усталость и стул: пики становятся видимой историей." },
+    pl: { title: "Szczegół, który się liczy", body: "Dzień po dniu ból, zmęczenie i wypróżnienia: piki stają się widoczną historią." },
+    ro: { title: "Detaliul care contează", body: "Zi de zi durere, oboseală și scaune: vârfurile devin o istorie vizibilă." },
+    sq: { title: "Detaji që rëndon", body: "Ditë për ditë dhimbje, lodhje dhe jashtëqitje: majat bëhen histori e dukshme." },
   },
   community_voice: {
     theme: 'community',
@@ -243,6 +343,10 @@ const SECTIONS = {
     fr: { title: "La force de partager", body: "Conseils, émotions et petites victoires : sur le forum, des gens qui comprennent vraiment." },
     de: { title: "Die Kraft des Teilens", body: "Tipps, Emotionen, kleine Erfolge: im Board findest du Menschen, die wirklich verstehen." },
     pt: { title: "A força de compartilhar", body: "Conselhos, emoções e pequenas vitórias: no quadro você encontra quem entende de verdade." },
+    ru: { title: "Сила делиться", body: "Советы, эмоции и маленькие победы: на доске вы найдёте тех, кто понимает по-настоящему." },
+    pl: { title: "Siła dzielenia się", body: "Porady, emocje i małe sukcesy: na forum znajdziesz ludzi, którzy naprawdę rozumieją." },
+    ro: { title: "Puterea împărtășirii", body: "Sfaturi, emoții și mici victorii: pe forum găsești oameni care înțeleg cu adevărat." },
+    sq: { title: "Fuqia e ndarjes", body: "Këshilla, emocione dhe fitore të vogla: në bord gjen njerëz që kuptojnë vërtet." },
   },
   summary_pdf: {
     theme: 'esami',
@@ -252,6 +356,10 @@ const SECTIONS = {
     fr: { title: "Mieux parler, en moins de temps", body: "Un PDF ordonné de vos données : la visite coule légère et ciblée." },
     de: { title: "Besser reden, in weniger Zeit", body: "Ein ordentliches PDF deiner Daten: der Termin bleibt leicht und fokussiert." },
     pt: { title: "Converse melhor, em menos tempo", body: "Um PDF organizado com seus dados: a visita flui leve e direcionada." },
+    ru: { title: "Говорить лучше, за меньшее время", body: "Аккуратный PDF с вашими данными: визит проходит легко и по делу." },
+    pl: { title: "Mów lepiej, w krótszym czasie", body: "Porządny PDF twoich danych: wizyta przebiega lekko i z celem." },
+    ro: { title: "Vorbești mai bine, în mai puțin timp", body: "Un PDF ordonat cu datele tale: vizita curge ușor și concentrat." },
+    sq: { title: "Flet më mirë, në më pak kohë", body: "Një PDF i rregullt me të dhënat tuaja: vizita rrjedh lehtë dhe në thelb." },
   },
   map_safe: {
     theme: 'mappa',
@@ -261,6 +369,10 @@ const SECTIONS = {
     fr: { title: "Savoir où aller", body: "Centres MICI, pharmacies et toilettes proches : moins d'angoisse hors de chez vous." },
     de: { title: "Wissen, wohin", body: "IBD-Zentren, Apotheken und Toiletten in der Nähe: weniger Angst unterwegs." },
     pt: { title: "Saber aonde ir", body: "Centros de DII, farmácias e banheiros por perto: menos ansiedade fora de casa." },
+    ru: { title: "Знать, куда идти", body: "Ближайшие центры IBD, аптеки и туалеты: меньше тревоги вне дома." },
+    pl: { title: "Wiedzieć, gdzie iść", body: "Pobliskie centra IBD, apteki i toalety: mniej niepokoju poza domem." },
+    ro: { title: "Să știi unde să mergi", body: "Centre IBD, farmacii și toalete apropiate: mai puțină anxietate departe de casă." },
+    sq: { title: "Të dish ku të shkosh", body: "Qendra IBD, farmaci dhe tualete aty pranë: më pak ankth jashtë shtëpisë." },
   },
   about_privacy: {
     theme: 'serena',
@@ -270,6 +382,10 @@ const SECTIONS = {
     fr: { title: "Votre vie privée au centre", body: "Vos données restent vôtres : ni publicité, ni revente à des tiers." },
     de: { title: "Deine Privatsphäre im Mittelpunkt", body: "Deine Daten bleiben deine: keine Werbung, kein Verkauf an Dritte." },
     pt: { title: "Sua privacidade no centro", body: "Seus dados são seus: sem anúncios, sem venda a terceiros." },
+    ru: { title: "Ваша приватность в центре", body: "Ваши данные остаются вашими: никакой рекламы, никакой продажи третьим лицам." },
+    pl: { title: "Twoja prywatność w centrum", body: "Twoje dane są twoje: bez reklam, bez sprzedaży osobom trzecim." },
+    ro: { title: "Confidențialitatea ta în centru", body: "Datele tale rămân ale tale: fără reclame, fără vânzare către terți." },
+    sq: { title: "Privatësia jote në qendër", body: "Të dhënat e tua mbeten të tuat: pa reklama, pa shitje palëve të treta." },
   },
   contact_care: {
     theme: 'serena',
@@ -279,6 +395,10 @@ const SECTIONS = {
     fr: { title: "Nous écoutons avec soin", body: "Chaque message est lu : nous répondons attentivement, votre voix compte." },
     de: { title: "Wir hören sorgfältig zu", body: "Jede Nachricht wird gelesen: wir antworten aufmerksam, deine Stimme zählt." },
     pt: { title: "Ouvimos com cuidado", body: "Cada mensagem é lida: respondemos com atenção, sua voz importa." },
+    ru: { title: "Вас слушают внимательно", body: "Каждое сообщение читается: отвечаем внимательно, ведь ваш голос важен." },
+    pl: { title: "Słuchamy cię z uwagą", body: "Każda wiadomość jest czytana: odpowiadamy uważnie, twój głos ma znaczenie." },
+    ro: { title: "Te ascultăm cu grijă", body: "Fiecare mesaj este citit: răspundem cu atenție, vocea ta contează." },
+    sq: { title: "Të dëgjojmë me kujdes", body: "Çdo mesazh lexohet: përgjigjemi me vëmendje, zëri yt ka rëndësi." },
   },
   abbonamento_trial: {
     theme: 'serena',
@@ -288,6 +408,10 @@ const SECTIONS = {
     fr: { title: "Essayez sans souci", body: "1 mois gratuit pour explorer chaque outil : décidez sereinement, annulez à tout moment." },
     de: { title: "Sorgenfrei testen", body: "1 gratis Monat, um jedes Werkzeug zu entdecken: ruhig entscheiden, jederzeit kündbar." },
     pt: { title: "Experimente sem preocupações", body: "1 mês grátis para explorar cada ferramenta: decida com calma, cancele quando quiser." },
+    ru: { title: "Попробуйте без забот", body: "1 месяц бесплатно, чтобы изучить каждый инструмент: решение спокойно, отмена в любое время." },
+    pl: { title: "Wypróbuj bez zmartwień", body: "1 miesiąc gratis, by poznać każde narzędzie: decyduj spokojnie, anuluj kiedy chcesz." },
+    ro: { title: "Încearcă fără griji", body: "1 lună gratuit, să explorezi fiecare instrument: decizi liniștit, anulezi oricând." },
+    sq: { title: "Provo pa shqetësime", body: "1 muaj falas për të njohur çdo mjet: vendos me qetësi, anulo kur të duash." },
   },
   article_share: {
     theme: 'serena',
@@ -297,6 +421,10 @@ const SECTIONS = {
     fr: { title: "Partagez avec vos proches", body: "Des actualités utiles à envoyer à vos proches : la conscience grandit, ensemble." },
     de: { title: "Teile mit deinen Liebsten", body: "Nützliche Nachrichten für Menschen in deiner Nähe: Bewusstsein wächst, gemeinsam." },
     pt: { title: "Compartilhe com quem você ama", body: "Notícias úteis para enviar a quem está perto: a consciência cresce, juntos." },
+    ru: { title: "Делитесь с близкими", body: "Полезные новости, чтобы отправить тем, кто рядом: осознанность растёт вместе." },
+    pl: { title: "Dziel się z bliskimi", body: "Przydatne wiadomości dla osób ci bliskich: świadomość rośnie razem." },
+    ro: { title: "Distribuie celor dragi", body: "Știri utile pentru cei apropiați: conștientizarea crește, împreună." },
+    sq: { title: "Ndaj me të dashurit", body: "Lajme të dobishme për t'i dërguar të afërmve: ndërgjegjësimi rritet, bashkë." },
   },
 };
 

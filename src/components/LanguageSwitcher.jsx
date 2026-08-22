@@ -10,6 +10,10 @@ const LANGS = [
   { code: 'fr', label: 'Français' },
   { code: 'de', label: 'Deutsch' },
   { code: 'pt', label: 'Português' },
+  { code: 'ru', label: 'Русский' },
+  { code: 'pl', label: 'Polski' },
+  { code: 'ro', label: 'Română' },
+  { code: 'sq', label: 'Shqip' },
 ];
 
 export default function LanguageSwitcher({ className }) {

@@ -10,6 +10,10 @@ const LANGS = [
   { code: 'fr', label: 'Français', flag: '🇫🇷' },
   { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
   { code: 'pt', label: 'Português', flag: '🇵🇹' },
+  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  { code: 'pl', label: 'Polski', flag: '🇵🇱' },
+  { code: 'ro', label: 'Română', flag: '🇷🇴' },
+  { code: 'sq', label: 'Shqip', flag: '🇦🇱' },
 ];
 
 // Pulsante unico selettore lingue con icona a colori (gradiente
