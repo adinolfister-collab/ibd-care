@@ -1,12 +1,14 @@
 import React from "react";
 import LanguageMenu from "@/components/LanguageMenu";
 import TopRightActions from "@/components/TopRightActions";
+import NativeAppButton from "@/components/NativeAppButton";
 
 export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="fixed top-3 right-3 z-40 flex items-center gap-2" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
         <LanguageMenu />
+        <NativeAppButton />
         <TopRightActions />
       </div>
       <div className="w-full max-w-md">
