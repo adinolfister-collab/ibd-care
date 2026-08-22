@@ -18,6 +18,34 @@
     "foods": {
       "type": "string"
     },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "g",
+              "ml",
+              "porzione",
+              "cucchiaio",
+              "tazza",
+              "fetta"
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
     "reaction": {
       "type": "string",
       "enum": [
@@ -35,8 +63,7 @@
     }
   },
   "required": [
-    "entry_date",
-    "foods"
+    "entry_date"
   ],
   "rls": {
     "read": {

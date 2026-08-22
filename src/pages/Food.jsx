@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Utensils, Trash2, Pencil, BookMarked } from 'lucide-react';
+import { Plus, Utensils, Trash2, Pencil, BookMarked, ShieldCheck } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import MealTemplateManager from '@/components/MealTemplateManager';
 import DietaryTips from '@/components/DietaryTips';
@@ -14,7 +14,9 @@ import SiteMenu from '@/components/SiteMenu';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
-import EntityFormDialog from '@/components/EntityFormDialog';
+import FoodFormDialog from '@/components/FoodFormDialog';
+import FoodCatalogManager from '@/components/FoodCatalogManager';
+import { catalogToGroups, parseLegacyFoods, serializeItems } from '@/lib/foodCatalog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -34,15 +36,6 @@ const reactions = [
   { value: 'severa', label: 'Severa' },
 ];
 
-const fields = (t) => [
-  { name: 'entry_date', label: t('common.date'), type: 'date' },
-  { name: 'meal_type', label: t('food.meal_type'), type: 'select', options: mealTypes },
-  { name: 'foods', label: t('food.foods'), type: 'textarea' },
-  { name: 'reaction', label: t('food.reaction'), type: 'select', options: reactions },
-  { name: 'tolerated', label: t('food.tolerated'), type: 'checkbox' },
-  { name: 'notes', label: t('common.notes'), type: 'textarea' },
-];
-
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 
 const reactionTone = { nessuna: 'text-emerald-600', lieve: 'text-amber-600', moderata: 'text-orange-600', severa: 'text-rose-500' };
@@ -50,13 +43,16 @@ const reactionTone = { nessuna: 'text-emerald-600', lieve: 'text-amber-600', mod
 export default function Food() {
   const { t } = useI18n();
   const { toast } = useToast();
-  const { isAuthenticated, authChecked } = useAuth();
+  const { user, isAuthenticated, authChecked } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [templates, setTemplates] = useState([]);
   const [tplMgrOpen, setTplMgrOpen] = useState(false);
+  const [catalogGroups, setCatalogGroups] = useState([]);
+  const [catalogMgrOpen, setCatalogMgrOpen] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -91,33 +87,49 @@ export default function Food() {
       setTemplates([]);
     }
   };
+  const loadCatalog = async () => {
+    if (!isAuthenticated) { setCatalogGroups(catalogToGroups([])); return; }
+    try {
+      const data = await base44.entities.FoodCatalogItem.list('-created_date', 500);
+      setCatalogGroups(catalogToGroups(data));
+    } catch {
+      setCatalogGroups(catalogToGroups([]));
+    }
+  };
   useEffect(() => {
     load();
     loadTemplates();
+    loadCatalog();
   }, [isAuthenticated, authChecked]);
 
-  const openNew = () => { setEditing({ entry_date: todayStr(), tolerated: true }); setOpen(true); };
-  const openEdit = (item) => { setEditing(item); setOpen(true); };
+  const openNew = () => { setEditing({ entry_date: todayStr(), tolerated: true, items: [] }); setOpen(true); };
+  const openEdit = (it) => {
+    const sel = Array.isArray(it.items) && it.items.length ? it.items : parseLegacyFoods(it.foods);
+    setEditing({ ...it, items: sel, tolerated: it.tolerated ?? true });
+    setOpen(true);
+  };
 
   const handleSubmit = (data) => {
     setOpen(false);
+    const sel = Array.isArray(data.items) ? data.items : [];
+    const payload = { ...data, items: sel, foods: serializeItems(sel) || data.foods || '' };
     if (!isAuthenticated) {
-      if (editing?.id) guestFoods.update(editing.id, data);
-      else guestFoods.add(data);
+      if (editing?.id) guestFoods.update(editing.id, payload);
+      else guestFoods.add(payload);
       setItems(guestFoods.list());
       return;
     }
     if (editing?.id) {
       const previous = items.find((it) => it.id === editing.id) || editing;
-      setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...data } : it)));
-      base44.entities.FoodEntry.update(editing.id, data).catch(() => {
+      setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
+      base44.entities.FoodEntry.update(editing.id, payload).catch(() => {
         setItems((prev) => prev.map((it) => (it.id === editing.id ? previous : it)));
         toast({ title: 'Errore', description: 'Modifica non salvata, riprova.', variant: 'destructive' });
       });
     } else {
       const tempId = `temp_${Date.now()}`;
-      setItems((prev) => [{ ...data, id: tempId }, ...prev]);
-      base44.entities.FoodEntry.create(data)
+      setItems((prev) => [{ ...payload, id: tempId }, ...prev]);
+      base44.entities.FoodEntry.create(payload)
         .then((created) => setItems((prev) => prev.map((it) => (it.id === tempId ? created : it))))
         .catch(() => {
           setItems((prev) => prev.filter((it) => it.id !== tempId));
@@ -131,7 +143,7 @@ export default function Food() {
     load();
   };
   const openFromTemplate = (tpl) => {
-    setEditing({ entry_date: todayStr(), meal_type: tpl.meal_type, foods: tpl.foods, notes: tpl.notes || '', tolerated: true });
+    setEditing({ entry_date: todayStr(), meal_type: tpl.meal_type, items: parseLegacyFoods(tpl.foods), notes: tpl.notes || '', tolerated: true });
     setOpen(true);
   };
   const saveTemplate = async (data) => { await base44.entities.MealTemplate.create(data); loadTemplates(); };
@@ -150,7 +162,10 @@ export default function Food() {
         title={t('food.title')}
         subtitle={t('food.subtitle')}
         action={
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap justify-end">
+            {isAdmin && (
+              <Button onClick={() => setCatalogMgrOpen(true)} variant="outline" className="rounded-xl"><ShieldCheck className="w-4 h-4 mr-1.5" />{t('food.catalog_manage')}</Button>
+            )}
             {isAuthenticated && (
               <Button onClick={() => setTplMgrOpen(true)} variant="outline" className="rounded-xl"><BookMarked className="w-4 h-4 mr-1.5" />{t('food.templates')}</Button>
             )}
@@ -196,7 +211,22 @@ export default function Food() {
                           <button onClick={() => handleDelete(it.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
                         </div>
                       </div>
-                      <p className="mt-3 text-base whitespace-pre-wrap">{it.foods}</p>
+                      {Array.isArray(it.items) && it.items.length > 0 ? (
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {it.items.map((f, i) => (
+                            <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-terracotta/10 text-accent-foreground text-xs">
+                              <span className="font-medium">{f.name}</span>
+                              {f.qty ? (
+                                <span className="text-muted-foreground">{f.qty}{f.unit && f.unit !== 'porzione' ? ' ' + f.unit : ''}</span>
+                              ) : (f.unit && f.unit !== 'porzione' ? (
+                                <span className="text-muted-foreground">{f.unit}</span>
+                              ) : null)}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="mt-3 text-base whitespace-pre-wrap">{it.foods}</p>
+                      )}
                       {it.notes && <p className="text-sm text-muted-foreground mt-2">{it.notes}</p>}
                     </CardContent>
                   </Card>
@@ -213,12 +243,12 @@ export default function Food() {
       </div>
       </MagazineEssay>
 
-      <EntityFormDialog
+      <FoodFormDialog
         open={open}
         onOpenChange={setOpen}
         title={editing?.id ? t('common.edit') : t('food.add')}
         submitLabel={t('common.save')}
-        fields={fields(t)}
+        groups={catalogGroups}
         initialData={editing}
         onSubmit={handleSubmit}
       />
@@ -230,6 +260,13 @@ export default function Food() {
           onCreate={saveTemplate}
           onUpdate={updateTemplate}
           onDelete={deleteTemplate}
+        />
+      )}
+      {isAdmin && (
+        <FoodCatalogManager
+          open={catalogMgrOpen}
+          onOpenChange={setCatalogMgrOpen}
+          onChanged={loadCatalog}
         />
       )}
       <EditorialBlock sectionKey="food_reactions" align="right" />
