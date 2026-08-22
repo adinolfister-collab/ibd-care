@@ -1,11 +1,121 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
-    <title>Base44 APP</title>
+    <meta name="theme-color" content="#1f4f4f" />
+
+    <!-- SEO principale -->
+    <title>IBD Care – Diario sintomi IBD, alimentazione e terapie</title>
+    <meta name="description" content="App gratuita per gestire la malattia infiammatoria intestinale (Crohn, colite ulcerosa): diario sintomi, alimentazione, terapie, esami, mappa servizi e notizie IBD. Privata, in 11 lingue." />
+    <meta name="keywords" content="IBD, morbo di Crohn, colite ulcerosa, diario sintomi, calprotectina, alimentazione IBD, terapie IBD, app IBD, malattia infiammatoria intestinale" />
+    <meta name="author" content="IBD Care" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://ibd-care.it/" />
+
+    <!-- hreflang: alternati per tutte le lingue supportate -->
+    <link rel="alternate" hreflang="it" href="https://ibd-care.it/" />
+    <link rel="alternate" hreflang="en" href="https://ibd-care.it/?lang=en" />
+    <link rel="alternate" hreflang="es" href="https://ibd-care.it/?lang=es" />
+    <link rel="alternate" hreflang="fr" href="https://ibd-care.it/?lang=fr" />
+    <link rel="alternate" hreflang="de" href="https://ibd-care.it/?lang=de" />
+    <link rel="alternate" hreflang="pt" href="https://ibd-care.it/?lang=pt" />
+    <link rel="alternate" hreflang="ru" href="https://ibd-care.it/?lang=ru" />
+    <link rel="alternate" hreflang="pl" href="https://ibd-care.it/?lang=pl" />
+    <link rel="alternate" hreflang="ro" href="https://ibd-care.it/?lang=ro" />
+    <link rel="alternate" hreflang="sq" href="https://ibd-care.it/?lang=sq" />
+    <link rel="alternate" hreflang="zh" href="https://ibd-care.it/?lang=zh" />
+    <link rel="alternate" hreflang="x-default" href="https://ibd-care.it/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="IBD Care" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:locale:alternate" content="fr_FR" />
+    <meta property="og:locale:alternate" content="de_DE" />
+    <meta property="og:locale:alternate" content="pt_PT" />
+    <meta property="og:url" content="https://ibd-care.it/" />
+    <meta property="og:title" content="IBD Care – Diario sintomi IBD, alimentazione e terapie" />
+    <meta property="og:description" content="App gratuita per gestire la malattia infiammatoria intestinale (Crohn, colite ulcerosa): diario sintomi, alimentazione, terapie, esami, mappa servizi e notizie IBD." />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1200&q=80" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IBD Care – Diario sintomi IBD, alimentazione e terapie" />
+    <meta name="twitter:description" content="App gratuita per gestire la malattia infiammatoria intestinale: diario sintomi, alimentazione, terapie, esami, mappa servizi e notizie IBD." />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1200&q=80" />
+
+    <!-- Verifica Google Search Console: sostituisci content con il codice fornito da Google -->
+    <meta name="google-site-verification" content="INSERISCI_IL_CODICE_DI_VERIFICA_GOOGLE" />
+
+    <!-- Dati strutturati: organizzazione e sito -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "IBD Care",
+      "url": "https://ibd-care.it/",
+      "logo": "https://ibd-care.it/favicon.svg",
+      "description": "App gratuita per gestire la malattia infiammatoria intestinale (Crohn, colite ulcerosa)."
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "IBD Care",
+      "url": "https://ibd-care.it/",
+      "inLanguage": ["it", "en", "es", "fr", "de", "pt", "ru", "pl", "ro", "sq", "zh"],
+      "publisher": { "@type": "Organization", "name": "IBD Care" }
+    }
+    </script>
+    <!-- Dati strutturati: applicazione medica -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalWebPage",
+      "name": "IBD Care",
+      "description": "App gratuita per gestire la malattia infiammatoria intestinale (Crohn, colite ulcerosa): diario sintomi, alimentazione, terapie, esami, mappa servizi e notizie IBD.",
+      "inLanguage": ["it", "en", "es", "fr", "de", "pt", "ru", "pl", "ro", "sq", "zh"],
+      "url": "https://ibd-care.it/",
+      "audience": {
+        "@type": "MedicalAudience",
+        "audienceType": "patient"
+      },
+      "isAccessibleForFree": true,
+      "about": [
+        { "@type": "MedicalCondition", "name": "Morbo di Crohn" },
+        { "@type": "MedicalCondition", "name": "Colite ulcerosa" },
+        { "@type": "MedicalCondition", "name": "Malattia infiammatoria intestinale" }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "IBD Care",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web, iOS, Android",
+      "inLanguage": ["it", "en", "es", "fr", "de", "pt", "ru", "pl", "ro", "sq", "zh"],
+      "url": "https://ibd-care.it/",
+      "description": "App gratuita per gestire la malattia infiammatoria intestinale (Crohn, colite ulcerosa): diario sintomi, alimentazione, terapie, esami, mappa servizi e notizie IBD.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "featureList": "Diario sintomi, Diario alimentazione, Gestione terapie, Esami e referti, Mappa servizi IBD, Assistente AI, Report PDF, Notizie IBD"
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

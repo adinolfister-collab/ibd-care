@@ -22,7 +22,7 @@ export default function MagazineEssay({ theme, number, eyebrow, title, caption, 
   return (
     <section className={`mb-8 md:mb-10 ${className}`}>
       <div className="relative overflow-hidden rounded-2xl border border-border">
-        <Image src={img} fittingType="fill" alt="" className="w-full h-40 md:h-56 block" />
+        <Image src={img} fittingType="fill" alt={title || eyebrow || ''} className="w-full h-40 md:h-56 block" />
         <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/35 to-primary/10" />
         {number && (
           <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-terracotta text-terracotta-foreground text-xs font-heading font-semibold tracking-wide">

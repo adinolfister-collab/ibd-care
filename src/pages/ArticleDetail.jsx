@@ -43,6 +43,21 @@ export default function ArticleDetail() {
   const deepLink = `${APP_URL}/news/${id}`;
   const locale = lang === 'it' ? 'it-IT' : undefined;
 
+  const jsonLd = article ? {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: article.title || '',
+    description: article.summary || '',
+    datePublished: article.date || undefined,
+    dateModified: article.date || undefined,
+    author: article.source ? [{ '@type': 'Organization', name: article.source }] : [{ '@type': 'Organization', name: 'IBD Care' }],
+    publisher: { '@type': 'Organization', name: 'IBD Care' },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': deepLink },
+    image: article.image || undefined,
+    inLanguage: lang,
+    url: deepLink
+  } : null;
+
   return (
     <AppLayout>
       <div className="max-w-2xl mx-auto">
@@ -72,6 +87,12 @@ export default function ArticleDetail() {
           </Card>
         ) : (
           <>
+          {jsonLd && (
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+          )}
           <PageHeader title={article.title} subtitle={article.source ? `${article.source}` : undefined} />
           <PageEditorial pageKey="article" />
           <SiteMenu />

@@ -29,7 +29,7 @@ export default function EditorialBlock({ sectionKey, align = 'left', compact = f
         <Image
           src={img}
           fittingType="fill"
-          alt=""
+          alt={title || ''}
           className={`w-full block ${compact ? 'h-32 md:h-full' : 'h-44 md:h-52'}`}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-transparent" />
