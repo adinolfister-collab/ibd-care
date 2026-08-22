@@ -78,24 +78,25 @@ const AuthenticatedApp = () => {
         <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
         <Route path="/news" element={<PageTransition><News /></PageTransition>} />
         <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
-        {/* Everything else requires login */}
+        {/* Free features (no auth, no subscription) */}
+        <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
+        <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
+        <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
+        {/* Auth-required: account management */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-          <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
-          <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
-          {/* Premium tier: auth (above) + active subscription or promo */}
-          <Route element={<SubscriptionRoute redirect={<Navigate to="/abbonamento" replace />} />}>
-            <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
-            <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
-            <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
-            <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
-            <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
-            <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
-            <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
-            <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
-            <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
-          </Route>
+        </Route>
+        {/* Premium: auth + subscription */}
+        <Route element={<SubscriptionRoute redirect={<Navigate to="/abbonamento" replace />} />}>
+          <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
+          <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
+          <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
+          <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
+          <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
+          <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
+          <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
+          <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
         </Route>
         <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />
       </Routes>

@@ -1,26 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, Lock, ScanLine } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
 import PromoBanner from '@/components/PromoBanner';
 import LanguageMenu from '@/components/LanguageMenu';
 import TopRightActions from '@/components/TopRightActions';
+import LockBadge from '@/components/LockBadge';
+import { guestSymptoms, guestFoods, syncGuestEntriesToCloud } from '@/lib/guestEntries';
+import { useToast } from '@/components/ui/use-toast';
 
-// Pages reserved to Premium subscribers. Free (registered) users can still
-// see them in the nav, but clicking redirects to the subscription page.
+// Pages reserved to Premium subscribers. Guests and free (registered) users
+// see them in the nav with a lock and clicking redirects to /abbonamento.
 const PREMIUM_ROUTES = new Set([
-  '/food',
   '/meds',
   '/records',
+  '/esami',
   '/assistant',
-  '/community',
   '/trends',
   '/symptom-charts',
   '/summary',
-  '/esami',
+  '/map',
 ]);
 
 const navItems = [
@@ -42,15 +45,52 @@ const navItems = [
 
 export default function AppLayout({ children }) {
   const { t } = useI18n();
+  const { toast } = useToast();
   const { isSubscribed } = useSubscription();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [syncingGuest, setSyncingGuest] = useState(false);
 
   const isPremium = (to) => PREMIUM_ROUTES.has(to);
   const navTo = (to) => (!isSubscribed && isPremium(to) ? '/abbonamento' : to);
 
+  // On first authenticated mount, migrate any guest entries saved on the
+  // device into the user's cloud entities, then clear the local cache. Briefly
+  // block rendering so pages load cloud data that already includes them.
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    if (!guestSymptoms.has() && !guestFoods.has()) return;
+    let cancelled = false;
+    (async () => {
+      setSyncingGuest(true);
+      try {
+        const n = await syncGuestEntriesToCloud();
+        if (!cancelled && n > 0) {
+          toast({ title: t('guest.synced_title'), description: t('guest.synced_desc') });
+        }
+      } catch {
+        /* keep local entries on failure — user can retry next mount */
+      } finally {
+        if (!cancelled) setSyncingGuest(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [isAuthenticated]);
+
   const handleLogout = async () => {
     await base44.auth.logout();
   };
+
+  if (syncingGuest) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-border border-t-primary rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">{t('guest.syncing')}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -83,7 +123,7 @@ export default function AppLayout({ children }) {
               >
                 <item.icon className="w-5 h-5 shrink-0" />
                 <span>{t(item.key)}</span>
-                {locked && <Lock className="w-3.5 h-3.5 ml-auto text-muted-foreground/70" />}
+                {locked && <LockBadge />}
               </NavLink>
             );
           })}
@@ -116,7 +156,7 @@ export default function AppLayout({ children }) {
               >
                 <item.icon className="w-4 h-4" />
                 <span>{t(item.key)}</span>
-                {locked && <Lock className="w-3 h-3 text-muted-foreground" />}
+                {locked && <LockBadge className="w-3 h-3 text-muted-foreground" />}
               </NavLink>
             );
           })}
@@ -159,7 +199,7 @@ export default function AppLayout({ children }) {
               >
                 <div className="relative">
                   <item.icon className="w-6 h-6" />
-                  {locked && <Lock className="w-3 h-3 absolute -top-1 -right-1.5 text-muted-foreground bg-card rounded-full p-0.5 box-border" />}
+                  {locked && <LockBadge variant="corner" />}
                 </div>
                 <span>{t(item.key)}</span>
               </NavLink>

@@ -9,6 +9,7 @@ import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import NewsShareButtons from '@/components/NewsShareButtons';
+import PageShareButtons from '@/components/PageShareButtons';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 import PublicFooter from '@/components/PublicFooter';
@@ -93,11 +94,16 @@ export default function News() {
         <PageHeader
           title={t('news.title')}
           subtitle={t('news.page_subtitle')}
-          action={isAdmin ? (
-            <Button onClick={() => setOpen(true)} className="rounded-xl">
-              <Plus className="w-4 h-4 mr-1.5" />{t('news.add')}
-            </Button>
-          ) : undefined}
+          action={(
+            <div className="flex items-center gap-2">
+              {isAdmin && (
+                <Button onClick={() => setOpen(true)} className="rounded-xl">
+                  <Plus className="w-4 h-4 mr-1.5" />{t('news.add')}
+                </Button>
+              )}
+              <PageShareButtons title={t('news.title')} summary={t('news.page_subtitle')} path="/news" label={t('share.page')} />
+            </div>
+          )}
         />
         <PageEditorial pageKey="news" />
 

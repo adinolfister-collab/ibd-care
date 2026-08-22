@@ -1,12 +1,17 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Users, Send, MessageSquare, Trash2, CornerDownRight, ShieldCheck, ShieldAlert, Heart, MessagesSquare, UserCircle2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
+import PageShareButtons from '@/components/PageShareButtons';
+import LanguageMenu from '@/components/LanguageMenu';
+import TopRightActions from '@/components/TopRightActions';
 import { Card, CardContent } from '@/components/ui/card';
 import VoiceButton from '@/components/VoiceButton';
 import { Button } from '@/components/ui/button';
@@ -52,6 +57,7 @@ const containsBanned = (txt) => {
 
 export default function Community() {
   const { t } = useI18n();
+  const { isAuthenticated, authChecked } = useAuth();
   const [messages, setMessages] = useState(null);
   const [text, setText] = useState('');
   const [me, setMe] = useState(null);
@@ -142,11 +148,15 @@ export default function Community() {
   const repliesOf = (id) => (messages || []).filter((m) => m.parent_id === id);
 
   return (
-    <div>
+    <div className="min-h-screen bg-background">
+      <div className="fixed top-3 right-3 z-40 flex items-center gap-2" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
+        <LanguageMenu />
+        <TopRightActions />
+      </div>
       <PageHeader
         title={t('community.title')}
         subtitle={t('community.subtitle')}
-        icon={Users}
+        action={<PageShareButtons title={t('community.title')} summary={t('community.subtitle')} path="/community" label={t('share.page')} />}
       />
       <PageEditorial pageKey="community" />
       <MagazineEssay theme="community" number="01" eyebrow="Board" title="La board">
@@ -204,20 +214,30 @@ export default function Community() {
               );
             })}
           </div>
-          <div className="flex items-end gap-2">
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder={t('community.placeholder')}
-              rows={2}
-              className="flex-1 rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-            />
-            <VoiceButton onResult={(txt) => setText((c) => (c ? c + ' ' : '') + txt)} />
-            <Button onClick={() => post(text)} disabled={!text.trim() || posting} className="h-12 px-5">
-              <Send className="w-5 h-5" />
-              <span className="hidden sm:inline">{t('community.post')}</span>
-            </Button>
-          </div>
+          {authChecked && isAuthenticated ? (
+            <div className="flex items-end gap-2">
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder={t('community.placeholder')}
+                rows={2}
+                className="flex-1 rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+              />
+              <VoiceButton onResult={(txt) => setText((c) => (c ? c + ' ' : '') + txt)} />
+              <Button onClick={() => post(text)} disabled={!text.trim() || posting} className="h-12 px-5">
+                <Send className="w-5 h-5" />
+                <span className="hidden sm:inline">{t('community.post')}</span>
+              </Button>
+            </div>
+          ) : (
+            <div className="rounded-xl bg-accent/50 border border-border px-4 py-3 text-center">
+              <p className="text-sm text-muted-foreground mb-3">{t('community.login_to_post')}</p>
+              <div className="flex justify-center gap-2">
+                <Link to="/login" className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">{t('community.login_btn')}</Link>
+                <Link to="/register" className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-accent transition-colors">{t('community.register_btn')}</Link>
+              </div>
+            </div>
+          )}
           {moderationWarning && (
             <div className="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 text-amber-800 px-3 py-2 text-xs">
               <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
@@ -231,20 +251,22 @@ export default function Community() {
           )}
 
           {/* Conversation starters */}
-          <div className="mt-3">
-            <p className="text-[11px] text-muted-foreground mb-2">{t('community.starters')}</p>
-            <div className="flex flex-wrap gap-1.5">
-              {STARTERS.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => { setText(s + ' '); }}
-                  className="text-xs px-3 py-1.5 rounded-full border border-border bg-card text-foreground hover:bg-accent transition-colors"
-                >
-                  {s}
-                </button>
-              ))}
+          {authChecked && isAuthenticated && (
+            <div className="mt-3">
+              <p className="text-[11px] text-muted-foreground mb-2">{t('community.starters')}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {STARTERS.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => { setText(s + ' '); }}
+                    className="text-xs px-3 py-1.5 rounded-full border border-border bg-card text-foreground hover:bg-accent transition-colors"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
 
@@ -309,15 +331,17 @@ export default function Community() {
                       </div>
                       <p className="text-sm mt-1 whitespace-pre-wrap break-words">{m.content}</p>
 
-                      <button
-                        onClick={() => setReplyTo(replyTo === m.id ? null : m.id)}
-                        className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                      >
-                        <CornerDownRight className="w-3.5 h-3.5" />
-                        {t('community.reply')}
-                      </button>
+                      {isAuthenticated && (
+                        <button
+                          onClick={() => setReplyTo(replyTo === m.id ? null : m.id)}
+                          className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                        >
+                          <CornerDownRight className="w-3.5 h-3.5" />
+                          {t('community.reply')}
+                        </button>
+                      )}
 
-                      {replyTo === m.id && (
+                      {isAuthenticated && replyTo === m.id && (
                         <div className="mt-2 flex items-end gap-2">
                           <textarea
                             value={replyText[m.id] || ''}

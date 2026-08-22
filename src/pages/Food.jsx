@@ -4,7 +4,10 @@ import { base44 } from '@/api/base44Client';
 import MealTemplateManager from '@/components/MealTemplateManager';
 import DietaryTips from '@/components/DietaryTips';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
+import GuestBanner from '@/components/GuestBanner';
+import { guestFoods } from '@/lib/guestEntries';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
@@ -46,6 +49,7 @@ const reactionTone = { nessuna: 'text-emerald-600', lieve: 'text-amber-600', mod
 export default function Food() {
   const { t } = useI18n();
   const { toast } = useToast();
+  const { isAuthenticated, authChecked } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -55,25 +59,53 @@ export default function Food() {
 
   const load = async () => {
     setLoading(true);
-    const data = await base44.entities.FoodEntry.list('-entry_date', 200);
-    setItems(data);
-    setLoading(false);
+    if (!isAuthenticated) {
+      setItems(guestFoods.list());
+      setLoading(false);
+      return;
+    }
+    try {
+      const data = await base44.entities.FoodEntry.list('-entry_date', 200);
+      setItems(data);
+    } catch {
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
   };
   const refresh = async () => {
+    if (!isAuthenticated) {
+      setItems(guestFoods.list());
+      return;
+    }
     const data = await base44.entities.FoodEntry.list('-entry_date', 200);
     setItems(data);
   };
   const loadTemplates = async () => {
-    const data = await base44.entities.MealTemplate.list('-created_date', 100);
-    setTemplates(data);
+    if (!isAuthenticated) return;
+    try {
+      const data = await base44.entities.MealTemplate.list('-created_date', 100);
+      setTemplates(data);
+    } catch {
+      setTemplates([]);
+    }
   };
-  useEffect(() => { load(); loadTemplates(); }, []);
+  useEffect(() => {
+    load();
+    loadTemplates();
+  }, [isAuthenticated, authChecked]);
 
   const openNew = () => { setEditing({ entry_date: todayStr(), tolerated: true }); setOpen(true); };
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
   const handleSubmit = (data) => {
     setOpen(false);
+    if (!isAuthenticated) {
+      if (editing?.id) guestFoods.update(editing.id, data);
+      else guestFoods.add(data);
+      setItems(guestFoods.list());
+      return;
+    }
     if (editing?.id) {
       const previous = items.find((it) => it.id === editing.id) || editing;
       setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...data } : it)));
@@ -92,7 +124,11 @@ export default function Food() {
         });
     }
   };
-  const handleDelete = async (id) => { await base44.entities.FoodEntry.delete(id); load(); };
+  const handleDelete = async (id) => {
+    if (!isAuthenticated) { guestFoods.remove(id); setItems(guestFoods.list()); return; }
+    await base44.entities.FoodEntry.delete(id);
+    load();
+  };
   const openFromTemplate = (tpl) => {
     setEditing({ entry_date: todayStr(), meal_type: tpl.meal_type, foods: tpl.foods, notes: tpl.notes || '', tolerated: true });
     setOpen(true);
@@ -101,7 +137,6 @@ export default function Food() {
   const updateTemplate = async (id, data) => { await base44.entities.MealTemplate.update(id, data); loadTemplates(); };
   const deleteTemplate = async (id) => { await base44.entities.MealTemplate.delete(id); loadTemplates(); };
 
-  // group by date
   const grouped = items.reduce((acc, it) => {
     (acc[it.entry_date] = acc[it.entry_date] || []).push(it);
     return acc;
@@ -115,14 +150,17 @@ export default function Food() {
         subtitle={t('food.subtitle')}
         action={
           <div className="flex gap-2">
-            <Button onClick={() => setTplMgrOpen(true)} variant="outline" className="rounded-xl"><BookMarked className="w-4 h-4 mr-1.5" />{t('food.templates')}</Button>
+            {isAuthenticated && (
+              <Button onClick={() => setTplMgrOpen(true)} variant="outline" className="rounded-xl"><BookMarked className="w-4 h-4 mr-1.5" />{t('food.templates')}</Button>
+            )}
             <Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('food.add')}</Button>
           </div>
         }
       />
       <PageEditorial pageKey="food" />
       <MagazineEssay theme="alimentazione" number="01" eyebrow="Tavolo" title="Pasti e reazioni">
-      {templates.length > 0 && (
+      {authChecked && !isAuthenticated && <GuestBanner />}
+      {isAuthenticated && templates.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
           {templates.map((tpl) => (
             <button key={tpl.id} onClick={() => openFromTemplate(tpl)} className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-accent text-accent-foreground text-sm hover:bg-accent/70 transition-colors">
@@ -182,14 +220,16 @@ export default function Food() {
         initialData={editing}
         onSubmit={handleSubmit}
       />
-      <MealTemplateManager
-        open={tplMgrOpen}
-        onOpenChange={setTplMgrOpen}
-        templates={templates}
-        onCreate={saveTemplate}
-        onUpdate={updateTemplate}
-        onDelete={deleteTemplate}
-      />
+      {isAuthenticated && (
+        <MealTemplateManager
+          open={tplMgrOpen}
+          onOpenChange={setTplMgrOpen}
+          templates={templates}
+          onCreate={saveTemplate}
+          onUpdate={updateTemplate}
+          onDelete={deleteTemplate}
+        />
+      )}
       <EditorialBlock sectionKey="food_reactions" align="right" />
     </AppLayout>
   );

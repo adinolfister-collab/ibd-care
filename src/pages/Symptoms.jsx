@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Activity, Trash2, Pencil, Lock } from 'lucide-react';
+import { Plus, Activity, Trash2, Pencil } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
-import { useSubscription } from '@/hooks/useSubscription';
+import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
+import GuestBanner from '@/components/GuestBanner';
+import { guestSymptoms } from '@/lib/guestEntries';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
@@ -16,8 +17,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import PullToRefresh from '@/components/PullToRefresh';
-
-const FREE_DAILY_LIMIT = 2;
 
 const painLocations = [
   { value: 'nessuno', label: 'Nessuno' },
@@ -47,7 +46,7 @@ const moods = [
 ];
 
 const fields = (t) => [
-  { name: 'entry_date', label: t('common.date'), type: 'date', },
+  { name: 'entry_date', label: t('common.date'), type: 'date' },
   { name: 'pain_level', label: t('symptoms.pain') + ' (0–10)', type: 'slider', min: 0, max: 10 },
   { name: 'pain_location', label: t('symptoms.pain_location'), type: 'select', options: painLocations },
   { name: 'fatigue_level', label: t('symptoms.fatigue') + ' (0–10)', type: 'slider', min: 0, max: 10 },
@@ -65,37 +64,58 @@ function todayStr() {
 export default function Symptoms() {
   const { t } = useI18n();
   const { toast } = useToast();
-  const { isSubscribed, loading: subLoading } = useSubscription();
+  const { isAuthenticated, authChecked } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
 
-  const todayCount = items.filter((it) => it.entry_date === todayStr() && !String(it.id).startsWith('temp_')).length;
-  const limitReached = !subLoading && !isSubscribed && todayCount >= FREE_DAILY_LIMIT;
-
   const load = async () => {
     setLoading(true);
-    const data = await base44.entities.SymptomEntry.list('-entry_date', 200);
-    setItems(data);
-    setLoading(false);
+    if (!isAuthenticated) {
+      setItems(guestSymptoms.list());
+      setLoading(false);
+      return;
+    }
+    try {
+      const data = await base44.entities.SymptomEntry.list('-entry_date', 200);
+      setItems(data);
+    } catch {
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
   };
   const refresh = async () => {
+    if (!isAuthenticated) {
+      setItems(guestSymptoms.list());
+      return;
+    }
     const data = await base44.entities.SymptomEntry.list('-entry_date', 200);
     setItems(data);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, [isAuthenticated, authChecked]);
 
   const openNew = () => {
-    if (limitReached) return;
     setEditing({ entry_date: todayStr() });
     setOpen(true);
   };
-  const openEdit = (item) => { setEditing(item); setOpen(true); };
+  const openEdit = (item) => {
+    setEditing(item);
+    setOpen(true);
+  };
 
   const handleSubmit = (data) => {
     setOpen(false);
     const payload = { ...data, pain_level: data.pain_level ?? 0, fatigue_level: data.fatigue_level ?? 0 };
+    if (!isAuthenticated) {
+      if (editing?.id) guestSymptoms.update(editing.id, payload);
+      else guestSymptoms.add(payload);
+      setItems(guestSymptoms.list());
+      return;
+    }
     if (editing?.id) {
       const previous = items.find((it) => it.id === editing.id) || editing;
       setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
@@ -118,6 +138,11 @@ export default function Symptoms() {
   };
 
   const handleDelete = async (id) => {
+    if (!isAuthenticated) {
+      guestSymptoms.remove(id);
+      setItems(guestSymptoms.list());
+      return;
+    }
     await base44.entities.SymptomEntry.delete(id);
     load();
   };
@@ -128,32 +153,14 @@ export default function Symptoms() {
         title={t('symptoms.title')}
         subtitle={t('symptoms.subtitle')}
         action={
-          limitReached ? (
-            <Link to="/abbonamento">
-              <Button className="rounded-xl" variant="outline">
-                <Lock className="w-4 h-4 mr-1.5" /> Passa a Premium
-              </Button>
-            </Link>
-          ) : (
-            <Button onClick={openNew} className="rounded-xl">
-              <Plus className="w-4 h-4 mr-1.5" />{t('symptoms.add')}
-            </Button>
-          )
+          <Button onClick={openNew} className="rounded-xl">
+            <Plus className="w-4 h-4 mr-1.5" />{t('symptoms.add')}
+          </Button>
         }
       />
       <PageEditorial pageKey="symptoms" />
       <MagazineEssay theme="sintomi" number="01" eyebrow="Diario" title="Le tue registrazioni">
-      {limitReached && (
-        <Card className="mb-4 border-amber-200 bg-amber-50 border shadow-sm">
-          <CardContent className="p-4 flex items-start gap-3">
-            <Lock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-            <div className="text-sm">
-              <p className="font-medium text-amber-800">Hai raggiunto il limite gratuito di {FREE_DAILY_LIMIT} inserimenti al giorno.</p>
-              <p className="text-amber-700 mt-0.5">Con <Link to="/abbonamento" className="font-medium underline">IBD Care Premium</Link> registri sintomi, alimenti, farmaci e molto altro senza limiti.</p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {authChecked && !isAuthenticated && <GuestBanner />}
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
