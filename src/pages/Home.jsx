@@ -95,7 +95,7 @@ export default function Home() {
       <EditorialSlider />
 
       {/* N. 01 — Stato di oggi */}
-      <MagazineEssay theme="sintomi" number="01" eyebrow="Diario · oggi" title={t('home.today_status')}>
+      <MagazineEssay theme="sintomi" number="01" eyebrow="Diario · oggi" title={t('home.today_status')} to="/symptoms">
         <Card className="border-0 shadow-sm bg-gradient-to-br from-primary/5 to-accent/40">
           <CardContent className="p-6">
             {todaySymptom ? (
@@ -138,7 +138,7 @@ export default function Home() {
       </MagazineEssay>
 
       {/* N. 03 — Promemoria terapie */}
-      <MagazineEssay theme="terapie" number="03" eyebrow="Cura quotidiana" title={t('home.med_reminders')}>
+      <MagazineEssay theme="terapie" number="03" eyebrow="Cura quotidiana" title={t('home.med_reminders')} to="/meds">
         <Card className="border border-border shadow-sm bg-card">
           <CardContent className="p-4">
             {meds.length === 0 ? (
@@ -161,7 +161,7 @@ export default function Home() {
       </MagazineEssay>
 
       {/* N. 04 — Registrazioni recenti */}
-      <MagazineEssay theme="serena" number="04" eyebrow="Cronologia" title={t('home.recent')}>
+      <MagazineEssay theme="serena" number="04" eyebrow="Cronologia" title={t('home.recent')} to="/symptoms">
         <Card className="border border-border shadow-sm bg-card">
           <CardContent className="p-4">
             {recent.length === 0 ? (
@@ -188,7 +188,7 @@ export default function Home() {
         <NewsIBD />
       </div>
       </PullToRefresh>
-      <EditorialBlock sectionKey="home_insight" align="right" number="05" />
+      <EditorialBlock sectionKey="home_insight" align="right" number="05" to="/summary" />
     </AppLayout>
   );
 }
