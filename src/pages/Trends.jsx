@@ -10,6 +10,7 @@ import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
 import MealSpikes from '@/components/MealSpikes';
+import DiseaseCourse from '@/components/DiseaseCourse';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -312,6 +313,8 @@ export default function Trends() {
           ))}
 
           <MealSpikes series={series} />
+
+          <DiseaseCourse entries={entries} range={range} />
 
           {overlay && (
             <Card>
