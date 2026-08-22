@@ -11,8 +11,6 @@ import EntityFormDialog from '@/components/EntityFormDialog';
 import NewsShareButtons from '@/components/NewsShareButtons';
 import PageShareButtons from '@/components/PageShareButtons';
 import CopyLinkBox from '@/components/CopyLinkBox';
-import TopRightActions from '@/components/TopRightActions';
-import LanguageMenu from '@/components/LanguageMenu';
 import AppLayout from '@/components/AppLayout';
 import SiteMenu from '@/components/SiteMenu';
 import PublicFooter from '@/components/PublicFooter';
@@ -34,7 +32,7 @@ const LANGS = [
   { code: 'zh', label: '🇨🇳 ZH' },
 ];
 
-const REFRESH_MS = 5 * 60 * 1000; // auto-aggiornamento ogni 5 minuti
+const REFRESH_MS = 5 * 60 * 1000;
 
 const fields = () => [
   { name: 'title', label: 'Titolo', type: 'text' },
@@ -45,9 +43,7 @@ const fields = () => [
   { name: 'lang', label: 'Lingua', type: 'select', options: LANGS.map((l) => ({ value: l.code, label: l.label })) },
 ];
 
-// Pagina Notizie IBD pubblica: elenco con aggiornamento automatico,
-// filtro per lingua e inserimento admin in tutte le 6 lingue.
-export default function News() {
+export default function IBDNews() {
   const { t, lang } = useI18n();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
