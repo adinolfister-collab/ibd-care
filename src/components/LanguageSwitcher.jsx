@@ -14,6 +14,7 @@ const LANGS = [
   { code: 'pl', label: 'Polski' },
   { code: 'ro', label: 'Română' },
   { code: 'sq', label: 'Shqip' },
+  { code: 'zh', label: '中文' },
 ];
 
 export default function LanguageSwitcher({ className }) {

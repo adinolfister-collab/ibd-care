@@ -14,6 +14,7 @@ const LANGS = [
   { code: 'pl', label: 'Polski', flag: '🇵🇱' },
   { code: 'ro', label: 'Română', flag: '🇷🇴' },
   { code: 'sq', label: 'Shqip', flag: '🇦🇱' },
+  { code: 'zh', label: '中文', flag: '🇨🇳' },
 ];
 
 // Pulsante unico selettore lingue con icona a colori (gradiente

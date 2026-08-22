@@ -31,6 +31,7 @@ const LANGS = [
   { code: 'pl', label: '🇵🇱 PL' },
   { code: 'ro', label: '🇷🇴 RO' },
   { code: 'sq', label: '🇦🇱 SQ' },
+  { code: 'zh', label: '🇨🇳 ZH' },
 ];
 
 const REFRESH_MS = 5 * 60 * 1000; // auto-aggiornamento ogni 5 minuti

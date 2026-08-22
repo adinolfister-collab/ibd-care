@@ -1,4 +1,4 @@
-export const SUPPORTED_LANGS = ['it', 'en', 'es', 'fr', 'de', 'ru', 'pl', 'ro', 'sq'] as const;
+export const SUPPORTED_LANGS = ['it', 'en', 'es', 'fr', 'de', 'pt', 'ru', 'pl', 'ro', 'sq', 'zh'] as const;
 
 export const ARTICLE_JSON_SCHEMA = {
   type: 'object',
