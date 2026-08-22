@@ -10,6 +10,7 @@ import GuestBanner from '@/components/GuestBanner';
 import { guestFoods } from '@/lib/guestEntries';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import SiteMenu from '@/components/SiteMenu';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
@@ -158,6 +159,7 @@ export default function Food() {
         }
       />
       <PageEditorial pageKey="food" />
+      <SiteMenu />
       <MagazineEssay theme="alimentazione" number="01" eyebrow="Tavolo" title="Pasti e reazioni">
       {authChecked && !isAuthenticated && <GuestBanner />}
       {isAuthenticated && templates.length > 0 && (

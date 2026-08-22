@@ -12,6 +12,8 @@ import EmptyState from '@/components/EmptyState';
 import PageShareButtons from '@/components/PageShareButtons';
 import LanguageMenu from '@/components/LanguageMenu';
 import TopRightActions from '@/components/TopRightActions';
+import AppLayout from '@/components/AppLayout';
+import SiteMenu from '@/components/SiteMenu';
 import { Card, CardContent } from '@/components/ui/card';
 import VoiceButton from '@/components/VoiceButton';
 import { Button } from '@/components/ui/button';
@@ -148,17 +150,14 @@ export default function Community() {
   const repliesOf = (id) => (messages || []).filter((m) => m.parent_id === id);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="fixed top-3 right-3 z-40 flex items-center gap-2" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
-        <LanguageMenu />
-        <TopRightActions />
-      </div>
+    <AppLayout>
       <PageHeader
         title={t('community.title')}
         subtitle={t('community.subtitle')}
         action={<PageShareButtons title={t('community.title')} summary={t('community.subtitle')} path="/community" label={t('share.page')} />}
       />
       <PageEditorial pageKey="community" />
+      <SiteMenu />
       <MagazineEssay theme="community" number="01" eyebrow="Board" title="La board">
       {/* Solidarity card */}
       <Card className="mb-5 border-primary/20 bg-primary/5">
@@ -399,6 +398,6 @@ export default function Community() {
       )}
       </MagazineEssay>
       <EditorialBlock sectionKey="community_voice" align="right" />
-    </div>
+    </AppLayout>
   );
 }

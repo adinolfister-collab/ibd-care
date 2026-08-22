@@ -9,6 +9,8 @@ import LanguageMenu from '@/components/LanguageMenu';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
+import AppLayout from '@/components/AppLayout';
+import SiteMenu from '@/components/SiteMenu';
 import { Card, CardContent } from '@/components/ui/card';
 
 const APP_URL = 'https://ibd-care.it';
@@ -42,12 +44,8 @@ export default function ArticleDetail() {
   const locale = lang === 'it' ? 'it-IT' : undefined;
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="fixed top-3 right-3 z-40 flex items-center gap-2" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
-        <LanguageMenu />
-        <TopRightActions />
-      </div>
-      <div className="max-w-2xl mx-auto px-4 py-6">
+    <AppLayout>
+      <div className="max-w-2xl mx-auto">
         <Link
           to="/news"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline mb-4"
@@ -76,6 +74,7 @@ export default function ArticleDetail() {
           <>
           <PageHeader title={article.title} subtitle={article.source ? `${article.source}` : undefined} />
           <PageEditorial pageKey="article" />
+          <SiteMenu />
           <Card className="border-0 shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4">
@@ -124,6 +123,6 @@ export default function ArticleDetail() {
         )}
         <EditorialBlock sectionKey="article_share" align="right" />
       </div>
-    </div>
+    </AppLayout>
   );
 }

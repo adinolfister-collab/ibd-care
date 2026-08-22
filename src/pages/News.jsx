@@ -13,6 +13,8 @@ import PageShareButtons from '@/components/PageShareButtons';
 import CopyLinkBox from '@/components/CopyLinkBox';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
+import AppLayout from '@/components/AppLayout';
+import SiteMenu from '@/components/SiteMenu';
 import PublicFooter from '@/components/PublicFooter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -85,13 +87,8 @@ export default function News() {
   const handleDelete = async (id) => { try { await base44.entities.NewsArticle.delete(id); } catch (e) {} };
 
   return (
-    <div className="min-h-screen bg-background pb-16">
-      <div className="fixed top-3 right-3 z-40 flex items-center gap-2" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
-        <LanguageMenu />
-        <TopRightActions />
-      </div>
-
-      <div className="px-4 md:px-10 py-6 md:py-10 max-w-3xl mx-auto">
+    <AppLayout>
+      <div className="max-w-3xl mx-auto">
         <PageHeader
           title={t('news.title')}
           subtitle={t('news.page_subtitle')}
@@ -107,6 +104,7 @@ export default function News() {
           )}
         />
         <PageEditorial pageKey="news" />
+        <SiteMenu />
         <CopyLinkBox url="https://ibd-care.it/news" />
 
         <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
@@ -176,7 +174,7 @@ export default function News() {
       </div>
 
       <PublicFooter />
-    </div>
+    </AppLayout>
   );
 }
 

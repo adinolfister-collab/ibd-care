@@ -40,7 +40,7 @@ export default function SiteMenu() {
   const { isAuthenticated } = useAuth();
 
   const isLocked = (item) =>
-    (item.premium && !isSubscribed) || (item.account && !isAuthenticated);
+    !isAuthenticated && (item.premium || item.account);
 
   return (
     <section className="my-8 md:my-10">
@@ -59,12 +59,9 @@ export default function SiteMenu() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {ITEMS.map((item) => {
           const locked = isLocked(item);
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3.5 shadow-sm hover:shadow-md hover:border-terracotta/50 transition-all"
-            >
+          const base = 'group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3.5 shadow-sm transition-all';
+          const inner = (
+            <>
               <span className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center shrink-0 group-hover:bg-terracotta/15 transition-colors">
                 <item.icon className="w-5 h-5 text-primary" />
               </span>
@@ -74,6 +71,23 @@ export default function SiteMenu() {
               {locked && (
                 <Lock className="w-4 h-4 text-terracotta shrink-0" aria-label={t('home.locked') || 'Riservato'} />
               )}
+            </>
+          );
+          if (locked) {
+            return (
+              <div
+                key={item.to}
+                aria-disabled="true"
+                title={t('home.locked') || 'Riservato'}
+                className={cn(base, 'cursor-default opacity-80 hover:shadow-sm')}
+              >
+                {inner}
+              </div>
+            );
+          }
+          return (
+            <Link key={item.to} to={item.to} className={cn(base, 'hover:shadow-md hover:border-terracotta/50')}>
+              {inner}
             </Link>
           );
         })}

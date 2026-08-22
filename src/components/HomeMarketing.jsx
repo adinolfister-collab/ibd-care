@@ -12,6 +12,8 @@ import EditorialSlider from '@/components/EditorialSlider';
 import PublicFooter from '@/components/PublicFooter';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
+import AppLayout from '@/components/AppLayout';
+import SiteMenu from '@/components/SiteMenu';
 import { Button } from '@/components/ui/button';
 
 const MODULES = [
@@ -27,16 +29,12 @@ const MODULES = [
 export default function HomeMarketing() {
   const { t } = useI18n();
   return (
-    <div className="min-h-screen bg-background pb-16">
-      <div className="fixed top-3 right-3 z-40 flex items-center gap-2" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
-        <LanguageMenu />
-        <TopRightActions />
-      </div>
-
-      <div className="px-4 md:px-10 py-6 md:py-10 max-w-4xl mx-auto">
+    <AppLayout>
+      <div className="max-w-4xl mx-auto">
         <PageHeader title={t('app.name')} subtitle={t('app.tagline')} />
         <PageEditorial pageKey="home" />
         <EditorialSlider />
+        <SiteMenu />
 
         <MagazineEssay theme="serena" number="01" eyebrow="Cosa trovi" title="Sei moduli, un unico diario">
           <div className="grid sm:grid-cols-2 gap-4">
@@ -92,6 +90,6 @@ export default function HomeMarketing() {
       </div>
 
       <PublicFooter />
-    </div>
+    </AppLayout>
   );
 }

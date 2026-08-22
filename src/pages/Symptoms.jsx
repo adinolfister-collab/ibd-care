@@ -8,6 +8,7 @@ import GuestBanner from '@/components/GuestBanner';
 import { guestSymptoms } from '@/lib/guestEntries';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import SiteMenu from '@/components/SiteMenu';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
@@ -159,6 +160,7 @@ export default function Symptoms() {
         }
       />
       <PageEditorial pageKey="symptoms" />
+      <SiteMenu />
       <MagazineEssay theme="sintomi" number="01" eyebrow="Diario" title="Le tue registrazioni">
       {authChecked && !isAuthenticated && <GuestBanner />}
       <PullToRefresh onRefresh={refresh}>

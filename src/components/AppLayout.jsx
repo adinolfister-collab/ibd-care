@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine } from 'lucide-react';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/lib/AuthContext';
@@ -10,6 +10,7 @@ import PromoBanner from '@/components/PromoBanner';
 import LanguageMenu from '@/components/LanguageMenu';
 import TopRightActions from '@/components/TopRightActions';
 import LockBadge from '@/components/LockBadge';
+import NativeAppButton from '@/components/NativeAppButton';
 import { guestSymptoms, guestFoods, syncGuestEntriesToCloud } from '@/lib/guestEntries';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -51,8 +52,9 @@ export default function AppLayout({ children }) {
   const navigate = useNavigate();
   const [syncingGuest, setSyncingGuest] = useState(false);
 
-  const isPremium = (to) => PREMIUM_ROUTES.has(to);
-  const navTo = (to) => (!isSubscribed && isPremium(to) ? '/abbonamento' : to);
+  const ACCOUNT_ROUTES = new Set(['/account', '/settings']);
+  const isLocked = (to) =>
+    !isAuthenticated && (PREMIUM_ROUTES.has(to) || ACCOUNT_ROUTES.has(to));
 
   // On first authenticated mount, migrate any guest entries saved on the
   // device into the user's cloud entities, then clear the local cache. Briefly
@@ -107,67 +109,93 @@ export default function AppLayout({ children }) {
         </div>
         <nav className="flex-1 px-3 space-y-1">
           {navItems.map((item) => {
-            const locked = !isSubscribed && isPremium(item.to);
+            const locked = isLocked(item.to);
+            if (locked) {
+              return (
+                <div key={item.to} className="flex items-center gap-3 px-4 py-3 rounded-xl text-base text-muted-foreground opacity-70 cursor-default">
+                  <item.icon className="w-5 h-5 shrink-0" />
+                  <span>{t(item.key)}</span>
+                  <LockBadge />
+                </div>
+              );
+            }
             return (
               <NavLink
                 key={item.to}
-                to={navTo(item.to)}
+                to={item.to}
                 end={item.exact}
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-colors',
-                    locked && 'opacity-60',
                     isActive ? 'bg-primary text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                   )
                 }
               >
                 <item.icon className="w-5 h-5 shrink-0" />
                 <span>{t(item.key)}</span>
-                {locked && <LockBadge />}
               </NavLink>
             );
           })}
         </nav>
-        <button
-          onClick={handleLogout}
-          className="m-3 flex items-center gap-3 px-4 py-3 rounded-xl text-base text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-        >
-          <LogOut className="w-5 h-5" />
-          <span>{t('settings.logout')}</span>
-        </button>
+        {isAuthenticated ? (
+          <button
+            onClick={handleLogout}
+            className="m-3 flex items-center gap-3 px-4 py-3 rounded-xl text-base text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+            <span>{t('settings.logout')}</span>
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            className="m-3 flex items-center gap-3 px-4 py-3 rounded-xl text-base text-primary hover:bg-accent transition-colors"
+          >
+            <LogIn className="w-5 h-5" />
+            <span>{t('auth.login_btn')}</span>
+          </Link>
+        )}
       </aside>
 
       {/* Mobile secondary top bar */}
       <div className="md:hidden flex items-center gap-2 px-4 py-2 border-b border-border bg-card/90 backdrop-blur sticky top-0 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="flex-1 flex items-center gap-2 overflow-x-auto">
           {navItems.slice(5).map((item) => {
-            const locked = !isSubscribed && isPremium(item.to);
+            const locked = isLocked(item.to);
+            if (locked) {
+              return (
+                <div key={item.to} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap bg-accent text-muted-foreground opacity-70 cursor-default">
+                  <item.icon className="w-4 h-4" />
+                  <span>{t(item.key)}</span>
+                  <LockBadge className="w-3 h-3 text-muted-foreground" />
+                </div>
+              );
+            }
             return (
               <NavLink
                 key={item.to}
-                to={navTo(item.to)}
+                to={item.to}
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors',
-                    locked && 'opacity-60',
                     isActive ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
                   )
                 }
               >
                 <item.icon className="w-4 h-4" />
                 <span>{t(item.key)}</span>
-                {locked && <LockBadge className="w-3 h-3 text-muted-foreground" />}
               </NavLink>
             );
           })}
         </div>
         <LanguageMenu />
+        <NativeAppButton />
         <TopRightActions />
       </div>
 
       {/* Desktop top-right actions */}
       <div className="hidden md:flex fixed top-4 right-6 z-40">
         <LanguageMenu />
+        <NativeAppButton />
         <TopRightActions />
       </div>
 
@@ -183,23 +211,32 @@ export default function AppLayout({ children }) {
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-card border-t border-border" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <div className="grid grid-cols-5">
           {navItems.slice(0, 5).map((item) => {
-            const locked = !isSubscribed && isPremium(item.to);
+            const locked = isLocked(item.to);
+            if (locked) {
+              return (
+                <div key={item.to} className="flex flex-col items-center justify-center gap-1 py-2.5 text-xs text-muted-foreground opacity-70 cursor-default">
+                  <div className="relative">
+                    <item.icon className="w-6 h-6" />
+                    <LockBadge variant="corner" />
+                  </div>
+                  <span>{t(item.key)}</span>
+                </div>
+              );
+            }
             return (
               <NavLink
                 key={item.to}
-                to={navTo(item.to)}
+                to={item.to}
                 end={item.exact}
                 className={({ isActive }) =>
                   cn(
                     'flex flex-col items-center justify-center gap-1 py-2.5 text-xs transition-colors',
-                    locked && 'opacity-60',
                     isActive ? 'text-primary font-medium' : 'text-muted-foreground'
                   )
                 }
               >
                 <div className="relative">
                   <item.icon className="w-6 h-6" />
-                  {locked && <LockBadge variant="corner" />}
                 </div>
                 <span>{t(item.key)}</span>
               </NavLink>
