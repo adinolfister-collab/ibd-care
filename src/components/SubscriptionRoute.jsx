@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import { trackPremiumAttempt } from '@/lib/premiumTracking';
 
 const DefaultFallback = () => (
   <div className="fixed inset-0 flex items-center justify-center">
@@ -16,12 +17,21 @@ const DefaultFallback = () => (
 export default function SubscriptionRoute({ fallback = <DefaultFallback />, redirect }) {
   const { isLoadingAuth, authChecked, isAuthenticated, authError, checkUserAuth } = useAuth();
   const { isSubscribed, loading: subLoading } = useSubscription();
+  const location = useLocation();
 
   useEffect(() => {
     if (!authChecked && !isLoadingAuth) {
       checkUserAuth();
     }
   }, [authChecked, isLoadingAuth, checkUserAuth]);
+
+  // Traccia il tentativo di accesso a una funzione premium da parte di un
+  // utente autenticato ma non abbonato, prima del redirect al paywall.
+  useEffect(() => {
+    if (isAuthenticated && !subLoading && !isSubscribed) {
+      trackPremiumAttempt(location.pathname, 'route_guard');
+    }
+  }, [isAuthenticated, subLoading, isSubscribed, location.pathname]);
 
   if (isLoadingAuth || !authChecked) {
     return fallback;

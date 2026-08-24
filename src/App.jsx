@@ -29,6 +29,7 @@ import Contact from '@/pages/Contact';
 import ArticleDetail from '@/pages/ArticleDetail';
 import IBDNews from '@/pages/IBDNews';
 import Esami from '@/pages/Esami';
+import AdminConversions from '@/pages/AdminConversions';
 import SubscriptionRoute from '@/components/SubscriptionRoute';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -88,6 +89,7 @@ const AuthenticatedApp = () => {
           {/* Auth-required: account management */}
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
+          <Route path="/admin/conversioni" element={<PageTransition><AdminConversions /></PageTransition>} />
           {/* Premium: auth + subscription */}
           <Route element={<SubscriptionRoute redirect={<Navigate to="/abbonamento" replace />} />}>
             <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/lib/AuthContext';
@@ -49,7 +49,7 @@ export default function AppLayout({ children }) {
   const { t } = useI18n();
   const { toast } = useToast();
   const { isSubscribed } = useSubscription();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [syncingGuest, setSyncingGuest] = useState(false);
 
@@ -137,6 +137,20 @@ export default function AppLayout({ children }) {
               </NavLink>
             );
           })}
+          {user?.role === 'admin' && (
+            <NavLink
+              to="/admin/conversioni"
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-colors mt-1 border-t border-border pt-4',
+                  isActive ? 'bg-primary text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                )
+              }
+            >
+              <TrendingUp className="w-5 h-5 shrink-0" />
+              <span>Conversioni</span>
+            </NavLink>
+          )}
         </nav>
         {isAuthenticated ? (
           <button
