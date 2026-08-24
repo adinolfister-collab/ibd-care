@@ -29,6 +29,7 @@ import Contact from '@/pages/Contact';
 import ArticleDetail from '@/pages/ArticleDetail';
 import IBDNews from '@/pages/IBDNews';
 import Esami from '@/pages/Esami';
+import Correlazioni from '@/pages/Correlazioni';
 import AdminConversions from '@/pages/AdminConversions';
 import SubscriptionRoute from '@/components/SubscriptionRoute';
 import Login from '@/pages/Login';
@@ -97,6 +98,7 @@ const AuthenticatedApp = () => {
             <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
             <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
             <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
+            <Route path="/correlazioni" element={<PageTransition><Correlazioni /></PageTransition>} />
             <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
             <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
             <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />

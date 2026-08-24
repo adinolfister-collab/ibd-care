@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp, GitCompare } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/lib/AuthContext';
@@ -25,6 +25,7 @@ const PREMIUM_ROUTES = new Set([
   '/symptom-charts',
   '/summary',
   '/map',
+  '/correlazioni',
 ]);
 
 const navItems = [
@@ -39,6 +40,7 @@ const navItems = [
   { to: '/community', key: 'nav.community', icon: Users },
   { to: '/trends', key: 'nav.trends', icon: LineChartIcon },
   { to: '/symptom-charts', key: 'nav.symptom_charts', icon: BarChart3 },
+  { to: '/correlazioni', key: 'nav.correlazioni', icon: GitCompare },
   { to: '/map', key: 'nav.map', icon: MapPin },
   { to: '/summary', key: 'nav.summary', icon: FileBarChart },
   { to: '/account', key: 'settings.account', icon: User },

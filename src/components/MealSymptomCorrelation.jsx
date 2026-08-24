@@ -3,6 +3,7 @@ import { Utensils, Flame, AlertTriangle, Activity } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
+import { splitItems } from '@/lib/correlationStats';
 
 const R_TONE = { nessuna: 'text-emerald-600', lieve: 'text-amber-600', moderata: 'text-orange-600', severa: 'text-rose-500' };
 const R_LABEL = { nessuna: 'Nessuna', lieve: 'Lieve', moderata: 'Moderata', severa: 'Severa' };
@@ -13,13 +14,6 @@ const SEVERITY = { nessuna: 0, lieve: 1, moderata: 2, severa: 3 };
 function isS(sym) {
   if (!sym) return false;
   return (sym.pain_level ?? 0) >= 5 || (sym.fatigue_level ?? 0) >= 5 || (sym.bowel_movements_count ?? 0) >= 5 || sym.blood;
-}
-
-function splitItems(foods) {
-  return String(foods || '')
-    .split(/[\n,;·•]+/)
-    .map((x) => x.trim())
-    .filter(Boolean);
 }
 
 function SymBadges({ sym, t }) {

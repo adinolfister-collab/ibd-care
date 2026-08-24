@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Newspaper, Users, Activity, Utensils, Info, Mail, CreditCard,
   Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin,
-  FileBarChart, Settings as SettingsIcon, User, Lock,
+  FileBarChart, Settings as SettingsIcon, User, Lock, GitCompare,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -27,6 +27,7 @@ const ITEMS = [
   { to: '/esami', key: 'nav.esami', icon: ScanLine, premium: true },
   { to: '/trends', key: 'nav.trends', icon: LineChart, premium: true },
   { to: '/symptom-charts', key: 'nav.symptom_charts', icon: BarChart3, premium: true },
+  { to: '/correlazioni', key: 'nav.correlazioni', icon: GitCompare, premium: true },
   { to: '/assistant', key: 'nav.assistant', icon: Bot, premium: true },
   { to: '/map', key: 'nav.map', icon: MapPin, premium: true },
   { to: '/summary', key: 'nav.summary', icon: FileBarChart, premium: true },
