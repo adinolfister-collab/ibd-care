@@ -15,6 +15,7 @@ import SiteMenu from '@/components/SiteMenu';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
+import PremiumReminderBanner from '@/components/PremiumReminderBanner';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -180,6 +181,7 @@ export default function Symptoms() {
         <EmptyState icon={Activity} title={t('common.empty')} description={t('symptoms.subtitle')} />
       ) : (
         <div className="space-y-3">
+          {!isSubscribed && <PremiumReminderBanner />}
           {!isSubscribed && (
             <div className="flex items-center gap-2 rounded-xl border border-border bg-accent/40 px-3 py-2 text-xs text-muted-foreground">
               <Crown className="w-3.5 h-3.5 text-terracotta shrink-0" />
