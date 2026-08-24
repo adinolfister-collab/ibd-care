@@ -24,6 +24,7 @@
           "with": {
             "function_name": "notifyVisitorAccess",
             "args": {
+              "token": "vc_notify_7e3a9f2c1b8d4a6f5e0c2b1a8d6f4e2c",
               "event_type": "${ .trigger.event_type }",
               "user_id": "${ .trigger.user_id }",
               "email": "${ .trigger.email }",
