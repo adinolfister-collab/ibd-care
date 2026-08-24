@@ -67,12 +67,31 @@
     },
     {
       "function_name": "scanMedicalDocument",
-      "description": "Legge un documento medico (PDF/immagine, file_url) e ne estrae sezione, data e campi (markers, reperti, farmaco) per catalogarlo in archivio. Passa solo file_url."
+      "description": "Legge un documento medico (PDF/immagine) e ne estrae sezione, data e campi per catalogarlo in archivio"
     },
     {
       "function_name": "generateMedicalReport",
-      "description": "Genera un report di sintesi dall'archivio referti dell'utente in un range di date. Parametri: from (YYYY-MM-DD), to (YYYY-MM-DD), focus (all|esami|marker|andamento)."
+      "description": "Genera un report di sintesi dall'archivio referti dell'utente in un range di date"
     }
   ],
+  "context_files": [],
+  "app_user_connector_configs": [],
+  "selected_skill_names": [],
+  "selected_workspace_skill_ids": [],
+  "model": "automatic",
+  "whatsapp_greeting": null,
+  "telegram_greeting": null,
+  "line_greeting": null,
+  "memory_config": {
+    "enabled": true,
+    "scope": "both",
+    "include_other_conversation_context": false,
+    "instructions": null
+  },
+  "voice_config": {
+    "voice_id": null
+  },
+  "emails_settings": null,
+  "allow_anonymous_access": false,
   "name": "assistente"
 }
