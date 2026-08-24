@@ -6,20 +6,23 @@ import {
 
 const FREE_FEATURES = [
   { name: 'News IBD', desc: 'Articoli e aggiornamenti sulla patologia.' },
-  { name: 'Diario sintomi', desc: 'Registra e rivedi lo storico dei sintomi giornalieri.' },
-  { name: 'Diario alimentare', desc: 'Annota pasti e reazioni e consulta lo storico.' },
+  { name: 'Diario sintomi', desc: 'Registra i sintomi e rivedi lo storico degli ultimi 30 giorni.' },
+  { name: 'Diario alimentare', desc: 'Annota pasti e reazioni e consulta lo storico degli ultimi 30 giorni.' },
   { name: 'Community', desc: 'Partecipa alle discussioni con la community.' },
   { name: 'Account e impostazioni', desc: 'Gestione profilo, lingua e preferenze.' },
 ];
 
 const PREMIUM_FEATURES = [
+  { name: 'Storico completo', desc: 'Visualizzazione dello storico senza limiti di tempo, oltre i 30 giorni, per sintomi e alimentazione.' },
   { name: 'Terapie', desc: 'Gestione farmaci e promemoria di assunzione.' },
   { name: 'Referti medici', desc: 'Archivio sicuro dei tuoi documenti clinici.' },
   { name: 'Esami', desc: 'Scansione e confronto dei referti nel tempo.' },
   { name: 'Andamento & grafici', desc: "Grafici dei sintomi e decorso dell'anno." },
+  { name: 'Correlazione pasti-sintomi', desc: 'Analisi automatica dei legami tra alimentazione e sintomi.' },
+  { name: 'Report settimanale e mensile', desc: 'Sintesi periodiche pronte per la visita.' },
+  { name: 'Riepilogo & export PDF', desc: 'Report personalizzati per la visita specialistica.' },
   { name: 'Assistente AI', desc: 'Supporto personalizzato e risposte sull\'IBD.' },
   { name: 'Mappa servizi', desc: 'Centri IBD, farmacie e bagni nelle vicinanze.' },
-  { name: 'Riepilogo & export PDF', desc: 'Report pronti per la visita specialistica.' },
   { name: 'Modelli pasti e suggerimenti', desc: 'Template alimentari e consigli alimentari premium.' },
 ];
 

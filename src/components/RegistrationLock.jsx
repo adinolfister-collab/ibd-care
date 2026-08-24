@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Lock } from 'lucide-react';
+import { Crown } from 'lucide-react';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from '@/components/ui/dialog';
@@ -18,7 +18,7 @@ export default function RegistrationLock({ description }) {
         className="w-full flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-4 text-left shadow-sm hover:border-terracotta/50 transition-colors"
       >
         <span className="w-10 h-10 rounded-xl bg-terracotta/15 flex items-center justify-center shrink-0">
-          <Lock className="w-5 h-5 text-terracotta" />
+          <Crown className="w-5 h-5 text-terracotta" />
         </span>
         <span className="flex-1 min-w-0">
           <span className="block font-heading font-medium text-foreground">Registrati per rivedere i tuoi dati</span>

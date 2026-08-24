@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Activity, Trash2, Pencil } from 'lucide-react';
+import { Plus, Activity, Trash2, Pencil, Crown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
 import RegistrationLock from '@/components/RegistrationLock';
+import { useSubscription } from '@/hooks/useSubscription';
 import { guestSymptoms } from '@/lib/guestEntries';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -67,6 +69,7 @@ export default function Symptoms() {
   const { t } = useI18n();
   const { toast } = useToast();
   const { isAuthenticated, authChecked } = useAuth();
+  const { isSubscribed } = useSubscription();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -149,6 +152,9 @@ export default function Symptoms() {
     load();
   };
 
+  const cutoff = (() => { const d = new Date(); d.setDate(d.getDate() - 30); return d.toISOString().slice(0, 10); })();
+  const displayItems = isSubscribed ? items : items.filter((it) => (it.entry_date || '') >= cutoff);
+
   return (
     <AppLayout>
       <PageHeader
@@ -170,11 +176,17 @@ export default function Symptoms() {
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
-      ) : items.length === 0 ? (
+      ) : displayItems.length === 0 ? (
         <EmptyState icon={Activity} title={t('common.empty')} description={t('symptoms.subtitle')} />
       ) : (
         <div className="space-y-3">
-          {items.map((it) => (
+          {!isSubscribed && (
+            <div className="flex items-center gap-2 rounded-xl border border-border bg-accent/40 px-3 py-2 text-xs text-muted-foreground">
+              <Crown className="w-3.5 h-3.5 text-terracotta shrink-0" />
+              <span>Storico limitato agli ultimi 30 giorni. <Link to="/abbonamento" className="font-medium text-terracotta underline-offset-2 hover:underline">Premium</Link> sblocca lo storico completo.</span>
+            </div>
+          )}
+          {displayItems.map((it) => (
             <Card key={it.id} className="border-0 shadow-sm">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between gap-3">

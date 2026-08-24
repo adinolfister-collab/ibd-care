@@ -154,7 +154,9 @@ export default function Food() {
   const updateTemplate = async (id, data) => { await base44.entities.MealTemplate.update(id, data); loadTemplates(); };
   const deleteTemplate = async (id) => { await base44.entities.MealTemplate.delete(id); loadTemplates(); };
 
-  const grouped = items.reduce((acc, it) => {
+  const cutoff = (() => { const d = new Date(); d.setDate(d.getDate() - 30); return d.toISOString().slice(0, 10); })();
+  const displayItems = isSubscribed ? items : items.filter((it) => (it.entry_date || '') >= cutoff);
+  const grouped = displayItems.reduce((acc, it) => {
     (acc[it.entry_date] = acc[it.entry_date] || []).push(it);
     return acc;
   }, {});
@@ -197,10 +199,16 @@ export default function Food() {
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
-      ) : items.length === 0 ? (
+      ) : displayItems.length === 0 ? (
         <EmptyState icon={Utensils} title={t('common.empty')} description={t('food.subtitle')} />
       ) : (
         <div className="space-y-6">
+          {!isSubscribed && (
+            <div className="flex items-center gap-2 rounded-xl border border-border bg-accent/40 px-3 py-2 text-xs text-muted-foreground">
+              <Crown className="w-3.5 h-3.5 text-terracotta shrink-0" />
+              <span>Storico limitato agli ultimi 30 giorni. <Link to="/abbonamento" className="font-medium text-terracotta underline-offset-2 hover:underline">Premium</Link> sblocca lo storico completo.</span>
+            </div>
+          )}
           {dates.map((d) => (
             <div key={d}>
               <p className="text-sm font-semibold text-muted-foreground mb-2 sticky top-0">{formatDate(d)}</p>

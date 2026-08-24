@@ -12,6 +12,9 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         <NativeAppButton />
         <TopRightActions />
       </div>
+      <div className="w-full max-w-2xl">
+        <AbbonamentoFeatures />
+      </div>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary mb-4">
@@ -26,9 +29,6 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         {footer && (
           <p className="text-center text-sm text-muted-foreground mt-6">{footer}</p>
         )}
-      </div>
-      <div className="w-full max-w-2xl">
-        <AbbonamentoFeatures />
       </div>
     </div>
   );
