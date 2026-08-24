@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import PullToRefresh from '@/components/PullToRefresh';
 import { useSubscription } from '@/hooks/useSubscription';
+import RegistrationLock from '@/components/RegistrationLock';
 import { Link } from 'react-router-dom';
 
 const mealTypes = [
@@ -190,6 +191,9 @@ export default function Food() {
           ))}
         </div>
       )}
+      {!isAuthenticated ? (
+        <RegistrationLock description="Lo storico dei pasti, i download e le comparazioni sono riservati agli utenti registrati." />
+      ) : (
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
@@ -240,8 +244,11 @@ export default function Food() {
         </div>
       )}
       </PullToRefresh>
+      )}
 
-      {isSubscribed ? (
+      {!isAuthenticated ? (
+        <RegistrationLock description="Suggerimenti alimentari e modelli pasti sono riservati agli utenti registrati." />
+      ) : isSubscribed ? (
         <div className="mt-6">
           <DietaryTips />
         </div>

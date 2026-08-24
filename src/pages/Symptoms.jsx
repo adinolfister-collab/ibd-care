@@ -5,6 +5,7 @@ import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
+import RegistrationLock from '@/components/RegistrationLock';
 import { guestSymptoms } from '@/lib/guestEntries';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -163,6 +164,9 @@ export default function Symptoms() {
       <SiteMenu />
       <MagazineEssay theme="sintomi" number="01" eyebrow="Diario" title="Le tue registrazioni">
       {authChecked && !isAuthenticated && <GuestBanner />}
+      {!isAuthenticated ? (
+        <RegistrationLock />
+      ) : (
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
@@ -196,6 +200,7 @@ export default function Symptoms() {
         </div>
       )}
       </PullToRefresh>
+      )}
       </MagazineEssay>
 
       <EntityFormDialog

@@ -12,6 +12,7 @@ import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 import NativeAppButton from '@/components/NativeAppButton';
 import SiteMenu from '@/components/SiteMenu';
+import AbbonamentoFeatures from '@/components/AbbonamentoFeatures';
 
 // Public subscription page. Serves as the redirect target when a visitor
 // tries to use a protected page without being logged in / subscribed.
@@ -40,9 +41,10 @@ export default function Abbonamento() {
         <NativeAppButton />
         <TopRightActions />
       </div>
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl">
         <PageHeader title="IBD Care Premium" subtitle="1 mese gratuito, poi €1,99/mese. Disdici quando vuoi." />
         <PageEditorial pageKey="abbonamento" />
+        <AbbonamentoFeatures />
         <SiteMenu />
 
         {isAuthenticated ? (
