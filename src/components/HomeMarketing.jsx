@@ -32,6 +32,22 @@ export default function HomeMarketing() {
     <AppLayout>
       <div className="max-w-4xl mx-auto">
         <PageHeader title={t('app.name')} subtitle={t('app.tagline')} />
+
+        {/* Messaggio di benvenuto */}
+        <MagazineEssay theme="serena" number="00" eyebrow="Benvenuto" title="Il tuo diario di salute, con calma">
+          <div className="space-y-4">
+            <p className="font-heading text-lg md:text-xl text-foreground leading-relaxed">
+              Benvenuto in IBD Care. Uno spazio sereno e privato per accompagnare, giorno dopo giorno, la vita con la malattia infiammatoria intestinale.
+            </p>
+            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+              Qui puoi tenere un <span className="font-medium text-foreground">diario di sintomi e umore</span>, annotare i <span className="font-medium text-foreground">pasti e scoprire quali cibi tolleri</span>, ricevere <span className="font-medium text-foreground">promemoria per le terapie</span> e conservare gli <span className="font-medium text-foreground">esami con scansione dei referti e confronto dei valori</span> nel tempo. Puoi confrontarti in una <span className="font-medium text-foreground">community moderata</span>, trovare <span className="font-medium text-foreground">centri IBD, farmacie e bagni pubblici</span> sulla mappa, e chiedere supporto all'<span className="font-medium text-foreground">assistente AI</span>. Quando serve, esporta un <span className="font-medium text-foreground">report PDF</span> pronto per la visita.
+            </p>
+            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+              Inizia con una <span className="font-medium text-terracotta">prova gratuita di 30 giorni</span>, poi €1,99/mese — disdici quando vuoi. I tuoi dati sanitari restano privati, protetti a livello di riga e conformi al GDPR.
+            </p>
+          </div>
+        </MagazineEssay>
+
         <PageEditorial pageKey="home" />
         <EditorialSlider />
         <SiteMenu />
