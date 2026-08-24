@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, Loader2, Plus, Save, Trash2, X, ScanLine } from 'lucide-react';
+import { Loader2, Plus, Save, Trash2, X, ScanLine, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,17 +7,17 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
-const CAT_TYPE = { esame_sangue: 'esame_sangue', calprotectina: 'esame', colonscopia: 'esame', ecografia: 'esame' };
-const CATS = ['esame_sangue', 'calprotectina', 'colonscopia', 'ecografia'];
+const TYPES = ['visita', 'esame', 'esame_sangue', 'referto', 'controllo'];
+const BLOOD_CATS = ['esame_sangue', 'calprotectina'];
 
 const flagColor = { high: 'text-rose-500', low: 'text-amber-500', normal: 'text-emerald-600' };
 
 export default function ExamScanner({ onSaved }) {
   const { t } = useI18n();
-  const [category, setCategory] = useState('esame_sangue');
   const [scanning, setScanning] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [duplicate, setDuplicate] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
   const [fileName, setFileName] = useState(null);
   const [data, setData] = useState(null);
@@ -26,6 +26,7 @@ export default function ExamScanner({ onSaved }) {
     const file = e.target.files?.[0];
     if (!file) return;
     setError(null);
+    setDuplicate(null);
     setScanning(true);
     setData(null);
     try {
@@ -33,16 +34,23 @@ export default function ExamScanner({ onSaved }) {
       const url = up.file_url;
       setFileUrl(url);
       setFileName(file.name);
-      const res = await base44.functions.invoke('scanMedicalDocument', { file_url: url, exam_category: category });
+      // Modalità auto: rileva automaticamente il tipo di documento
+      const res = await base44.functions.invoke('scanMedicalDocument', { file_url: url });
       const ex = res.data?.extracted || {};
+      const detectedType = TYPES.includes(ex.record_type) ? ex.record_type : 'referto';
+      const detectedCat = BLOOD_CATS.includes(ex.exam_category) ? ex.exam_category : 'esame_sangue';
       setData({
+        type: detectedType,
+        exam_category: detectedType === 'esame_sangue' ? detectedCat : '',
+        record_date: ex.record_date || new Date().toISOString().slice(0, 10),
         title: ex.title || file.name.replace(/\.[^.]+$/, ''),
-        exam_date: ex.exam_date || new Date().toISOString().slice(0, 10),
         provider: ex.provider || '',
-        markers: Array.isArray(ex.markers) ? ex.markers.filter((m) => m && m.name) : [],
         findings: ex.findings || '',
-        summary: ex.summary || ''
+        result_summary: ex.result_summary || '',
+        next_appointment: ex.next_appointment || '',
+        markers: Array.isArray(ex.markers) ? ex.markers.filter((m) => m && m.name) : []
       });
+      if (res.data?.duplicate?.exists) setDuplicate(res.data.duplicate);
     } catch (err) {
       setError(err.message || 'Errore scansione');
     } finally {
@@ -59,23 +67,33 @@ export default function ExamScanner({ onSaved }) {
   const addMarker = () => setData((d) => ({ ...d, markers: [...d.markers, { name: '', value: '', unit: '', ref_low: '', ref_high: '', flag: 'normal' }] }));
   const removeMarker = (i) => setData((d) => ({ ...d, markers: d.markers.filter((_, idx) => idx !== i) }));
 
-  const reset = () => { setData(null); setFileUrl(null); setFileName(null); setError(null); };
+  const reset = () => { setData(null); setFileUrl(null); setFileName(null); setError(null); setDuplicate(null); };
+
+  const changeType = (v) => {
+    setData((d) => ({
+      ...d,
+      type: v,
+      exam_category: v === 'esame_sangue' ? (d.exam_category || 'esame_sangue') : ''
+    }));
+  };
 
   const save = async () => {
     setSaving(true);
     setError(null);
     try {
-      await base44.entities.MedicalRecord.create({
-        record_date: data.exam_date || new Date().toISOString().slice(0, 10),
-        type: CAT_TYPE[category],
-        exam_category: category,
+      const payload = {
+        record_date: data.record_date || new Date().toISOString().slice(0, 10),
+        type: data.type,
         title: data.title || t('exams.title'),
         provider: data.provider || '',
-        result_summary: data.summary || '',
+        result_summary: data.result_summary || '',
         findings: data.findings || '',
         report_file_url: fileUrl || '',
-        markers: data.markers || []
-      });
+        markers: data.type === 'esame_sangue' ? (data.markers || []) : []
+      };
+      if (data.type === 'esame_sangue') payload.exam_category = data.exam_category || 'esame_sangue';
+      if (data.next_appointment) payload.next_appointment = data.next_appointment;
+      await base44.entities.MedicalRecord.create(payload);
       reset();
       onSaved && onSaved();
     } catch (err) {
@@ -85,22 +103,12 @@ export default function ExamScanner({ onSaved }) {
     }
   };
 
-  const isDescriptive = category === 'colonscopia' || category === 'ecografia';
+  const isNumeric = data?.type === 'esame_sangue';
 
   return (
     <div className="space-y-4">
       <Card className="border-0 shadow-sm">
         <CardContent className="p-5 space-y-4">
-          <div>
-            <label className="text-sm text-muted-foreground">{t('exams.select_category')}</label>
-            <Select value={category} onValueChange={(v) => { setCategory(v); reset(); }}>
-              <SelectTrigger className="mt-1.5 rounded-xl bg-background"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {CATS.map((c) => <SelectItem key={c} value={c}>{t('exams.cat_' + c)}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-
           <label className="block">
             <span className="text-sm text-muted-foreground">{t('exams.scan_hint')}</span>
             <div className="mt-1.5 rounded-xl border-2 border-dashed border-input bg-background px-4 py-6 text-center transition-colors hover:border-primary/50">
@@ -129,16 +137,46 @@ export default function ExamScanner({ onSaved }) {
         </CardContent></Card>
       )}
 
+      {duplicate && !scanning && (
+        <Card className="border-0 shadow-sm border-l-4 border-l-amber-400"><CardContent className="p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-amber-600">{t('exams.duplicate')}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('exams.duplicate_hint')}</p>
+          </div>
+        </CardContent></Card>
+      )}
+
       {data && !scanning && (
         <Card className="border-0 shadow-sm"><CardContent className="p-5 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs text-muted-foreground">{t('exams.document_type')}</label>
+              <Select value={data.type} onValueChange={changeType}>
+                <SelectTrigger className="mt-1 rounded-xl bg-background"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {TYPES.map((ty) => <SelectItem key={ty} value={ty}>{t('exams.type_' + ty)}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            {data.type === 'esame_sangue' && (
+              <div>
+                <label className="text-xs text-muted-foreground">{t('exams.exam_category')}</label>
+                <Select value={data.exam_category || 'esame_sangue'} onValueChange={(v) => setField('exam_category', v)}>
+                  <SelectTrigger className="mt-1 rounded-xl bg-background"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {BLOOD_CATS.map((c) => <SelectItem key={c} value={c}>{t('exams.cat_' + c)}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <div>
               <label className="text-xs text-muted-foreground">{t('exams.title_field')}</label>
               <input value={data.title} onChange={(e) => setField('title', e.target.value)} className="w-full mt-1 rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
             <div>
               <label className="text-xs text-muted-foreground">{t('common.date')}</label>
-              <input type="date" value={data.exam_date} onChange={(e) => setField('exam_date', e.target.value)} className="w-full mt-1 rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <input type="date" value={data.record_date} onChange={(e) => setField('record_date', e.target.value)} className="w-full mt-1 rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
             <div className="sm:col-span-2">
               <label className="text-xs text-muted-foreground">{t('records.provider')}</label>
@@ -146,7 +184,7 @@ export default function ExamScanner({ onSaved }) {
             </div>
           </div>
 
-          {!isDescriptive && (
+          {isNumeric && (
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-sm font-medium">{t('exams.markers')}</p>
@@ -177,15 +215,25 @@ export default function ExamScanner({ onSaved }) {
             </div>
           )}
 
-          {isDescriptive && (
+          {!isNumeric && (
             <div>
               <label className="text-xs text-muted-foreground">{t('exams.findings')}</label>
               <textarea value={data.findings} onChange={(e) => setField('findings', e.target.value)} rows={5} className="w-full mt-1 rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
           )}
 
+          <div>
+            <label className="text-xs text-muted-foreground">{t('exams.result_summary')}</label>
+            <textarea value={data.result_summary} onChange={(e) => setField('result_summary', e.target.value)} rows={3} className="w-full mt-1 rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+
+          <div>
+            <label className="text-xs text-muted-foreground">{t('exams.next_appointment')}</label>
+            <input type="date" value={data.next_appointment} onChange={(e) => setField('next_appointment', e.target.value)} className="w-full mt-1 rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+
           <div className="flex gap-2 pt-1">
-            <Button onClick={save} disabled={saving} className="rounded-xl flex-1">
+            <Button onClick={save} disabled={saving || duplicate} className="rounded-xl flex-1">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-1.5" />}
               {t('exams.save')}
             </Button>
