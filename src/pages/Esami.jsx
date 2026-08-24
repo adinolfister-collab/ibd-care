@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScanLine, History, BarChart3 } from 'lucide-react';
+import { ScanLine, History, BarChart3, CalendarDays } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
@@ -9,6 +9,7 @@ import MagazineEssay from '@/components/MagazineEssay';
 import ExamScanner from '@/components/exams/ExamScanner';
 import ExamTimeline from '@/components/exams/ExamTimeline';
 import ExamCompare from '@/components/exams/ExamCompare';
+import ExamCalendar from '@/components/exams/ExamCalendar';
 import { cn } from '@/lib/utils';
 
 export default function Esami() {
@@ -20,6 +21,7 @@ export default function Esami() {
   const tabs = [
     { id: 'scan', label: t('exams.tab_scan'), Icon: ScanLine },
     { id: 'timeline', label: t('exams.tab_timeline'), Icon: History },
+    { id: 'calendar', label: t('exams.tab_calendar'), Icon: CalendarDays },
     { id: 'compare', label: t('exams.tab_compare'), Icon: BarChart3 },
   ];
 
@@ -45,6 +47,7 @@ export default function Esami() {
 
       {tab === 'scan' && <ExamScanner onSaved={reload} />}
       {tab === 'timeline' && <ExamTimeline reloadKey={signal} />}
+      {tab === 'calendar' && <ExamCalendar reloadKey={signal} />}
       {tab === 'compare' && <ExamCompare reloadKey={signal} />}
       </MagazineEssay>
       <EditorialBlock sectionKey="esami_compare" align="left" />
