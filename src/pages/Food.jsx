@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Utensils, Trash2, Pencil, BookMarked, ShieldCheck } from 'lucide-react';
+import { Plus, Utensils, Trash2, Pencil, BookMarked, ShieldCheck, Crown } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import MealTemplateManager from '@/components/MealTemplateManager';
 import DietaryTips from '@/components/DietaryTips';
@@ -22,6 +22,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import PullToRefresh from '@/components/PullToRefresh';
+import { useSubscription } from '@/hooks/useSubscription';
+import { Link } from 'react-router-dom';
 
 const mealTypes = [
   { value: 'colazione', label: 'Colazione' },
@@ -44,6 +46,7 @@ export default function Food() {
   const { t } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated, authChecked } = useAuth();
+  const { isSubscribed } = useSubscription();
   const isAdmin = user?.role === 'admin';
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -166,7 +169,7 @@ export default function Food() {
             {isAdmin && (
               <Button onClick={() => setCatalogMgrOpen(true)} variant="outline" className="rounded-xl"><ShieldCheck className="w-4 h-4 mr-1.5" />{t('food.catalog_manage')}</Button>
             )}
-            {isAuthenticated && (
+            {isAuthenticated && isSubscribed && (
               <Button onClick={() => setTplMgrOpen(true)} variant="outline" className="rounded-xl"><BookMarked className="w-4 h-4 mr-1.5" />{t('food.templates')}</Button>
             )}
             <Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('food.add')}</Button>
@@ -177,7 +180,7 @@ export default function Food() {
       <SiteMenu />
       <MagazineEssay theme="alimentazione" number="01" eyebrow="Tavolo" title="Pasti e reazioni">
       {authChecked && !isAuthenticated && <GuestBanner />}
-      {isAuthenticated && templates.length > 0 && (
+      {isAuthenticated && isSubscribed && templates.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
           {templates.map((tpl) => (
             <button key={tpl.id} onClick={() => openFromTemplate(tpl)} className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-accent text-accent-foreground text-sm hover:bg-accent/70 transition-colors">
@@ -238,9 +241,13 @@ export default function Food() {
       )}
       </PullToRefresh>
 
-      <div className="mt-6">
-        <DietaryTips />
-      </div>
+      {isSubscribed ? (
+        <div className="mt-6">
+          <DietaryTips />
+        </div>
+      ) : (
+        <PremiumPrompt />
+      )}
       </MagazineEssay>
 
       <FoodFormDialog
@@ -252,7 +259,7 @@ export default function Food() {
         initialData={editing}
         onSubmit={handleSubmit}
       />
-      {isAuthenticated && (
+      {isAuthenticated && isSubscribed && (
         <MealTemplateManager
           open={tplMgrOpen}
           onOpenChange={setTplMgrOpen}
@@ -271,6 +278,21 @@ export default function Food() {
       )}
       <EditorialBlock sectionKey="food_reactions" align="right" />
     </AppLayout>
+  );
+}
+
+function PremiumPrompt() {
+  return (
+    <Link
+      to="/abbonamento"
+      className="mt-6 flex items-center gap-3 rounded-xl border border-terracotta/40 bg-terracotta/5 px-4 py-3 text-sm text-accent-foreground hover:bg-terracotta/10 transition-colors"
+    >
+      <Crown className="w-4 h-4 text-terracotta shrink-0" />
+      <span>
+        <span className="font-medium">Suggerimenti alimentari e template pasti</span>
+        <span className="text-muted-foreground"> — funzione Premium. Tocca per scoprire l'abbonamento.</span>
+      </span>
+    </Link>
   );
 }
 
