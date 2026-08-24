@@ -16,9 +16,11 @@ import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
 import PremiumReminderBanner from '@/components/PremiumReminderBanner';
+import PremiumExportButton from '@/components/PremiumExportButton';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { exportSymptomDiaryPdf } from '@/lib/symptomPdf';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import PullToRefresh from '@/components/PullToRefresh';
@@ -162,9 +164,17 @@ export default function Symptoms() {
         title={t('symptoms.title')}
         subtitle={t('symptoms.subtitle')}
         action={
-          <Button onClick={openNew} className="rounded-xl">
-            <Plus className="w-4 h-4 mr-1.5" />{t('symptoms.add')}
-          </Button>
+          <div className="flex items-center gap-2 flex-wrap">
+            <PremiumExportButton
+              label={t('symptoms.export_pdf')}
+              lockedLabel={t('symptoms.export_locked')}
+              feature="symptom_diary_pdf"
+              onExport={() => exportSymptomDiaryPdf(displayItems)}
+            />
+            <Button onClick={openNew} className="rounded-xl">
+              <Plus className="w-4 h-4 mr-1.5" />{t('symptoms.add')}
+            </Button>
+          </div>
         }
       />
       <PageEditorial pageKey="symptoms" />

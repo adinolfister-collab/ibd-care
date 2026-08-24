@@ -1,0 +1,49 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Crown, Loader2, FileDown } from 'lucide-react';
+import { useSubscription } from '@/hooks/useSubscription';
+import { trackPremiumAttempt } from '@/lib/premiumTracking';
+import { Button } from '@/components/ui/button';
+
+// Pulsante di esportazione PDF riservato agli abbonati Premium.
+// - Se abbonato: esegue onExport (genera il PDF).
+// - Se non abbonato: mostra la corona terracotta, registra il tentativo di
+//   conversione e rimanda alla pagina abbonamento.
+export default function PremiumExportButton({ onExport, label, lockedLabel, feature, icon: Icon = FileDown }) {
+  const { isSubscribed } = useSubscription();
+  const [busy, setBusy] = useState(false);
+
+  const handleLocked = () => {
+    trackPremiumAttempt(feature, 'export_button');
+  };
+
+  if (isSubscribed) {
+    return (
+      <Button
+        onClick={async () => {
+          setBusy(true);
+          try { await onExport(); } finally { setBusy(false); }
+        }}
+        variant="outline"
+        className="rounded-xl h-10"
+      >
+        {busy ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Icon className="w-4 h-4 mr-1.5" />}
+        {busy ? 'Generazione…' : label}
+      </Button>
+    );
+  }
+
+  return (
+    <Button
+      asChild
+      onClick={handleLocked}
+      variant="outline"
+      className="rounded-xl h-10 border-terracotta/40 text-terracotta hover:bg-terracotta/10 hover:text-terracotta"
+    >
+      <Link to="/abbonamento">
+        <Crown className="w-4 h-4 mr-1.5" />
+        {lockedLabel}
+      </Link>
+    </Button>
+  );
+}

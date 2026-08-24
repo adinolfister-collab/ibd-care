@@ -5,6 +5,8 @@ import { useI18n } from '@/lib/i18n';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import EmptyState from '@/components/EmptyState';
+import PremiumExportButton from '@/components/PremiumExportButton';
+import { exportExamListPdf } from '@/lib/examPdf';
 import { cn } from '@/lib/utils';
 
 const CATS = ['all', 'esame_sangue', 'calprotectina', 'colonscopia', 'ecografia'];
@@ -37,12 +39,21 @@ export default function ExamTimeline({ reloadKey }) {
 
   return (
     <div className="space-y-4">
-      <Select value={cat} onValueChange={setCat}>
-        <SelectTrigger className="rounded-xl bg-background w-full sm:w-64 mb-1"><SelectValue /></SelectTrigger>
-        <SelectContent>
-          {CATS.map((c) => <SelectItem key={c} value={c}>{c === 'all' ? t('map.all') : t('exams.cat_' + c)}</SelectItem>)}
-        </SelectContent>
-      </Select>
+      <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
+        <Select value={cat} onValueChange={setCat}>
+          <SelectTrigger className="rounded-xl bg-background w-full sm:w-64"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            {CATS.map((c) => <SelectItem key={c} value={c}>{c === 'all' ? t('map.all') : t('exams.cat_' + c)}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <PremiumExportButton
+          label={t('exams.export_list_pdf')}
+          lockedLabel={t('exams.export_list_locked')}
+          feature="exam_list_pdf"
+          icon={FileText}
+          onExport={() => exportExamListPdf(filtered)}
+        />
+      </div>
 
       {filtered.length === 0 ? (
         <EmptyState icon={FileText} title={t('exams.timeline_empty')} description={t('exams.scan_hint')} />
