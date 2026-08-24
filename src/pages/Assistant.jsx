@@ -6,6 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import VoiceButton from '@/components/VoiceButton';
+import VoiceConversation from '@/components/VoiceConversation';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
@@ -24,6 +25,14 @@ export default function Assistant() {
   const [sending, setSending] = useState(false);
   const scrollRef = useRef(null);
   const convRef = useRef(null);
+  const taRef = useRef(null);
+
+  const autoGrow = () => {
+    const el = taRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -69,6 +78,9 @@ export default function Assistant() {
   };
 
   const busy = sending && messages[messages.length - 1]?.role !== 'assistant';
+
+  // Ultimo messaggio dell'assistente, per la lettura vocale in modalità conversazione.
+  const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant' && m.content);
 
   return (
     <div className="flex flex-col" style={{ height: 'calc(100vh - 12rem)' }}>
@@ -153,20 +165,39 @@ export default function Assistant() {
           </div>
         )}
 
+        {/* Modalità conversazione vocale */}
+        <div className="px-3 pt-3">
+          <VoiceConversation
+            lang={lang}
+            labels={{
+              mode: t('assistant.voice_mode'),
+              listening: t('assistant.voice_listening'),
+              speaking: t('assistant.voice_speaking'),
+              unsupported: t('assistant.voice_unsupported'),
+            }}
+            onTranscript={send}
+            assistantContent={lastAssistant?.content}
+            assistantContentId={lastAssistant?.id || lastAssistant?.created_date}
+          />
+        </div>
+
         {/* Input */}
         <div className="border-t border-border p-3 flex items-end gap-2">
-          <input
+          <textarea
+            ref={taRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
+            onInput={autoGrow}
+            rows={1}
             placeholder={t('assistant.placeholder')}
-            className="flex-1 rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            className="flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm leading-relaxed min-h-[48px] max-h-40 focus:outline-none focus:ring-2 focus:ring-ring"
           />
           <VoiceButton onResult={(txt) => setText((cur) => (cur ? cur + ' ' : '') + txt)} />
           <button
             onClick={() => send()}
             disabled={!text.trim() || sending}
-            className="shrink-0 w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
+            className="shrink-0 min-h-[48px] min-w-[48px] h-12 w-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
           >
             <Send className="w-5 h-5" />
           </button>
