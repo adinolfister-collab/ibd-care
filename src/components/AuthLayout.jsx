@@ -2,17 +2,18 @@ import React from "react";
 import LanguageMenu from "@/components/LanguageMenu";
 import TopRightActions from "@/components/TopRightActions";
 import NativeAppButton from "@/components/NativeAppButton";
+import AbbonamentoFeatures from "@/components/AbbonamentoFeatures";
 
 export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-10 gap-10">
       <div className="fixed top-3 right-3 z-40 flex items-center gap-2" style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
         <LanguageMenu />
         <NativeAppButton />
         <TopRightActions />
       </div>
       <div className="w-full max-w-md">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary mb-4">
             <Icon className="w-7 h-7 text-primary-foreground" aria-hidden="true" />
           </div>
@@ -25,6 +26,9 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         {footer && (
           <p className="text-center text-sm text-muted-foreground mt-6">{footer}</p>
         )}
+      </div>
+      <div className="w-full max-w-2xl">
+        <AbbonamentoFeatures />
       </div>
     </div>
   );
