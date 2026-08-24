@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScanLine, History, BarChart3, CalendarDays } from 'lucide-react';
+import { ScanLine, History, BarChart3, CalendarDays, Upload } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
@@ -7,6 +7,7 @@ import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import ExamScanner from '@/components/exams/ExamScanner';
+import ImportData from '@/components/exams/ImportData';
 import ExamTimeline from '@/components/exams/ExamTimeline';
 import ExamCompare from '@/components/exams/ExamCompare';
 import ExamCalendar from '@/components/exams/ExamCalendar';
@@ -23,6 +24,7 @@ export default function Esami() {
     { id: 'timeline', label: t('exams.tab_timeline'), Icon: History },
     { id: 'calendar', label: t('exams.tab_calendar'), Icon: CalendarDays },
     { id: 'compare', label: t('exams.tab_compare'), Icon: BarChart3 },
+    { id: 'import', label: t('exams.tab_import'), Icon: Upload },
   ];
 
   return (
@@ -49,6 +51,7 @@ export default function Esami() {
       {tab === 'timeline' && <ExamTimeline reloadKey={signal} />}
       {tab === 'calendar' && <ExamCalendar reloadKey={signal} />}
       {tab === 'compare' && <ExamCompare reloadKey={signal} />}
+      {tab === 'import' && <ImportData onSaved={reload} />}
       </MagazineEssay>
       <EditorialBlock sectionKey="esami_compare" align="left" />
     </AppLayout>

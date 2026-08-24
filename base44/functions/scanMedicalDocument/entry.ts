@@ -1,7 +1,13 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 
-// Scansione referti sanitari: estrae dati strutturati da un documento caricato
-// (immagine o PDF) usando un modello vision, per i pazienti IBD.
+// Scansione referti sanitari per IBD.
+// Due modalità:
+//  - legacy: exam_category fornito (esame_sangue|calprotectina|colonscopia|ecografia)
+//    -> restituisce title, exam_date, provider, markers, findings, summary
+//    (usata dal componente ExamScanner esistente).
+//  - auto: nessun exam_category -> rileva automaticamente record_type
+//    (visita|esame|esame_sangue|referto|controllo|terapia), exam_category,
+//    record_date e (per le terapie) i dati del farmaco.
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
@@ -13,7 +19,7 @@ export default async function(req) {
     const category = body && body.exam_category;
     const CATEGORIES = new Set(['esame_sangue', 'calprotectina', 'colonscopia', 'ecografia']);
     if (!fileUrl || typeof fileUrl !== 'string') return Response.json({ error: 'file_url mancante' }, { status: 400 });
-    if (!category || !CATEGORIES.has(category)) return Response.json({ error: 'categoria non valida' }, { status: 400 });
+    if (category != null && !CATEGORIES.has(category)) return Response.json({ error: 'categoria non valida' }, { status: 400 });
 
     const ALLOWED_HOSTS = new Set(['media.base44.com', 'static.wixstatic.com']);
     let parsedUrl;
@@ -22,19 +28,59 @@ export default async function(req) {
       return Response.json({ error: 'file_url non valido' }, { status: 400 });
     }
 
-    const guidance = {
-      esame_sangue: 'Esame del sangue. Estrai ogni parametro con valore numerico, unità di misura e range di riferimento (valori normali min-max). Esempi: PCR, VES, emoglobina, ferritina, leucociti, piastrine, albumina, GSR. Imposta flag "high" se valore > ref_high, "low" se < ref_low, "normal" altrimenti.',
-      calprotectina: 'Calprotectina fecale. Estrai il valore principale (mg/kg o µg/g) con range di riferimento. Flag come per esame del sangue.',
-      colonscopia: 'Colonscopia. In "findings" estrai i reperti descrittivi: estensione della malattia, aspetto della mucosa, lesioni, ulcerazioni, biopsie eseguite. markers vuoto.',
-      ecografia: 'Ecografia intestinale/addominale. In "findings" estrai i reperti descrittivi: spessore della parete, alterazioni, liquidi, linfonodi. markers vuoto.'
-    }[category];
+    // ---- Modalità legacy: categoria fissa (ExamScanner) ----
+    if (category) {
+      const guidance = {
+        esame_sangue: 'Esame del sangue. Estrai ogni parametro con valore numerico, unità di misura e range di riferimento (valori normali min-max). Esempi: PCR, VES, emoglobina, ferritina, leucociti, piastrine, albumina, GSR. Imposta flag "high" se valore > ref_high, "low" se < ref_low, "normal" altrimenti.',
+        calprotectina: 'Calprotectina fecale. Estrai il valore principale (mg/kg o µg/g) con range di riferimento. Flag come per esame del sangue.',
+        colonscopia: 'Colonscopia. In "findings" estrai i reperti descrittivi: estensione della malattia, aspetto della mucosa, lesioni, ulcerazioni, biopsie eseguite. markers vuoto.',
+        ecografia: 'Ecografia intestinale/addominale. In "findings" estrai i reperti descrittivi: spessore della parete, alterazioni, liquidi, linfonodi. markers vuoto.'
+      }[category];
 
+      const schema = {
+        type: 'object',
+        properties: {
+          title: { type: 'string', description: 'Titolo conciso del referto' },
+          exam_date: { type: 'string', description: 'Data esame in formato AAAA-MM-GG' },
+          provider: { type: 'string', description: 'Medico o centro' },
+          markers: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                value: { type: 'string' },
+                unit: { type: 'string' },
+                ref_low: { type: 'string' },
+                ref_high: { type: 'string' },
+                flag: { type: 'string', enum: ['normal', 'high', 'low'] }
+              },
+              required: ['name']
+            }
+          },
+          findings: { type: 'string', description: 'Reperti descrittivi per colonscopia/ecografia' },
+          summary: { type: 'string', description: 'Sintesi breve del referto' }
+        },
+        required: ['title', 'markers', 'findings']
+      };
+
+      const prompt = `Sei un assistente che estrae dati strutturati da referti medici per pazienti con IBD (malattia infiammatoria intestinale). ${guidance} Leggi il documento allegato e restituisci SOLO i dati nello schema JSON richiesto. Date sempre in formato AAAA-MM-GG. Se un dato non è presente usa stringa vuota. Usa la lingua del referto per i contenuti (testo).`;
+      const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
+        prompt, file_urls: [fileUrl], model: 'gemini_3_flash', response_json_schema: schema
+      });
+      return Response.json({ extracted: result });
+    }
+
+    // ---- Modalità auto: rilevamento sezione e data ----
     const schema = {
       type: 'object',
       properties: {
-        title: { type: 'string', description: 'Titolo conciso del referto' },
-        exam_date: { type: 'string', description: 'Data esame in formato AAAA-MM-GG' },
-        provider: { type: 'string', description: 'Medico o centro' },
+        record_type: { type: 'string', enum: ['visita', 'esame', 'esame_sangue', 'referto', 'controllo', 'terapia'], description: 'Tipo di documento' },
+        exam_category: { type: ['string', 'null'], enum: ['esame_sangue', 'calprotectina', 'colonscopia', 'ecografia', null], description: 'Solo per esami strumentali/analisi; null altrimenti' },
+        record_date: { type: 'string', description: 'Data del documento in formato AAAA-MM-GG' },
+        title: { type: 'string', description: 'Titolo conciso del documento' },
+        provider: { type: 'string', description: 'Medico, centro o struttura' },
+        location: { type: 'string', description: 'Luogo/struttura' },
         markers: {
           type: 'array',
           items: {
@@ -48,23 +94,45 @@ export default async function(req) {
               flag: { type: 'string', enum: ['normal', 'high', 'low'] }
             },
             required: ['name']
-          }
+          },
+          description: 'Parametri numerici (esami del sangue, calprotectina)'
         },
-        findings: { type: 'string', description: 'Reperti descrittivi per colonscopia/ecografia' },
-        summary: { type: 'string', description: 'Sintesi breve del referto' }
+        findings: { type: 'string', description: 'Reperti descrittivi (visite, colonscopia, ecografia, referti)' },
+        result_summary: { type: 'string', description: 'Sintesi breve del referto/visita' },
+        next_appointment: { type: ['string', 'null'], description: 'Prossimo appuntamento in AAAA-MM-GG se citato, null altrimenti' },
+        medication: {
+          type: ['object', 'null'],
+          properties: {
+            name: { type: 'string', description: 'Nome del farmaco' },
+            type: { type: 'string', enum: ['farmaco_orale', 'iniezione', 'biologico', 'integratore'] },
+            dosage: { type: 'string', description: 'Dosaggio (es. 2g, 50 mg/ml)' },
+            frequency: { type: 'string', enum: ['giornaliero', 'settimanale', 'bisettimanale', 'mensile', 'al_bisogno'] },
+            start_date: { type: 'string', description: 'Data di inizio in AAAA-MM-GG' },
+            notes: { type: 'string' }
+          },
+          description: 'Compilare SOLO se record_type=terapia (ricetta/prescrizione farmacologica), null altrimenti'
+        }
       },
-      required: ['title', 'markers', 'findings']
+      required: ['record_type', 'record_date', 'title', 'markers', 'findings', 'result_summary']
     };
 
-    const prompt = `Sei un assistente che estrae dati strutturati da referti medici per pazienti con IBD (malattia infiammatoria intestinale). ${guidance} Leggi il documento allegato e restituisci SOLO i dati nello schema JSON richiesto. Date sempre in formato AAAA-MM-GG. Se un dato non è presente usa stringa vuota. Usa la lingua del referto per i contenuti (testo).`;
+    const prompt = `Sei un assistente che legge documenti medici di pazienti con IBD (malattia infiammatoria intestinale) e li cataloga in un archivio personale.
+Riconosci automaticamente il tipo di documento:
+- "visita": visita/gastroenterologica/ambulatoriale
+- "esame": esame strumentale generico
+- "esame_sangue": esami del sangue con valori numerici (emocromo, PCR, VES, ferritina, calprotectina...)
+- "referto": referto/lettera di dimissione o consulenza
+- "controllo": controllo clinico di follow-up
+- "terapia": prescrizione/ricetta farmacologica
+Per esame_sangue imposta anche exam_category="esame_sangue"; per calprotectina fecale exam_category="calprotectina"; per colonscopia exam_category="colonscopia"; per ecografia intestinale exam_category="ecografia". Negli altri casi exam_category=null.
+Per gli esami del sangue e la calprotectina estrai ogni marker con valore, unità e range di riferimento; imposta flag "high" se valore > ref_high, "low" se < ref_low, "normal" altrimenti.
+Per visite/colonscopia/ecografia/referti usa "findings" con i reperti descrittivi.
+Per le terapie compila "medication" con nome farmaco, tipo, dosaggio, frequenza e data inizio.
+Leggi il documento allegato e restituisci SOLO i dati nello schema JSON richiesto. Date in formato AAAA-MM-GG (se non rilevata usa la data odierna). Se un dato non è presente usa stringa vuota o null. Usa la lingua del documento per i contenuti (testo).`;
 
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt,
-      file_urls: [fileUrl],
-      model: 'gemini_3_flash',
-      response_json_schema: schema
+      prompt, file_urls: [fileUrl], model: 'gemini_3_flash', response_json_schema: schema
     });
-
     return Response.json({ extracted: result });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
