@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/lib/AuthContext';
@@ -29,6 +29,7 @@ const PREMIUM_ROUTES = new Set([
 
 const navItems = [
   { to: '/', key: 'nav.home', icon: Home, exact: true },
+  { to: '/news', key: 'nav.news', icon: Newspaper },
   { to: '/symptoms', key: 'nav.symptoms', icon: Activity },
   { to: '/food', key: 'nav.food', icon: Utensils },
   { to: '/meds', key: 'nav.meds', icon: Pill },

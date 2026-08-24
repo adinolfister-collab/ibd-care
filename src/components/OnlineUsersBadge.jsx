@@ -8,7 +8,7 @@ export default function OnlineUsersBadge({ className = '' }) {
   const [count, setCount] = useState(() => {
     // Seed stabile per sessione: base 120-160 deterministica dal timestamp di apertura.
     const seed = Math.floor((Date.now() / 1000) % 1000);
-    return 120 + (seed % 41);
+    return 1 + (seed % 160);
   });
   const current = useRef(count);
 
@@ -18,8 +18,8 @@ export default function OnlineUsersBadge({ className = '' }) {
       setCount((prev) => {
         const delta = Math.floor(Math.random() * 5) - 2; // -2..+2
         let next = prev + delta;
-        if (next < 110) next = 110;
-        if (next > 180) next = 180;
+        if (next < 1) next = 1;
+        if (next > 160) next = 160;
         current.current = next;
         return next;
       });
