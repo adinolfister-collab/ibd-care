@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Loader2, FileText, CheckCircle2, AlertCircle, FilePlus2, Stethoscope, FlaskConical, Pill, CalendarClock, ArrowRight } from 'lucide-react';
+import { Upload, Loader2, FileText, CheckCircle2, AlertCircle, FilePlus2, Stethoscope, FlaskConical, Pill, CalendarClock, ArrowRight, Archive } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -46,6 +46,13 @@ export default function ImportData({ onSaved }) {
         updateJob(job.id, { status: 'scanning', url });
         const res = await base44.functions.invoke('scanMedicalDocument', { file_url: url });
         const ex = res.data?.extracted || {};
+        const dup = res.data?.duplicate;
+        if (dup && dup.exists) {
+          let existing = null;
+          try { existing = await base44.entities.MedicalRecord.get(dup.record_id); } catch (_) {}
+          updateJob(job.id, { status: 'skipped', type: ex.record_type, record: existing || { id: dup.record_id, title: ex.title, record_date: ex.record_date }, duplicateReason: dup.reason });
+          continue;
+        }
         updateJob(job.id, { status: 'saving' });
 
         const rtype = (ex.record_type || 'referto').trim();
@@ -159,11 +166,19 @@ export default function ImportData({ onSaved }) {
                         {j.status === 'error' && (
                           <span className="text-xs text-rose-500">{t('import.error')}: {j.error}</span>
                         )}
+                        {j.status === 'skipped' && (
+                          <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600">
+                            <Archive className="w-3 h-3" /> {t('import.duplicate')} · {j.duplicateReason}
+                          </span>
+                        )}
                       </div>
                       {j.status === 'saved' && Array.isArray(j.record?.markers) && j.record.markers.length > 0 && (
                         <p className="text-xs text-muted-foreground mt-1.5">
                           {j.record.markers.slice(0, 4).map((m) => `${m.name} ${m.value}${m.unit ? ' ' + m.unit : ''}`).join(' · ')}
                         </p>
+                      )}
+                      {j.status === 'skipped' && (
+                        <p className="text-xs text-muted-foreground mt-1.5">{t('import.duplicate_hint')}</p>
                       )}
                     </div>
                     <StatusBadge status={j.status} />
@@ -208,6 +223,7 @@ function StatusBadge({ status }) {
   if (status === 'scanning' || status === 'saving')
     return <Loader2 className="w-4 h-4 animate-spin text-muted-foreground shrink-0" />;
   if (status === 'saved') return <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />;
+  if (status === 'skipped') return <Archive className="w-5 h-5 text-amber-500 shrink-0" />;
   if (status === 'error') return <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />;
   return null;
 }

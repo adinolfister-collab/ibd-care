@@ -1,5 +1,43 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 
+function normalize(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function tokens(s) {
+  const stop = new Set(['il','lo','la','i','gli','le','di','del','della','dei','delle','da','in','con','per','e','ed','a','al','allo','alla','ai','agli','alle','un','uno','una','esame','visita','referto','controllo','sangue','del','della']);
+  return new Set(normalize(s).split(' ').filter((x) => x.length > 2 && !stop.has(x)));
+}
+function jaccard(a, b) {
+  if (!a.size || !b.size) return 0;
+  let inter = 0; a.forEach((x) => { if (b.has(x)) inter++; });
+  return inter / (a.size + b.size - inter);
+}
+// Confronta i dati estratti con l'archivio dell'utente per evitare duplicati.
+async function findDuplicate(base44, type, date, title, examCategory, markers, isTherapy, medName, medStart) {
+  try {
+    if (isTherapy) {
+      const meds = await base44.entities.Medication.list('-start_date', 500);
+      const nm = normalize(medName || '');
+      const match = meds.find((m) => normalize(m.name || '') === nm && (m.start_date || '') === (medStart || date || ''));
+      return match ? { exists: true, record_id: match.id, reason: 'Terapia già presente con stessa data di inizio' } : { exists: false };
+    }
+    const recs = await base44.entities.MedicalRecord.list('-record_date', 500);
+    const tTok = tokens(title || '');
+    const markerNames = new Set((markers || []).filter((m) => m && m.name).map((m) => normalize(m.name)));
+    for (const r of recs) {
+      if ((r.record_date || '') !== (date || '')) continue;
+      if (type && (r.type || '') !== type) continue;
+      if (examCategory && (r.exam_category || '') && (r.exam_category || '') !== examCategory) continue;
+      const rTok = tokens(r.title || '');
+      if (tTok.size && rTok.size && jaccard(tTok, rTok) >= 0.6) return { exists: true, record_id: r.id, reason: 'Titolo e data coincidenti' };
+      if (markerNames.size && (r.markers || []).some((m) => m && markerNames.has(normalize(m.name)))) return { exists: true, record_id: r.id, reason: 'Stessi marker e stessa data' };
+    }
+    return { exists: false };
+  } catch (e) {
+    return { exists: false, error: e.message };
+  }
+}
+
 // Scansione referti sanitari per IBD.
 // Due modalità:
 //  - legacy: exam_category fornito (esame_sangue|calprotectina|colonscopia|ecografia)
@@ -68,7 +106,8 @@ export default async function(req) {
       const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
         prompt, file_urls: [fileUrl], model: 'gemini_3_flash', response_json_schema: schema
       });
-      return Response.json({ extracted: result });
+      const dupe = await findDuplicate(base44, '', result.exam_date, result.title, category, result.markers, false, '', '');
+      return Response.json({ extracted: result, duplicate: dupe });
     }
 
     // ---- Modalità auto: rilevamento sezione e data ----
@@ -133,7 +172,19 @@ Leggi il documento allegato e restituisci SOLO i dati nello schema JSON richiest
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt, file_urls: [fileUrl], model: 'gemini_3_flash', response_json_schema: schema
     });
-    return Response.json({ extracted: result });
+    const isTherapy = result.record_type === 'terapia';
+    const dupe = await findDuplicate(
+      base44,
+      isTherapy ? '' : result.record_type,
+      result.record_date,
+      result.title,
+      result.exam_category,
+      result.markers,
+      isTherapy,
+      result.medication && result.medication.name,
+      result.medication && result.medication.start_date
+    );
+    return Response.json({ extracted: result, duplicate: dupe });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
