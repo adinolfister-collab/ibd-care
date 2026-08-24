@@ -1,0 +1,44 @@
+{
+  "name": "Notifica accesso visitatore",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "app_user_auth",
+      "events": [
+        "login",
+        "signup"
+      ]
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "notify_visitor_access",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "notify": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "notifyVisitorAccess",
+            "args": {
+              "event_type": "${ .trigger.event_type }",
+              "user_id": "${ .trigger.user_id }",
+              "email": "${ .trigger.email }",
+              "full_name": "${ .trigger.full_name }",
+              "auth_method": "${ .trigger.auth_method }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Invia notifica push all'admin",
+            "description": "Login o iscrizione rilevati"
+          }
+        }
+      }
+    ]
+  },
+  "description": "Invia una notifica push all'admin/owner quando un utente effettua login o signup"
+}
