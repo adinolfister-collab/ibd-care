@@ -14,6 +14,7 @@ import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 import AppLayout from '@/components/AppLayout';
 import SiteMenu from '@/components/SiteMenu';
+import AbbonamentoFeatures from '@/components/AbbonamentoFeatures';
 import { Button } from '@/components/ui/button';
 
 const MODULES = [
@@ -83,6 +84,9 @@ export default function HomeMarketing() {
         </MagazineEssay>
 
         <section className="mb-10">
+          <div className="mb-8">
+            <AbbonamentoFeatures />
+          </div>
           <div className="rounded-2xl border-2 border-terracotta/70 bg-gradient-to-br from-primary/5 to-accent/40 p-6 md:p-8 text-center">
             <p className="text-[0.65rem] font-heading font-semibold uppercase tracking-[0.25em] text-terracotta">Inizia oggi</p>
             <h2 className="font-heading text-2xl md:text-3xl font-semibold mt-2 text-foreground">Crea il tuo diario di salute</h2>
