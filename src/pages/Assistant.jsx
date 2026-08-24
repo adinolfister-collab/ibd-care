@@ -5,8 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
-import VoiceButton from '@/components/VoiceButton';
-import VoiceConversation from '@/components/VoiceConversation';
+import MicToggle from '@/components/MicToggle';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
@@ -78,9 +77,6 @@ export default function Assistant() {
   };
 
   const busy = sending && messages[messages.length - 1]?.role !== 'assistant';
-
-  // Ultimo messaggio dell'assistente, per la lettura vocale in modalità conversazione.
-  const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant' && m.content);
 
   return (
     <div className="flex flex-col" style={{ height: 'calc(100vh - 12rem)' }}>
@@ -165,22 +161,6 @@ export default function Assistant() {
           </div>
         )}
 
-        {/* Modalità conversazione vocale */}
-        <div className="px-3 pt-3">
-          <VoiceConversation
-            lang={lang}
-            labels={{
-              mode: t('assistant.voice_mode'),
-              listening: t('assistant.voice_listening'),
-              speaking: t('assistant.voice_speaking'),
-              unsupported: t('assistant.voice_unsupported'),
-            }}
-            onTranscript={send}
-            assistantContent={lastAssistant?.content}
-            assistantContentId={lastAssistant?.id || lastAssistant?.created_date}
-          />
-        </div>
-
         {/* Input */}
         <div className="border-t border-border p-3 flex items-end gap-2">
           <textarea
@@ -193,7 +173,7 @@ export default function Assistant() {
             placeholder={t('assistant.placeholder')}
             className="flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm leading-relaxed min-h-[48px] max-h-40 focus:outline-none focus:ring-2 focus:ring-ring"
           />
-          <VoiceButton onResult={(txt) => setText((cur) => (cur ? cur + ' ' : '') + txt)} />
+          <MicToggle lang={lang} onTranscript={send} />
           <button
             onClick={() => send()}
             disabled={!text.trim() || sending}
