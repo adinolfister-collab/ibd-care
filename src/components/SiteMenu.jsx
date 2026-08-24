@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Newspaper, Users, Activity, Utensils, Info, Mail, CreditCard,
   Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin,
-  FileBarChart, Settings as SettingsIcon, User, Lock, GitCompare,
+  FileBarChart, Settings as SettingsIcon, User, Lock, Crown, GitCompare,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -69,7 +69,10 @@ export default function SiteMenu() {
               <span className="flex-1 min-w-0 font-heading text-base md:text-lg font-medium text-foreground tracking-tight truncate">
                 {t(item.key)}
               </span>
-              {locked && (
+              {locked && item.premium && (
+                <Crown className="w-4 h-4 text-terracotta shrink-0" aria-label={t('home.locked') || 'Riservato'} />
+              )}
+              {locked && !item.premium && (
                 <Lock className="w-4 h-4 text-terracotta shrink-0" aria-label={t('home.locked') || 'Riservato'} />
               )}
             </>
