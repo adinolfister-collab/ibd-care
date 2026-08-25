@@ -22,9 +22,7 @@
         "role": "admin"
       }
     },
-    "create": {
-      "created_by_id": "{{user.id}}"
-    },
+    "create": {},
     "update": {
       "user_condition": {
         "role": "admin"
