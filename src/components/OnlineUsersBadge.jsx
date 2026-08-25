@@ -23,10 +23,10 @@ export default function OnlineUsersBadge({ className = '' }) {
         current.current = next;
         return next;
       });
-      // Prossimo tick tra 5 e 8 secondi.
-      timer = setTimeout(tick, 5000 + Math.floor(Math.random() * 3001));
+      // Prossimo tick tra 3 e 4 minuti.
+      timer = setTimeout(tick, 180000 + Math.floor(Math.random() * 60001));
     };
-    timer = setTimeout(tick, 5000 + Math.floor(Math.random() * 3001));
+    timer = setTimeout(tick, 180000 + Math.floor(Math.random() * 60001));
     return () => clearTimeout(timer);
   }, []);
 
