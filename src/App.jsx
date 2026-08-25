@@ -31,7 +31,8 @@ import IBDNews from '@/pages/IBDNews';
 import Esami from '@/pages/Esami';
 import Correlazioni from '@/pages/Correlazioni';
 import AdminConversions from '@/pages/AdminConversions';
-import SubscriptionRoute from '@/components/SubscriptionRoute';
+import Shop from '@/pages/Shop';
+import ShopAdmin from '@/pages/ShopAdmin';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -80,6 +81,7 @@ const AuthenticatedApp = () => {
         <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
         <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
         <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
+        <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
         {/* All other app pages require login */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           {/* Login required, no subscription */}
@@ -91,18 +93,17 @@ const AuthenticatedApp = () => {
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
           <Route path="/admin/conversioni" element={<PageTransition><AdminConversions /></PageTransition>} />
-          {/* Premium: auth + subscription */}
-          <Route element={<SubscriptionRoute redirect={<Navigate to="/abbonamento" replace />} />}>
-            <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
-            <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
-            <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
-            <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
-            <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
-            <Route path="/correlazioni" element={<PageTransition><Correlazioni /></PageTransition>} />
-            <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
-            <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
-            <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
-          </Route>
+          {/* Login required: diary tools (no subscription) */}
+          <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
+          <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
+          <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
+          <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
+          <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
+          <Route path="/correlazioni" element={<PageTransition><Correlazioni /></PageTransition>} />
+          <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
+          <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
+          <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
+          <Route path="/shop/admin" element={<PageTransition><ShopAdmin /></PageTransition>} />
         </Route>
         <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />
       </Routes>

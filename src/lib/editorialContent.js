@@ -517,5 +517,5 @@ export function getEditorialSection(lang, sectionKey) {
   const entry = SECTIONS[sectionKey] || SECTIONS.home_insight;
   const l = SUPPORTED.has(lang) ? lang : 'it';
   const text = entry[l] || entry.it;
-  return { theme: entry.theme, title: text.title, body: text.body };
+  return { theme: entry.theme, title: text.title, body: text.body || text.desc };
 }
