@@ -90,7 +90,7 @@ export default function ArticleDetail() {
           {jsonLd && (
             <script
               type="application/ld+json"
-              dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
             />
           )}
           <PageHeader title={article.title} subtitle={article.source ? `${article.source}` : undefined} />
