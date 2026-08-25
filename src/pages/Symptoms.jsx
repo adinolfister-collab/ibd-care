@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Activity, Trash2, Pencil, Crown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Plus, Activity, Trash2, Pencil, FileDown } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
-import RegistrationLock from '@/components/RegistrationLock';
-import { useSubscription } from '@/hooks/useSubscription';
 import { guestSymptoms } from '@/lib/guestEntries';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -15,8 +12,6 @@ import SiteMenu from '@/components/SiteMenu';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
-import PremiumReminderBanner from '@/components/PremiumReminderBanner';
-import PremiumExportButton from '@/components/PremiumExportButton';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -72,7 +67,6 @@ export default function Symptoms() {
   const { t } = useI18n();
   const { toast } = useToast();
   const { isAuthenticated, authChecked } = useAuth();
-  const { isSubscribed } = useSubscription();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -86,7 +80,7 @@ export default function Symptoms() {
       return;
     }
     try {
-      const data = await base44.entities.SymptomEntry.list('-entry_date', 200);
+      const data = await base44.entities.SymptomEntry.list('-entry_date', 1000);
       setItems(data);
     } catch {
       setItems([]);
@@ -99,7 +93,7 @@ export default function Symptoms() {
       setItems(guestSymptoms.list());
       return;
     }
-    const data = await base44.entities.SymptomEntry.list('-entry_date', 200);
+    const data = await base44.entities.SymptomEntry.list('-entry_date', 1000);
     setItems(data);
   };
   useEffect(() => {
@@ -155,8 +149,11 @@ export default function Symptoms() {
     load();
   };
 
-  const cutoff = (() => { const d = new Date(); d.setDate(d.getDate() - 30); return d.toISOString().slice(0, 10); })();
-  const displayItems = isSubscribed ? items : items.filter((it) => (it.entry_date || '') >= cutoff);
+  const [exporting, setExporting] = useState(false);
+  const handleExport = async () => {
+    setExporting(true);
+    try { await exportSymptomDiaryPdf(items); } finally { setExporting(false); }
+  };
 
   return (
     <AppLayout>
@@ -165,12 +162,9 @@ export default function Symptoms() {
         subtitle={t('symptoms.subtitle')}
         action={
           <div className="flex items-center gap-2 flex-wrap">
-            <PremiumExportButton
-              label={t('symptoms.export_pdf')}
-              lockedLabel={t('symptoms.export_locked')}
-              feature="symptom_diary_pdf"
-              onExport={() => exportSymptomDiaryPdf(displayItems)}
-            />
+            <Button variant="outline" className="rounded-xl" onClick={handleExport} disabled={exporting || items.length === 0}>
+              <FileDown className="w-4 h-4 mr-1.5" />{t('symptoms.export_pdf')}
+            </Button>
             <Button onClick={openNew} className="rounded-xl">
               <Plus className="w-4 h-4 mr-1.5" />{t('symptoms.add')}
             </Button>
@@ -181,24 +175,14 @@ export default function Symptoms() {
       <SiteMenu />
       <MagazineEssay theme="sintomi" number="01" eyebrow="Diario" title="Le tue registrazioni">
       {authChecked && !isAuthenticated && <GuestBanner />}
-      {!isAuthenticated ? (
-        <RegistrationLock />
-      ) : (
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
-      ) : displayItems.length === 0 ? (
+      ) : items.length === 0 ? (
         <EmptyState icon={Activity} title={t('common.empty')} description={t('symptoms.subtitle')} />
       ) : (
         <div className="space-y-3">
-          {!isSubscribed && <PremiumReminderBanner />}
-          {!isSubscribed && (
-            <div className="flex items-center gap-2 rounded-xl border border-border bg-accent/40 px-3 py-2 text-xs text-muted-foreground">
-              <Crown className="w-3.5 h-3.5 text-terracotta shrink-0" />
-              <span>Storico limitato agli ultimi 30 giorni. <Link to="/abbonamento" className="font-medium text-terracotta underline-offset-2 hover:underline">Premium</Link> sblocca lo storico completo.</span>
-            </div>
-          )}
-          {displayItems.map((it) => (
+          {items.map((it) => (
             <Card key={it.id} className="border-0 shadow-sm">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between gap-3">
@@ -224,7 +208,6 @@ export default function Symptoms() {
         </div>
       )}
       </PullToRefresh>
-      )}
       </MagazineEssay>
 
       <EntityFormDialog

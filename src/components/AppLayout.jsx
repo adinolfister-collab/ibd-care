@@ -1,33 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp, GitCompare } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp, GitCompare, ShoppingBag } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
-import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
-import PromoBanner from '@/components/PromoBanner';
 import LanguageMenu from '@/components/LanguageMenu';
 import TopRightActions from '@/components/TopRightActions';
-import LockBadge from '@/components/LockBadge';
 import NativeAppButton from '@/components/NativeAppButton';
 import { guestSymptoms, guestFoods, syncGuestEntriesToCloud } from '@/lib/guestEntries';
 import { useToast } from '@/components/ui/use-toast';
 
-// Pages reserved to Premium subscribers. Guests and free (registered) users
-// see them in the nav with a lock and clicking redirects to /abbonamento.
-const PREMIUM_ROUTES = new Set([
-  '/meds',
-  '/records',
-  '/esami',
-  '/assistant',
-  '/trends',
-  '/symptom-charts',
-  '/summary',
-  '/map',
-  '/correlazioni',
-]);
-
+// Public app — every section is open to all visitors. Account management
+// (settings/account/admin) requires login, enforced by the route guard.
 const navItems = [
   { to: '/', key: 'nav.home', icon: Home, exact: true },
   { to: '/news', key: 'nav.news', icon: Newspaper },
@@ -43,6 +28,7 @@ const navItems = [
   { to: '/correlazioni', key: 'nav.correlazioni', icon: GitCompare },
   { to: '/map', key: 'nav.map', icon: MapPin },
   { to: '/summary', key: 'nav.summary', icon: FileBarChart },
+  { to: '/shop', key: 'nav.shop', icon: ShoppingBag },
   { to: '/account', key: 'settings.account', icon: User },
   { to: '/settings', key: 'nav.settings', icon: SettingsIcon },
 ];
@@ -50,14 +36,9 @@ const navItems = [
 export default function AppLayout({ children }) {
   const { t } = useI18n();
   const { toast } = useToast();
-  const { isSubscribed } = useSubscription();
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [syncingGuest, setSyncingGuest] = useState(false);
-
-  const ACCOUNT_ROUTES = new Set(['/account', '/settings']);
-  const isLocked = (to) =>
-    !isAuthenticated && (PREMIUM_ROUTES.has(to) || ACCOUNT_ROUTES.has(to));
 
   // On first authenticated mount, migrate any guest entries saved on the
   // device into the user's cloud entities, then clear the local cache. Briefly
@@ -110,35 +91,23 @@ export default function AppLayout({ children }) {
             <p className="text-xs text-muted-foreground leading-tight">{t('app.tagline')}</p>
           </div>
         </div>
-        <nav className="flex-1 px-3 space-y-1">
-          {navItems.map((item) => {
-            const locked = isLocked(item.to);
-            if (locked) {
-              return (
-                <div key={item.to} className="flex items-center gap-3 px-4 py-3 rounded-xl text-base text-muted-foreground opacity-70 cursor-default">
-                  <item.icon className="w-5 h-5 shrink-0" />
-                  <span>{t(item.key)}</span>
-                  <LockBadge />
-                </div>
-              );
-            }
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.exact}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-colors',
-                    isActive ? 'bg-primary text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                  )
-                }
-              >
-                <item.icon className="w-5 h-5 shrink-0" />
-                <span>{t(item.key)}</span>
-              </NavLink>
-            );
-          })}
+        <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.exact}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-colors',
+                  isActive ? 'bg-primary text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                )
+              }
+            >
+              <item.icon className="w-5 h-5 shrink-0" />
+              <span>{t(item.key)}</span>
+            </NavLink>
+          ))}
           {user?.role === 'admin' && (
             <NavLink
               to="/admin/conversioni"
@@ -151,6 +120,20 @@ export default function AppLayout({ children }) {
             >
               <TrendingUp className="w-5 h-5 shrink-0" />
               <span>Conversioni</span>
+            </NavLink>
+          )}
+          {user?.role === 'admin' && (
+            <NavLink
+              to="/shop/admin"
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-colors',
+                  isActive ? 'bg-primary text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                )
+              }
+            >
+              <ShoppingBag className="w-5 h-5 shrink-0" />
+              <span>{t('shop.admin_nav')}</span>
             </NavLink>
           )}
         </nav>
@@ -183,7 +166,6 @@ export default function AppLayout({ children }) {
       {/* Main content */}
       <div className="pl-64">
         <main className="min-h-screen pb-8 px-4 md:px-10 py-6 md:py-10 max-w-4xl mx-auto">
-          <PromoBanner />
           {children}
         </main>
       </div>

@@ -2,7 +2,6 @@ import React from "react";
 import LanguageMenu from "@/components/LanguageMenu";
 import TopRightActions from "@/components/TopRightActions";
 import NativeAppButton from "@/components/NativeAppButton";
-import AbbonamentoFeatures from "@/components/AbbonamentoFeatures";
 
 export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
   return (
@@ -11,9 +10,6 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         <LanguageMenu />
         <NativeAppButton />
         <TopRightActions />
-      </div>
-      <div className="w-full max-w-2xl">
-        <AbbonamentoFeatures />
       </div>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">

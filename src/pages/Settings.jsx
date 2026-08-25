@@ -12,7 +12,6 @@ import PageHeader from '@/components/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
-import SubscriptionCard from '@/components/SubscriptionCard';
 import HistoryExport from '@/components/HistoryExport';
 import { useBiometric } from '@/lib/biometric';
 
@@ -64,9 +63,6 @@ export default function Settings() {
       <PageHeader title={t('settings.title')} subtitle="Privacy, lingua ed esportazione dei tuoi dati sanitari." />
 
       <div className="space-y-4">
-        {/* Subscription */}
-        <SubscriptionCard />
-
         {/* Language */}
         <Card className="border-0 shadow-sm">
           <CardContent className="p-5">

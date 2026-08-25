@@ -257,6 +257,20 @@ const EDITORIAL = {
     sq: { label: "Lajme IBD", desc: "Lajme të besueshme dhe të zgjedhura mbi sëmundjet inflamatore të zorrëve, të përkthyera për ju, për t'i lexuar me qetësi." },
     zh: { label: "IBD 资讯", desc: "关于炎症性肠病的可靠精选资讯,为你翻译,可从容阅读。" },
   },
+  shop: {
+    theme: 'serena',
+    it: { label: "Prodotti scelti con cura", desc: "Integratori, alimenti speciali e presidi per stomia selezionati per chi vive con l'IBD. Acquisti sul sito del fornitore: noi non vendiamo, curiamo." },
+    en: { label: "Carefully chosen products", desc: "Supplements, special foods and stoma-care products selected for those living with IBD. Purchases happen on the supplier's site: we don't sell, we curate." },
+    es: { label: "Productos elegidos con cuidado", desc: "Complementos, alimentos especiales y productos para estomas seleccionados para quien vive con EII. Compras en el sitio del proveedor: no vendemos, cuidamos." },
+    fr: { label: "Produits choisis avec soin", desc: "Compléments, aliments spéciaux et articles de stomie sélectionnés pour qui vit avec une MICI. Achats sur le site du fournisseur : nous ne vendons pas, nous sélectionnons." },
+    de: { label: "Sorgfältig ausgewählte Produkte", desc: "Nahrungsergänzung, Speziallebensmittel und Stoma-Artikel für Menschen mit IBD. Kauf auf der Website des Anbieters: wir verkaufen nicht, wir kuratieren." },
+    pt: { label: "Produtos escolhidos com cuidado", desc: "Suplementos, alimentos especiais e itens para estoma selecionados para quem vive com DII. Compras no site do fornecedor: não vendemos, cuidamos." },
+    ru: { label: "Тщательно отобранные товары", desc: "Добавки, специальные продукты и товары для стомы для тех, кто живёт с IBD. Покупки на сайте поставщика: мы не продаём, мы отбираем." },
+    pl: { label: "Starannie wybrane produkty", desc: "Suplementy, żywność specjalna i artykuły stomijne dla osób z IBD. Zakup na stronie dostawcy: nie sprzedajemy, dobieramy." },
+    ro: { label: "Produse alese cu grijă", desc: "Suplimente, alimente speciale și articole pentru stomă pentru cei cu IBD. Cumpărăturile pe site-ul furnizorului: nu vindem, sele." },
+    sq: { label: "Produkte të zgjedhur me kujdes", desc: "Suplemente, ushqime speciale dhe artikuj për stomë për ata me IBD. Blerjet te siti i furnitorit: nuk shesim, kurojmë." },
+    zh: { label: "用心甄选的商品", desc: "为IBD患者挑选的补充剂、特殊食品与造口护理用品。在供应商网站购买:我们不售卖,只做精选。" },
+  },
 };
 
 // Sezioni editoriali "Sereno mediterraneo" da inserire dentro le singole pagine.
@@ -471,6 +485,20 @@ const SECTIONS = {
     ro: { title: "Distribuie celor dragi", body: "Știri utile pentru cei apropiați: conștientizarea crește, împreună." },
     sq: { title: "Ndaj me të dashurit", body: "Lajme të dobishme për t'i dërguar të afërmve: ndërgjegjësimi rritet, bashkë." },
     zh: { title: "与你关心的人分享", body: "把有用的资讯发给身边的人:认知一同成长。" },
+  },
+  shop_partner: {
+    theme: 'serena',
+    it: { title: "Non vendiamo, consigliamo", desc: "IBD Care è gratuita: il sostegno del negozio ci aiuta a mantenerla così. Ogni prodotto è proposto per la sua utilità, non per profitto." },
+    en: { title: "We don't sell, we recommend", desc: "IBD Care is free: the shop's support helps keep it that way. Every product is proposed for its usefulness, not for profit." },
+    es: { title: "No vendemos, recomendamos", desc: "IBD Care es gratis: el apoyo de la tienda ayuda a que siga así. Cada producto se propone por su utilidad, no por beneficios." },
+    fr: { title: "Nous ne vendons pas, nous recommandons", desc: "IBD Care est gratuit : le soutien de la boutique aide à le rester. Chaque produit est proposé pour son utilité, pas pour le profit." },
+    de: { title: "Wir verkaufen nicht, wir empfehlen", desc: "IBD Care ist kostenlos: die Unterstützung durch den Shop hilft dabei. Jedes Produkt wird wegen seines Nutzens vorgeschlagen, nicht aus Profit." },
+    pt: { title: "Não vendemos, recomendamos", desc: "IBD Care é gratuito: o apoio da loja ajuda a manter assim. Cada produto é proposto pela utilidade, não pelo lucro." },
+    ru: { title: "Мы не продаём, рекомендуем", desc: "IBD Care бесплатен: поддержка магазина помогает сохранить так. Каждый товар предложен ради пользы, а не выгоды." },
+    pl: { title: "Nie sprzedajemy, polecamy", desc: "IBD Care jest bezpłatne: wsparcie sklepu pomaga tak zostać. Każdy produkt polecany ze względu na przydatność, nie zysk." },
+    ro: { title: "Nu vindem, recomandăm", desc: "IBD Care e gratuit: sprijinul magazinului ajută să rămână așa. Fiecare produs e propus pentru utilitate, nu pentru profit." },
+    sq: { title: "Nuk shesim, rekomandojmë", desc: "IBD Care është falas: mbështetja e dyqanit na ndihmon të mbetet kështu. Çdo produkt propozohet për dobinë, jo për fitim." },
+    zh: { title: "我们不售卖,我们推荐", desc: "IBD Care 免费:商店的支持帮助我们维持如此。每件商品因其实用而被推荐,而非图利。" },
   },
 };
 

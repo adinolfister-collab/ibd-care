@@ -27,6 +27,7 @@ const FEATURE_LABELS = {
   '/assistant': 'Assistente',
   '/map': 'Mappa',
   '/summary': 'Riepilogo',
+  'shop': 'Negozio',
 };
 const featureLabel = (f) => FEATURE_LABELS[f] || f;
 
@@ -57,8 +58,8 @@ export default function AdminConversions() {
   return (
     <AppLayout>
       <PageHeader
-        title="Conversioni premium"
-        subtitle="Tentativi di accesso alle funzioni premium da parte di utenti non abbonati."
+        title="Conversioni"
+        subtitle="Click sui prodotti del negozio e eventi di conversione tracked."
       />
 
       <div className="flex gap-2 mb-5 flex-wrap">
@@ -79,18 +80,18 @@ export default function AdminConversions() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-        <StatCard icon={MousePointerClick} label="Tentativi totali" value={loading ? '—' : total} />
+        <StatCard icon={MousePointerClick} label="Click totali" value={loading ? '—' : total} />
         <StatCard icon={Users} label="Utenti unici" value={loading ? '—' : uniqueUsers} />
-        <StatCard icon={LayoutDashboard} label="Funzioni tentate" value={loading ? '—' : totals.length} />
+        <StatCard icon={LayoutDashboard} label="Funzioni" value={loading ? '—' : totals.length} />
       </div>
 
       <Card className="mb-6">
         <CardContent className="pt-5">
-          <h2 className="font-heading text-lg font-semibold mb-3">Tentativi per funzione</h2>
+          <h2 className="font-heading text-lg font-semibold mb-3">Click per funzione</h2>
           {loading ? (
             <div className="h-48 flex items-center justify-center text-sm text-muted-foreground">Caricamento…</div>
           ) : totals.length === 0 ? (
-            <div className="h-48 flex items-center justify-center text-sm text-muted-foreground">Nessun tentativo registrato.</div>
+            <div className="h-48 flex items-center justify-center text-sm text-muted-foreground">Nessun click registrato.</div>
           ) : (
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
