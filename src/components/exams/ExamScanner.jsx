@@ -12,15 +12,15 @@ const BLOOD_CATS = ['esame_sangue', 'calprotectina'];
 
 const flagColor = { high: 'text-rose-500', low: 'text-amber-500', normal: 'text-emerald-600' };
 
-export default function ExamScanner({ onSaved }) {
+export default function ExamScanner({ onSaved, initialData }) {
   const { t } = useI18n();
   const [scanning, setScanning] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [duplicate, setDuplicate] = useState(null);
-  const [fileUrl, setFileUrl] = useState(null);
+  const [fileUrl, setFileUrl] = useState(initialData?.report_file_url || null);
   const [fileName, setFileName] = useState(null);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(initialData || null);
 
   const handleFile = async (e) => {
     const file = e.target.files?.[0];

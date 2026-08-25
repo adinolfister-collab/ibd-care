@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Plus, FileText, Trash2, Pencil, ExternalLink, Stethoscope, FlaskConical, CalendarClock, Search, X } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Plus, FileText, Trash2, Pencil, ExternalLink, Stethoscope, FlaskConical, CalendarClock, Search, X, ScanLine, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
@@ -10,6 +10,8 @@ import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
+import useRecordScanner from '@/hooks/useRecordScanner';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
@@ -46,6 +48,9 @@ function todayStr() { return new Date().toISOString().slice(0, 10); }
 
 export default function Records() {
   const { t } = useI18n();
+  const { toast } = useToast();
+  const { scanning, scan } = useRecordScanner();
+  const fileRef = useRef(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -63,6 +68,25 @@ export default function Records() {
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
+
+  const onScanFile = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    const res = await scan(file);
+    if (!res) return;
+    if (res.kind === 'medication') {
+      toast({ title: 'Terapia salvata', description: res.medication?.name || '' });
+      load();
+    } else if (res.kind === 'record') {
+      setEditing(res.record);
+      setOpen(true);
+    } else if (res.kind === 'duplicate') {
+      toast({ title: t('exams.duplicate'), description: t('exams.duplicate_hint'), variant: 'destructive' });
+    } else if (res.kind === 'error') {
+      toast({ title: t('exams.scan_error'), description: res.error, variant: 'destructive' });
+    }
+  };
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -98,7 +122,15 @@ export default function Records() {
       <PageHeader
         title={t('records.title')}
         subtitle={t('records.subtitle')}
-        action={<Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('records.add')}</Button>}
+        action={
+          <div className="flex gap-2 flex-wrap">
+            <input ref={fileRef} type="file" accept="image/*,application/pdf" onChange={onScanFile} className="hidden" />
+            <Button variant="outline" className="rounded-xl" onClick={() => fileRef.current?.click()} disabled={scanning}>
+              {scanning ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <ScanLine className="w-4 h-4 mr-1.5" />}{t('exams.scan_new_record')}
+            </Button>
+            <Button onClick={openNew} className="rounded-xl" disabled={scanning}><Plus className="w-4 h-4 mr-1.5" />{t('records.add')}</Button>
+          </div>
+        }
       />
       <PageEditorial pageKey="records" />
 

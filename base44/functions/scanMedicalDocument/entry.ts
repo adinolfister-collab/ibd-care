@@ -115,7 +115,7 @@ export default async function(req) {
       type: 'object',
       properties: {
         record_type: { type: 'string', enum: ['visita', 'esame', 'esame_sangue', 'referto', 'controllo', 'terapia'], description: 'Tipo di documento' },
-        exam_category: { type: ['string', 'null'], enum: ['esame_sangue', 'calprotectina', 'colonscopia', 'ecografia', null], description: 'Solo per esami strumentali/analisi; null altrimenti' },
+        exam_category: { type: 'string', description: 'Uno tra: esame_sangue, calprotectina, colonscopia, ecografia. Stringa vuota se non applicabile' },
         record_date: { type: 'string', description: 'Data del documento in formato AAAA-MM-GG' },
         title: { type: 'string', description: 'Titolo conciso del documento' },
         provider: { type: 'string', description: 'Medico, centro o struttura' },
@@ -138,21 +138,22 @@ export default async function(req) {
         },
         findings: { type: 'string', description: 'Reperti descrittivi (visite, colonscopia, ecografia, referti)' },
         result_summary: { type: 'string', description: 'Sintesi breve del referto/visita' },
-        next_appointment: { type: ['string', 'null'], description: 'Prossimo appuntamento in AAAA-MM-GG se citato, null altrimenti' },
+        next_appointment: { type: 'string', description: 'Prossimo appuntamento in AAAA-MM-GG se citato, stringa vuota altrimenti' },
         medication: {
-          type: ['object', 'null'],
+          type: 'object',
           properties: {
-            name: { type: 'string', description: 'Nome del farmaco' },
-            type: { type: 'string', enum: ['farmaco_orale', 'iniezione', 'biologico', 'integratore'] },
+            name: { type: 'string', description: 'Nome del farmaco (vuoto se non terapia)' },
+            type: { type: 'string', description: 'Uno tra: farmaco_orale, iniezione, biologico, integratore (vuoto se non terapia)' },
             dosage: { type: 'string', description: 'Dosaggio (es. 2g, 50 mg/ml)' },
-            frequency: { type: 'string', enum: ['giornaliero', 'settimanale', 'bisettimanale', 'mensile', 'al_bisogno'] },
+            frequency: { type: 'string', description: 'Uno tra: giornaliero, settimanale, bisettimanale, mensile, al_bisogno (vuoto se non terapia)' },
             start_date: { type: 'string', description: 'Data di inizio in AAAA-MM-GG' },
             notes: { type: 'string' }
           },
-          description: 'Compilare SOLO se record_type=terapia (ricetta/prescrizione farmacologica), null altrimenti'
+          required: ['name', 'type', 'dosage', 'frequency', 'start_date', 'notes'],
+          description: 'Compilare con i dati del farmaco SOLO se record_type=terapia, altrimenti tutti i campi vuoti'
         }
       },
-      required: ['record_type', 'record_date', 'title', 'markers', 'findings', 'result_summary']
+      required: ['record_type', 'record_date', 'title', 'markers', 'findings', 'result_summary', 'medication']
     };
 
     const prompt = `Sei un assistente che legge documenti medici di pazienti con IBD (malattia infiammatoria intestinale) e li cataloga in un archivio personale.
@@ -163,11 +164,11 @@ Riconosci automaticamente il tipo di documento:
 - "referto": referto/lettera di dimissione o consulenza
 - "controllo": controllo clinico di follow-up
 - "terapia": prescrizione/ricetta farmacologica
-Per esame_sangue imposta anche exam_category="esame_sangue"; per calprotectina fecale exam_category="calprotectina"; per colonscopia exam_category="colonscopia"; per ecografia intestinale exam_category="ecografia". Negli altri casi exam_category=null.
+Per esame_sangue imposta anche exam_category="esame_sangue"; per calprotectina fecale exam_category="calprotectina"; per colonscopia exam_category="colonscopia"; per ecografia intestinale exam_category="ecografia". Negli altri casi exam_category stringa vuota.
 Per gli esami del sangue e la calprotectina estrai ogni marker con valore, unità e range di riferimento; imposta flag "high" se valore > ref_high, "low" se < ref_low, "normal" altrimenti.
 Per visite/colonscopia/ecografia/referti usa "findings" con i reperti descrittivi.
 Per le terapie compila "medication" con nome farmaco, tipo, dosaggio, frequenza e data inizio.
-Leggi il documento allegato e restituisci SOLO i dati nello schema JSON richiesto. Date in formato AAAA-MM-GG (se non rilevata usa la data odierna). Se un dato non è presente usa stringa vuota o null. Usa la lingua del documento per i contenuti (testo).`;
+Leggi il documento allegato e restituisci SOLO i dati nello schema JSON richiesto. Date in formato AAAA-MM-GG (se non rilevata usa la data odierna). Se un dato non è presente usa stringa vuota. Usa la lingua del documento per i contenuti (testo).`;
 
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt, file_urls: [fileUrl], model: 'gemini_3_flash', response_json_schema: schema
