@@ -33,6 +33,7 @@ import Correlazioni from '@/pages/Correlazioni';
 import AdminConversions from '@/pages/AdminConversions';
 import Shop from '@/pages/Shop';
 import ShopAdmin from '@/pages/ShopAdmin';
+import ProductDetail from '@/pages/ProductDetail';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -82,6 +83,7 @@ const AuthenticatedApp = () => {
         <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
         <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
         <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+        <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
         {/* All other app pages require login */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           {/* Login required, no subscription */}

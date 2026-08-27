@@ -1,22 +1,17 @@
 import React from 'react';
-import { ExternalLink, Package } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, Package } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import { useI18n } from '@/lib/i18n';
-import { trackShopClick } from '@/lib/shop';
-import { cn } from '@/lib/utils';
+import { CATEGORY_LABEL_KEY } from '@/lib/shop';
 
-export default function ProductCard({ product, onOpen }) {
+export default function ProductCard({ product }) {
   const { t } = useI18n();
-  const go = (e) => {
-    e?.stopPropagation?.();
-    trackShopClick(product, 'card');
-    if (onOpen) onOpen(product);
-    else window.open(product.supplier_url, '_blank', 'noopener,noreferrer');
-  };
+  const slug = product.slug || product.id;
+  const to = '/shop/' + encodeURIComponent(slug);
   return (
-    <button
-      type="button"
-      onClick={go}
+    <Link
+      to={to}
       className="group text-left flex flex-col rounded-2xl border border-border bg-card shadow-sm overflow-hidden hover:shadow-md transition-shadow"
     >
       <div className="relative w-full h-40 bg-accent">
@@ -29,18 +24,19 @@ export default function ProductCard({ product, onOpen }) {
         )}
       </div>
       <div className="p-4 flex-1 flex flex-col">
-        <p className="font-heading font-semibold text-foreground leading-snug">{product.name}</p>
-        {product.supplier && <p className="text-xs text-muted-foreground mt-0.5">{product.supplier}</p>}
-        {product.description && <p className="text-sm text-muted-foreground mt-2 leading-relaxed line-clamp-3">{product.description}</p>}
-        <div className="mt-auto flex items-center justify-between pt-3">
-          <span className={cn('text-sm font-medium', product.price_indicativo ? 'text-foreground' : 'text-muted-foreground')}>
-            {product.price_indicativo ? t('shop.price_label') + ' ' + product.price_indicativo : t('shop.see_product')}
-          </span>
-          <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
-            {t('shop.go_to_product')} <ExternalLink className="w-3.5 h-3.5" />
-          </span>
+        {product.category && (
+          <p className="text-[0.65rem] font-heading font-semibold uppercase tracking-[0.18em] text-terracotta">
+            {t(CATEGORY_LABEL_KEY[product.category])}
+          </p>
+        )}
+        <p className="font-heading font-semibold text-foreground leading-snug mt-1">{product.name}</p>
+        {product.description && (
+          <p className="text-sm text-muted-foreground mt-2 leading-relaxed line-clamp-3">{product.description}</p>
+        )}
+        <div className="mt-auto flex items-center gap-1 pt-3 text-sm font-medium text-primary">
+          <Search className="w-4 h-4" /> {t('shop.confronta')}
         </div>
       </div>
-    </button>
+    </Link>
   );
 }

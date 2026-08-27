@@ -8,28 +8,24 @@
     "slug": {
       "type": "string"
     },
+    "description": {
+      "type": "string"
+    },
     "category": {
       "type": "string",
       "enum": [
-        "integratori_nutraceutici",
-        "alimenti_speciali",
-        "presidi_medici_stomia"
+        "nutrizione",
+        "stomia",
+        "comfort",
+        "igiene"
       ]
-    },
-    "supplier": {
-      "type": "string"
-    },
-    "supplier_url": {
-      "type": "string"
-    },
-    "description": {
-      "type": "string"
     },
     "image_url": {
       "type": "string"
     },
-    "price_indicativo": {
-      "type": "string"
+    "query": {
+      "type": "string",
+      "description": "Termini di ricerca / EAN usati dal comparatore affiliate per il lookup live delle offerte"
     },
     "active": {
       "type": "boolean",
@@ -41,9 +37,7 @@
   },
   "required": [
     "name",
-    "category",
-    "supplier",
-    "supplier_url"
+    "category"
   ],
   "rls": {
     "read": {},
