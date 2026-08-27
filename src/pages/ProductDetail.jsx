@@ -44,12 +44,26 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (!product) return;
-    const query = (product.query || product.name || '').trim();
-    if (!query) { setLoadingOffers(false); return; }
     let cancelled = false;
     (async () => {
       setLoadingOffers(true);
       try {
+        // 1) Offerte reali salvate nel DB (comparatore statico)
+        let stored = [];
+        try {
+          stored = await base44.entities.AffiliateOffer.filter({ product_id: product.id }, 'store_price', 50);
+        } catch { stored = []; }
+        if (cancelled) return;
+        if (stored && stored.length) {
+          const sorted = [...stored].sort((a, b) => a.store_price - b.store_price);
+          setOffers(sorted);
+          setConfigured(true);
+          setLoadingOffers(false);
+          return;
+        }
+        // 2) Fallback: lookup live del network affiliate (se configurato)
+        const query = (product.query || product.name || '').trim();
+        if (!query) { setOffers([]); setLoadingOffers(false); return; }
         const res = await base44.functions.invoke('lookupAffiliateOffers', { query, limit: 25 });
         if (cancelled) return;
         setOffers(res?.data?.offers || []);
