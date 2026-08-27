@@ -1,0 +1,44 @@
+{
+  "name": "Awin Offers Sync",
+  "description": "Ogni notte alle 03:00 (Europe/Rome) sincronizza le offerte affiliate dal network Awin: scarica i product feed degli advertiser joined e aggiorna le AffiliateOffer dei Product del catalogo.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 3 * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Rome",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "awin_offers_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "syncAwinOffers"
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Sincronizza offerte Awin",
+            "description": "Download feed advertiser + upsert AffiliateOffer"
+          }
+        }
+      }
+    ]
+  }
+}

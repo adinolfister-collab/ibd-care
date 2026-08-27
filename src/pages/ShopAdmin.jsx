@@ -12,6 +12,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { CATEGORY_LABEL_KEY } from '@/lib/shop';
 import { cn } from '@/lib/utils';
+import AwinSyncPanel from '@/components/AwinSyncPanel';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const categories = [
   { value: 'nutrizione', key: 'shop.cat_nutrizione' },
@@ -45,6 +47,7 @@ export default function ShopAdmin() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [importing, setImporting] = useState(false);
+  const [tab, setTab] = useState('prodotti');
   const fileRef = useRef(null);
 
   const load = async () => {
@@ -138,6 +141,16 @@ export default function ShopAdmin() {
         }
       />
 
+      <Tabs value={tab} onValueChange={setTab} className="mb-4">
+        <TabsList>
+          <TabsTrigger value="prodotti">Prodotti</TabsTrigger>
+          <TabsTrigger value="awin">Awin</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      {tab === 'awin' ? (
+        <AwinSyncPanel />
+      ) : (
+      <>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
       ) : items.length === 0 ? (
@@ -162,6 +175,8 @@ export default function ShopAdmin() {
             </Card>
           ))}
         </div>
+      )}
+      </>
       )}
 
       <EntityFormDialog

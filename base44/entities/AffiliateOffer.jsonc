@@ -21,6 +21,10 @@
     "title": {
       "type": "string"
     },
+    "source": {
+      "type": "string",
+      "description": "Origine offerta: 'awin' (importata dal feed Awin) o 'manual' (inserita a mano)"
+    },
     "order": {
       "type": "number"
     }
