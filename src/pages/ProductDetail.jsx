@@ -131,10 +131,8 @@ export default function ProductDetail() {
             </p>
             {loadingOffers ? (
               <div className="flex items-center gap-2 text-muted-foreground py-6"><Loader2 className="w-4 h-4 animate-spin" /> {t('shop.loading_offers')}</div>
-            ) : !configured ? (
-              <EmptyState icon={Tag} title={t('shop.api_not_configured')} description={t('shop.disclaimer')} />
-            ) : offers.length === 0 ? (
-              <EmptyState icon={Tag} title={t('shop.no_offers')} description={t('shop.disclaimer')} />
+            ) : !configured || offers.length === 0 ? (
+              <EmptyState icon={Tag} title={t('shop.no_offers')} description={t('shop.no_offers_desc')} />
             ) : (
               <div className="space-y-2.5">
                 {offers.map((o, i) => (

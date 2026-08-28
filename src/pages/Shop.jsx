@@ -12,6 +12,10 @@ import ProductCard from '@/components/ProductCard';
 import { CATEGORY_LABEL_KEY } from '@/lib/shop';
 import { cn } from '@/lib/utils';
 
+const CATEGORY_ORDER = ['nutrizione', 'stomia', 'comfort', 'igiene'];
+
+const pad = (n) => (n < 10 ? '0' + n : '' + n);
+
 export default function Shop() {
   const { t } = useI18n();
   const [items, setItems] = useState([]);
@@ -29,8 +33,6 @@ export default function Shop() {
     })();
   }, []);
 
-  const categories = ['nutrizione', 'stomia', 'comfort', 'igiene'];
-
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return items.filter((p) => {
@@ -43,17 +45,30 @@ export default function Shop() {
     });
   }, [items, filter, search]);
 
+  // Prodotti raggruppati per categoria, nell'ordine canonico, solo non vuoti.
+  const shelves = useMemo(() => {
+    const groups = {};
+    for (const p of filtered) {
+      const c = CATEGORY_ORDER.includes(p.category) ? p.category : 'altri';
+      (groups[c] = groups[c] || []).push(p);
+    }
+    const ordered = CATEGORY_ORDER.filter((c) => groups[c] && groups[c].length);
+    if (groups.altri && groups.altri.length) ordered.push('altri');
+    return ordered.map((c, i) => ({ key: c, num: pad(i + 1), products: groups[c] }));
+  }, [filtered]);
+
   return (
     <AppLayout>
       <PageHeader title={t('shop.title')} subtitle={t('shop.subtitle')} />
       <PageEditorial pageKey="shop" />
+
       <MagazineEssay theme="esami" number="01" eyebrow="Negozio" title={t('shop.title')}>
         <div className="flex flex-wrap items-center gap-2 mb-4">
-          <button onClick={() => setFilter('all')} className={cn('px-4 py-1.5 rounded-full text-sm font-medium transition-colors', filter === 'all' ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground')}>
+          <button onClick={() => setFilter('all')} className={cn('px-4 py-1.5 rounded-full text-sm font-medium transition-colors', filter === 'all' ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground hover:bg-accent/70')}>
             {t('shop.category_all')}
           </button>
-          {categories.map((c) => (
-            <button key={c} onClick={() => setFilter(c)} className={cn('px-4 py-1.5 rounded-full text-sm font-medium transition-colors', filter === c ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground')}>
+          {CATEGORY_ORDER.map((c) => (
+            <button key={c} onClick={() => setFilter(c)} className={cn('px-4 py-1.5 rounded-full text-sm font-medium transition-colors', filter === c ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground hover:bg-accent/70')}>
               {t(CATEGORY_LABEL_KEY[c])}
             </button>
           ))}
@@ -63,25 +78,39 @@ export default function Shop() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('shop.search_placeholder')}
-              className="w-full rounded-xl border border-input bg-background pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full rounded-full border border-input bg-background pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
         </div>
-
-        {loading ? (
-          <div className="py-16 flex items-center justify-center text-muted-foreground"><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t('common.loading')}</div>
-        ) : filtered.length === 0 ? (
-          <EmptyState icon={ShoppingBag} title={t('shop.empty')} description={t('shop.subtitle')} />
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        )}
-
-        <p className="mt-6 text-xs text-muted-foreground leading-relaxed select-text">{t('shop.disclaimer')}</p>
       </MagazineEssay>
+
+      {loading ? (
+        <div className="py-20 flex items-center justify-center text-muted-foreground"><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t('common.loading')}</div>
+      ) : shelves.length === 0 ? (
+        <EmptyState icon={ShoppingBag} title={t('shop.empty')} description={t('shop.subtitle')} />
+      ) : (
+        <div className="space-y-10 md:space-y-12">
+          {shelves.map((shelf) => (
+            <section key={shelf.key} className="rounded-3xl bg-accent/40 border border-border p-5 md:p-7 shadow-sm">
+              <div className="flex items-baseline gap-3 mb-5">
+                <span className="font-display text-3xl md:text-4xl font-semibold text-terracotta leading-none">{shelf.num}</span>
+                <h3 className="font-heading text-xl md:text-2xl font-semibold text-primary tracking-tight leading-none">
+                  {shelf.key === 'altri' ? t('shop.category_all') : t(CATEGORY_LABEL_KEY[shelf.key])}
+                </h3>
+                <span className="text-sm text-muted-foreground ml-1">· {shelf.products.length} {t('shop.shelf_products')}</span>
+                <div className="ml-auto h-px flex-1 bg-border/70 hidden sm:block" />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+                {shelf.products.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
+
+      <p className="mt-8 text-xs text-muted-foreground leading-relaxed select-text">{t('shop.disclaimer')}</p>
       <EditorialBlock sectionKey="shop_partner" align="right" />
     </AppLayout>
   );
