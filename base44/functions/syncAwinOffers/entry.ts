@@ -40,11 +40,12 @@ function toNumber(v) {
 }
 
 // Parser CSV minimale: gestisce virgolette, virgole e a capo annidati.
-function parseCsv(text) {
+function parseCsv(text, maxRows) {
   const rows = [];
   let row = [];
   let field = '';
   let q = false;
+  const cap = maxRows ? maxRows + 1 : Infinity; // +1 per header
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
     if (q) {
@@ -55,12 +56,15 @@ function parseCsv(text) {
     } else {
       if (c === '"') q = true;
       else if (c === ',') { row.push(field); field = ''; }
-      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c === '\n') {
+        row.push(field); rows.push(row); row = []; field = '';
+        if (rows.length >= cap) break;
+      }
       else if (c === '\r') { /* ignore */ }
       else field += c;
     }
   }
-  if (field.length || row.length) { row.push(field); rows.push(row); }
+  if (rows.length < cap && (field.length || row.length)) { row.push(field); rows.push(row); }
   return rows;
 }
 
@@ -193,7 +197,7 @@ export default async function(req) {
       const adv = r[idxAdv];
       if (!adv) continue;
       const status = (r[idxStatus] || '').toString();
-      if (status && status.toLowerCase() !== 'joined') continue;
+      if (status && status.toLowerCase().includes('not joined')) continue;
       let url = r[idxUrl];
       if (!url) continue;
       if (url.indexOf('compression/gzip') !== -1) url = url.replace('compression/gzip', 'compression/none');
@@ -215,7 +219,7 @@ export default async function(req) {
       try {
         const r = await fetchWithTimeout(feed.url, {}, 30000);
         if (!r.ok) { errors.push({ advertiser: p.id, name: p.name, error: 'http_' + r.status }); continue; }
-        const rows = parseCsv(await r.text());
+        const rows = parseCsv(await r.text(), rowLimit);
         if (rows.length < 2) { syncedAdvertisers.push({ id: p.id, name: p.name, offers: 0 }); continue; }
         const hd = rows[0];
         const iDeep = colIndex(hd, ['aw_deep_link', 'deeplink', 'deep_link']);
