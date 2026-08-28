@@ -7,6 +7,7 @@ import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
 import LanguageMenu from '@/components/LanguageMenu';
 import TopRightActions from '@/components/TopRightActions';
+import MobileTopNav from '@/components/MobileTopNav';
 import NativeAppButton from '@/components/NativeAppButton';
 import { guestSymptoms, guestFoods, syncGuestEntriesToCloud } from '@/lib/guestEntries';
 import { useToast } from '@/components/ui/use-toast';
@@ -81,7 +82,7 @@ export default function AppLayout({ children }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Sidebar (desktop layout forced at all widths) */}
-      <aside className="flex fixed inset-y-0 left-0 w-64 flex-col border-r border-border bg-card">
+      <aside className="hidden md:flex fixed inset-y-0 left-0 w-64 flex-col border-r border-border bg-card">
         <div className="px-6 py-7 flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center">
             <HeartPulse className="w-6 h-6 text-primary" />
@@ -157,15 +158,18 @@ export default function AppLayout({ children }) {
       </aside>
 
       {/* Top-right actions (desktop layout, always visible) */}
-      <div className="flex fixed top-4 right-6 z-40">
+      <div className="hidden md:flex fixed top-4 right-6 z-40">
         <LanguageMenu />
         <NativeAppButton />
         <TopRightActions />
       </div>
 
+      {/* Mobile top navigation (hidden on desktop) */}
+      <MobileTopNav user={user} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+
       {/* Main content */}
-      <div className="pl-64">
-        <main className="min-h-screen pb-8 px-4 md:px-10 py-6 md:py-10 max-w-4xl mx-auto">
+      <div className="md:pl-64">
+        <main className="min-h-screen pb-10 px-4 md:px-10 py-5 md:py-10 max-w-4xl mx-auto">
           {children}
         </main>
       </div>
