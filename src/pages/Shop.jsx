@@ -22,7 +22,7 @@ export default function Shop() {
   useEffect(() => {
     (async () => {
       try {
-        const data = await base44.entities.Product.list('-order,-created_date', 400);
+        const data = await base44.entities.Product.list('order', 400);
         setItems((data || []).filter((p) => p.active !== false));
       } catch { setItems([]); }
       setLoading(false);
