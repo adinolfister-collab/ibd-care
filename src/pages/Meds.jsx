@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Pill, Trash2, Pencil, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
+import { useGuestSaveGate } from '@/hooks/useGuestSaveGate';
+import SavePaywall from '@/components/SavePaywall';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -47,6 +50,8 @@ const typeColors = {
 
 export default function Meds() {
   const { t } = useI18n();
+  const { isAuthenticated, authChecked } = useAuth();
+  const { attemptSave, showPaywall, setShowPaywall } = useGuestSaveGate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -54,16 +59,20 @@ export default function Meds() {
 
   const load = async () => {
     setLoading(true);
-    const data = await base44.entities.Medication.list('-created_date', 200);
-    setItems(data);
+    if (!isAuthenticated) { setItems([]); setLoading(false); return; }
+    try {
+      const data = await base44.entities.Medication.list('-created_date', 200);
+      setItems(data);
+    } catch { setItems([]); }
     setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [isAuthenticated, authChecked]);
 
   const openNew = () => { setEditing({ active: true }); setOpen(true); };
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
+    if (!isAuthenticated && !attemptSave('cloud')) return;
     if (editing?.id) await base44.entities.Medication.update(editing.id, data);
     else await base44.entities.Medication.create(data);
     setOpen(false); load();
@@ -127,6 +136,7 @@ export default function Meds() {
         initialData={editing}
         onSubmit={handleSubmit}
       />
+      <SavePaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <EditorialBlock sectionKey="meds_adherence" align="left" />
     </AppLayout>
   );

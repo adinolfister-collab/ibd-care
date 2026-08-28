@@ -12,6 +12,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import useRecordScanner from '@/hooks/useRecordScanner';
+import { useAuth } from '@/lib/AuthContext';
+import { useGuestSaveGate } from '@/hooks/useGuestSaveGate';
+import SavePaywall from '@/components/SavePaywall';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
@@ -50,6 +53,8 @@ export default function Records() {
   const { t } = useI18n();
   const { toast } = useToast();
   const { scanning, scan } = useRecordScanner();
+  const { isAuthenticated, authChecked } = useAuth();
+  const { attemptSave, showPaywall, setShowPaywall } = useGuestSaveGate();
   const fileRef = useRef(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,16 +68,20 @@ export default function Records() {
 
   const load = async () => {
     setLoading(true);
-    const data = await base44.entities.MedicalRecord.list('-record_date', 200);
-    setItems(data);
+    if (!isAuthenticated) { setItems([]); setLoading(false); return; }
+    try {
+      const data = await base44.entities.MedicalRecord.list('-record_date', 200);
+      setItems(data);
+    } catch { setItems([]); }
     setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [isAuthenticated, authChecked]);
 
   const onScanFile = async (e) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
+    if (!isAuthenticated && !attemptSave('cloud')) return;
     const res = await scan(file);
     if (!res) return;
     if (res.kind === 'medication') {
@@ -111,6 +120,7 @@ export default function Records() {
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
+    if (!isAuthenticated && !attemptSave('cloud')) return;
     if (editing?.id) await base44.entities.MedicalRecord.update(editing.id, data);
     else await base44.entities.MedicalRecord.create(data);
     setOpen(false); load();
@@ -238,6 +248,7 @@ export default function Records() {
         initialData={editing}
         onSubmit={handleSubmit}
       />
+      <SavePaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <EditorialBlock sectionKey="records_archive" align="right" />
     </AppLayout>
   );

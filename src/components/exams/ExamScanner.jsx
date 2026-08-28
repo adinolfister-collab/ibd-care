@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Loader2, Plus, Save, Trash2, X, ScanLine, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
+import { useGuestSaveGate } from '@/hooks/useGuestSaveGate';
+import SavePaywall from '@/components/SavePaywall';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
@@ -14,6 +17,8 @@ const flagColor = { high: 'text-rose-500', low: 'text-amber-500', normal: 'text-
 
 export default function ExamScanner({ onSaved, initialData }) {
   const { t } = useI18n();
+  const { isAuthenticated } = useAuth();
+  const { attemptSave, showPaywall, setShowPaywall } = useGuestSaveGate();
   const [scanning, setScanning] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -25,6 +30,7 @@ export default function ExamScanner({ onSaved, initialData }) {
   const handleFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!isAuthenticated && !attemptSave('cloud')) return;
     setError(null);
     setDuplicate(null);
     setScanning(true);
@@ -78,6 +84,7 @@ export default function ExamScanner({ onSaved, initialData }) {
   };
 
   const save = async () => {
+    if (!isAuthenticated && !attemptSave('cloud')) return;
     setSaving(true);
     setError(null);
     try {
@@ -107,6 +114,7 @@ export default function ExamScanner({ onSaved, initialData }) {
 
   return (
     <div className="space-y-4">
+      <SavePaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <Card className="border-0 shadow-sm">
         <CardContent className="p-5 space-y-4">
           <label className="block">

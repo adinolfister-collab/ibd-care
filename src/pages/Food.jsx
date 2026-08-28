@@ -8,6 +8,8 @@ import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
 import { guestFoods } from '@/lib/guestEntries';
+import { useGuestSaveGate } from '@/hooks/useGuestSaveGate';
+import SavePaywall from '@/components/SavePaywall';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import SiteMenu from '@/components/SiteMenu';
@@ -44,6 +46,7 @@ export default function Food() {
   const { t } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated, authChecked } = useAuth();
+  const { isGuest, remaining, attemptSave, showPaywall, setShowPaywall } = useGuestSaveGate();
   const isAdmin = user?.role === 'admin';
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -114,6 +117,7 @@ export default function Food() {
     const sel = Array.isArray(data.items) ? data.items : [];
     const payload = { ...data, items: sel, foods: serializeItems(sel) || data.foods || '' };
     if (!isAuthenticated) {
+      if (!attemptSave('diary')) return;
       if (editing?.id) guestFoods.update(editing.id, payload);
       else guestFoods.add(payload);
       setItems(guestFoods.list());
@@ -163,6 +167,9 @@ export default function Food() {
         subtitle={t('food.subtitle')}
         action={
           <div className="flex gap-2 flex-wrap justify-end">
+            {isGuest && (
+              <span className="text-xs text-muted-foreground px-2.5 py-1 rounded-full bg-accent">{t('guest.saves_remaining').replace('{n}', remaining)}</span>
+            )}
             {isAdmin && (
               <Button onClick={() => setCatalogMgrOpen(true)} variant="outline" className="rounded-xl"><ShieldCheck className="w-4 h-4 mr-1.5" />{t('food.catalog_manage')}</Button>
             )}
@@ -271,6 +278,7 @@ export default function Food() {
           onChanged={loadCatalog}
         />
       )}
+      <SavePaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <EditorialBlock sectionKey="food_reactions" align="right" />
     </AppLayout>
   );

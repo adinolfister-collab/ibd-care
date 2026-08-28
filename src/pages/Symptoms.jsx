@@ -6,6 +6,8 @@ import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
 import { guestSymptoms } from '@/lib/guestEntries';
+import { useGuestSaveGate } from '@/hooks/useGuestSaveGate';
+import SavePaywall from '@/components/SavePaywall';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import SiteMenu from '@/components/SiteMenu';
@@ -67,6 +69,7 @@ export default function Symptoms() {
   const { t } = useI18n();
   const { toast } = useToast();
   const { isAuthenticated, authChecked } = useAuth();
+  const { isGuest, remaining, attemptSave, showPaywall, setShowPaywall } = useGuestSaveGate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -113,6 +116,7 @@ export default function Symptoms() {
     setOpen(false);
     const payload = { ...data, pain_level: data.pain_level ?? 0, fatigue_level: data.fatigue_level ?? 0 };
     if (!isAuthenticated) {
+      if (!attemptSave('diary')) return;
       if (editing?.id) guestSymptoms.update(editing.id, payload);
       else guestSymptoms.add(payload);
       setItems(guestSymptoms.list());
@@ -162,6 +166,9 @@ export default function Symptoms() {
         subtitle={t('symptoms.subtitle')}
         action={
           <div className="flex items-center gap-2 flex-wrap">
+            {isGuest && (
+              <span className="text-xs text-muted-foreground px-2.5 py-1 rounded-full bg-accent">{t('guest.saves_remaining').replace('{n}', remaining)}</span>
+            )}
             <Button variant="outline" className="rounded-xl" onClick={handleExport} disabled={exporting || items.length === 0}>
               <FileDown className="w-4 h-4 mr-1.5" />{t('symptoms.export_pdf')}
             </Button>
@@ -219,6 +226,7 @@ export default function Symptoms() {
         initialData={editing}
         onSubmit={handleSubmit}
       />
+      <SavePaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <EditorialBlock sectionKey="symptoms_journal" align="left" />
     </AppLayout>
   );

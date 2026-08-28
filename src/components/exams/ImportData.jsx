@@ -3,6 +3,9 @@ import { Upload, Loader2, FileText, CheckCircle2, AlertCircle, FilePlus2, Stetho
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
+import { useGuestSaveGate } from '@/hooks/useGuestSaveGate';
+import SavePaywall from '@/components/SavePaywall';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -28,6 +31,8 @@ function fmt(d) {
 export default function ImportData({ onSaved }) {
   const { t } = useI18n();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const { attemptSave, showPaywall, setShowPaywall } = useGuestSaveGate();
   const inputRef = useRef(null);
   const [jobs, setJobs] = useState([]); // { id, file, status, error, record, type }
   const [busy, setBusy] = useState(false);
@@ -35,6 +40,7 @@ export default function ImportData({ onSaved }) {
   const addFiles = async (fileList) => {
     const files = Array.from(fileList || []);
     if (!files.length) return;
+    if (!isAuthenticated && !attemptSave('cloud')) return;
     setBusy(true);
     const start = files.map((f) => ({ id: Math.random().toString(36).slice(2), file: f, status: 'scanning' }));
     setJobs((cur) => [...start, ...cur]);
@@ -105,6 +111,7 @@ export default function ImportData({ onSaved }) {
 
   return (
     <div className="space-y-4">
+      <SavePaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <Card className="border-0 shadow-sm">
         <CardContent className="p-5 space-y-4">
           <div>
