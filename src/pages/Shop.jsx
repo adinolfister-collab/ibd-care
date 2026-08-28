@@ -9,6 +9,7 @@ import MagazineEssay from '@/components/MagazineEssay';
 import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import ProductCard from '@/components/ProductCard';
+import ShopPartnerMenu from '@/components/ShopPartnerMenu';
 import { CATEGORY_LABEL_KEY } from '@/lib/shop';
 import { cn } from '@/lib/utils';
 
@@ -22,13 +23,22 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
-
+  const [partners, setPartners] = useState([]);
   useEffect(() => {
     (async () => {
       try {
         const data = await base44.entities.Product.list('order', 400);
         setItems((data || []).filter((p) => p.active !== false));
       } catch { setItems([]); }
+      try {
+        const offers = await base44.entities.AffiliateOffer.list('-created_date', 400);
+        const map = new Map();
+        for (const o of (offers || [])) {
+          if (!o || !o.store_name || !o.affiliate_url) continue;
+          if (!map.has(o.store_name)) map.set(o.store_name, { name: o.store_name, url: o.affiliate_url });
+        }
+        setPartners([...map.values()].sort((a, b) => a.name.localeCompare(b.name)));
+      } catch { setPartners([]); }
       setLoading(false);
     })();
   }, []);
@@ -72,6 +82,7 @@ export default function Shop() {
               {t(CATEGORY_LABEL_KEY[c])}
             </button>
           ))}
+          <ShopPartnerMenu partners={partners} />
           <div className="relative ml-auto w-full sm:w-64">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input

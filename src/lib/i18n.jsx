@@ -416,6 +416,7 @@ const dictionaries = {
     'shop.field_order': 'Ordine',
     'shop.back_to_shop': 'Torna al negozio',
     'shop.not_found': 'Prodotto non trovato',
+    'shop.our_partners': 'I nostri partner',
   },
   en: {
     'app.name': 'IBD Care',
@@ -781,6 +782,7 @@ const dictionaries = {
     'shop.field_order': 'Order',
     'shop.back_to_shop': 'Back to shop',
     'shop.not_found': 'Product not found',
+    'shop.our_partners': 'Our partners',
     'paywall.title': 'Sign in to keep saving',
     'paywall.desc': "You've used your 3 free guest saves. Sign up or log in to keep logging symptoms, meals, therapy and records — and find them on any device.",
     'paywall.cta_login': 'Log in',
