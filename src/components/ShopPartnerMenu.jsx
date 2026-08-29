@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { useI18n } from '@/lib/i18n';
-import { trackShopClick } from '@/lib/shop';
+import { trackShopClick, CATEGORY_LABEL_KEY } from '@/lib/shop';
 
 // menù a tendina "I nostri partner" per il Negozio: elenca i nomi store unici
 // derivati dalle offerte affiliate salvate e apre il sito dello store selezionato
@@ -46,6 +46,11 @@ export default function ShopPartnerMenu({ partners = [] }) {
             className="flex items-center gap-2 cursor-pointer"
           >
             <span className="font-heading text-sm text-foreground flex-1 truncate">{p.name}</span>
+            {p.category && (
+              <span className="text-[0.6rem] font-medium uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-terracotta/15 text-terracotta border border-terracotta/30 shrink-0">
+                {t(CATEGORY_LABEL_KEY[p.category])}
+              </span>
+            )}
             <ExternalLink className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
           </DropdownMenuItem>
         ))}

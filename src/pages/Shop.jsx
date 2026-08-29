@@ -37,6 +37,14 @@ export default function Shop() {
           if (!o || !o.store_name || !o.affiliate_url) continue;
           if (!map.has(o.store_name)) map.set(o.store_name, { name: o.store_name, url: o.affiliate_url });
         }
+        try {
+          const partners = await base44.entities.AffiliatePartner.filter({ active: true }, '-order', 400);
+          for (const p of (partners || [])) {
+            if (!p || !p.name || !p.affiliate_url) continue;
+            if (map.has(p.name)) continue;
+            map.set(p.name, { name: p.name, url: p.affiliate_url, category: p.category });
+          }
+        } catch {}
         setPartners([...map.values()].sort((a, b) => a.name.localeCompare(b.name)));
       } catch { setPartners([]); }
       setLoading(false);

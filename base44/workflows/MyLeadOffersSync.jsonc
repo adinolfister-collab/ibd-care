@@ -1,0 +1,44 @@
+{
+  "name": "MyLead Offers Sync",
+  "description": "Ogni notte alle 03:00 (Europe/Rome) sincronizza i programmi/offerte dal network MyLead: recupera i programmi via API e aggiorna AffiliatePartner (men\u00f9 'I nostri partner') per categoria.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 3 * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Rome",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "mylead_offers_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "syncMyLeadPrograms"
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Sincronizza programmi MyLead",
+            "description": "Recupero programmi + upsert AffiliatePartner"
+          }
+        }
+      }
+    ]
+  }
+}
