@@ -17,7 +17,12 @@
         "nutrizione",
         "stomia",
         "comfort",
-        "igiene"
+        "igiene",
+        "farmaci",
+        "integratori",
+        "dispositivi",
+        "cura_persona",
+        "alimentazione_speciale"
       ]
     },
     "image_url": {

@@ -13,7 +13,7 @@ import ShopPartnerMenu from '@/components/ShopPartnerMenu';
 import { CATEGORY_LABEL_KEY } from '@/lib/shop';
 import { cn } from '@/lib/utils';
 
-const CATEGORY_ORDER = ['nutrizione', 'stomia', 'comfort', 'igiene'];
+const CATEGORY_ORDER = ['nutrizione', 'stomia', 'comfort', 'igiene', 'farmaci', 'integratori', 'dispositivi', 'cura_persona', 'alimentazione_speciale'];
 
 const pad = (n) => (n < 10 ? '0' + n : '' + n);
 

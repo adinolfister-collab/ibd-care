@@ -15,6 +15,11 @@ export const CATEGORY_LABEL_KEY = {
   stomia: 'shop.cat_stomia',
   comfort: 'shop.cat_comfort',
   igiene: 'shop.cat_igiene',
+  farmaci: 'shop.cat_farmaci',
+  integratori: 'shop.cat_integratori',
+  dispositivi: 'shop.cat_dispositivi',
+  cura_persona: 'shop.cat_cura_persona',
+  alimentazione_speciale: 'shop.cat_alimentazione_speciale',
 };
 
 // --- Amazon Associates ----------------------------------------------------

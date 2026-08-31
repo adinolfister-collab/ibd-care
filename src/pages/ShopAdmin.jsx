@@ -23,6 +23,11 @@ const categories = [
   { value: 'stomia', key: 'shop.cat_stomia' },
   { value: 'comfort', key: 'shop.cat_comfort' },
   { value: 'igiene', key: 'shop.cat_igiene' },
+  { value: 'farmaci', key: 'shop.cat_farmaci' },
+  { value: 'integratori', key: 'shop.cat_integratori' },
+  { value: 'dispositivi', key: 'shop.cat_dispositivi' },
+  { value: 'cura_persona', key: 'shop.cat_cura_persona' },
+  { value: 'alimentazione_speciale', key: 'shop.cat_alimentazione_speciale' },
 ];
 
 const fields = (t) => [
@@ -103,7 +108,7 @@ export default function ShopAdmin() {
                 type: 'object',
                 properties: {
                   name: { type: 'string' },
-                  category: { type: 'string', enum: ['nutrizione', 'stomia', 'comfort', 'igiene'] },
+                  category: { type: 'string', enum: ['nutrizione', 'stomia', 'comfort', 'igiene', 'farmaci', 'integratori', 'dispositivi', 'cura_persona', 'alimentazione_speciale'] },
                   query: { type: 'string' },
                   description: { type: 'string' },
                   image_url: { type: 'string' },
