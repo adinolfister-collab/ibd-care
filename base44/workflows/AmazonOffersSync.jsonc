@@ -1,0 +1,44 @@
+{
+  "name": "Amazon Offers Sync",
+  "description": "Ogni notte alle 03:15 (Europe/Rome) sincronizza le offerte Amazon via Product Advertising API: per ogni Product attivo recupera prezzo e URL affiliato e aggiorna le AffiliateOffer (source 'amazon'). No-op finche' le secret PA API non sono configurate.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "15 3 * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Rome",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "amazon_offers_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "lookupAmazonOffers"
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Sincronizza offerte Amazon",
+            "description": "PA API SearchItems + upsert AffiliateOffer source 'amazon'"
+          }
+        }
+      }
+    ]
+  }
+}
