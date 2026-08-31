@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { norm, toNumber, fetchWithTimeout, parseCsv, colIndex, matchProduct } from '../../shared/affiliateFeed.ts';
 import { secrets } from 'base44:runtime';
 
 // Sincronizzazione offerte affiliate dal network Awin.
@@ -11,89 +12,6 @@ import { secrets } from 'base44:runtime';
 // Admin-only; invocabile anche dal workflow schedulato (pull: limit).
 
 function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
-
-function fetchWithTimeout(url, opts, ms) {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), ms);
-  return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(t));
-}
-
-function norm(s) { return String(s || '').toLowerCase().trim(); }
-
-function toNumber(v) {
-  if (typeof v === 'number' && isFinite(v)) return v;
-  if (typeof v !== 'string') return undefined;
-  let s = v.replace(/[^\d.,-]/g, ' ').trim();
-  if (!s) return undefined;
-  const hasComma = s.indexOf(',') !== -1;
-  const hasDot = s.indexOf('.') !== -1;
-  if (hasComma && hasDot) {
-    if (s.lastIndexOf(',') > s.lastIndexOf('.')) s = s.replace(/\./g, '').replace(',', '.');
-    else s = s.replace(/,/g, '');
-  } else if (hasComma) {
-    s = s.replace(/\./g, '').replace(',', '.');
-  }
-  const m = s.match(/-?\d+(\.\d+)?/);
-  if (!m) return undefined;
-  const n = parseFloat(m[0]);
-  return isFinite(n) ? n : undefined;
-}
-
-// Parser CSV minimale: gestisce virgolette, virgole e a capo annidati.
-function parseCsv(text, maxRows) {
-  const rows = [];
-  let row = [];
-  let field = '';
-  let q = false;
-  const cap = maxRows ? maxRows + 1 : Infinity; // +1 per header
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (q) {
-      if (c === '"') {
-        if (text[i + 1] === '"') { field += '"'; i++; }
-        else q = false;
-      } else field += c;
-    } else {
-      if (c === '"') q = true;
-      else if (c === ',') { row.push(field); field = ''; }
-      else if (c === '\n') {
-        row.push(field); rows.push(row); row = []; field = '';
-        if (rows.length >= cap) break;
-      }
-      else if (c === '\r') { /* ignore */ }
-      else field += c;
-    }
-  }
-  if (rows.length < cap && (field.length || row.length)) { row.push(field); rows.push(row); }
-  return rows;
-}
-
-function colIndex(headers, names) {
-  for (const n of names) {
-    const i = headers.findIndex((h) => norm(h) === norm(n));
-    if (i !== -1) return i;
-  }
-  return -1;
-}
-
-function matchProduct(ean, pnameNorm, eanMap, nameMap, products) {
-  const out = [];
-  if (ean && /^\d{6,}$/.test(ean) && eanMap[ean] && !out.includes(eanMap[ean])) out.push(eanMap[ean]);
-  if (pnameNorm && nameMap[pnameNorm] && !out.includes(nameMap[pnameNorm])) out.push(nameMap[pnameNorm]);
-  if (out.length) return out;
-  if (pnameNorm && pnameNorm.length >= 5) {
-    const seen = new Set(out.map((p) => p.id));
-    for (const p of products) {
-      if (!p.name) continue;
-      const pn = norm(p.name);
-      if (pn.length >= 5 && (pnameNorm.includes(pn) || pn.includes(pnameNorm))) {
-        if (!seen.has(p.id)) { seen.add(p.id); out.push(p); }
-        if (out.length >= 3) break;
-      }
-    }
-  }
-  return out;
-}
 
 export default async function(req) {
   try {
@@ -181,7 +99,7 @@ export default async function(req) {
     if (!flRes.ok) {
       return Response.json({ ok: false, missing: [], programmes: programmeSummary, error: 'feed_list_http_' + flRes.status }, { status: 502 });
     }
-    const flRows = parseCsv(await flRes.text());
+    const flRows = parseCsv(await flRes.text(), ',');
     if (flRows.length < 2) {
       return Response.json({ ok: false, missing: [], programmes: programmeSummary, message: 'Feed list vuota o non leggibile.' });
     }
@@ -219,7 +137,7 @@ export default async function(req) {
       try {
         const r = await fetchWithTimeout(feed.url, {}, 30000);
         if (!r.ok) { errors.push({ advertiser: p.id, name: p.name, error: 'http_' + r.status }); continue; }
-        const rows = parseCsv(await r.text(), rowLimit);
+        const rows = parseCsv(await r.text(), ',', rowLimit);
         if (rows.length < 2) { syncedAdvertisers.push({ id: p.id, name: p.name, offers: 0 }); continue; }
         const hd = rows[0];
         const iDeep = colIndex(hd, ['aw_deep_link', 'deeplink', 'deep_link']);

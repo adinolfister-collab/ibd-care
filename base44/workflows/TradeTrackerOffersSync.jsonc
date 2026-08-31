@@ -1,0 +1,44 @@
+{
+  "name": "TradeTracker Offers Sync",
+  "description": "Ogni notte alle 03:30 (Europe/Rome, sfasato rispetto alle 03:00 di Awin/Amazon) sincronizza le offerte affiliate dal network TradeTracker: scarica il product feed CSV unificato (TRADTRACKER_FEED_URL) e aggiorna le AffiliateOffer (source='tradetracker') dei Product del catalogo che matchano via GTIN/EAN o nome.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 3 * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Rome",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "tradetracker_offers_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "syncTradeTrackerOffers"
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Sincronizza offerte TradeTracker",
+            "description": "Download feed CSV unificato + upsert AffiliateOffer source='tradetracker'"
+          }
+        }
+      }
+    ]
+  }
+}

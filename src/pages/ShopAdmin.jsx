@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import AwinSyncPanel from '@/components/AwinSyncPanel';
 import MyLeadSyncPanel from '@/components/MyLeadSyncPanel';
 import AmazonOffersPanel from '@/components/AmazonOffersPanel';
+import TradeTrackerSyncPanel from '@/components/TradeTrackerSyncPanel';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const categories = [
@@ -149,6 +150,7 @@ export default function ShopAdmin() {
           <TabsTrigger value="awin">Awin</TabsTrigger>
           <TabsTrigger value="mylead">{t('shop.mylead_tab')}</TabsTrigger>
           <TabsTrigger value="amazon">{t('shop.amazon_tab')}</TabsTrigger>
+          <TabsTrigger value="tradetracker">TradeTracker</TabsTrigger>
         </TabsList>
       </Tabs>
       {tab === 'awin' ? (
@@ -157,6 +159,8 @@ export default function ShopAdmin() {
         <MyLeadSyncPanel />
       ) : tab === 'amazon' ? (
         <AmazonOffersPanel />
+      ) : tab === 'tradetracker' ? (
+        <TradeTrackerSyncPanel />
       ) : (
       <>
       {loading ? (
