@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import {
   Newspaper, Users, Activity, Utensils, Info, Mail,
   Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin,
-  FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag,
+  FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag, Crown, CreditCard,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
 
 // Sezione "Esplora la rivista": elenco visibile di tutte le pagine dell'app.
 // App pubblica: nessuna voce è bloccata.
@@ -15,6 +16,8 @@ const ITEMS = [
   { to: '/symptoms', key: 'nav.symptoms', icon: Activity },
   { to: '/food', key: 'nav.food', icon: Utensils },
   { to: '/shop', key: 'nav.shop', icon: ShoppingBag },
+  { to: '/founders', key: 'nav.founders', icon: Crown, founder: true },
+  { to: '/abbonamento', key: 'nav.abbonamento', icon: CreditCard },
   { to: '/about', key: 'nav.about', icon: Info },
   { to: '/contact', key: 'nav.contact', icon: Mail },
   { to: '/meds', key: 'nav.meds', icon: Pill },
@@ -49,13 +52,14 @@ export default function SiteMenu() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {ITEMS.map((item) => (
-          <Link key={item.to} to={item.to} className="group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3.5 shadow-sm transition-all hover:shadow-md hover:border-terracotta/50">
-            <span className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center shrink-0 group-hover:bg-terracotta/15 transition-colors">
-              <item.icon className="w-5 h-5 text-primary" />
+          <Link key={item.to} to={item.to} className={cn('group flex items-center gap-3 rounded-xl border px-4 py-3.5 shadow-sm transition-all hover:shadow-md', item.founder ? 'border-terracotta/70 bg-terracotta/10 hover:bg-terracotta/15' : 'border-border bg-card hover:border-terracotta/50')}>
+            <span className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors', item.founder ? 'bg-terracotta/20' : 'bg-accent group-hover:bg-terracotta/15')}>
+              <item.icon className={cn('w-5 h-5', item.founder ? 'text-terracotta' : 'text-primary')} />
             </span>
-            <span className="flex-1 min-w-0 font-heading text-base md:text-lg font-medium text-foreground tracking-tight truncate">
+            <span className={cn('flex-1 min-w-0 font-heading text-base md:text-lg font-medium tracking-tight truncate', item.founder ? 'text-terracotta' : 'text-foreground')}>
               {t(item.key)}
             </span>
+            {item.founder && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-terracotta text-terracotta-foreground px-1.5 py-0.5 rounded-full shrink-0">Founder</span>}
           </Link>
         ))}
       </div>

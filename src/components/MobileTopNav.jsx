@@ -3,7 +3,7 @@ import { NavLink, useLocation, Link } from 'react-router-dom';
 import {
   Home, Activity, Utensils, Pill, FileText, ScanLine, MapPin, FileBarChart,
   Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon,
-  Bot, Users, User, BarChart3, Newspaper, TrendingUp, GitCompare, ShoppingBag,
+  Bot, Users, User, BarChart3, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -44,10 +44,12 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
       key: 'nav.group_extra',
       items: [
         { to: '/', key: 'nav.home', icon: Home, exact: true },
+        { to: '/founders', key: 'nav.founders', icon: Crown, founder: true },
         { to: '/news', key: 'nav.news', icon: Newspaper },
         { to: '/community', key: 'nav.community', icon: Users },
         { to: '/map', key: 'nav.map', icon: MapPin },
         { to: '/shop', key: 'nav.shop', icon: ShoppingBag, soon: true },
+        { to: '/abbonamento', key: 'nav.abbonamento', icon: CreditCard },
         { to: '/account', key: 'settings.account', icon: User },
         { to: '/settings', key: 'nav.settings', icon: SettingsIcon },
       ],
@@ -123,13 +125,16 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
                       ref={active ? activeRef : undefined}
                       className={cn(
                         'inline-flex items-center gap-1.5 h-9 px-3 rounded-full text-[0.8rem] whitespace-nowrap snap-center transition-colors',
-                        active
-                          ? 'bg-primary text-primary-foreground font-medium'
-                          : 'text-muted-foreground hover:bg-accent'
+                        item.founder
+                          ? 'border border-terracotta/60 bg-terracotta/10 text-terracotta font-medium'
+                          : active
+                            ? 'bg-primary text-primary-foreground font-medium'
+                            : 'text-muted-foreground hover:bg-accent'
                       )}
                     >
                       <item.icon className="w-4 h-4 shrink-0" />
                       <span>{t(item.key)}</span>
+                      {item.founder && <span className="text-[0.55rem] font-semibold uppercase bg-terracotta text-terracotta-foreground px-1 py-0.5 rounded-full">★</span>}
                       {item.soon && <span className="text-[0.55rem] font-semibold uppercase bg-terracotta/15 text-terracotta px-1.5 py-0.5 rounded-full">Presto</span>}
                     </NavLink>
                   );

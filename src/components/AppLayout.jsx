@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp, GitCompare, ShoppingBag } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -16,6 +16,7 @@ import { useToast } from '@/components/ui/use-toast';
 // (settings/account/admin) requires login, enforced by the route guard.
 const navItems = [
   { to: '/', key: 'nav.home', icon: Home, exact: true },
+  { to: '/founders', key: 'nav.founders', icon: Crown, founder: true },
   { to: '/news', key: 'nav.news', icon: Newspaper },
   { to: '/symptoms', key: 'nav.symptoms', icon: Activity },
   { to: '/food', key: 'nav.food', icon: Utensils },
@@ -30,6 +31,7 @@ const navItems = [
   { to: '/map', key: 'nav.map', icon: MapPin },
   { to: '/summary', key: 'nav.summary', icon: FileBarChart },
   { to: '/shop', key: 'nav.shop', icon: ShoppingBag, soon: true },
+  { to: '/abbonamento', key: 'nav.abbonamento', icon: CreditCard },
   { to: '/account', key: 'settings.account', icon: User },
   { to: '/settings', key: 'nav.settings', icon: SettingsIcon },
 ];
@@ -101,12 +103,15 @@ export default function AppLayout({ children }) {
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-colors',
-                  isActive ? 'bg-primary text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  item.founder
+                    ? 'border border-terracotta/60 bg-terracotta/10 text-terracotta hover:bg-terracotta/15 font-medium'
+                    : isActive ? 'bg-primary text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                 )
               }
             >
-              <item.icon className="w-5 h-5 shrink-0" />
+              <item.icon className={cn('w-5 h-5 shrink-0', item.founder && 'text-terracotta')} />
               <span>{t(item.key)}</span>
+              {item.founder && <span className="ml-auto text-[0.6rem] font-semibold uppercase tracking-wide bg-terracotta text-terracotta-foreground px-1.5 py-0.5 rounded-full">Founder</span>}
               {item.soon && <span className="ml-auto text-[0.6rem] font-semibold uppercase tracking-wide bg-terracotta/15 text-terracotta px-1.5 py-0.5 rounded-full">Presto</span>}
             </NavLink>
           ))}
