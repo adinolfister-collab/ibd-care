@@ -13,6 +13,10 @@ export default async function(req: Request): Promise<Response> {
     const mine = all.filter((s) => s.campaign === CAMPAIGN);
     const confirmed = mine.filter((s) => s.confirmed).sort((a, b) => (a.rank || 0) - (b.rank || 0));
     const lifetimeCount = confirmed.filter((s) => s.slot_type === 'lifetime').length;
+    const pending = mine.filter((s) => !s.confirmed).map((s) => ({
+      display_name: s.display_name || 'Utente',
+      is_me: !!(mySignup && mySignup.id === s.id),
+    }));
 
     let mySignup: any = null;
     try {
@@ -35,7 +39,9 @@ export default async function(req: Request): Promise<Response> {
         lifetimeLeft: Math.max(0, LIFETIME_SLOTS - lifetimeCount),
         totalLeft: Math.max(0, TOTAL_SLOTS - confirmed.length),
         full: isCampaignFull(confirmed.length),
+        pending: pending.length,
       },
+      pending,
       mySignup: mySignup ? {
         rank: mySignup.rank,
         confirmed: mySignup.confirmed,

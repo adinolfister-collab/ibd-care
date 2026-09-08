@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Crown, Trophy, Users, Sparkles, Loader2, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Crown, Trophy, Users, Sparkles, Loader2, ArrowRight, CheckCircle2, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -21,6 +21,7 @@ export default function Founders() {
   const counts = data?.counts;
   const mySignup = data?.mySignup;
   const ranking = data?.ranking || [];
+  const pending = data?.pending || [];
 
   const join = async () => {
     if (joining) return;
@@ -148,24 +149,49 @@ export default function Founders() {
           </div>
           {loading ? (
             <div className="px-4 py-10 text-center text-muted-foreground text-sm">{t('founders.loading')}</div>
-          ) : ranking.length === 0 ? (
+          ) : ranking.length === 0 && pending.length === 0 ? (
             <div className="px-4 py-10 text-center text-muted-foreground text-sm">{t('founders.loading')}</div>
           ) : (
-            <ol className="divide-y divide-border">
-              {ranking.map((r) => (
-                <li key={r.rank} className="flex items-center gap-3 px-4 py-2.5">
-                  <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-terracotta/15 text-terracotta text-sm font-heading font-semibold shrink-0">
-                    {r.rank}
-                  </span>
-                  <span className="font-medium text-foreground text-sm flex-1 truncate">
-                    {r.display_name}{r.is_me && <span className="text-muted-foreground"> ({t('founders.you')})</span>}
-                  </span>
-                  <span className={cn('text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0', r.slot_type === 'lifetime' ? 'bg-terracotta/15 text-terracotta' : 'bg-accent text-accent-foreground')}>
-                    {r.slot_type === 'lifetime' ? t('founders.badge_lifetime') : t('founders.badge_three_months')}
-                  </span>
-                </li>
-              ))}
-            </ol>
+            <div>
+              <ol className="divide-y divide-border">
+                {ranking.map((r) => (
+                  <li key={r.rank} className="flex items-center gap-3 px-4 py-2.5">
+                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-terracotta/15 text-terracotta text-sm font-heading font-semibold shrink-0">
+                      {r.rank}
+                    </span>
+                    <span className="font-medium text-foreground text-sm flex-1 truncate">
+                      {r.display_name}{r.is_me && <span className="text-muted-foreground"> ({t('founders.you')})</span>}
+                    </span>
+                    <span className={cn('text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0', r.slot_type === 'lifetime' ? 'bg-terracotta/15 text-terracotta' : 'bg-accent text-accent-foreground')}>
+                      {r.slot_type === 'lifetime' ? t('founders.badge_lifetime') : t('founders.badge_three_months')}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+              {pending.length > 0 && (
+                <>
+                  <div className="px-4 py-2 border-t border-border bg-muted/40 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                    <p className="text-xs font-medium text-muted-foreground">{t('founders.pending_section')}</p>
+                  </div>
+                  <ol className="divide-y divide-border">
+                    {pending.map((r, i) => (
+                      <li key={`p${i}`} className="flex items-center gap-3 px-4 py-2.5 opacity-60">
+                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-muted text-muted-foreground shrink-0">
+                          <Clock className="w-3.5 h-3.5" />
+                        </span>
+                        <span className="font-medium text-foreground text-sm flex-1 truncate">
+                          {r.display_name}{r.is_me && <span className="text-muted-foreground"> ({t('founders.you')})</span>}
+                        </span>
+                        <span className="text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 bg-muted text-muted-foreground">
+                          {t('founders.badge_pending')}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>
