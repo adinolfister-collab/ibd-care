@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { foundersDict } from '@/lib/foundersI18n';
+import { communityDict } from '@/lib/communityI18n';
 
 const dictionaries = {
   it: {
@@ -1315,6 +1316,8 @@ export function LanguageProvider({ children }) {
       || (dictionaries.it[key])
       || (foundersDict[lang] && foundersDict[lang][key])
       || (foundersDict.it[key])
+      || (communityDict[lang] && communityDict[lang][key])
+      || (communityDict.it[key])
       || key;
   }, [lang]);
 
