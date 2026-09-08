@@ -26,6 +26,11 @@
     "display_name": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale dell'iscrizione alla campagna",
+      "maxLength": 1000
+    },
     "first_message_date": {
       "type": "string",
       "format": "date-time"

@@ -21,6 +21,11 @@
     "emoji": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale della reazione",
+      "maxLength": 1000
+    },
     "participants": {
       "type": "array",
       "items": {
