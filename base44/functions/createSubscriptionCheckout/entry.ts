@@ -52,7 +52,7 @@ export default async function(req: Request): Promise<Response> {
     body.set('mode', 'subscription');
     body.set('line_items[0][price]', priceId);
     body.set('line_items[0][quantity]', '1');
-    if (isNewUser) body.set('subscription_data[trial_period_days]', '30');
+    if (isNewUser) body.set('subscription_data[trial_period_days]', '14');
     body.set('metadata[base44_app_id]', appId || '');
     body.set('subscription_data[metadata][base44_app_id]', appId || '');
     body.set('success_url', successUrl);

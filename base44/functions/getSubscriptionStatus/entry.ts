@@ -2,7 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { secrets } from 'base44:runtime';
 import { profileFieldsFromSubscription } from '../../shared/subscriptionSync.ts';
 
-const PROMO_DAYS = 30;
+const PROMO_DAYS = 14;
 
 export default async function(req: Request): Promise<Response> {
   let base44;
@@ -46,8 +46,8 @@ export default async function(req: Request): Promise<Response> {
       });
     }
 
-    // No active Stripe subscription: evaluate the in-app free promo (1 month).
-    // On first check, persist promo_start_date so the 30-day window is per-user.
+    // No active Stripe subscription: evaluate the in-app free promo (14 days).
+    // On first check, persist promo_start_date so the 14-day window is per-user.
     let promoStart = user.promo_start_date || null;
     if (!promoStart) {
       promoStart = new Date().toISOString();

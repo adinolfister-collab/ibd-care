@@ -56,8 +56,8 @@ export default function AbbonamentoPlans() {
   };
 
   const plans = [
-    { id: 'monthly', price: '€1,99', period: t('premium.per_month'), badge: null, featured: false },
-    { id: 'yearly', price: '€19,90', period: t('premium.per_year'), badge: t('premium.save_badge'), featured: true },
+    { id: 'monthly', price: '€0,99', period: t('premium.per_month'), badge: null, compareAt: null, featured: false },
+    { id: 'yearly', price: '€9,90', period: t('premium.per_year'), badge: t('premium.save_badge'), compareAt: '€11,88', featured: true },
   ];
 
   const features = [
@@ -115,6 +115,9 @@ export default function AbbonamentoPlans() {
                   )}
                 </div>
                 <div className="flex items-baseline gap-1.5 mt-2">
+                  {plan.compareAt && (
+                    <span className="text-base text-muted-foreground line-through">{plan.compareAt}</span>
+                  )}
                   <span className="text-3xl font-bold">{plan.price}</span>
                   <span className="text-muted-foreground text-sm">{plan.period}</span>
                 </div>
