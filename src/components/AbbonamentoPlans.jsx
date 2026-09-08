@@ -11,18 +11,25 @@ import { cn } from '@/lib/utils';
 // the Abbonamento page for authenticated users. Checkout still goes through
 // Stripe (createSubscriptionCheckout with plan param); when Lemon Squeezy is
 // activated, swap the invoked function name here.
-export default function AbbonamentoPlans({ subscription }) {
+export default function AbbonamentoPlans() {
   const { t } = useI18n();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(null); // 'monthly' | 'yearly' | null
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
+  const [subscription, setSubscription] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('checkout') === 'success') setStatus('success');
     if (params.get('checkout') === 'cancel') setStatus('cancel');
+    (async () => {
+      try {
+        const res = await base44.functions.invoke('getSubscriptionStatus', {});
+        if (res.data?.status) setSubscription(res.data);
+      } catch (e) {}
+    })();
   }, []);
 
   const isActive = subscription && ['active', 'trialing'].includes(subscription.status);

@@ -47,7 +47,7 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
         { to: '/news', key: 'nav.news', icon: Newspaper },
         { to: '/community', key: 'nav.community', icon: Users },
         { to: '/map', key: 'nav.map', icon: MapPin },
-        { to: '/shop', key: 'nav.shop', icon: ShoppingBag },
+        { to: '/shop', key: 'nav.shop', icon: ShoppingBag, soon: true },
         { to: '/account', key: 'settings.account', icon: User },
         { to: '/settings', key: 'nav.settings', icon: SettingsIcon },
       ],
@@ -130,6 +130,7 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
                     >
                       <item.icon className="w-4 h-4 shrink-0" />
                       <span>{t(item.key)}</span>
+                      {item.soon && <span className="text-[0.55rem] font-semibold uppercase bg-terracotta/15 text-terracotta px-1.5 py-0.5 rounded-full">Presto</span>}
                     </NavLink>
                   );
                 })}

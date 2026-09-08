@@ -29,7 +29,7 @@ const navItems = [
   { to: '/correlazioni', key: 'nav.correlazioni', icon: GitCompare },
   { to: '/map', key: 'nav.map', icon: MapPin },
   { to: '/summary', key: 'nav.summary', icon: FileBarChart },
-  { to: '/shop', key: 'nav.shop', icon: ShoppingBag },
+  { to: '/shop', key: 'nav.shop', icon: ShoppingBag, soon: true },
   { to: '/account', key: 'settings.account', icon: User },
   { to: '/settings', key: 'nav.settings', icon: SettingsIcon },
 ];
@@ -107,6 +107,7 @@ export default function AppLayout({ children }) {
             >
               <item.icon className="w-5 h-5 shrink-0" />
               <span>{t(item.key)}</span>
+              {item.soon && <span className="ml-auto text-[0.6rem] font-semibold uppercase tracking-wide bg-terracotta/15 text-terracotta px-1.5 py-0.5 rounded-full">Presto</span>}
             </NavLink>
           ))}
           {user?.role === 'admin' && (

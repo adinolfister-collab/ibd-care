@@ -75,31 +75,29 @@ const AuthenticatedApp = () => {
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
         <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
         <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
-        {/* Public home for guests */}
+        {/* Public pages: home, about, contact, shop (standby for non-admin) */}
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-        {/* Public pages accessible to guests (diary: scrittura libera, lettura riservata) */}
-        <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />
-        <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
-        <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
-        <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
-        <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-        <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
-        {/* Open to guests: content, diary & analysis pages (read-only; saving gated) */}
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-        <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
-        <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
-        <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
-        <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
-        <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
-        <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
-        <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
-        <Route path="/correlazioni" element={<PageTransition><Correlazioni /></PageTransition>} />
-        <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
-        <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
-        <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
-        {/* Login required: account & admin only */}
+        <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+        <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
+        {/* Login required for everything else */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+          <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />
+          <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
+          <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
+          <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
+          <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
+          <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
+          <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
+          <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
+          <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
+          <Route path="/correlazioni" element={<PageTransition><Correlazioni /></PageTransition>} />
+          <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
+          <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
+          <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
+          <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
+          <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
           <Route path="/admin/conversioni" element={<PageTransition><AdminConversions /></PageTransition>} />

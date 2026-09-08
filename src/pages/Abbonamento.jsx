@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { useI18n } from '@/lib/i18n';
-import SubscriptionCard from '@/components/SubscriptionCard';
+import AbbonamentoPlans from '@/components/AbbonamentoPlans';
 import LoginSubscriptionPromo from '@/components/LoginSubscriptionPromo';
 import AppSupportChat from '@/components/AppSupportChat';
 import PageHeader from '@/components/PageHeader';
@@ -42,13 +42,13 @@ export default function Abbonamento() {
         <TopRightActions />
       </div>
       <div className="w-full max-w-2xl">
-        <PageHeader title="IBD Care Premium" subtitle="1 mese gratuito, poi €1,99/mese. Disdici quando vuoi." />
+        <PageHeader title="IBD Care Premium" subtitle={t('premium.subtitle')} />
         <PageEditorial pageKey="abbonamento" />
         <AbbonamentoFeatures />
         <SiteMenu />
 
         {isAuthenticated ? (
-          <SubscriptionCard />
+          <AbbonamentoPlans />
         ) : (
           <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
             <LoginSubscriptionPromo returnTo="/" />

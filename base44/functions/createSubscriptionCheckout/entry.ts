@@ -7,10 +7,19 @@ export default async function(req: Request): Promise<Response> {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+    let plan = 'monthly';
+    try {
+      const body = await req.json();
+      if (body && body.plan === 'yearly') plan = 'yearly';
+    } catch { /* default monthly */ }
+
     const secretKey = secrets.get('STRIPE_SECRET_KEY');
-    const priceId = secrets.get('STRIPE_LIVE_PRICE_ID_199');
+    const priceId = plan === 'yearly'
+      ? secrets.get('STRIPE_ANNUAL_PRICE_ID')
+      : secrets.get('STRIPE_LIVE_PRICE_ID_199');
     const appId = Deno.env.get('BASE44_APP_ID');
-    if (!secretKey || !priceId) return Response.json({ error: 'Stripe non configurato' }, { status: 500 });
+    if (!secretKey) return Response.json({ error: 'Stripe non configurato' }, { status: 500 });
+    if (!priceId) return Response.json({ error: 'Piano non ancora configurato' }, { status: 503 });
 
     const origin = new URL(req.url).origin;
     const successUrl = `${origin}/abbonamento?checkout=success`;

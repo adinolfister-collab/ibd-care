@@ -3,10 +3,12 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, Loader2, Package, ShoppingBag, Tag } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import EmptyState from '@/components/EmptyState';
 import EditorialBlock from '@/components/EditorialBlock';
+import ShopStandby from '@/components/ShopStandby';
 import { Image } from '@/components/ui/image';
 import { Button } from '@/components/ui/button';
 import { CATEGORY_LABEL_KEY, formatPrice, trackShopClick } from '@/lib/shop';
@@ -15,6 +17,7 @@ import { cn } from '@/lib/utils';
 export default function ProductDetail() {
   const { slug } = useParams();
   const { t, lang } = useI18n();
+  const { user } = useAuth();
   const [product, setProduct] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState(true);
@@ -76,6 +79,7 @@ export default function ProductDetail() {
     return () => { cancelled = true; };
   }, [product]);
 
+  if (user?.role !== 'admin') return <ShopStandby />;
   if (loadingProduct) {
     return (
       <AppLayout>
