@@ -22,6 +22,10 @@
     "affiliate_url": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale del partner"
+    },
     "source": {
       "type": "string",
       "description": "Origine partner: 'mylead' (importato via API) o 'manual'",

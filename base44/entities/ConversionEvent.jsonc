@@ -8,6 +8,10 @@
     "feature": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale dell'evento di conversione"
+    },
     "source": {
       "type": "string"
     }

@@ -21,6 +21,10 @@
     "title": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale dell'offerta"
+    },
     "source": {
       "type": "string",
       "description": "Origine offerta: 'awin' (importata dal feed Awin) o 'manual' (inserita a mano)"

@@ -8,6 +8,10 @@
     "name": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale dell'alimento"
+    },
     "default_unit": {
       "type": "string",
       "enum": [
