@@ -8,6 +8,7 @@ import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import FoundersBanner from "@/components/FoundersBanner";
 import { safeReturnTo } from "@/lib/authReturnTo";
 import { useI18n } from "@/lib/i18n";
 
@@ -135,6 +136,7 @@ export default function Login() {
         </Button>
       </form>
 
+      <div className="mt-6"><FoundersBanner /></div>
     </AuthLayout>
   );
 }

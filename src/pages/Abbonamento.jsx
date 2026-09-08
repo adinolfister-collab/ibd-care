@@ -13,6 +13,7 @@ import LanguageMenu from '@/components/LanguageMenu';
 import NativeAppButton from '@/components/NativeAppButton';
 import SiteMenu from '@/components/SiteMenu';
 import AbbonamentoFeatures from '@/components/AbbonamentoFeatures';
+import FoundersBanner from '@/components/FoundersBanner';
 
 // Public subscription page. Serves as the redirect target when a visitor
 // tries to use a protected page without being logged in / subscribed.
@@ -44,6 +45,7 @@ export default function Abbonamento() {
       <div className="w-full max-w-2xl">
         <PageHeader title="IBD Care Premium" subtitle={t('premium.subtitle')} />
         <PageEditorial pageKey="abbonamento" />
+        <div className="mb-6"><FoundersBanner /></div>
         <AbbonamentoFeatures />
         <SiteMenu />
 

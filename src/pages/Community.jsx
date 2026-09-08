@@ -16,7 +16,10 @@ import AppLayout from '@/components/AppLayout';
 import SiteMenu from '@/components/SiteMenu';
 import { Card, CardContent } from '@/components/ui/card';
 import VoiceButton from '@/components/VoiceButton';
+import CommunityFoundersRanking from '@/components/CommunityFoundersRanking';
+import { clearFoundersCache } from '@/hooks/useFoundersRanking';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
 function timeAgo(dateStr) {
@@ -59,6 +62,7 @@ const containsBanned = (txt) => {
 
 export default function Community() {
   const { t } = useI18n();
+  const { toast } = useToast();
   const { isAuthenticated, authChecked } = useAuth();
   const [messages, setMessages] = useState(null);
   const [text, setText] = useState('');
@@ -118,6 +122,15 @@ export default function Community() {
       if (!parentId) setText('');
       else setReplyText((s) => ({ ...s, [parentId]: '' }));
       setReplyTo(null);
+      // Founder campaign: confirm the spot on the user's first community post.
+      try {
+        const res = await base44.functions.invoke('confirmFoundersSignup', {});
+        if (res.data?.confirmed && !res.data?.already) {
+          clearFoundersCache();
+          const isLife = res.data.slot_type === 'lifetime';
+          toast({ title: (isLife ? t('founders.confirm_toast') : t('founders.confirm_toast_three')).replace('{n}', res.data.rank || '') });
+        }
+      } catch (e) { /* non-critical */ }
     } finally {
       setPosting(false);
     }
@@ -157,6 +170,7 @@ export default function Community() {
         action={<PageShareButtons title={t('community.title')} summary={t('community.subtitle')} path="/community" label={t('share.page')} />}
       />
       <PageEditorial pageKey="community" />
+      <CommunityFoundersRanking />
       <SiteMenu />
       <MagazineEssay theme="community" number="01" eyebrow="Board" title="La board">
       {/* Solidarity card */}

@@ -10,13 +10,15 @@
     },
     "subscription_status": {
       "type": "string",
-      "description": "Synced Stripe subscription access level",
+      "description": "Access level: synced Stripe status, or a Founder-campaign grant ('lifetime' / 'three_months').",
       "enum": [
         "none",
         "trialing",
         "active",
         "past_due",
-        "canceled"
+        "canceled",
+        "lifetime",
+        "three_months"
       ]
     },
     "subscription_trial_end": {
@@ -33,7 +35,16 @@
     "promo_start_date": {
       "type": "string",
       "format": "date-time",
-      "description": "Inizio della prova gratuita in-app di 1 mese per i moduli premium"
+      "description": "Inizio della prova gratuita in-app di 14 giorni per i moduli premium"
+    },
+    "free_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Per i Founder 51-250: scadenza dei 3 mesi gratuiti"
+    },
+    "founder_rank": {
+      "type": "number",
+      "description": "Posizione in graduatoria della campagna Founder (null se non aderente)"
     }
   },
   "required": [

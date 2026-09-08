@@ -34,6 +34,7 @@ import AdminConversions from '@/pages/AdminConversions';
 import Shop from '@/pages/Shop';
 import ShopAdmin from '@/pages/ShopAdmin';
 import ProductDetail from '@/pages/ProductDetail';
+import Founders from '@/pages/Founders';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -81,6 +82,7 @@ const AuthenticatedApp = () => {
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
         <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
+        <Route path="/founders" element={<PageTransition><Founders /></PageTransition>} />
         {/* Login required for everything else */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />

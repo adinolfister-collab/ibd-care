@@ -3,28 +3,7 @@ import { Check, Crown } from 'lucide-react';
 import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,
 } from '@/components/ui/accordion';
-
-const FREE_FEATURES = [
-  { name: 'News IBD', desc: 'Articoli e aggiornamenti sulla patologia.' },
-  { name: 'Diario sintomi', desc: 'Registra i sintomi e rivedi lo storico degli ultimi 30 giorni.' },
-  { name: 'Diario alimentare', desc: 'Annota pasti e reazioni e consulta lo storico degli ultimi 30 giorni.' },
-  { name: 'Community', desc: 'Partecipa alle discussioni con la community.' },
-  { name: 'Account e impostazioni', desc: 'Gestione profilo, lingua e preferenze.' },
-];
-
-const PREMIUM_FEATURES = [
-  { name: 'Storico completo', desc: 'Visualizzazione dello storico senza limiti di tempo, oltre i 30 giorni, per sintomi e alimentazione.' },
-  { name: 'Terapie', desc: 'Gestione farmaci e promemoria di assunzione.' },
-  { name: 'Referti medici', desc: 'Archivio sicuro dei tuoi documenti clinici.' },
-  { name: 'Esami', desc: 'Scansione e confronto dei referti nel tempo.' },
-  { name: 'Andamento & grafici', desc: "Grafici dei sintomi e decorso dell'anno." },
-  { name: 'Correlazione pasti-sintomi', desc: 'Analisi automatica dei legami tra alimentazione e sintomi.' },
-  { name: 'Report settimanale e mensile', desc: 'Sintesi periodiche pronte per la visita.' },
-  { name: 'Riepilogo & export PDF', desc: 'Report personalizzati per la visita specialistica.' },
-  { name: 'Assistente AI', desc: 'Supporto personalizzato e risposte sull\'IBD.' },
-  { name: 'Mappa servizi', desc: 'Centri IBD, farmacie e bagni nelle vicinanze.' },
-  { name: 'Modelli pasti e suggerimenti', desc: 'Template alimentari e consigli alimentari premium.' },
-];
+import { useI18n } from '@/lib/i18n';
 
 function Column({ title, tone, features }) {
   return (
@@ -46,20 +25,41 @@ function Column({ title, tone, features }) {
 }
 
 // Due colonne a menu a tendina (accordion) che descrivono cosa è incluso
-// nella registrazione gratuita e cosa richiede l'abbonamento Premium.
+// nella prova gratuita di 14 giorni e cosa richiede l'abbonamento Premium.
 export default function AbbonamentoFeatures() {
+  const { t } = useI18n();
+  const FREE_FEATURES = [
+    { name: t('abb.free.news.name'), desc: t('abb.free.news.desc') },
+    { name: t('abb.free.diary.name'), desc: t('abb.free.diary.desc') },
+    { name: t('abb.free.food.name'), desc: t('abb.free.food.desc') },
+    { name: t('abb.free.community.name'), desc: t('abb.free.community.desc') },
+    { name: t('abb.free.account.name'), desc: t('abb.free.account.desc') },
+  ];
+  const PREMIUM_FEATURES = [
+    { name: t('abb.premium.history.name'), desc: t('abb.premium.history.desc') },
+    { name: t('abb.premium.therapy.name'), desc: t('abb.premium.therapy.desc') },
+    { name: t('abb.premium.records.name'), desc: t('abb.premium.records.desc') },
+    { name: t('abb.premium.exams.name'), desc: t('abb.premium.exams.desc') },
+    { name: t('abb.premium.charts.name'), desc: t('abb.premium.charts.desc') },
+    { name: t('abb.premium.correlation.name'), desc: t('abb.premium.correlation.desc') },
+    { name: t('abb.premium.reports.name'), desc: t('abb.premium.reports.desc') },
+    { name: t('abb.premium.summary.name'), desc: t('abb.premium.summary.desc') },
+    { name: t('abb.premium.ai.name'), desc: t('abb.premium.ai.desc') },
+    { name: t('abb.premium.map.name'), desc: t('abb.premium.map.desc') },
+    { name: t('abb.premium.templates.name'), desc: t('abb.premium.templates.desc') },
+  ];
   return (
     <div className="my-6">
       <div className="flex items-start gap-3 mb-4">
         <div className="mt-2 h-8 w-1.5 rounded-full bg-terracotta shrink-0" />
         <div>
-          <p className="font-heading text-lg font-semibold text-primary">Cosa include</p>
-          <p className="text-sm text-muted-foreground">Confronto tra registrazione gratuita e abbonamento Premium.</p>
+          <p className="font-heading text-lg font-semibold text-primary">{t('abb.features_title')}</p>
+          <p className="text-sm text-muted-foreground">{t('abb.features_desc')}</p>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Column title="Con registrazione gratuita" tone="free" features={FREE_FEATURES} />
-        <Column title="Con abbonamento Premium" tone="premium" features={PREMIUM_FEATURES} />
+        <Column title={t('abb.col_trial')} tone="free" features={FREE_FEATURES} />
+        <Column title={t('abb.col_premium')} tone="premium" features={PREMIUM_FEATURES} />
       </div>
     </div>
   );

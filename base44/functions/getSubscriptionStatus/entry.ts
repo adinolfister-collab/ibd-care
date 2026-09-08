@@ -10,6 +10,23 @@ export default async function(req: Request): Promise<Response> {
     base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+    // Founder campaign grants bypass Stripe: lifetime = active forever,
+    // three_months = active until free_until. These must be honored before
+    // the Stripe sync, which would otherwise overwrite subscription_status.
+    if (user.subscription_status === 'lifetime') {
+      return Response.json({ status: 'active', grant: 'lifetime' });
+    }
+    if (user.subscription_status === 'three_months' && user.free_until) {
+      const endMs = new Date(user.free_until).getTime();
+      if (!isNaN(endMs)) {
+        const days = Math.max(0, Math.ceil((endMs - Date.now()) / 86400000));
+        if (days > 0) {
+          return Response.json({ status: 'active', grant: 'three_months', trialRemaining: days, trialEnd: endMs });
+        }
+      }
+    }
+
     const secretKey = secrets.get('STRIPE_SECRET_KEY');
     if (!secretKey) return Response.json({ error: 'Stripe non configurato' }, { status: 500 });
 

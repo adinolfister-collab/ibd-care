@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Crown, ArrowRight } from 'lucide-react';
+import { useI18n } from '@/lib/i18n';
 
 // Banner "Rivista mediterranea" che ricorda i vantaggi Premium sopra una
 // lista di registrazioni. Solo presentazionale; visibile a chi non è abbonato.
@@ -10,7 +11,8 @@ import { Crown, ArrowRight } from 'lucide-react';
 //   message  testo breve (opzionale); default descrive storico + export PDF
 //   to       destinazione del link (default "/abbonamento")
 export default function PremiumReminderBanner({ message, to = '/abbonamento' }) {
-  const text = message || 'Premium sblocca l\'analisi storica completa e l\'esportazione PDF avanzata.';
+  const { t } = useI18n();
+  const text = message || t('premium.desc');
   return (
     <motion.div
       initial={{ opacity: 0, y: -6 }}
@@ -39,7 +41,7 @@ export default function PremiumReminderBanner({ message, to = '/abbonamento' }) 
             to={to}
             className="inline-flex items-center gap-1 font-medium text-terracotta underline-offset-2 hover:underline"
           >
-            Scopri Premium
+            {t('premium.cta')}
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </p>

@@ -10,6 +10,7 @@ import MagazineEssay from '@/components/MagazineEssay';
 import EditorialBlock from '@/components/EditorialBlock';
 import EditorialSlider from '@/components/EditorialSlider';
 import PublicFooter from '@/components/PublicFooter';
+import FoundersBanner from '@/components/FoundersBanner';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 import AppLayout from '@/components/AppLayout';
@@ -43,12 +44,13 @@ export default function HomeMarketing() {
               Qui puoi tenere un <span className="font-medium text-foreground">diario di sintomi e umore</span>, annotare i <span className="font-medium text-foreground">pasti e scoprire quali cibi tolleri</span>, ricevere <span className="font-medium text-foreground">promemoria per le terapie</span> e conservare gli <span className="font-medium text-foreground">esami con scansione dei referti e confronto dei valori</span> nel tempo. Puoi confrontarti in una <span className="font-medium text-foreground">community moderata</span>, trovare <span className="font-medium text-foreground">centri IBD, farmacie e bagni pubblici</span> sulla mappa, e chiedere supporto all'<span className="font-medium text-foreground">assistente AI</span>. Quando serve, esporta un <span className="font-medium text-foreground">report PDF</span> pronto per la visita.
             </p>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-              IBD Care è <span className="font-medium text-terracotta">gratuita e senza pubblicità</span>: tutte le funzioni sono aperte a chiunque. I tuoi dati sanitari, se crei un account, restano privati, protetti a livello di riga e conformi al GDPR.
+              IBD Care è <span className="font-medium text-terracotta">{t('home.bullet_free')}</span>: {t('home.bullet_free_desc')}
             </p>
           </div>
         </MagazineEssay>
 
         <PageEditorial pageKey="home" />
+        <div className="mb-6"><FoundersBanner /></div>
         <EditorialSlider />
         <SiteMenu />
 
@@ -78,7 +80,7 @@ export default function HomeMarketing() {
             <li className="flex items-start gap-3"><span className="text-terracotta mt-1">◆</span><span>Interfaccia serena, tipografie ampie e palette mediterranea per ridurre lo stress nei giorni difficili.</span></li>
             <li className="flex items-start gap-3"><span className="text-terracotta mt-1">◆</span><span>Dati sanitari privati, protetti a livello di riga (RLS) e conformi al GDPR: visibili solo a te.</span></li>
             <li className="flex items-start gap-3"><span className="text-terracotta mt-1">◆</span><span>Esporta un report PDF pronto per la visita e usa l'assistente AI per comprendere i tuoi trend.</span></li>
-            <li className="flex items-start gap-3"><span className="text-terracotta mt-1">◆</span><span>Tutto gratuito, senza abbonamenti né pubblicità.</span></li>
+            <li className="flex items-start gap-3"><span className="text-terracotta mt-1">◆</span><span>{t('premium.subtitle')}</span></li>
           </ul>
         </MagazineEssay>
 
@@ -86,7 +88,7 @@ export default function HomeMarketing() {
           <div className="rounded-2xl border-2 border-terracotta/70 bg-gradient-to-br from-primary/5 to-accent/40 p-6 md:p-8 text-center">
             <p className="text-[0.65rem] font-heading font-semibold uppercase tracking-[0.25em] text-terracotta">Inizia oggi</p>
             <h2 className="font-heading text-2xl md:text-3xl font-semibold mt-2 text-foreground">Crea il tuo diario di salute</h2>
-            <p className="text-muted-foreground mt-2 max-w-md mx-auto">L'app è aperta a tutti. Registrati per sincronizzare i tuoi dati nel cloud e non perderli cambiando dispositivo.</p>
+            <p className="text-muted-foreground mt-2 max-w-md mx-auto">{t('home.cta_subtitle')}</p>
             <div className="flex flex-wrap gap-3 justify-center mt-5">
               <Link to="/register">
                 <Button className="rounded-xl h-11 px-6 text-base">

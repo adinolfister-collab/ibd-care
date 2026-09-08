@@ -1,0 +1,53 @@
+{
+  "name": "CampaignSignup",
+  "type": "object",
+  "properties": {
+    "campaign": {
+      "type": "string",
+      "enum": [
+        "founders"
+      ],
+      "default": "founders"
+    },
+    "slot_type": {
+      "type": "string",
+      "enum": [
+        "lifetime",
+        "three_months"
+      ]
+    },
+    "rank": {
+      "type": "number"
+    },
+    "confirmed": {
+      "type": "boolean",
+      "default": false
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "first_message_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "campaign"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
