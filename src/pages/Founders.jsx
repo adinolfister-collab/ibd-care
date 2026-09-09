@@ -160,7 +160,7 @@ export default function Founders() {
                       {r.rank}
                     </span>
                     <span className="font-medium text-foreground text-sm flex-1 truncate">
-                      {r.display_name}{r.is_me && <span className="text-muted-foreground"> ({t('founders.you')})</span>}
+                      {r.display_name}
                     </span>
                     <span className={cn('text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0', r.slot_type === 'lifetime' ? 'bg-terracotta/15 text-terracotta' : 'bg-accent text-accent-foreground')}>
                       {r.slot_type === 'lifetime' ? t('founders.badge_lifetime') : t('founders.badge_three_months')}
@@ -181,7 +181,7 @@ export default function Founders() {
                           <Clock className="w-3.5 h-3.5" />
                         </span>
                         <span className="font-medium text-foreground text-sm flex-1 truncate">
-                          {r.display_name}{r.is_me && <span className="text-muted-foreground"> ({t('founders.you')})</span>}
+                          {r.display_name}
                         </span>
                         <span className="text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 bg-muted text-muted-foreground">
                           {t('founders.badge_pending')}
