@@ -53,7 +53,13 @@ export default function Register() {
         base44.auth.setToken(result.access_token);
       }
       try {
-        await base44.auth.updateMe({ privacy_consent_accepted: true, privacy_consent_date: new Date().toISOString() });
+        // Start the 14-day free trial at registration time (promo_start_date is
+        // read by getSubscriptionStatus to compute the remaining trial days).
+        await base44.auth.updateMe({
+          privacy_consent_accepted: true,
+          privacy_consent_date: new Date().toISOString(),
+          promo_start_date: new Date().toISOString(),
+        });
       } catch (e) { /* non blocking */ }
       window.location.href = safeReturnTo();
     } catch (err) {
