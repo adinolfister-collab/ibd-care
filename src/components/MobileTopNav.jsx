@@ -3,7 +3,7 @@ import { NavLink, useLocation, Link } from 'react-router-dom';
 import {
   Home, Activity, Utensils, Pill, FileText, ScanLine, MapPin, FileBarChart,
   Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon,
-  Bot, Users, User, BarChart3, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard,
+  Bot, Users, User, BarChart3, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard, Megaphone,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -59,6 +59,7 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
   // Admin-only voices live in the "Extra" group, mirroring the desktop sidebar.
   if (user?.role === 'admin') {
     groups[2].items.push({ to: '/admin/conversioni', key: 'nav.conversions', icon: TrendingUp });
+    groups[2].items.push({ to: '/admin/marketing', key: 'nav.marketing', icon: Megaphone });
     groups[2].items.push({ to: '/shop/admin', key: 'shop.admin_nav', icon: ShoppingBag });
   }
 

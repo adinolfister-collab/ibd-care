@@ -33,6 +33,7 @@ import Correlazioni from '@/pages/Correlazioni';
 import AdminConversions from '@/pages/AdminConversions';
 import Shop from '@/pages/Shop';
 import ShopAdmin from '@/pages/ShopAdmin';
+import MarketingAdmin from '@/pages/MarketingAdmin';
 import ProductDetail from '@/pages/ProductDetail';
 import Founders from '@/pages/Founders';
 import Login from '@/pages/Login';
@@ -103,6 +104,7 @@ const AuthenticatedApp = () => {
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
           <Route path="/admin/conversioni" element={<PageTransition><AdminConversions /></PageTransition>} />
+          <Route path="/admin/marketing" element={<PageTransition><MarketingAdmin /></PageTransition>} />
           <Route path="/shop/admin" element={<PageTransition><ShopAdmin /></PageTransition>} />
         </Route>
         <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />

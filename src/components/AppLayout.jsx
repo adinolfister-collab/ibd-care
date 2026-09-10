@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard, Megaphone } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -127,6 +127,20 @@ export default function AppLayout({ children }) {
             >
               <TrendingUp className="w-5 h-5 shrink-0" />
               <span>Conversioni</span>
+            </NavLink>
+          )}
+          {user?.role === 'admin' && (
+            <NavLink
+              to="/admin/marketing"
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-colors',
+                  isActive ? 'bg-primary text-primary-foreground font-medium' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                )
+              }
+            >
+              <Megaphone className="w-5 h-5 shrink-0" />
+              <span>Marketing social</span>
             </NavLink>
           )}
           {user?.role === 'admin' && (
