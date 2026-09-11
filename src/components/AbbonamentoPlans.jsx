@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Check, Loader2, CreditCard, CalendarClock, Crown } from 'lucide-react';
+import { Sparkles, Check, Loader2, CreditCard, CalendarClock, Crown, Settings } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useToast } from '@/components/ui/use-toast';
@@ -19,6 +19,7 @@ export default function AbbonamentoPlans() {
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [subscription, setSubscription] = useState(null);
+  const [manageLoading, setManageLoading] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -52,6 +53,27 @@ export default function AbbonamentoPlans() {
     } catch (e) {
       setError(e.message || t('premium.checkout_error'));
       setLoading(null);
+    }
+  };
+
+  const manage = async () => {
+    if (window.self !== window.top) {
+      setError(t('premium.iframe_blocked'));
+      return;
+    }
+    setManageLoading(true);
+    setError('');
+    try {
+      const res = await base44.functions.invoke('createBillingPortalSession', {});
+      if (res.data?.url) {
+        window.location.href = res.data.url;
+      } else {
+        setError(res.data?.error || t('premium.checkout_error'));
+        setManageLoading(false);
+      }
+    } catch (e) {
+      setError(e.message || t('premium.checkout_error'));
+      setManageLoading(false);
     }
   };
 
@@ -92,6 +114,14 @@ export default function AbbonamentoPlans() {
           {subscription.cancelAtPeriodEnd && (
             <p className="text-xs text-muted-foreground">{t('premium.cancelled_note')}</p>
           )}
+          <button
+            onClick={manage}
+            disabled={manageLoading}
+            className="mt-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border border-emerald-300 text-emerald-700 bg-white hover:bg-emerald-50 transition-colors disabled:opacity-60"
+          >
+            {manageLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Settings className="w-4 h-4" />}
+            {manageLoading ? t('premium.redirecting') : t('premium.manage_subscription')}
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
