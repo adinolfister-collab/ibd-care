@@ -66,3 +66,22 @@ export const LANGS = [
   { code: 'sq', label: 'Shqip' },
   { code: 'zh', label: '中文' },
 ];
+
+// Base URL usata per comporre i deep link nei post social.
+// Personalizzabile: dominio custom se connesso, fallback sul dominio base44.
+export const APP_BASE_URL = 'https://ibd-care.base44.app';
+
+// Pagine dell'app selezionabili come deep link da includere nei post.
+// Il primo elemento (path vuoto) equivale a "nessun link".
+export const APP_PAGES = [
+  { path: '', label: 'Nessun link' },
+  { path: '/', label: 'Home' },
+  { path: '/founders', label: 'Campagna Founder' },
+  { path: '/abbonamento', label: 'Abbonamento' },
+  { path: '/community', label: 'Community' },
+  { path: '/about', label: 'About' },
+  { path: '/contact', label: 'Contatti' },
+  { path: '/news', label: 'News IBD' },
+  { path: '/symptoms', label: 'Diario sintomi' },
+  { path: '/assistant', label: 'Assistente AI' },
+];

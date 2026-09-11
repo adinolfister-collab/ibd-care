@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Megaphone, Sparkles, Clipboard, ClipboardCheck, Wand2, Hash, Crown } from 'lucide-react';
+import { Megaphone, Sparkles, Clipboard, ClipboardCheck, Wand2, Hash, Crown, Download, Link2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
@@ -8,7 +8,8 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PlatformPreview from '@/components/marketing/PlatformPreview';
 import FounderInvitations from '@/components/marketing/FounderInvitations';
-import { SOCIAL_TEMPLATES, PLATFORMS, TONES, LANGS } from '@/lib/socialTemplates';
+import { SOCIAL_TEMPLATES, PLATFORMS, TONES, LANGS, APP_BASE_URL, APP_PAGES } from '@/lib/socialTemplates';
+import { Image } from '@/components/ui/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -24,6 +25,7 @@ export default function MarketingAdmin() {
   const [lang, setLang] = useState('it');
   const [platform, setPlatform] = useState('all');
   const [cta, setCta] = useState('Prova gratuita 14 giorni');
+  const [deepLink, setDeepLink] = useState('');
   const [generating, setGenerating] = useState(false);
   const [result, setResult] = useState(null);
   const [activeTab, setActiveTab] = useState('facebook');
@@ -48,8 +50,9 @@ export default function MarketingAdmin() {
     setGenerating(true);
     setResult(null);
     try {
+      const deepLinkUrl = deepLink ? (deepLink === '/' ? APP_BASE_URL : `${APP_BASE_URL}${deepLink}`) : '';
       const res = await base44.functions.invoke('generateSocialPost', {
-        topic, tone, lang, platform, cta,
+        topic, tone, lang, platform, cta, deepLink: deepLinkUrl,
       });
       if (res.data?.error) throw new Error(res.data.error);
       setResult(res.data);
@@ -193,6 +196,18 @@ export default function MarketingAdmin() {
                 </div>
 
                 <div>
+                  <Label htmlFor="deeplink" className="flex items-center gap-1.5"><Link2 className="w-3.5 h-3.5" /> Link dell'app da includere</Label>
+                  <select
+                    id="deeplink"
+                    value={deepLink}
+                    onChange={(e) => setDeepLink(e.target.value)}
+                    className="mt-1 w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                  >
+                    {APP_PAGES.map((p) => <option key={p.path} value={p.path}>{p.label}</option>)}
+                  </select>
+                </div>
+
+                <div>
                   <Label>Piattaforma</Label>
                   <div className="flex gap-2 flex-wrap mt-1">
                     <button
@@ -284,6 +299,35 @@ export default function MarketingAdmin() {
                   <div className="mt-4 pt-4 border-t border-border">
                     <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><Hash className="w-3 h-3" /> Testo completo da copiare</p>
                     <pre className="text-xs whitespace-pre-wrap font-mono bg-muted/50 rounded-lg p-3 max-h-40 overflow-auto">{fullText(platformKey, postFor(platformKey))}</pre>
+                  </div>
+                )}
+
+                {(generating || result?.image_url) && (
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-terracotta" /> Immagine generata con AI
+                    </p>
+                    {generating ? (
+                      <div className="rounded-xl border border-dashed border-border bg-muted/40 p-10 text-center">
+                        <div className="w-6 h-6 border-2 border-muted-foreground/30 border-t-terracotta rounded-full animate-spin mx-auto mb-2" />
+                        <p className="text-xs text-muted-foreground">Creazione immagine…</p>
+                      </div>
+                    ) : result?.image_url ? (
+                      <div className="space-y-2">
+                        <div className="rounded-xl overflow-hidden border border-border bg-muted/30">
+                          <Image src={result.image_url} alt="Anteprima immagine" fittingType="fit" className="w-full" />
+                        </div>
+                        <a
+                          href={result.image_url}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-terracotta text-terracotta-foreground hover:bg-terracotta/90 transition-colors"
+                        >
+                          <Download className="w-4 h-4" /> Scarica immagine
+                        </a>
+                      </div>
+                    ) : null}
                   </div>
                 )}
               </CardContent>
