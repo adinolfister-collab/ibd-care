@@ -17,6 +17,16 @@ export default async function(req: Request): Promise<Response> {
     const msg = await base44.asServiceRole.entities[entityName].get(message_id);
     if (!msg) return Response.json({ error: 'Messaggio non trovato' }, { status: 404 });
 
+    // Authorization: per i DM privati, solo i partecipanti della conversazione
+    // possono tradurre/leggere il messaggio. asServiceRole bypassa la RLS.
+    if (message_type === 'dm') {
+      const participants = Array.isArray(msg.participants) ? msg.participants : [];
+      const isParticipant = msg.sender_id === user.id || participants.includes(user.id);
+      if (!isParticipant) {
+        return Response.json({ error: 'Forbidden' }, { status: 403 });
+      }
+    }
+
     const cache = msg.translated_text || {};
     if (cache[target_lang]) {
       return Response.json({ translated: cache[target_lang], original_lang: msg.original_lang || null, cached: true });
