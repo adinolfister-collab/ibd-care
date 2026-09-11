@@ -39,6 +39,7 @@ export default function MarketingAdmin() {
     setTopic(tpl.topic);
     setTone(tpl.tone);
     setCta(tpl.cta);
+    setDeepLink(tpl.deepLink || '');
     setResult(null);
   };
 

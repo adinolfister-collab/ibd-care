@@ -43,6 +43,14 @@ export const SOCIAL_TEMPLATES = [
     tone: 'caloroso',
     cta: 'Unisciti alla community, prova gratuita',
   },
+  {
+    id: 'news',
+    label: 'IBD News',
+    topic: 'Aggiornamenti, studi e notizie sulla malattia infiammatoria intestinale: in IBD Care trovi una sezione dedicata alle ultime novità su Crohn e colite ulcerosa, sempre aggiornata.',
+    tone: 'informativo',
+    cta: 'Leggi le ultime news su IBD Care',
+    deepLink: '/news',
+  },
 ];
 
 export const PLATFORMS = [
@@ -52,7 +60,7 @@ export const PLATFORMS = [
   { id: 'instagram', label: 'Instagram', accent: 'text-pink-600' },
 ];
 
-export const TONES = ['incoraggiante', 'rassicurante', 'pratico', 'entusiasta', 'sereno', 'caloroso', 'professionale'];
+export const TONES = ['incoraggiante', 'rassicurante', 'pratico', 'entusiasta', 'sereno', 'caloroso', 'professionale', 'informativo'];
 
 export const LANGS = [
   { code: 'it', label: 'Italiano' },
