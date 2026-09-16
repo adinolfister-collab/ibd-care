@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Megaphone, Sparkles, Clipboard, ClipboardCheck, Wand2, Hash, Crown, Download, Link2 } from 'lucide-react';
+import { Megaphone, Sparkles, Clipboard, ClipboardCheck, Wand2, Hash, Crown, Download, Link2, Users } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
@@ -8,6 +8,7 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PlatformPreview from '@/components/marketing/PlatformPreview';
 import FounderInvitations from '@/components/marketing/FounderInvitations';
+import UserMonitor from '@/components/marketing/UserMonitor';
 import { SOCIAL_TEMPLATES, PLATFORMS, TONES, LANGS, APP_BASE_URL, APP_PAGES } from '@/lib/socialTemplates';
 import { Image } from '@/components/ui/image';
 import { Card, CardContent } from '@/components/ui/card';
@@ -115,10 +116,21 @@ export default function MarketingAdmin() {
         >
           <Crown className="w-3.5 h-3.5" /> Inviti Founder
         </button>
+        <button
+          onClick={() => setSection('users')}
+          className={cn(
+            'px-4 py-2 text-sm border-b-2 -mb-px transition-colors flex items-center gap-1.5',
+            section === 'users' ? 'border-primary text-primary font-medium' : 'border-transparent text-muted-foreground hover:text-foreground'
+          )}
+        >
+          <Users className="w-3.5 h-3.5" /> Monitoraggio utenti
+        </button>
       </div>
 
       {section === 'founders' ? (
         <FounderInvitations />
+      ) : section === 'users' ? (
+        <UserMonitor />
       ) : (
         <>
           {/* Template library */}

@@ -9,16 +9,16 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
-const DEFAULT_SUBJECT = 'Diventa Founder di IBD Care — accesso lifetime riservato ai primi utenti';
-const DEFAULT_BODY = `Siamo lieti di invitarla a partecipare alla campagna Founder di IBD Care.
+const DEFAULT_SUBJECT = 'Diventa Founder di IBD Care — Premium gratuito a vita, senza pagare l\'abbonamento';
+const DEFAULT_BODY = `Siamo lieti di invitarla a unirsi ai Founder di IBD Care: un gruppo esclusivo riservato ai primi utenti che hanno creduto nel progetto fin dall'inizio.
 
-I primi iscritti ricevono l'abbonamento Premium a titolo definitivo (lifetime), senza canone mensile, in riconoscimento del contributo dato alla crescita della community.
+Come Founder riceverà l'abbonamento Premium gratuito a vita — niente canone mensile, niente rinnovo annuale — come premio per essere tra i primi a sostenere la community. I posti sono limitati e assegnati in ordine di adesione.
 
-I posti sono limitati e assegnati in base all'ordine di adesione.
+Per aderire apra l'app, visiti la pagina «Founder» e confermi la propria adesione: il riconoscimento verrà applicato automaticamente al suo account.
 
-Per aderire è sufficiente aprire l'app, visitare la pagina «Founder» e confermare la propria adesione. Il riconoscimento sarà applicato automaticamente al suo account.
+Un piccolo favore in cambio: ci aiuti a far crescere IBD Care lasciando una recensione positiva e condividendo il suo feedback. Ogni voce conta per chi vive ogni giorno con la malattia.
 
-Cordiali saluti,
+Grazie di cuore,
 Il team di IBD Care`;
 
 export default function FounderInvitations() {
