@@ -30,7 +30,7 @@ export default function Assistant() {
     const el = taRef.current;
     if (!el) return;
     el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+    el.style.height = Math.min(el.scrollHeight, 200) + 'px';
   };
 
   useEffect(() => {
@@ -79,14 +79,14 @@ export default function Assistant() {
   const busy = sending && messages[messages.length - 1]?.role !== 'assistant';
 
   return (
-    <div className="flex flex-col" style={{ height: 'calc(100vh - 12rem)' }}>
+    <div className="flex flex-col min-h-[calc(100vh-7.5rem)] md:min-h-[calc(100vh-7.5rem)]">
       <PageHeader
         title={t('assistant.title')}
         subtitle={t('assistant.subtitle')}
       />
       <PageEditorial pageKey="assistant" compact />
 
-      <Card className="flex-1 flex flex-col overflow-hidden rounded-2xl">
+      <Card className="flex-1 flex flex-col overflow-hidden rounded-2xl min-h-[420px]">
         {/* Messages */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
           {error && (
@@ -162,22 +162,22 @@ export default function Assistant() {
         </div>
 
         {/* Input */}
-        <div className="border-t border-border p-4 flex items-end gap-2.5">
+        <div className="border-t border-border p-4 md:p-5 flex items-end gap-2.5 bg-card">
           <textarea
             ref={taRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
             onInput={autoGrow}
-            rows={2}
+            rows={3}
             placeholder={t('assistant.placeholder')}
-            className="flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3.5 text-sm leading-relaxed min-h-[72px] max-h-48 focus:outline-none focus:ring-2 focus:ring-ring"
+            className="flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3.5 text-sm leading-relaxed min-h-[96px] max-h-52 focus:outline-none focus:ring-2 focus:ring-ring"
           />
           <MicToggle lang={lang} onTranscript={send} />
           <button
             onClick={() => send()}
             disabled={!text.trim() || sending}
-            className="shrink-0 min-h-[72px] min-w-[56px] h-[72px] w-14 rounded-xl bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
+            className="shrink-0 min-h-[96px] min-w-[56px] h-[96px] w-14 rounded-xl bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
           >
             <Send className="w-5 h-5" />
           </button>
