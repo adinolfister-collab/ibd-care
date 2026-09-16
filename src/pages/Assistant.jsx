@@ -9,14 +9,9 @@ import MicToggle from '@/components/MicToggle';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-const SUGGESTIONS_IT = [
-  'Registra un sintomo: dolore 3, stanchezza 5, 4 scariche oggi',
-  'Come vanno i miei sintomi ultimamente?',
-  'Cosa posso fare in questa app?',
-];
-
 export default function Assistant() {
   const { t, lang } = useI18n();
+  const suggestions = [1, 2, 3].map((n) => t(`assistant.suggestion.${n}`));
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
@@ -147,7 +142,7 @@ export default function Assistant() {
           {/* Suggestions (inside scroll area so the input bar never covers them) */}
           {messages.length === 0 && (
             <div className="px-1 pt-2 flex flex-wrap gap-2 justify-center">
-              {SUGGESTIONS_IT.map((s) => (
+              {suggestions.map((s) => (
                 <button
                   key={s}
                   onClick={() => send(s)}
