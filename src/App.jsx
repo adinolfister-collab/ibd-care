@@ -81,8 +81,6 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-        <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-        <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
         <Route path="/founders" element={<PageTransition><Founders /></PageTransition>} />
         {/* Login required for everything else */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
@@ -99,6 +97,8 @@ const AuthenticatedApp = () => {
           <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
           <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
           <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
+          <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+          <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
           <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
           <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />

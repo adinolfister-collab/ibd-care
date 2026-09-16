@@ -28,9 +28,13 @@
     "image_url": {
       "type": "string"
     },
+    "amazon_url": {
+      "type": "string",
+      "description": "URL o ASIN del prodotto Amazon usato per costruire il deep link affiliato"
+    },
     "query": {
       "type": "string",
-      "description": "Termini di ricerca / EAN usati dal comparatore affiliate per il lookup live delle offerte"
+      "description": "Termini di ricerca / ASIN usati come fallback per il link Amazon"
     },
     "active": {
       "type": "boolean",

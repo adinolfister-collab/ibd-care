@@ -12,11 +12,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { CATEGORY_LABEL_KEY } from '@/lib/shop';
 import { cn } from '@/lib/utils';
-import AwinSyncPanel from '@/components/AwinSyncPanel';
-import MyLeadSyncPanel from '@/components/MyLeadSyncPanel';
-import AmazonOffersPanel from '@/components/AmazonOffersPanel';
-import TradeTrackerSyncPanel from '@/components/TradeTrackerSyncPanel';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const categories = [
   { value: 'nutrizione', key: 'shop.cat_nutrizione' },
@@ -33,6 +28,7 @@ const categories = [
 const fields = (t) => [
   { name: 'name', label: t('shop.field_name'), type: 'text' },
   { name: 'category', label: t('shop.field_category'), type: 'select', options: categories.map((c) => ({ value: c.value, label: t(c.key) })) },
+  { name: 'amazon_url', label: t('shop.field_amazon_url'), type: 'text' },
   { name: 'query', label: t('shop.field_query'), type: 'text' },
   { name: 'description', label: t('shop.field_description'), type: 'textarea' },
   { name: 'image_url', label: t('shop.field_image'), type: 'file' },
@@ -55,7 +51,6 @@ export default function ShopAdmin() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [importing, setImporting] = useState(false);
-  const [tab, setTab] = useState('prodotti');
   const fileRef = useRef(null);
 
   const load = async () => {
@@ -110,6 +105,7 @@ export default function ShopAdmin() {
                   name: { type: 'string' },
                   category: { type: 'string', enum: ['nutrizione', 'stomia', 'comfort', 'igiene', 'farmaci', 'integratori', 'dispositivi', 'cura_persona', 'alimentazione_speciale'] },
                   query: { type: 'string' },
+                  amazon_url: { type: 'string' },
                   description: { type: 'string' },
                   image_url: { type: 'string' },
                 },
@@ -149,25 +145,6 @@ export default function ShopAdmin() {
         }
       />
 
-      <Tabs value={tab} onValueChange={setTab} className="mb-4">
-        <TabsList>
-          <TabsTrigger value="prodotti">Prodotti</TabsTrigger>
-          <TabsTrigger value="awin">Awin</TabsTrigger>
-          <TabsTrigger value="mylead">{t('shop.mylead_tab')}</TabsTrigger>
-          <TabsTrigger value="amazon">{t('shop.amazon_tab')}</TabsTrigger>
-          <TabsTrigger value="tradetracker">TradeTracker</TabsTrigger>
-        </TabsList>
-      </Tabs>
-      {tab === 'awin' ? (
-        <AwinSyncPanel />
-      ) : tab === 'mylead' ? (
-        <MyLeadSyncPanel />
-      ) : tab === 'amazon' ? (
-        <AmazonOffersPanel />
-      ) : tab === 'tradetracker' ? (
-        <TradeTrackerSyncPanel />
-      ) : (
-      <>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
       ) : items.length === 0 ? (
@@ -182,7 +159,7 @@ export default function ShopAdmin() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold">{p.name}</p>
-                  <p className="text-sm text-muted-foreground">{t(CATEGORY_LABEL_KEY[p.category])}{p.query ? ' · ' + p.query : ''}</p>
+                  <p className="text-sm text-muted-foreground truncate">{t(CATEGORY_LABEL_KEY[p.category])}{p.amazon_url ? ' · Amazon: ' + p.amazon_url : ''}</p>
                 </div>
                 <div className="flex gap-1">
                   <button onClick={() => openEdit(p)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
@@ -192,8 +169,6 @@ export default function ShopAdmin() {
             </Card>
           ))}
         </div>
-      )}
-      </>
       )}
 
       <EntityFormDialog

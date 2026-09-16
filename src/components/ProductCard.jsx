@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Package } from 'lucide-react';
+import { ArrowUpRight, Package } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import { useI18n } from '@/lib/i18n';
 import { CATEGORY_LABEL_KEY } from '@/lib/shop';
@@ -34,7 +34,7 @@ export default function ProductCard({ product }) {
           <p className="text-sm text-muted-foreground mt-2 leading-relaxed line-clamp-2">{product.description}</p>
         )}
         <div className="mt-auto flex items-center gap-1.5 pt-4 text-sm font-medium text-terracotta">
-          <Search className="w-4 h-4" /> {t('shop.confronta')}
+          <ArrowUpRight className="w-4 h-4" /> {t('shop.see_product')}
         </div>
       </div>
     </Link>

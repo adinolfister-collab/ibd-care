@@ -1,34 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Loader2, Package, ShoppingBag, Tag } from 'lucide-react';
+import { ArrowLeft, Loader2, Package, ShoppingBag, ExternalLink } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
-import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import EmptyState from '@/components/EmptyState';
 import EditorialBlock from '@/components/EditorialBlock';
-import ShopStandby from '@/components/ShopStandby';
 import { Image } from '@/components/ui/image';
 import { Button } from '@/components/ui/button';
-import { CATEGORY_LABEL_KEY, formatPrice, trackShopClick } from '@/lib/shop';
-import { cn } from '@/lib/utils';
+import {
+  CATEGORY_LABEL_KEY, trackShopClick, buildAmazonAffiliateUrl,
+  AMAZON_PARTNER_TAG, extractAmazonAsin, isAmazonUrl,
+} from '@/lib/shop';
+
+// Costruisce il deep link affiliato Amazon per il prodotto.
+// Priorita': amazon_url (ASIN o URL) > query (ASIN/URL/keyword) > vuoto.
+function buildAmazonLink(product) {
+  const raw = String(product?.amazon_url || product?.query || '').trim();
+  if (!raw) return '';
+  if (/^[A-Z0-9]{10}$/.test(raw)) return buildAmazonAffiliateUrl(raw, AMAZON_PARTNER_TAG);
+  if (isAmazonUrl(raw) || extractAmazonAsin(raw)) return buildAmazonAffiliateUrl(raw, AMAZON_PARTNER_TAG);
+  // Fallback keyword search su amazon.it con tag affiliato
+  try {
+    const u = new URL('https://www.amazon.it/s');
+    u.searchParams.set('k', raw);
+    u.searchParams.set('tag', AMAZON_PARTNER_TAG);
+    u.searchParams.set('linkCode', 'll1');
+    return u.toString();
+  } catch { return ''; }
+}
 
 export default function ProductDetail() {
   const { slug } = useParams();
-  const { t, lang } = useI18n();
-  const { user } = useAuth();
+  const { t } = useI18n();
   const [product, setProduct] = useState(null);
   const [notFound, setNotFound] = useState(false);
-  const [loadingProduct, setLoadingProduct] = useState(true);
-
-  const [offers, setOffers] = useState([]);
-  const [loadingOffers, setLoadingOffers] = useState(false);
-  const [configured, setConfigured] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      setLoadingProduct(true);
+      setLoading(true);
       try {
         let p;
         try {
@@ -41,46 +53,11 @@ export default function ProductDetail() {
         if (!p) setNotFound(true);
         else setProduct(p);
       } catch { setNotFound(true); }
-      setLoadingProduct(false);
+      setLoading(false);
     })();
   }, [slug]);
 
-  useEffect(() => {
-    if (!product) return;
-    let cancelled = false;
-    (async () => {
-      setLoadingOffers(true);
-      try {
-        // 1) Offerte reali salvate nel DB (comparatore statico)
-        let stored = [];
-        try {
-          stored = await base44.entities.AffiliateOffer.filter({ product_id: product.id }, 'store_price', 50);
-        } catch { stored = []; }
-        if (cancelled) return;
-        if (stored && stored.length) {
-          const sorted = [...stored].sort((a, b) => a.store_price - b.store_price);
-          setOffers(sorted);
-          setConfigured(true);
-          setLoadingOffers(false);
-          return;
-        }
-        // 2) Fallback: lookup live del network affiliate (se configurato)
-        const query = (product.query || product.name || '').trim();
-        if (!query) { setOffers([]); setLoadingOffers(false); return; }
-        const res = await base44.functions.invoke('lookupAffiliateOffers', { query, limit: 25 });
-        if (cancelled) return;
-        setOffers(res?.data?.offers || []);
-        setConfigured(res?.data?.configured !== false);
-      } catch {
-        if (!cancelled) setOffers([]);
-      }
-      if (!cancelled) setLoadingOffers(false);
-    })();
-    return () => { cancelled = true; };
-  }, [product]);
-
-  if (user?.role !== 'admin') return <ShopStandby />;
-  if (loadingProduct) {
+  if (loading) {
     return (
       <AppLayout>
         <div className="py-24 flex items-center justify-center text-muted-foreground"><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t('common.loading')}</div>
@@ -96,10 +73,12 @@ export default function ProductDetail() {
     );
   }
 
-  const best = offers[0];
-  const openOffer = (offer) => {
-    trackShopClick(offer, product, 'offer');
-    window.open(offer.affiliate_url, '_blank', 'noopener,noreferrer');
+  const amazonUrl = buildAmazonLink(product);
+
+  const openAmazon = () => {
+    if (!amazonUrl) return;
+    trackShopClick({ store_name: 'Amazon', affiliate_url: amazonUrl }, product, 'amazon');
+    window.open(amazonUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -120,7 +99,7 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        <div>
+        <div className="flex flex-col">
           <p className="text-[0.65rem] font-heading font-semibold uppercase tracking-[0.22em] text-terracotta">
             {product.category ? t(CATEGORY_LABEL_KEY[product.category]) : ''}
           </p>
@@ -129,54 +108,19 @@ export default function ProductDetail() {
             <p className="text-sm md:text-base text-foreground/90 mt-3 leading-relaxed whitespace-pre-wrap">{product.description}</p>
           )}
 
-          <div className="mt-5">
-            <p className="text-xs font-heading font-semibold uppercase tracking-[0.18em] text-muted-foreground mb-2">
-              {t('shop.offers_label')}
-            </p>
-            {loadingOffers ? (
-              <div className="flex items-center gap-2 text-muted-foreground py-6"><Loader2 className="w-4 h-4 animate-spin" /> {t('shop.loading_offers')}</div>
-            ) : !configured || offers.length === 0 ? (
-              <EmptyState icon={Tag} title={t('shop.no_offers')} description={t('shop.no_offers_desc')} />
+          <div className="mt-auto pt-6">
+            {amazonUrl ? (
+              <Button onClick={openAmazon} size="lg" className="rounded-xl w-full sm:w-auto">
+                <ExternalLink className="w-4 h-4 mr-1.5" /> {t('shop.buy_on_amazon')}
+              </Button>
             ) : (
-              <div className="space-y-2.5">
-                {offers.map((o, i) => (
-                  <div
-                    key={i}
-                    className={cn(
-                      'flex items-center gap-3 rounded-xl border bg-card p-3',
-                      i === 0 ? 'border-terracotta shadow-sm' : 'border-border'
-                    )}
-                  >
-                    <div className="w-12 h-12 rounded-lg bg-accent flex items-center justify-center shrink-0 overflow-hidden">
-                      {o.image_url ? (
-                        <img src={o.image_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <Tag className="w-5 h-5 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground truncate">{o.store_name}</p>
-                      {o.title && <p className="text-xs text-muted-foreground truncate">{o.title}</p>}
-                      <p className={cn('font-heading font-semibold mt-0.5', i === 0 ? 'text-terracotta text-xl' : 'text-foreground text-lg')}>
-                        {formatPrice(o.store_price, lang)}
-                      </p>
-                    </div>
-                    <Button
-                      onClick={() => openOffer(o)}
-                      variant={i === 0 ? 'default' : 'outline'}
-                      className="rounded-xl shrink-0"
-                    >
-                      {i === 0 ? (<><Tag className="w-4 h-4 mr-1" /> {t('shop.acquista_migliore')}</>) : (<>{t('shop.see_offer')} <ExternalLink className="w-3.5 h-3.5 ml-1" /></>)}
-                    </Button>
-                  </div>
-                ))}
-              </div>
+              <p className="text-sm text-muted-foreground">{t('shop.no_amazon_link')}</p>
             )}
+            <p className="mt-3 text-xs text-muted-foreground leading-relaxed select-text">{t('shop.amazon_disclaimer')}</p>
           </div>
         </div>
       </div>
 
-      <p className="mt-6 text-xs text-muted-foreground leading-relaxed select-text">{t('shop.disclaimer')}</p>
       <EditorialBlock sectionKey="shop_partner" align="right" />
     </AppLayout>
   );

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Search, ShoppingBag, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
-import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -10,8 +9,6 @@ import MagazineEssay from '@/components/MagazineEssay';
 import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import ProductCard from '@/components/ProductCard';
-import ShopPartnerMenu from '@/components/ShopPartnerMenu';
-import ShopStandby from '@/components/ShopStandby';
 import { CATEGORY_LABEL_KEY } from '@/lib/shop';
 import { cn } from '@/lib/utils';
 
@@ -21,35 +18,17 @@ const pad = (n) => (n < 10 ? '0' + n : '' + n);
 
 export default function Shop() {
   const { t } = useI18n();
-  const { user } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
-  const [partners, setPartners] = useState([]);
+
   useEffect(() => {
     (async () => {
       try {
         const data = await base44.entities.Product.list('order', 400);
         setItems((data || []).filter((p) => p.active !== false));
       } catch { setItems([]); }
-      try {
-        const offers = await base44.entities.AffiliateOffer.list('-created_date', 400);
-        const map = new Map();
-        for (const o of (offers || [])) {
-          if (!o || !o.store_name || !o.affiliate_url) continue;
-          if (!map.has(o.store_name)) map.set(o.store_name, { name: o.store_name, url: o.affiliate_url });
-        }
-        try {
-          const partners = await base44.entities.AffiliatePartner.filter({ active: true }, '-order', 400);
-          for (const p of (partners || [])) {
-            if (!p || !p.name || !p.affiliate_url) continue;
-            if (map.has(p.name)) continue;
-            map.set(p.name, { name: p.name, url: p.affiliate_url, category: p.category });
-          }
-        } catch {}
-        setPartners([...map.values()].sort((a, b) => a.name.localeCompare(b.name)));
-      } catch { setPartners([]); }
       setLoading(false);
     })();
   }, []);
@@ -66,7 +45,6 @@ export default function Shop() {
     });
   }, [items, filter, search]);
 
-  // Prodotti raggruppati per categoria, nell'ordine canonico, solo non vuoti.
   const shelves = useMemo(() => {
     const groups = {};
     for (const p of filtered) {
@@ -77,8 +55,6 @@ export default function Shop() {
     if (groups.altri && groups.altri.length) ordered.push('altri');
     return ordered.map((c, i) => ({ key: c, num: pad(i + 1), products: groups[c] }));
   }, [filtered]);
-
-  if (user?.role !== 'admin') return <ShopStandby />;
 
   return (
     <AppLayout>
@@ -95,7 +71,6 @@ export default function Shop() {
               {t(CATEGORY_LABEL_KEY[c])}
             </button>
           ))}
-          <ShopPartnerMenu partners={partners} />
           <div className="relative ml-auto w-full sm:w-64">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
