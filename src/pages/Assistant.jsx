@@ -143,23 +143,23 @@ export default function Assistant() {
               </div>
             </div>
           )}
-        </div>
 
-        {/* Suggestions */}
-        {messages.length === 0 && (
-          <div className="px-4 pb-3 flex flex-wrap gap-2">
-            {SUGGESTIONS_IT.map((s) => (
-              <button
-                key={s}
-                onClick={() => send(s)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-accent text-accent-foreground hover:bg-accent/70 transition-colors"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                {s}
-              </button>
-            ))}
-          </div>
-        )}
+          {/* Suggestions (inside scroll area so the input bar never covers them) */}
+          {messages.length === 0 && (
+            <div className="px-1 pt-2 flex flex-wrap gap-2 justify-center">
+              {SUGGESTIONS_IT.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => send(s)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-accent text-accent-foreground hover:bg-accent/70 transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Input */}
         <div className="border-t border-border p-3 flex items-end gap-2">
