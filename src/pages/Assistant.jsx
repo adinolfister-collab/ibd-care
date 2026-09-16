@@ -162,22 +162,22 @@ export default function Assistant() {
         </div>
 
         {/* Input */}
-        <div className="border-t border-border p-3 flex items-end gap-2">
+        <div className="border-t border-border p-4 flex items-end gap-2.5">
           <textarea
             ref={taRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
             onInput={autoGrow}
-            rows={1}
+            rows={2}
             placeholder={t('assistant.placeholder')}
-            className="flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm leading-relaxed min-h-[48px] max-h-40 focus:outline-none focus:ring-2 focus:ring-ring"
+            className="flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3.5 text-sm leading-relaxed min-h-[72px] max-h-48 focus:outline-none focus:ring-2 focus:ring-ring"
           />
           <MicToggle lang={lang} onTranscript={send} />
           <button
             onClick={() => send()}
             disabled={!text.trim() || sending}
-            className="shrink-0 min-h-[48px] min-w-[48px] h-12 w-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
+            className="shrink-0 min-h-[72px] min-w-[56px] h-[72px] w-14 rounded-xl bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
           >
             <Send className="w-5 h-5" />
           </button>
