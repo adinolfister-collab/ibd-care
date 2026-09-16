@@ -91,6 +91,14 @@ async function syncProfileFromLemonSqueezy(apiKey: string, attrs: any, type: str
       { $set: fields }
     );
     console.log(`synced profile ${email} -> ${fields.subscription_status} (${type})`);
+    // KPI: premium_subscription_started — fire once when a new subscriber
+    // is created (not on renewals/updates).
+    if (type === 'subscription_created') {
+      try {
+        await base44.analytics.track({ eventName: 'premium_subscription_started', properties: { source: 'lemonsqueezy', email } });
+        console.log('analytics: premium_subscription_started (lemonsqueezy)');
+      } catch (e) { /* non blocking */ }
+    }
   } catch (e) {
     console.error('syncProfileFromLemonSqueezy failed', e);
   }

@@ -91,6 +91,14 @@ async function syncProfileFromStripeEvent(secretKey: string, type: string, obj: 
       { $set: fields }
     );
     console.log(`synced profile ${email} -> ${fields.subscription_status} (${type})`);
+    // KPI: premium_subscription_started — fire once when a new subscriber
+    // completes checkout (not on renewal invoices).
+    if (type === 'checkout.session.completed') {
+      try {
+        await base44.analytics.track({ eventName: 'premium_subscription_started', properties: { source: 'stripe', email } });
+        console.log('analytics: premium_subscription_started (stripe)');
+      } catch (e) { /* non blocking */ }
+    }
   } catch (e) {
     console.error('syncProfileFromStripeEvent failed', e);
   }
