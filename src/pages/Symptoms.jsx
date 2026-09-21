@@ -6,8 +6,6 @@ import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
 import { guestSymptoms } from '@/lib/guestEntries';
-import { usePremiumGate } from '@/hooks/usePremiumGate';
-import PremiumPaywall from '@/components/PremiumPaywall';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import SiteMenu from '@/components/SiteMenu';
@@ -69,7 +67,6 @@ export default function Symptoms() {
   const { t } = useI18n();
   const { toast } = useToast();
   const { isAuthenticated, authChecked } = useAuth();
-  const { requirePremium, showPaywall, setShowPaywall } = usePremiumGate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -114,7 +111,6 @@ export default function Symptoms() {
 
   const handleSubmit = (data) => {
     setOpen(false);
-    if (!requirePremium()) return;
     const payload = { ...data, pain_level: data.pain_level ?? 0, fatigue_level: data.fatigue_level ?? 0 };
     if (!isAuthenticated) {
       if (editing?.id) guestSymptoms.update(editing.id, payload);
@@ -144,7 +140,6 @@ export default function Symptoms() {
   };
 
   const handleDelete = async (id) => {
-    if (!requirePremium()) return;
     if (!isAuthenticated) {
       guestSymptoms.remove(id);
       setItems(guestSymptoms.list());
@@ -224,7 +219,6 @@ export default function Symptoms() {
         initialData={editing}
         onSubmit={handleSubmit}
       />
-      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <EditorialBlock sectionKey="symptoms_journal" align="left" />
     </AppLayout>
   );

@@ -4,15 +4,17 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserPlus, Mail, Lock, Loader2 } from "lucide-react";
+import { Mail, Lock, Loader2, Sparkles, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/use-toast";
 import { safeReturnTo } from "@/lib/authReturnTo";
+import { useI18n } from "@/lib/i18n";
 
 export default function Register() {
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -26,11 +28,11 @@ export default function Register() {
     e.preventDefault();
     setError("");
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t('register.password_mismatch') || "Le password non coincidono");
       return;
     }
     if (!consent) {
-      setError("Devi accettare l'informativa sulla privacy per registrarti");
+      setError(t('register.consent_required') || "Devi accettare l'informativa sulla privacy per registrarti");
       return;
     }
     setLoading(true);
@@ -54,8 +56,6 @@ export default function Register() {
         base44.auth.setToken(result.access_token);
       }
       try {
-        // Start the 14-day free trial at registration time (promo_start_date is
-        // read by getSubscriptionStatus to compute the remaining trial days).
         await base44.auth.updateMe({
           privacy_consent_accepted: true,
           privacy_consent_date: new Date().toISOString(),
@@ -75,8 +75,8 @@ export default function Register() {
     try {
       await base44.auth.resendOtp(email);
       toast({
-        title: "Code sent",
-        description: "Check your email for the new code.",
+        title: t('register.code_sent') || "Code sent",
+        description: t('register.check_email') || "Check your email for the new code.",
       });
     } catch (err) {
       setError(err.message || "Failed to resend code");
@@ -91,7 +91,7 @@ export default function Register() {
     return (
       <AuthLayout
         icon={Mail}
-        title="Verify your email"
+        title={t('register.verify')}
         subtitle={`We sent a code to ${email}`}
       >
         {error && (
@@ -125,16 +125,16 @@ export default function Register() {
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Verifying...
+              {t('register.verifying')}
             </>
           ) : (
-            "Verify"
+            t('register.verify')
           )}
         </Button>
         <p className="text-center text-sm text-muted-foreground mt-4">
-          Didn't receive the code?{" "}
+          {t('register.no_code') || "Didn't receive the code?"}{" "}
           <button onClick={handleResend} className="text-primary font-medium hover:underline">
-            Resend
+            {t('register.resend') || "Resend"}
           </button>
         </p>
       </AuthLayout>
@@ -143,36 +143,48 @@ export default function Register() {
 
   return (
     <AuthLayout
-      icon={UserPlus}
-      title="Create your account"
-      subtitle="Sign up to get started"
+      title={t('register.value_prop')}
+      subtitle={t('register.value_sub')}
       footer={
         <>
-          Already have an account?{" "}
+          {t('register.have_account')}{" "}
           <Link
             to={"/login" + (safeReturnTo() !== "/" ? "?returnTo=" + encodeURIComponent(safeReturnTo()) : "")}
             className="text-primary font-medium hover:underline"
           >
-            Log in
+            {t('register.login')}
           </Link>
         </>
       }
     >
-      <Button
-        variant="outline"
-        className="w-full h-12 text-sm font-medium mb-6"
-        onClick={handleGoogle}
-      >
-        <GoogleIcon className="w-5 h-5 mr-2" />
-        Continue with Google
-      </Button>
+      {/* Badge "Gratis per sempre" */}
+      <div className="flex items-center justify-center gap-2 mb-4">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-terracotta/15 text-terracotta text-xs font-semibold">
+          <Sparkles className="w-3.5 h-3.5" />
+          {t('register.badge_free')}
+        </span>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-semibold">
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          {t('register.no_card_badge') || "Nessuna carta richiesta"}
+        </span>
+      </div>
 
-      <div className="relative mb-6">
+      {/* Google primary (terracotta) */}
+      <button
+        type="button"
+        onClick={handleGoogle}
+        className="w-full h-12 rounded-xl bg-terracotta text-terracotta-foreground font-medium text-sm flex items-center justify-center gap-2.5 hover:bg-terracotta/90 transition-colors shadow-sm mb-3"
+      >
+        <GoogleIcon className="w-5 h-5" />
+        {t('register.google_primary')}
+      </button>
+
+      <div className="relative my-5">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-border" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-3 text-muted-foreground">or</span>
+        <div className="relative flex justify-center text-xs">
+          <span className="bg-card px-3 text-muted-foreground">{t('register.or_email')}</span>
         </div>
       </div>
 
@@ -235,20 +247,27 @@ export default function Register() {
         <div className="flex items-start gap-2.5">
           <Checkbox id="consent" checked={consent} onCheckedChange={setConsent} className="mt-0.5" />
           <label htmlFor="consent" className="text-xs text-muted-foreground leading-relaxed select-text">
-            Ho letto e accetto l'Informativa sulla privacy e acconsento al trattamento dei miei dati di salute personali ai sensi del GDPR (Reg. UE 2016/679) per la gestione del mio diario IBD. Posso revocare il consenso in qualsiasi momento dall'area Account.
+            {t('register.consent_text') || "Ho letto e accetto l'Informativa sulla privacy e acconsento al trattamento dei miei dati di salute personali ai sensi del GDPR per la gestione del mio diario IBD. Posso revocare il consenso in qualsiasi momento dall'area Account."}
           </label>
         </div>
         <Button type="submit" className="w-full h-12 font-medium" disabled={loading || !consent}>
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Creating account...
+              {t('register.creating')}
             </>
           ) : (
-            "Create account"
+            t('register.create')
           )}
         </Button>
       </form>
+
+      <div className="mt-5 flex items-start gap-2 p-3 rounded-xl bg-accent/50">
+        <ShieldCheck className="w-4 h-4 text-terracotta shrink-0 mt-0.5" />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          {t('register.no_card')}
+        </p>
+      </div>
     </AuthLayout>
   );
 }

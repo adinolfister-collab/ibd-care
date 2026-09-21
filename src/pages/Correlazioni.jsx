@@ -12,6 +12,8 @@ import SiteMenu from '@/components/SiteMenu';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { computeFoodCorrelation, buildSymptomMap } from '@/lib/correlationStats';
+import { computeTriggerLights } from '@/lib/triggerLight';
+import TriggerLightBadge from '@/components/TriggerLightBadge';
 
 const TOP = 12;
 
@@ -53,6 +55,14 @@ export default function Correlazioni() {
     return computeFoodCorrelation(foods, symMap, 1);
   }, [foods, entries]);
 
+  const triggerLights = useMemo(() => computeTriggerLights(foods, entries), [foods, entries]);
+  const triggerItems = useMemo(() => Array.from(triggerLights.entries())
+    .filter(([, v]) => v.occurrences >= 3)
+    .sort((a, b) => {
+      const order = { red: 0, yellow: 1, green: 2 };
+      return order[a[1].status] - order[b[1].status] || b[1].occurrences - a[1].occurrences;
+    }), [triggerLights]);
+
   const bowelData = useMemo(
     () => stats.filter((s) => s.count > 0).sort((a, b) => b.avgBowel - a.avgBowel).slice(0, TOP),
     [stats]
@@ -72,6 +82,33 @@ export default function Correlazioni() {
       <SiteMenu />
 
       <div className="space-y-6 md:space-y-8">
+        {!loading && triggerItems.length > 0 && (
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <span className="inline-flex gap-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                </span>
+                {t('trigger.light_title')}
+              </CardTitle>
+              <CardDescription>{t('trigger.legend')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {triggerItems.map(([name, v]) => (
+                  <span key={name} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent text-sm">
+                    <TriggerLightBadge status={v.status} />
+                    <span className="font-medium">{name}</span>
+                    <span className="text-xs text-muted-foreground">({v.occurrences})</span>
+                  </span>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {loading ? (
           <p className="text-muted-foreground">{t('common.loading')}</p>
         ) : bowelData.length === 0 && painData.length === 0 ? (

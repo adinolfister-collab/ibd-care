@@ -13,8 +13,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import useRecordScanner from '@/hooks/useRecordScanner';
 import { useAuth } from '@/lib/AuthContext';
-import { usePremiumGate } from '@/hooks/usePremiumGate';
-import PremiumPaywall from '@/components/PremiumPaywall';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
@@ -54,7 +52,6 @@ export default function Records() {
   const { toast } = useToast();
   const { scanning, scan } = useRecordScanner();
   const { isAuthenticated, authChecked } = useAuth();
-  const { requirePremium, showPaywall, setShowPaywall } = usePremiumGate();
   const fileRef = useRef(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -81,7 +78,6 @@ export default function Records() {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
-    if (!requirePremium()) return;
     const res = await scan(file);
     if (!res) return;
     if (res.kind === 'medication') {
@@ -120,12 +116,11 @@ export default function Records() {
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
-    if (!requirePremium()) return;
     if (editing?.id) await base44.entities.MedicalRecord.update(editing.id, data);
     else await base44.entities.MedicalRecord.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { if (!requirePremium()) return; await base44.entities.MedicalRecord.delete(id); load(); };
+  const handleDelete = async (id) => { await base44.entities.MedicalRecord.delete(id); load(); };
 
   return (
     <AppLayout>
@@ -248,7 +243,6 @@ export default function Records() {
         initialData={editing}
         onSubmit={handleSubmit}
       />
-      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <EditorialBlock sectionKey="records_archive" align="right" />
     </AppLayout>
   );

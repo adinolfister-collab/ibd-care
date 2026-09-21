@@ -19,6 +19,14 @@ const mealTypes = [
   { value: 'cena', label: 'Cena' },
   { value: 'spuntino', label: 'Spuntino' },
 ];
+const cookingMethods = [
+  { value: 'al_vapore', labelKey: 'food.cooking_al_vapore' },
+  { value: 'bollito', labelKey: 'food.cooking_bollito' },
+  { value: 'al_forno', labelKey: 'food.cooking_al_forno' },
+  { value: 'piastrato', labelKey: 'food.cooking_piastrato' },
+  { value: 'fritto', labelKey: 'food.cooking_fritto' },
+  { value: 'crudo', labelKey: 'food.cooking_crudo' },
+];
 const reactions = [
   { value: 'nessuna', label: 'Nessuna reazione' },
   { value: 'lieve', label: 'Lieve' },
@@ -91,6 +99,7 @@ export default function FoodFormDialog({ open, onOpenChange, title, submitLabel,
   }, []);
 
   const set = (name, value) => setData((d) => ({ ...d, [name]: value }));
+  const cookingOpts = cookingMethods.map((o) => ({ ...o, label: t(o.labelKey) }));
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -125,6 +134,20 @@ export default function FoodFormDialog({ open, onOpenChange, title, submitLabel,
                   <SelectTrigger className={cn(fieldClass, 'h-12 text-base font-normal')}><SelectValue placeholder="—" /></SelectTrigger>
                   <SelectContent>
                     {mealTypes.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium text-muted-foreground">{t('food.cooking_method')}</Label>
+              {isMobile ? (
+                <MobileSelect value={data.cooking_method} options={cookingOpts} onChange={(v) => set('cooking_method', v)} placeholder={t('food.cooking_none')} />
+              ) : (
+                <Select value={data.cooking_method || ''} onValueChange={(v) => set('cooking_method', v)}>
+                  <SelectTrigger className={cn(fieldClass, 'h-12 text-base font-normal')}><SelectValue placeholder={t('food.cooking_none')} /></SelectTrigger>
+                  <SelectContent>
+                    {cookingOpts.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               )}

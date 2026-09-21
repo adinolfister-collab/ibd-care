@@ -15,6 +15,18 @@
         "spuntino"
       ]
     },
+    "cooking_method": {
+      "type": "string",
+      "enum": [
+        "al_vapore",
+        "bollito",
+        "al_forno",
+        "piastrato",
+        "fritto",
+        "crudo"
+      ],
+      "description": "Metodo di cottura del pasto (facoltativo)"
+    },
     "foods": {
       "type": "string"
     },

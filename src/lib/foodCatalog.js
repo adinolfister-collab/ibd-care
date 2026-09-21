@@ -1,15 +1,9 @@
 // Catalogo condiviso degli alimenti + helper per la checklist dosi.
 //
-// - UNIT_UNITS: unità di dose selezionabili per ogni alimento spuntato.
-// - DEFAULT_CATALOG: copia statica usata come fallback per gli ospiti (non
-//   autenticati, quindi senza accesso al DB) e quando il catalogo gestito
-//   dall'admin è vuoto/non ancora caricato.
-// - serializeItems: compone il riepilogo testuale (campo `foods`) a partire
-//   dagli items strutturati, così i componenti che leggono `foods` testo
-//   (MealSymptomCorrelation, MealSpikes, Trends, Summary/Assistant) continuano
-//   a funzionare senza modifiche.
-// - parseLegacyFoods: converte il testo libero dei pasti vecchi o dei modelli
-//   in items spuntabili (categoria "Altro"), così restano modificabili.
+// - UNITS: unità di dose selezionabili per ogni alimento spuntato.
+// - DEFAULT_CATALOG: catalogo statico strutturato per sottocategorie IBD,
+//   usato come fallback per gli ospiti e quando il catalogo admin è vuoto.
+// - serializeItems / parseLegacyFoods / catalogToGroups: helper di compatibilità.
 
 export const UNITS = [
   { value: 'g', label: 'g' },
@@ -23,52 +17,90 @@ export const UNITS = [
 export const UNIT_LABELS = UNITS.reduce((acc, u) => { acc[u.value] = u.label; return acc; }, {});
 
 export const DEFAULT_CATALOG = [
-  // Cereali e granaglie
-  { category: 'Cereali e granaglie', name: 'Riso', default_unit: 'g' },
-  { category: 'Cereali e granaglie', name: 'Pasta', default_unit: 'g' },
-  { category: 'Cereali e granaglie', name: 'Pane', default_unit: 'fetta' },
-  { category: 'Cereali e granaglie', name: 'Crackers', default_unit: 'porzione' },
-  { category: 'Cereali e granaglie', name: 'Fiocchi d’avena', default_unit: 'g' },
-  { category: 'Cereali e granaglie', name: 'Mais', default_unit: 'porzione' },
-  { category: 'Cereali e granaglie', name: 'Quinoa', default_unit: 'g' },
-  { category: 'Cereali e granaglie', name: 'Patate', default_unit: 'g' },
-  // Proteine
-  { category: 'Proteine', name: 'Pollo', default_unit: 'g' },
-  { category: 'Proteine', name: 'Tacchino', default_unit: 'g' },
-  { category: 'Proteine', name: 'Pesce bianco', default_unit: 'g' },
-  { category: 'Proteine', name: 'Salmone', default_unit: 'g' },
-  { category: 'Proteine', name: 'Uova', default_unit: 'porzione' },
-  { category: 'Proteine', name: 'Tofu', default_unit: 'g' },
-  { category: 'Proteine', name: 'Legumi', default_unit: 'porzione' },
-  { category: 'Proteine', name: 'Carne magra', default_unit: 'g' },
-  // Verdure
-  { category: 'Verdure', name: 'Zucchine', default_unit: 'g' },
-  { category: 'Verdure', name: 'Carote', default_unit: 'g' },
-  { category: 'Verdure', name: 'Pomodoro', default_unit: 'porzione' },
-  { category: 'Verdure', name: 'Spinaci', default_unit: 'g' },
-  { category: 'Verdure', name: 'Finocchio', default_unit: 'porzione' },
-  { category: 'Verdure', name: 'Melanzane', default_unit: 'g' },
-  { category: 'Verdure', name: 'Peperoni', default_unit: 'g' },
-  { category: 'Verdure', name: 'Insalata', default_unit: 'porzione' },
+  // Verdure cotte (generalmente ben tollerate)
+  { category: 'Verdure cotte', name: 'Zucchine', default_unit: 'g' },
+  { category: 'Verdure cotte', name: 'Carote', default_unit: 'g' },
+  { category: 'Verdure cotte', name: 'Zucca', default_unit: 'g' },
+  { category: 'Verdure cotte', name: 'Patate lesse', default_unit: 'g' },
+  { category: 'Verdure cotte', name: 'Spinaci cotti', default_unit: 'g' },
+  { category: 'Verdure cotte', name: 'Melanzane cotte', default_unit: 'g' },
+  { category: 'Verdure cotte', name: 'Finocchio cotto', default_unit: 'porzione' },
+  { category: 'Verdure cotte', name: 'Zuppa di verdure', default_unit: 'porzione' },
+
+  // Verdure crude (potenzialmente irritanti)
+  { category: 'Verdure crude', name: 'Insalata verde', default_unit: 'porzione' },
+  { category: 'Verdure crude', name: 'Pomodoro crudo', default_unit: 'porzione' },
+  { category: 'Verdure crude', name: 'Cavolo crudo', default_unit: 'g' },
+  { category: 'Verdure crude', name: 'Broccoli crudi', default_unit: 'g' },
+  { category: 'Verdure crude', name: 'Cavolfiore crudo', default_unit: 'g' },
+  { category: 'Verdure crude', name: 'Finocchio crudo', default_unit: 'porzione' },
+  { category: 'Verdure crude', name: 'Sedano', default_unit: 'g' },
+  { category: 'Verdure crude', name: 'Cipolla cruda', default_unit: 'porzione' },
+
   // Frutta
-  { category: 'Frutta', name: 'Mela', default_unit: 'porzione' },
-  { category: 'Frutta', name: 'Pera', default_unit: 'porzione' },
   { category: 'Frutta', name: 'Banana', default_unit: 'porzione' },
-  { category: 'Frutta', name: 'Frutti rossi', default_unit: 'g' },
+  { category: 'Frutta', name: 'Mela sbucciata', default_unit: 'porzione' },
+  { category: 'Frutta', name: 'Pera sbucciata', default_unit: 'porzione' },
   { category: 'Frutta', name: 'Kiwi', default_unit: 'porzione' },
+  { category: 'Frutta', name: 'Frutti rossi', default_unit: 'g' },
   { category: 'Frutta', name: 'Agrumi', default_unit: 'porzione' },
-  // Latticini e alternative
-  { category: 'Latticini e alternative', name: 'Yogurt bianco', default_unit: 'g' },
-  { category: 'Latticini e alternative', name: 'Mozzarella light', default_unit: 'g' },
-  { category: 'Latticini e alternative', name: 'Parmigiano', default_unit: 'g' },
-  { category: 'Latticini e alternative', name: 'Latte senza lattosio', default_unit: 'ml' },
-  { category: 'Latticini e alternative', name: 'Ricotta', default_unit: 'g' },
-  // Condimenti
-  { category: 'Condimenti', name: 'Olio EVO', default_unit: 'cucchiaio' },
-  { category: 'Condimenti', name: 'Burro', default_unit: 'g' },
-  { category: 'Condimenti', name: 'Olive', default_unit: 'porzione' },
-  { category: 'Condimenti', name: 'Salsa di soia', default_unit: 'cucchiaio' },
-  { category: 'Condimenti', name: 'Miele', default_unit: 'cucchiaio' },
+  { category: 'Frutta', name: 'Frutta secca', default_unit: 'g' },
+  { category: 'Frutta', name: 'Avocado', default_unit: 'porzione' },
+
+  // Latticini
+  { category: 'Latticini', name: 'Yogurt bianco', default_unit: 'g' },
+  { category: 'Latticini', name: 'Latte senza lattosio', default_unit: 'ml' },
+  { category: 'Latticini', name: 'Mozzarella light', default_unit: 'g' },
+  { category: 'Latticini', name: 'Parmigiano', default_unit: 'g' },
+  { category: 'Latticini', name: 'Ricotta', default_unit: 'g' },
+  { category: 'Latticini', name: 'Gelato', default_unit: 'porzione' },
+
+  // Carni magre
+  { category: 'Carni magre', name: 'Pollo', default_unit: 'g' },
+  { category: 'Carni magre', name: 'Tacchino', default_unit: 'g' },
+  { category: 'Carni magre', name: 'Pesce bianco', default_unit: 'g' },
+  { category: 'Carni magre', name: 'Salmone', default_unit: 'g' },
+  { category: 'Carni magre', name: 'Uova', default_unit: 'porzione' },
+  { category: 'Carni magre', name: 'Tofu', default_unit: 'g' },
+  { category: 'Carni magre', name: 'Carne rossa magra', default_unit: 'g' },
+
+  // Legumi
+  { category: 'Legumi', name: 'Lenticchie', default_unit: 'porzione' },
+  { category: 'Legumi', name: 'Ceci', default_unit: 'porzione' },
+  { category: 'Legumi', name: 'Fagioli', default_unit: 'porzione' },
+  { category: 'Legumi', name: 'Piselli', default_unit: 'porzione' },
+  { category: 'Legumi', name: 'Fave', default_unit: 'porzione' },
+
+  // Cereali integrali
+  { category: 'Cereali integrali', name: 'Riso integrale', default_unit: 'g' },
+  { category: 'Cereali integrali', name: 'Quinoa', default_unit: 'g' },
+  { category: 'Cereali integrali', name: "Fiocchi d'avena", default_unit: 'g' },
+  { category: 'Cereali integrali', name: 'Pane integrale', default_unit: 'fetta' },
+  { category: 'Cereali integrali', name: 'Pasta integrale', default_unit: 'g' },
+
+  // Cereali raffinati
+  { category: 'Cereali raffinati', name: 'Riso bianco', default_unit: 'g' },
+  { category: 'Cereali raffinati', name: 'Pasta bianca', default_unit: 'g' },
+  { category: 'Cereali raffinati', name: 'Pane bianco', default_unit: 'fetta' },
+  { category: 'Cereali raffinati', name: 'Crackers', default_unit: 'porzione' },
+  { category: 'Cereali raffinati', name: 'Patate', default_unit: 'g' },
+  { category: 'Cereali raffinati', name: 'Mais', default_unit: 'porzione' },
+
+  // Bevande
+  { category: 'Bevande', name: 'Acqua', default_unit: 'ml' },
+  { category: 'Bevande', name: 'Tè verde', default_unit: 'tazza' },
+  { category: 'Bevande', name: 'Caffè', default_unit: 'tazza' },
+  { category: 'Bevande', name: 'Succhi di frutta', default_unit: 'ml' },
+  { category: 'Bevande', name: 'Birra', default_unit: 'porzione' },
+  { category: 'Bevande', name: 'Vino', default_unit: 'porzione' },
+
+  // Dolcificanti e condimenti
+  { category: 'Dolcificanti', name: 'Olio EVO', default_unit: 'cucchiaio' },
+  { category: 'Dolcificanti', name: 'Miele', default_unit: 'cucchiaio' },
+  { category: 'Dolcificanti', name: 'Zucchero', default_unit: 'cucchiaio' },
+  { category: 'Dolcificanti', name: 'Burro', default_unit: 'g' },
+  { category: 'Dolcificanti', name: 'Olive', default_unit: 'porzione' },
+  { category: 'Dolcificanti', name: 'Salsa di soia', default_unit: 'cucchiaio' },
 ];
 
 // Trasforma una lista piatta di voci del catalogo (dal DB o dal fallback)

@@ -3,8 +3,6 @@ import { Plus, Pill, Trash2, Pencil, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
-import { usePremiumGate } from '@/hooks/usePremiumGate';
-import PremiumPaywall from '@/components/PremiumPaywall';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -51,7 +49,6 @@ const typeColors = {
 export default function Meds() {
   const { t } = useI18n();
   const { isAuthenticated, authChecked } = useAuth();
-  const { requirePremium, showPaywall, setShowPaywall } = usePremiumGate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -72,12 +69,11 @@ export default function Meds() {
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
-    if (!requirePremium()) return;
     if (editing?.id) await base44.entities.Medication.update(editing.id, data);
     else await base44.entities.Medication.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { if (!requirePremium()) return; await base44.entities.Medication.delete(id); load(); };
+  const handleDelete = async (id) => { await base44.entities.Medication.delete(id); load(); };
 
   return (
     <AppLayout>
@@ -136,7 +132,6 @@ export default function Meds() {
         initialData={editing}
         onSubmit={handleSubmit}
       />
-      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <EditorialBlock sectionKey="meds_adherence" align="left" />
     </AppLayout>
   );

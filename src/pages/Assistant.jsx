@@ -6,6 +6,9 @@ import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import MicToggle from '@/components/MicToggle';
+import PremiumPaywall from '@/components/PremiumPaywall';
+import { useAuth } from '@/lib/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
@@ -17,9 +20,19 @@ export default function Assistant() {
   const [text, setText] = useState('');
   const [error, setError] = useState(false);
   const [sending, setSending] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [msgCount, setMsgCount] = useState(0);
+  const { user } = useAuth();
+  const { isSubscribed } = useSubscription();
+  const FREE_LIMIT = 3;
   const scrollRef = useRef(null);
   const convRef = useRef(null);
   const taRef = useRef(null);
+
+  useEffect(() => {
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    setMsgCount(user?.ai_messages_month === currentMonth ? (user.ai_messages_count || 0) : 0);
+  }, [user?.ai_messages_count, user?.ai_messages_month]);
 
   const autoGrow = () => {
     const el = taRef.current;
@@ -62,12 +75,19 @@ export default function Assistant() {
   const send = async (content) => {
     const value = (content ?? text).trim();
     if (!value || !conversationId || sending) return;
+    if (!isSubscribed && msgCount >= FREE_LIMIT) { setShowPaywall(true); return; }
     setText('');
     setSending(true);
+    if (!isSubscribed) setMsgCount((c) => c + 1);
     try {
       await base44.agents.addMessage(convRef.current, { role: 'user', content: value });
+      if (!isSubscribed) {
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        try { await base44.auth.updateMe({ ai_messages_count: msgCount + 1, ai_messages_month: currentMonth }); } catch (e) { /* non blocking */ }
+      }
     } catch (e) {
       setSending(false);
+      if (!isSubscribed) setMsgCount((c) => Math.max(0, c - 1));
     }
   };
 
@@ -156,6 +176,15 @@ export default function Assistant() {
           )}
         </div>
 
+        {/* Free message counter */}
+        {!isSubscribed && (
+          <div className="px-4 py-2 text-center border-t border-border bg-accent/30">
+            <span className="text-xs text-muted-foreground">
+              {msgCount < FREE_LIMIT ? t('assistant.free_count').replace('{n}', String(msgCount)) : t('assistant.limit_reached')}
+            </span>
+          </div>
+        )}
+
         {/* Input */}
         <div className="border-t border-border p-4 md:p-5 flex items-end gap-2.5 bg-card">
           <textarea
@@ -178,6 +207,7 @@ export default function Assistant() {
           </button>
         </div>
       </Card>
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </div>
   );
 }

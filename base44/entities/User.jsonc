@@ -45,6 +45,15 @@
     "founder_rank": {
       "type": "number",
       "description": "Posizione in graduatoria della campagna Founder (null se non aderente)"
+    },
+    "ai_messages_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Contatore messaggi AI gratuiti inviati nel mese corrente"
+    },
+    "ai_messages_month": {
+      "type": "string",
+      "description": "Mese di riferimento del contatore AI (formato YYYY-MM)"
     }
   },
   "required": [

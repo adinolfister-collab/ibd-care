@@ -8,8 +8,6 @@ import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
 import { guestFoods } from '@/lib/guestEntries';
-import { usePremiumGate } from '@/hooks/usePremiumGate';
-import PremiumPaywall from '@/components/PremiumPaywall';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import SiteMenu from '@/components/SiteMenu';
@@ -46,7 +44,6 @@ export default function Food() {
   const { t } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated, authChecked } = useAuth();
-  const { requirePremium, showPaywall, setShowPaywall } = usePremiumGate();
   const isAdmin = user?.role === 'admin';
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -114,7 +111,6 @@ export default function Food() {
 
   const handleSubmit = (data) => {
     setOpen(false);
-    if (!requirePremium()) return;
     const sel = Array.isArray(data.items) ? data.items : [];
     const payload = { ...data, items: sel, foods: serializeItems(sel) || data.foods || '' };
     if (!isAuthenticated) {
@@ -142,7 +138,6 @@ export default function Food() {
     }
   };
   const handleDelete = async (id) => {
-    if (!requirePremium()) return;
     if (!isAuthenticated) { guestFoods.remove(id); setItems(guestFoods.list()); return; }
     await base44.entities.FoodEntry.delete(id);
     load();
@@ -276,7 +271,6 @@ export default function Food() {
           onChanged={loadCatalog}
         />
       )}
-      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <EditorialBlock sectionKey="food_reactions" align="right" />
     </AppLayout>
   );
