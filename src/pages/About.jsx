@@ -40,7 +40,9 @@ export default function About() {
             rispetto della privacy: i dati sanitari restano di proprietà dell'utente, sono
             protetti con critterio a livello di riga (RLS) e trattati in conformità al GDPR.
             Non vendiamo dati a terzi e non mostriamo pubblicità: la sostenibilità del progetto
-            è garantita da un abbonamento trasparente, con una prova gratuita di 14 giorni.
+            è garantita da un abbonamento trasparente. Il diario è gratuito per sempre;
+            funzioni avanzate come assistente AI e report PDF sono disponibili con Premium
+            a partire da €0,99/mese.
           </p>
           <p>
             Il nostro impegno è continuo: aggiorniamo l'app ascoltando la community e i
