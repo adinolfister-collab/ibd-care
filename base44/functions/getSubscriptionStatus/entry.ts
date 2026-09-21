@@ -2,8 +2,6 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { secrets } from 'base44:runtime';
 import { profileFieldsFromSubscription } from '../../shared/subscriptionSync.ts';
 
-const PROMO_DAYS = 14;
-
 export default async function(req: Request): Promise<Response> {
   let base44;
   try {
@@ -63,26 +61,9 @@ export default async function(req: Request): Promise<Response> {
       });
     }
 
-    // No active Stripe subscription: evaluate the in-app free promo (14 days).
-    // On first check, persist promo_start_date so the 14-day window is per-user.
-    let promoStart = user.promo_start_date || null;
-    if (!promoStart) {
-      promoStart = new Date().toISOString();
-      try {
-        await base44.auth.updateMe({ promo_start_date: promoStart });
-      } catch (e) {
-        console.error('set promo_start_date failed', e);
-      }
-    }
-    const startMs = new Date(promoStart).getTime();
-    if (!isNaN(startMs)) {
-      const daysElapsed = Math.floor((Date.now() - startMs) / 86400000);
-      const daysRemaining = Math.max(0, PROMO_DAYS - daysElapsed);
-      if (daysRemaining > 0) {
-        return Response.json({ status: 'promo', promoDaysRemaining: daysRemaining });
-      }
-    }
-
+    // No active Stripe subscription and no founder grant: the diary is free for
+    // life, so the user simply has no Premium entitlement. AI and PDF export
+    // require a subscription.
     return Response.json({ status: 'none' });
   } catch (error) {
     console.error('getSubscriptionStatus', error);

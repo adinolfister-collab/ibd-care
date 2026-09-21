@@ -25,7 +25,7 @@ function Column({ title, tone, features }) {
 }
 
 // Due colonne a menu a tendina (accordion) che descrivono cosa è incluso
-// nella prova gratuita di 14 giorni e cosa richiede l'abbonamento Premium.
+// nel piano gratuito e cosa richiede l'abbonamento Premium.
 export default function AbbonamentoFeatures() {
   const { t } = useI18n();
   const FREE_FEATURES = [
@@ -58,7 +58,7 @@ export default function AbbonamentoFeatures() {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Column title={t('abb.col_trial')} tone="free" features={FREE_FEATURES} />
+        <Column title={t('abb.col_free')} tone="free" features={FREE_FEATURES} />
         <Column title={t('abb.col_premium')} tone="premium" features={PREMIUM_FEATURES} />
       </div>
     </div>

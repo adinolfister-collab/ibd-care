@@ -43,7 +43,7 @@ export default function Abbonamento() {
         <TopRightActions />
       </div>
       <div className="w-full max-w-2xl">
-        <PageHeader title="IBD Care Premium" subtitle={t('premium.subtitle')} />
+        <PageHeader title={t('abb.premium_title')} subtitle={t('premium.subtitle')} />
         <PageEditorial pageKey="abbonamento" />
         <div className="mb-6"><FoundersBanner /></div>
         <AbbonamentoFeatures />
@@ -55,8 +55,8 @@ export default function Abbonamento() {
           <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
             <LoginSubscriptionPromo returnTo="/" />
             <div className="mt-4 text-center text-sm text-muted-foreground">
-              Hai già un account?{' '}
-              <Link to="/login" className="text-primary font-medium hover:underline">Accedi</Link>
+              {t('abb.have_account')}{' '}
+              <Link to="/login" className="text-primary font-medium hover:underline">{t('abb.login_link')}</Link>
             </div>
           </div>
         )}
@@ -66,13 +66,13 @@ export default function Abbonamento() {
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          <Link to="/" className="hover:underline">← Torna alla home</Link>
+          <Link to="/" className="hover:underline">{t('abb.back_home')}</Link>
         </p>
         <div className="mt-6 flex justify-center gap-5 text-sm text-muted-foreground">
-          <Link to="/about" className="hover:text-primary hover:underline">Chi siamo</Link>
-          <Link to="/contact" className="hover:text-primary hover:underline">Contatti</Link>
+          <Link to="/about" className="hover:text-primary hover:underline">{t('abb.about_link')}</Link>
+          <Link to="/contact" className="hover:text-primary hover:underline">{t('abb.contact_link')}</Link>
         </div>
-        <EditorialBlock sectionKey="abbonamento_trial" align="left" compact />
+        <EditorialBlock sectionKey="abbonamento_free" align="left" compact />
       </div>
     </div>
   );

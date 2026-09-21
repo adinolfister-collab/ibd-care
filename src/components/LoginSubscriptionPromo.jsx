@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Check, CalendarClock, ShieldCheck } from 'lucide-react';
+import { Sparkles, Check, ShieldCheck } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 
 const BENEFIT_KEYS = [
@@ -11,8 +11,9 @@ const BENEFIT_KEYS = [
   'premium.f_map',
 ];
 
-// Informational subscription / 14-day trial panel shown on the login page
-// (no checkout here — the user isn't authenticated yet).
+// Informational subscription panel shown on the Abbonamento page for visitors
+// who are not logged in yet. Freemium model: the diary is free forever, Premium
+// unlocks AI assistant and PDF reports from €0.99/month.
 export default function LoginSubscriptionPromo({ returnTo = '/' }) {
   const { t } = useI18n();
   const registerTo = '/register' + (returnTo && returnTo !== '/' ? '?returnTo=' + encodeURIComponent(returnTo) : '');
@@ -35,12 +36,8 @@ export default function LoginSubscriptionPromo({ returnTo = '/' }) {
       </ul>
       <div className="text-xs text-muted-foreground space-y-1.5 mb-4">
         <p className="flex items-start gap-1.5">
-          <CalendarClock className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-          {t('loginpromo.note_once')}
-        </p>
-        <p className="flex items-start gap-1.5">
           <ShieldCheck className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-          {t('loginpromo.note_limited')}
+          {t('loginpromo.note_free')}
         </p>
       </div>
       <Link

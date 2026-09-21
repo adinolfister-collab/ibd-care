@@ -7,48 +7,22 @@ import AppLayout from '@/components/AppLayout';
 import SiteMenu from '@/components/SiteMenu';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
+import { useI18n } from '@/lib/i18n';
 
 export default function About() {
+  const { t } = useI18n();
   return (
     <AppLayout>
       <div className="w-full max-w-2xl mx-auto">
-        <PageHeader title="Chi siamo" subtitle="Chi c'è dietro IBD Care e la nostra missione di cura per chi vive con l'IBD." />
+        <PageHeader title={t('about.title')} subtitle={t('about.subtitle')} />
         <PageEditorial pageKey="about" />
         <SiteMenu />
 
         <div className="prose max-w-none select-text text-foreground/90 leading-relaxed space-y-4">
-          <p>
-            <strong>IBD Care</strong> è un'applicazione dedicata alle persone che vivono con
-            le malattie infiammatorie croniche intestinali (IBD), come il morbo di Crohn e la
-            colite ulcerosa. L'app nasce dall'esigenza concreta di avere uno strumento calmo,
-            affidabile e riservato per monitorare quotidianamente l'andamento della propria
-            salute, dialogare meglio con il proprio team medico e ritrovare un senso di
-            controllo su una condizione spesso imprevedibile.
-          </p>
-          <p>
-            L'app offre un diario dei sintomi e dell'alimentazione, la gestione dei farmaci e
-            dei promemoria terapeutici, l'archiviazione sicura dei referti medici, l'analisi
-            dei trend con supporto di un assistente AI, una mappa dei servizi utili (centri
-            IBD, farmacie, pronto soccorso e bagni pubblici) e la generazione di riepiloghi in
-            PDF pronti per la visita. È pensata per pazienti adulti e per chi se ne prende cura,
-            con un'interfaccia chiara, tipografie ampie e una palette rilassante che riduce
-            l'affaticamento visivo durante i giorni più difficili.
-          </p>
-          <p>
-            IBD Care è sviluppato da un piccolo team indipendente che unisce competenze
-            ingegneristiche e sensibilità per il tema della salute cronica. Crediamo nel
-            rispetto della privacy: i dati sanitari restano di proprietà dell'utente, sono
-            protetti con critterio a livello di riga (RLS) e trattati in conformità al GDPR.
-            Non vendiamo dati a terzi e non mostriamo pubblicità: la sostenibilità del progetto
-            è garantita da un abbonamento trasparente. Il diario è gratuito per sempre;
-            funzioni avanzate come assistente AI e report PDF sono disponibili con Premium
-            a partire da €0,99/mese.
-          </p>
-          <p>
-            Il nostro impegno è continuo: aggiorniamo l'app ascoltando la community e i
-            feedback clinici, per costruire insieme uno strumento che renda ogni giornata un
-            po' più semplice.
-          </p>
+          <p>{t('about.para1')}</p>
+          <p>{t('about.para2')}</p>
+          <p>{t('about.para3')}</p>
+          <p>{t('about.para4')}</p>
         </div>
 
         <EditorialBlock sectionKey="about_privacy" align="right" />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Check, Loader2, CreditCard, CalendarClock, Crown, Settings } from 'lucide-react';
+import { Sparkles, Check, Loader2, CreditCard, Crown, Settings } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useToast } from '@/components/ui/use-toast';
@@ -108,9 +108,6 @@ export default function AbbonamentoPlans() {
           <p className="text-sm font-semibold text-emerald-700 flex items-center gap-1.5">
             <Crown className="w-4 h-4" /> {t('premium.active_title')}
           </p>
-          {subscription.status === 'trialing' && subscription.trialRemaining > 0 && (
-            <p className="text-sm text-emerald-700">{t('premium.trial_remaining').replace('{n}', subscription.trialRemaining)}</p>
-          )}
           {subscription.cancelAtPeriodEnd && (
             <p className="text-xs text-muted-foreground">{t('premium.cancelled_note')}</p>
           )}
@@ -161,8 +158,8 @@ export default function AbbonamentoPlans() {
                   ))}
                 </ul>
                 <div className="mt-4 flex items-center gap-2 rounded-xl bg-primary/5 px-3 py-2.5 text-sm text-primary">
-                  <CalendarClock className="w-4 h-4 shrink-0" />
-                  <span><strong>{t('premium.trial_label')}</strong> {t('premium.trial_desc')}</span>
+                  <Crown className="w-4 h-4 shrink-0" />
+                  <span><strong>{t('premium.free_diary_note')}</strong> {t('premium.premium_unlock_note')}</span>
                 </div>
                 <button
                   onClick={() => subscribe(plan.id)}

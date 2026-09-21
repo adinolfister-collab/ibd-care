@@ -59,7 +59,6 @@ export default function Register() {
         await base44.auth.updateMe({
           privacy_consent_accepted: true,
           privacy_consent_date: new Date().toISOString(),
-          promo_start_date: new Date().toISOString(),
         });
       } catch (e) { /* non blocking */ }
       window.location.href = safeReturnTo();
@@ -92,7 +91,7 @@ export default function Register() {
       <AuthLayout
         icon={Mail}
         title={t('register.verify')}
-        subtitle={`We sent a code to ${email}`}
+        subtitle={t('register.otp_subtitle').replace('{email}', email)}
       >
         {error && (
           <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
@@ -196,7 +195,7 @@ export default function Register() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t('auth.email')}</Label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <Input
@@ -204,7 +203,7 @@ export default function Register() {
               type="email"
               autoComplete="email"
               autoFocus
-              placeholder="you@example.com"
+              placeholder={t('auth.placeholder_email')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="pl-10 h-12"
@@ -213,7 +212,7 @@ export default function Register() {
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">{t('auth.password')}</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <Input
@@ -229,7 +228,7 @@ export default function Register() {
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="confirm">Confirm Password</Label>
+          <Label htmlFor="confirm">{t('auth.confirm_password')}</Label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <Input
