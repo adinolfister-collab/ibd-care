@@ -9,6 +9,7 @@ import PageHeader from '@/components/PageHeader';
 import PlatformPreview from '@/components/marketing/PlatformPreview';
 import FounderInvitations from '@/components/marketing/FounderInvitations';
 import UserMonitor from '@/components/marketing/UserMonitor';
+import LogoGenerator from '@/components/marketing/LogoGenerator';
 import { SOCIAL_TEMPLATES, PLATFORMS, TONES, LANGS, APP_BASE_URL, APP_PAGES } from '@/lib/socialTemplates';
 import { Image } from '@/components/ui/image';
 import { Card, CardContent } from '@/components/ui/card';
@@ -125,12 +126,23 @@ export default function MarketingAdmin() {
         >
           <Users className="w-3.5 h-3.5" /> Monitoraggio utenti
         </button>
+        <button
+          onClick={() => setSection('logo')}
+          className={cn(
+            'px-4 py-2 text-sm border-b-2 -mb-px transition-colors flex items-center gap-1.5',
+            section === 'logo' ? 'border-terracotta text-terracotta font-medium' : 'border-transparent text-muted-foreground hover:text-foreground'
+          )}
+        >
+          <Sparkles className="w-3.5 h-3.5" /> Generatore Logo
+        </button>
       </div>
 
       {section === 'founders' ? (
         <FounderInvitations />
       ) : section === 'users' ? (
         <UserMonitor />
+      ) : section === 'logo' ? (
+        <LogoGenerator />
       ) : (
         <>
           {/* Template library */}
