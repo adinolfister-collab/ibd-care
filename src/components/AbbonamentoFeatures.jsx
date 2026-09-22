@@ -40,6 +40,7 @@ export default function AbbonamentoFeatures() {
     { name: t('abb.premium.therapy.name'), desc: t('abb.premium.therapy.desc') },
     { name: t('abb.premium.records.name'), desc: t('abb.premium.records.desc') },
     { name: t('abb.premium.exams.name'), desc: t('abb.premium.exams.desc') },
+    { name: t('abb.premium.import.name'), desc: t('abb.premium.import.desc') },
     { name: t('abb.premium.charts.name'), desc: t('abb.premium.charts.desc') },
     { name: t('abb.premium.correlation.name'), desc: t('abb.premium.correlation.desc') },
     { name: t('abb.premium.reports.name'), desc: t('abb.premium.reports.desc') },

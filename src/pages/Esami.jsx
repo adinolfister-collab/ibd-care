@@ -9,13 +9,19 @@ import ExamTimeline from '@/components/exams/ExamTimeline';
 import ExamCompare from '@/components/exams/ExamCompare';
 import ExamCalendar from '@/components/exams/ExamCalendar';
 import ImportData from '@/components/exams/ImportData';
+import PremiumLockedCard from '@/components/PremiumLockedCard';
+import PremiumPaywall from '@/components/PremiumPaywall';
+import { usePremiumGate } from '@/hooks/usePremiumGate';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function Esami() {
   const { t } = useI18n();
   const { toast } = useToast();
+  const { isSubscribed, showPaywall, setShowPaywall } = usePremiumGate();
   const [tab, setTab] = useState('scan');
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const openPaywall = () => setShowPaywall(true);
 
   const handleSaved = useCallback(() => {
     toast({ title: t('exams.save'), description: '' });
@@ -37,7 +43,11 @@ export default function Esami() {
         </TabsList>
 
         <TabsContent value="scan" className="mt-4">
-          <ExamScanner onSaved={handleSaved} />
+          {isSubscribed ? (
+            <ExamScanner onSaved={handleSaved} />
+          ) : (
+            <PremiumLockedCard onUnlock={openPaywall} />
+          )}
         </TabsContent>
         <TabsContent value="timeline" className="mt-4">
           <ExamTimeline key={'tl-' + refreshKey} />
@@ -49,9 +59,15 @@ export default function Esami() {
           <ExamCalendar key={'cal-' + refreshKey} />
         </TabsContent>
         <TabsContent value="import" className="mt-4">
-          <ImportData onSaved={handleSaved} />
+          {isSubscribed ? (
+            <ImportData onSaved={handleSaved} />
+          ) : (
+            <PremiumLockedCard onUnlock={openPaywall} />
+          )}
         </TabsContent>
       </Tabs>
+
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </AppLayout>
   );
 }

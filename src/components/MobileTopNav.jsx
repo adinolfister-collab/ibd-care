@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import LanguageMenu from '@/components/LanguageMenu';
 import NativeAppButton from '@/components/NativeAppButton';
 import TopRightActions from '@/components/TopRightActions';
+import DesktopViewToggle from '@/components/DesktopViewToggle';
 
 // Mobile-only top bar: compact header (logo + actions) over a horizontally
 // scrollable row of chips grouped by theme. Hidden on md+ where the sidebar
@@ -84,6 +85,7 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
           <p className="font-heading font-semibold tracking-tight text-sm truncate">{t('app.name')}</p>
         </div>
         <div className="flex items-center gap-1">
+          <DesktopViewToggle />
           <LanguageMenu />
           <NativeAppButton />
           <TopRightActions />

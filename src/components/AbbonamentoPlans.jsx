@@ -88,6 +88,7 @@ export default function AbbonamentoPlans() {
     t('premium.f_templates'),
     t('premium.f_pdf'),
     t('premium.f_scanner'),
+    t('premium.f_import'),
     t('premium.f_map'),
     t('premium.f_therapy'),
     t('premium.f_community'),
