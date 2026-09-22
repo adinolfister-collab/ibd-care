@@ -1,0 +1,60 @@
+{
+  "name": "PageView",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "description": "Id sessione anonimo (localStorage) oppure user id per i loggati"
+    },
+    "section": {
+      "type": "string",
+      "enum": [
+        "Home",
+        "Diario",
+        "Negozio",
+        "Community",
+        "Abbonamento",
+        "Account",
+        "Altro"
+      ]
+    },
+    "country": {
+      "type": "string",
+      "description": "Paese del visitatore ricavato lato server dall'IP"
+    },
+    "entered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_sec": {
+      "type": "number",
+      "description": "Durata opzionale valorizzata a posteriori (non usato in aggregazione)"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User id se il visitatore e' loggato, vuoto per anonimi"
+    }
+  },
+  "required": [
+    "session_id",
+    "section"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

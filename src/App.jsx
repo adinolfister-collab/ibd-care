@@ -42,6 +42,7 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
+import PageViewBeacon from '@/components/PageViewBeacon';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -124,6 +125,7 @@ function App() {
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
               <Router>
                 <ScrollToTop />
+                <PageViewBeacon />
                 <AuthenticatedApp />
               </Router>
             </ThemeProvider>
