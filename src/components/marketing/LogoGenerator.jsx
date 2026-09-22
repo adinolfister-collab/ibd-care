@@ -33,12 +33,11 @@ export default function LogoGenerator() {
     // Svuoto per mostrare subito gli skeleton
     setLogos(VARIATIONS.map((v, i) => ({ id: i, url: null, prompt: v })));
     try {
-      const results = await Promise.all(
-        VARIATIONS.map((variation) =>
-          base44.integrations.Core.GenerateImage({ prompt: `${PROMPT_BASE} ${variation}` })
-            .catch((e) => ({ error: e?.message || 'errore' }))
-        )
-      );
+      const res = await base44.functions.invoke('generateLogoVariants', {
+        promptBase: PROMPT_BASE,
+        variations: VARIATIONS,
+      });
+      const results = res.data?.logos || [];
       setLogos((prev) =>
         prev.map((item, i) => ({
           ...item,
