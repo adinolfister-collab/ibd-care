@@ -19,7 +19,7 @@ export default async function(req) {
     const tone = String(body.tone || 'incoraggiante').trim().slice(0, 40);
     const lang = String(body.lang || 'it').trim().slice(0, 5);
     const platform = String(body.platform || 'all').trim();
-    const cta = String(body.cta || 'Prova gratuita 14 giorni').trim().slice(0, 120);
+    const cta = String(body.cta || 'Gratis per sempre, senza carta di credito').trim().slice(0, 120);
     const deepLink = String(body.deepLink || '').trim().slice(0, 300);
 
     const LANG_NAME = {
@@ -29,9 +29,10 @@ export default async function(req) {
     };
     const langName = LANG_NAME[lang] || 'italiano';
 
-    const APP_CONTEXT = `Sei il copywriter dell'app "IBD Care", un'app gratuita (senza pubblicità, con prova gratuita di 14 giorni) per gestire la malattia infiammatoria intestinale (IBD: morbo di Crohn, colite ulcerosa).
+    const APP_CONTEXT = `Sei il copywriter dell'app "IBD Care", un'app gratuita per sempre (freemium, senza pubblicità) per gestire la malattia infiammatoria intestinale (IBD: morbo di Crohn, colite ulcerosa).
 Funzioni: diario sintomi, diario alimentare, promemoria terapie, scanner esami, grafici e correlazioni, riepilogo PDF per il medico, mappa servizi, assistente AI, community di supporto. Dati privati e GDPR-compliant.
-Piani: 14 giorni di prova gratuita, poi a partire da €0,99/mese, disdici quando vuoi. Campagna Founder: i primi 50 ricevono Premium a vita.
+Piani: l'app è gratis per sempre, senza carta di credito; le funzioni avanzate sono con abbonamento a partire da €0,99/mese, disdici quando vuoi. Campagna Founder: i primi 50 ricevono Premium a vita.
+NON menzionare MAI prove a tempo, periodi di prova o "14 giorni"/"14gg": usa solo la narrativa "gratis per sempre, senza carta di credito".
 Tono richiesto: ${tone}. Scrivi in ${langName}.`;
 
     const linkInstruction = deepLink
