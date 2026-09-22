@@ -5,36 +5,35 @@ import { useToast } from '@/components/ui/use-toast';
 import { Image } from '@/components/ui/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
-// Genera un batch di 4 varianti di logo a simbolo medico astratto
-// (palette teal + terracotta) e permette il download JPG di ciascuna.
-const PROMPT_BASE =
-  'Minimal abstract medical logo for a gut health (IBD: Crohn and Colitis) care app. ' +
-  'Soft, calming, organic abstract symbol evoking an intestine wave, gentle flowing lines, ' +
-  'rounded forms, clean and modern. Palette: deep teal #2c5f5d and warm terracotta #c97b5a ' +
-  'on a clean off-white background. No text, no letters, no words. Centered, balanced, ' +
-  'high-end editorial feel, photographic, crisp, premium app identity. Square composition.';
-
+// 4 angolazioni fotografiche: il backend combina la descrizione (soggetto)
+// con uno stile fotorealistico editoriale. Nessuna illustrazione/disegno.
 const VARIATIONS = [
-  'Single flowing line forming a soft spiral/intestine motif, centered, lots of breathing space.',
-  'Two interwoven organic ribbons forming a calm protective shape, symmetrical and elegant.',
-  'Abstract concentric soft waves radiating from center, suggesting care and balance, minimalist.',
-  'Negative-space leaf-and-gut hybrid glyph, rounded, warm and human, refined and distinctive.',
+  'Macro close-up shot, shallow depth of field, soft natural window light, intimate and calm.',
+  'Soft-focus environmental photograph, gentle bokeh, muted earthy tones, editorial magazine feel.',
+  'Overhead flat-lay composition, diffused daylight, balanced negative space, refined and clean.',
+  'Environmental lifestyle photograph, natural ambient light, organic textures, warm and human.',
 ];
 
 export default function LogoGenerator() {
   const { toast } = useToast();
   const [logos, setLogos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [description, setDescription] = useState('');
+
+  const canGenerate = description.trim().length > 0 && !loading;
 
   const generate = async () => {
+    if (!description.trim()) return;
     setLoading(true);
     // Svuoto per mostrare subito gli skeleton
     setLogos(VARIATIONS.map((v, i) => ({ id: i, url: null, prompt: v })));
     try {
       const res = await base44.functions.invoke('generateLogoVariants', {
-        promptBase: PROMPT_BASE,
+        description: description.trim(),
         variations: VARIATIONS,
       });
       const results = res.data?.logos || [];
@@ -93,7 +92,7 @@ export default function LogoGenerator() {
           </div>
           <Button
             onClick={generate}
-            disabled={loading}
+            disabled={!canGenerate}
             className="shrink-0 rounded-xl"
           >
             {loading ? (
@@ -104,6 +103,20 @@ export default function LogoGenerator() {
               <><Sparkles className="w-4 h-4" /> Genera varianti</>
             )}
           </Button>
+        </div>
+
+        <div className="mb-4">
+          <Label htmlFor="logo-desc" className="text-sm font-medium mb-1.5 block">
+            Descrizione / soggetto del logo
+          </Label>
+          <Input
+            id="logo-desc"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Es. sezione news, about, home, diario sintomi…"
+            className="rounded-xl"
+            maxLength={300}
+          />
         </div>
 
         {logos.length === 0 ? (

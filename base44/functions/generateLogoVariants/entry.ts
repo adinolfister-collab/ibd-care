@@ -1,22 +1,23 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.49';
 
-// Genera 4 varianti di logo a simbolo medico astratto per la dashboard marketing.
-// Sposta la chiamata GenerateImage lato server (asServiceRole) perché il client
-// frontend non puo' invocare direttamente le integration Core (falliva silenziosamente).
-// Accetta body.promptBase (stringa) e body.variations (array di prompt string);
-// restituisce { logos: [{ url, error } | null] } allineato alle variazioni richieste.
-const DEFAULT_PROMPT_BASE =
-  'Minimal abstract medical logo for a gut health (IBD: Crohn and Colitis) care app. ' +
-  'Soft, calming, organic abstract symbol evoking an intestine wave, gentle flowing lines, ' +
-  'rounded forms, clean and modern. Palette: deep teal #2c5f5d and warm terracotta #c97b5a ' +
-  'on a clean off-white background. No text, no letters, no words. Centered, balanced, ' +
-  'high-end editorial feel, photographic, crisp, premium app identity. Square composition.';
+// Genera varianti di logo come FOTOGRAFIE AI realistiche (non disegni) per la
+// dashboard marketing. Il frontend invia una descrizione del soggetto (es.
+// "news", "about", "home", "diario sintomi") + un array di angolazioni; il
+// backend costruisce un prompt fotografico per ciascuna variante e chiama
+// GenerateImage con asServiceRole. Restituisce { logos: [{ url, error }] }.
+const PHOTO_BASE = (description) =>
+  'Photorealistic editorial photograph, not an illustration, not a drawing, ' +
+  'not vector art, not a cartoon — real photographic style, natural lighting, ' +
+  'high detail, premium magazine quality. No text, no letters, no words, no logos. ' +
+  'Calm, warm, human, reassuring mood suited to a gut-health (IBD: Crohn and Colitis) ' +
+  'care app. Palette: deep teal and warm terracotta accents on soft natural tones. ' +
+  'Square composition, centered, balanced. Subject: ' + description + '. ';
 
 const DEFAULT_VARIATIONS = [
-  'Single flowing line forming a soft spiral/intestine motif, centered, lots of breathing space.',
-  'Two interwoven organic ribbons forming a calm protective shape, symmetrical and elegant.',
-  'Abstract concentric soft waves radiating from center, suggesting care and balance, minimalist.',
-  'Negative-space leaf-and-gut hybrid glyph, rounded, warm and human, refined and distinctive.',
+  'Macro close-up shot, shallow depth of field, soft natural window light, intimate and calm.',
+  'Soft-focus environmental photograph, gentle bokeh, muted earthy tones, editorial magazine feel.',
+  'Overhead flat-lay composition, diffused daylight, balanced negative space, refined and clean.',
+  'Environmental lifestyle photograph, natural ambient light, organic textures, warm and human.',
 ];
 
 export default async function(req) {
@@ -27,11 +28,13 @@ export default async function(req) {
     if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
 
     const body = await req.json().catch(() => ({}));
-    const promptBase = String(body.promptBase || DEFAULT_PROMPT_BASE).slice(0, 2000);
+    const description = String(body.description || '').trim().slice(0, 300);
+    if (!description) return Response.json({ error: 'Descrizione obbligatoria' }, { status: 400 });
     const variations = Array.isArray(body.variations) && body.variations.length
       ? body.variations.slice(0, 6).map((v) => String(v).slice(0, 1000))
       : DEFAULT_VARIATIONS;
 
+    const promptBase = PHOTO_BASE(description);
     const results = await Promise.all(
       variations.map(async (variation) => {
         try {
