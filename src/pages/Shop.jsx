@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Search, ShoppingBag, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -9,6 +10,7 @@ import MagazineEssay from '@/components/MagazineEssay';
 import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import ProductCard from '@/components/ProductCard';
+import ShopStandby from '@/components/ShopStandby';
 import { CATEGORY_LABEL_KEY } from '@/lib/shop';
 import { cn } from '@/lib/utils';
 
@@ -18,6 +20,9 @@ const pad = (n) => (n < 10 ? '0' + n : '' + n);
 
 export default function Shop() {
   const { t } = useI18n();
+  const { user } = useAuth();
+  // Shop in standby for non-admins while advertising channels are being defined.
+  if (user?.role !== 'admin') return <ShopStandby />;
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
