@@ -44,6 +44,7 @@ import Guida from '@/pages/Guida';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
 import PageViewBeacon from '@/components/PageViewBeacon';
+import SeoMetaManager from '@/components/SeoMetaManager';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -72,6 +73,8 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
+    <>
+    <SeoMetaManager />
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {/* Auth routes (public) */}
@@ -115,6 +118,7 @@ const AuthenticatedApp = () => {
         <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>
+    </>
   );
 };
 

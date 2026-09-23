@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink, Loader2, Newspaper, Home as HomeIcon } from 'l
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import NewsShareButtons from '@/components/NewsShareButtons';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 import PageHeader from '@/components/PageHeader';
@@ -42,6 +43,15 @@ export default function ArticleDetail() {
 
   const deepLink = `${APP_URL}/news/${id}`;
   const locale = lang === 'it' ? 'it-IT' : undefined;
+
+  // Meta dinamici specifici dell'articolo (sovrascrive il default di SeoMetaManager).
+  usePageMeta({
+    title: article?.title || t('news.title'),
+    description: article?.summary || t('news.page_subtitle'),
+    path: `/news/${id}`,
+    image: article?.image || undefined,
+    type: 'article',
+  });
 
   const jsonLd = article ? {
     '@context': 'https://schema.org',
