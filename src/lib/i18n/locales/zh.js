@@ -592,6 +592,8 @@ const zh = {
   'assistant.free_count': '本月已使用 {n}/3 条免费消息',
   'freemium.free_badge': '永久免费',
   'freemium.premium_from': 'Premium 每月 0,99 € 起',
+  "nav.guide": "使用指南",
+  "admin.denied": "仅限管理员区域",
 };
 
 export default zh;

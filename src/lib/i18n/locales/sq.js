@@ -592,6 +592,8 @@ const sq = {
   'assistant.free_count': '{n}/3 mesazhe falas këtë muaj',
   'freemium.free_badge': 'Falas përgjithmonë',
   'freemium.premium_from': 'Premium nga 0,99 €/muaj',
+  "nav.guide": "Udhëzimet",
+  "admin.denied": "Zonë vetëm për administratorët",
 };
 
 export default sq;

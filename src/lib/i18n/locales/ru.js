@@ -592,6 +592,8 @@ const ru = {
   'assistant.free_count': '{n}/3 бесплатных сообщений в этом месяце',
   'freemium.free_badge': 'Бесплатно навсегда',
   'freemium.premium_from': 'Premium от 0,99 €/мес',
+  "nav.guide": "Инструкции",
+  "admin.denied": "Раздел только для администраторов",
 };
 
 export default ru;

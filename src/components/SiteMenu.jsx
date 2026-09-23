@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Newspaper, Users, Activity, Utensils, Info, Mail,
   Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin,
-  FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag, Crown, CreditCard,
+  FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag, Crown, CreditCard, BookOpen,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -20,6 +20,7 @@ const ITEMS = [
   { to: '/founders', key: 'nav.founders', icon: Crown, founder: true },
   { to: '/abbonamento', key: 'nav.abbonamento', icon: CreditCard },
   { to: '/about', key: 'nav.about', icon: Info },
+  { to: '/guida', key: 'nav.guide', icon: BookOpen },
   { to: '/contact', key: 'nav.contact', icon: Mail },
   { to: '/meds', key: 'nav.meds', icon: Pill },
   { to: '/records', key: 'nav.records', icon: FileText },

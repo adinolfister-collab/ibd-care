@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
+import { useI18n } from '@/lib/i18n';
+import { toast } from '@/components/ui/use-toast';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 const DefaultFallback = () => (
@@ -9,8 +11,10 @@ const DefaultFallback = () => (
   </div>
 );
 
-export default function ProtectedRoute({ fallback = <DefaultFallback />, unauthenticatedElement }) {
-  const { isAuthenticated, isLoadingAuth, authChecked, authError, checkUserAuth } = useAuth();
+export default function ProtectedRoute({ fallback = <DefaultFallback />, unauthenticatedElement, requireRole }) {
+  const { isAuthenticated, isLoadingAuth, authChecked, authError, user, checkUserAuth } = useAuth();
+  const { t } = useI18n();
+  const deniedRef = useRef(false);
 
   useEffect(() => {
     if (!authChecked && !isLoadingAuth) {
@@ -31,6 +35,14 @@ export default function ProtectedRoute({ fallback = <DefaultFallback />, unauthe
 
   if (!isAuthenticated) {
     return unauthenticatedElement;
+  }
+
+  if (requireRole && user?.role !== requireRole) {
+    if (!deniedRef.current) {
+      deniedRef.current = true;
+      toast({ title: t('admin.denied') });
+    }
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;

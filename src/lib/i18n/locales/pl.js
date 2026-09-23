@@ -592,6 +592,8 @@ const pl = {
   'assistant.free_count': '{n}/3 darmowe wiadomości w tym miesiącu',
   'freemium.free_badge': 'Darmowe na zawsze',
   'freemium.premium_from': 'Premium od 0,99 €/mies.',
+  "nav.guide": "Instrukcje",
+  "admin.denied": "Sekcja tylko dla administratorów",
 };
 
 export default pl;

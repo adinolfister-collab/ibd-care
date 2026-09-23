@@ -40,6 +40,7 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
+import Guida from '@/pages/Guida';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
 import PageViewBeacon from '@/components/PageViewBeacon';
@@ -81,6 +82,7 @@ const AuthenticatedApp = () => {
         {/* Public pages: navigable without login. Diario usable as guest (local). */}
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/guida" element={<PageTransition><Guida /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/founders" element={<PageTransition><Founders /></PageTransition>} />
         <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />
@@ -104,9 +106,11 @@ const AuthenticatedApp = () => {
           <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
-          <Route path="/admin/conversioni" element={<PageTransition><AdminConversions /></PageTransition>} />
-          <Route path="/admin/marketing" element={<PageTransition><MarketingAdmin /></PageTransition>} />
-          <Route path="/shop/admin" element={<PageTransition><ShopAdmin /></PageTransition>} />
+          <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} requireRole="admin" />}>
+            <Route path="/admin/conversioni" element={<PageTransition><AdminConversions /></PageTransition>} />
+            <Route path="/admin/marketing" element={<PageTransition><MarketingAdmin /></PageTransition>} />
+            <Route path="/shop/admin" element={<PageTransition><ShopAdmin /></PageTransition>} />
+          </Route>
         </Route>
         <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />
       </Routes>

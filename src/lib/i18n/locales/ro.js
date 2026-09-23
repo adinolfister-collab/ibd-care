@@ -592,6 +592,8 @@ const ro = {
   'assistant.free_count': '{n}/3 mesaje gratuite luna aceasta',
   'freemium.free_badge': 'Gratuit pe vecie',
   'freemium.premium_from': 'Premium de la 0,99 €/lună',
+  "nav.guide": "Instrucțiuni",
+  "admin.denied": "Secțiune rezervată administratorilor",
 };
 
 export default ro;

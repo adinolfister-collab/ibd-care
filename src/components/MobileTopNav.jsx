@@ -3,7 +3,7 @@ import { NavLink, useLocation, Link } from 'react-router-dom';
 import {
   Home, Activity, Utensils, Pill, FileText, ScanLine, MapPin, FileBarChart,
   Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon,
-  Bot, Users, User, BarChart3, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard, Megaphone,
+  Bot, Users, User, BarChart3, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard, Megaphone, BookOpen,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -45,6 +45,7 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
       key: 'nav.group_extra',
       items: [
         { to: '/', key: 'nav.home', icon: Home, exact: true },
+        { to: '/guida', key: 'nav.guide', icon: BookOpen },
         { to: '/founders', key: 'nav.founders', icon: Crown, founder: true },
         { to: '/news', key: 'nav.news', icon: Newspaper },
         { to: '/community', key: 'nav.community', icon: Users },
