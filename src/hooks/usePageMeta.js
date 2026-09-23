@@ -25,7 +25,7 @@ function buildCanonicalUrl(path) {
 function syncHreflang(path) {
   const cleanPath = path || (typeof window !== 'undefined' ? window.location.pathname : '/');
   document.head
-    .querySelectorAll('link[rel="alternate"][data-hreflang]')
+    .querySelectorAll('link[rel="alternate"][hreflang]')
     .forEach((el) => el.remove());
   supportedLanguages.forEach(({ code }) => {
     const href = SITE_BASE + cleanPath + (code === 'it' ? '' : `?lang=${code}`);
@@ -33,14 +33,12 @@ function syncHreflang(path) {
     el.setAttribute('rel', 'alternate');
     el.setAttribute('hreflang', code);
     el.setAttribute('href', href);
-    el.setAttribute('data-hreflang', 'true');
     document.head.appendChild(el);
   });
   const xdef = document.createElement('link');
   xdef.setAttribute('rel', 'alternate');
   xdef.setAttribute('hreflang', 'x-default');
   xdef.setAttribute('href', SITE_BASE + cleanPath);
-  xdef.setAttribute('data-hreflang', 'true');
   document.head.appendChild(xdef);
 }
 
