@@ -7,6 +7,42 @@ import {
   upsertMeta,
   upsertLink,
 } from '@/lib/seo';
+import { supportedLanguages } from '@/lib/i18n/locales';
+
+// Costruisce l'URL canonico includendo ?lang=XX (eccetto italiano, che resta pulito).
+function buildCanonicalUrl(path) {
+  const cleanPath = path || (typeof window !== 'undefined' ? window.location.pathname : '/');
+  const lang =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('lang')
+      : null;
+  const suffix = lang && lang !== 'it' ? `?lang=${lang}` : '';
+  return SITE_BASE + cleanPath + suffix;
+}
+
+// Emette i <link rel="alternate" hreflang> per ogni lingua supportata.
+// Rimuove i precedenti (segnalati con data-hreflang) prima di reinserirli.
+function syncHreflang(path) {
+  const cleanPath = path || (typeof window !== 'undefined' ? window.location.pathname : '/');
+  document.head
+    .querySelectorAll('link[rel="alternate"][data-hreflang]')
+    .forEach((el) => el.remove());
+  supportedLanguages.forEach(({ code }) => {
+    const href = SITE_BASE + cleanPath + (code === 'it' ? '' : `?lang=${code}`);
+    const el = document.createElement('link');
+    el.setAttribute('rel', 'alternate');
+    el.setAttribute('hreflang', code);
+    el.setAttribute('href', href);
+    el.setAttribute('data-hreflang', 'true');
+    document.head.appendChild(el);
+  });
+  const xdef = document.createElement('link');
+  xdef.setAttribute('rel', 'alternate');
+  xdef.setAttribute('hreflang', 'x-default');
+  xdef.setAttribute('href', SITE_BASE + cleanPath);
+  xdef.setAttribute('data-hreflang', 'true');
+  document.head.appendChild(xdef);
+}
 
 // Aggiorna i meta tag lato client ad ogni cambio pagina.
 // Riusa gli elementi statici presenti in index.html (nessun duplicato).
@@ -30,10 +66,11 @@ export function usePageMeta({ title, description, path, image, type = 'website',
     upsertMeta('meta[property="og:image"]', { property: 'og:image', content: img });
     upsertMeta('meta[name="twitter:image"]', { name: 'twitter:image', content: img });
 
-    const cleanPath = path || window.location.pathname;
-    const url = SITE_BASE + cleanPath;
+    const url = buildCanonicalUrl(path);
     upsertLink('canonical', url);
     upsertMeta('meta[property="og:url"]', { property: 'og:url', content: url });
+
+    syncHreflang(path);
 
     const robots = noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large';
     upsertMeta('meta[name="robots"]', { name: 'robots', content: robots });

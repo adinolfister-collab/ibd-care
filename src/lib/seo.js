@@ -49,7 +49,7 @@ const STATIC_ROUTES = [
 
 // Rotte con parametro (controllate dopo le statiche).
 const PARAM_ROUTES = [
-  { path: '/news/:id', titleKey: 'news.title', descKey: 'news.page_subtitle' },
+  { path: '/news/:id', titleKey: 'news.title', descKey: 'news.page_subtitle', noindex: true },
   { path: '/shop/:slug', titleKey: 'shop.title', descKey: 'shop.subtitle', noindex: true },
 ];
 
