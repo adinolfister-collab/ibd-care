@@ -8,6 +8,7 @@ import { base44 } from '@/api/base44Client';
 const KEYS = {
   symptoms: 'ibdcare:guest:symptoms',
   foods: 'ibdcare:guest:foods',
+  records: 'ibdcare:guest:records',
 };
 
 function read(key) {
@@ -31,9 +32,9 @@ function genId() {
   return 'guest_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
 }
 
-function makeStore(key) {
+function makeStore(key, dateField = 'entry_date') {
   return {
-    list: () => read(key).sort((a, b) => (b.entry_date || '').localeCompare(a.entry_date || '')),
+    list: () => read(key).sort((a, b) => (b[dateField] || '').localeCompare(a[dateField] || '')),
     all: () => read(key),
     has: () => read(key).length > 0,
     add: (data) => {
@@ -66,6 +67,7 @@ function makeStore(key) {
 
 export const guestSymptoms = makeStore(KEYS.symptoms);
 export const guestFoods = makeStore(KEYS.foods);
+export const guestRecords = makeStore(KEYS.records, 'record_date');
 
 // Strip client-only fields before pushing to the cloud entity.
 function stripLocal({ id, created_date, ...rest }) {
@@ -89,6 +91,13 @@ export async function syncGuestEntriesToCloud() {
     await base44.entities.FoodEntry.bulkCreate(payload);
     guestFoods.clear();
     count += foods.length;
+  }
+  const records = guestRecords.all();
+  if (records.length) {
+    const payload = records.map(stripLocal);
+    await base44.entities.MedicalRecord.bulkCreate(payload);
+    guestRecords.clear();
+    count += records.length;
   }
   return count;
 }

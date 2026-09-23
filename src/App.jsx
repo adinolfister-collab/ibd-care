@@ -103,10 +103,11 @@ const AuthenticatedApp = () => {
         <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
         <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
         <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
-        {/* Login required: account, settings, admin and shop (reserved + standby) */}
+        {/* Shop is public (standby vetrina for all visitors); account/settings/admin require login */}
+        <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+        <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
+        {/* Login required: account, settings, admin */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-          <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-          <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
           <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} requireRole="admin" />}>

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, FileText, Trash2, Pencil, ExternalLink, Stethoscope, FlaskConical, CalendarClock, Search, X, ScanLine, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { guestRecords } from '@/lib/guestEntries';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
@@ -67,7 +68,7 @@ export default function Records() {
 
   const load = async () => {
     setLoading(true);
-    if (!isAuthenticated) { setItems([]); setLoading(false); return; }
+    if (!isAuthenticated) { setItems(guestRecords.list()); setLoading(false); return; }
     try {
       const data = await base44.entities.MedicalRecord.list('-record_date', 200);
       setItems(data);
@@ -119,12 +120,17 @@ export default function Records() {
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
-    if (!isAuthenticated) { navigate('/login'); return; }
+    if (!isAuthenticated) {
+      if (editing?.id) guestRecords.update(editing.id, data);
+      else guestRecords.add(data);
+      setOpen(false); setItems(guestRecords.list());
+      return;
+    }
     if (editing?.id) await base44.entities.MedicalRecord.update(editing.id, data);
     else await base44.entities.MedicalRecord.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { if (!isAuthenticated) { navigate('/login'); return; } await base44.entities.MedicalRecord.delete(id); load(); };
+  const handleDelete = async (id) => { if (!isAuthenticated) { guestRecords.remove(id); setItems(guestRecords.list()); return; } await base44.entities.MedicalRecord.delete(id); load(); };
 
   return (
     <AppLayout>

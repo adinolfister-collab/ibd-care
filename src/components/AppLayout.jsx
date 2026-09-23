@@ -11,7 +11,7 @@ import MobileTopNav from '@/components/MobileTopNav';
 import NativeAppButton from '@/components/NativeAppButton';
 import DesktopViewToggle from '@/components/DesktopViewToggle';
 import { useDesktopView } from '@/hooks/useDesktopView';
-import { guestSymptoms, guestFoods, syncGuestEntriesToCloud } from '@/lib/guestEntries';
+import { guestSymptoms, guestFoods, guestRecords, syncGuestEntriesToCloud } from '@/lib/guestEntries';
 import { useToast } from '@/components/ui/use-toast';
 
 // Public app — every section is open to all visitors. Account management
@@ -52,7 +52,7 @@ export default function AppLayout({ children }) {
   // block rendering so pages load cloud data that already includes them.
   useEffect(() => {
     if (!isAuthenticated) return;
-    if (!guestSymptoms.has() && !guestFoods.has()) return;
+    if (!guestSymptoms.has() && !guestFoods.has() && !guestRecords.has()) return;
     let cancelled = false;
     (async () => {
       setSyncingGuest(true);
