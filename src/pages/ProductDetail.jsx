@@ -3,10 +3,12 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Loader2, Package, ShoppingBag, ExternalLink } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import EmptyState from '@/components/EmptyState';
 import EditorialBlock from '@/components/EditorialBlock';
+import ShopStandby from '@/components/ShopStandby';
 import { Image } from '@/components/ui/image';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,6 +36,9 @@ function buildAmazonLink(product) {
 export default function ProductDetail() {
   const { slug } = useParams();
   const { t } = useI18n();
+  const { user } = useAuth();
+  // Shop in standby for non-admins while advertising channels are being defined.
+  if (user?.role !== 'admin') return <ShopStandby />;
   const [product, setProduct] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);

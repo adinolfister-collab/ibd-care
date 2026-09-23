@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -17,11 +19,18 @@ import { useToast } from '@/components/ui/use-toast';
 export default function Esami() {
   const { t } = useI18n();
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const { isSubscribed, showPaywall, setShowPaywall } = usePremiumGate();
   const [tab, setTab] = useState('scan');
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const openPaywall = () => setShowPaywall(true);
+  // Scanner AI and import are Premium services: guests must log in first,
+  // authenticated free users see the subscription paywall.
+  const openPaywall = () => {
+    if (!isAuthenticated) { navigate('/login'); return; }
+    setShowPaywall(true);
+  };
 
   const handleSaved = useCallback(() => {
     toast({ title: t('exams.save'), description: '' });

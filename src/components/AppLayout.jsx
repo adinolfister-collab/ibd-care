@@ -98,7 +98,9 @@ export default function AppLayout({ children }) {
           </div>
         </div>
         <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
+          {navItems
+            .filter((item) => isAuthenticated || (item.to !== '/account' && item.to !== '/settings'))
+            .map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -170,13 +172,22 @@ export default function AppLayout({ children }) {
             <span>{t('settings.logout')}</span>
           </button>
         ) : (
-          <Link
-            to="/login"
-            className="m-3 flex items-center gap-3 px-4 py-3 rounded-xl text-base text-primary hover:bg-accent transition-colors"
-          >
-            <LogIn className="w-5 h-5" />
-            <span>{t('auth.login_btn')}</span>
-          </Link>
+          <div className="m-3 p-3 rounded-xl border border-terracotta/40 bg-terracotta/5 space-y-2">
+            <p className="text-xs text-muted-foreground leading-relaxed px-1">{t('guest.banner_desc')}</p>
+            <Link
+              to="/login"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-base bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+            >
+              <LogIn className="w-5 h-5" />
+              <span>{t('auth.login_btn')}</span>
+            </Link>
+            <Link
+              to="/register"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-base border border-terracotta/50 text-terracotta font-medium hover:bg-terracotta/10 transition-colors"
+            >
+              <span>{t('paywall.cta_register')}</span>
+            </Link>
+          </div>
         )}
       </aside>
 

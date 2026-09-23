@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Bot, Loader2, Send, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Bot, Loader2, Send, Sparkles, LogIn } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -10,6 +11,7 @@ import PremiumPaywall from '@/components/PremiumPaywall';
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export default function Assistant() {
@@ -22,7 +24,7 @@ export default function Assistant() {
   const [sending, setSending] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [msgCount, setMsgCount] = useState(0);
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { isSubscribed } = useSubscription();
   const FREE_LIMIT = 3;
   const scrollRef = useRef(null);
@@ -45,6 +47,7 @@ export default function Assistant() {
     let cancelled = false;
     let unsub = () => {};
     (async () => {
+      if (!isAuthenticated) return;
       try {
         const c = await base44.agents.createConversation({
           agent_name: 'assistente',
@@ -92,6 +95,34 @@ export default function Assistant() {
   };
 
   const busy = sending && messages[messages.length - 1]?.role !== 'assistant';
+
+  // The AI assistant needs an account to create conversations and track the
+  // free monthly quota — guests are asked to log in first.
+  if (!isAuthenticated) {
+    return (
+      <div className="flex flex-col min-h-[calc(100vh-7.5rem)]">
+        <PageHeader title={t('assistant.title')} subtitle={t('assistant.subtitle')} />
+        <PageEditorial pageKey="assistant" compact />
+        <Card className="flex-1 flex flex-col items-center justify-center text-center p-8 rounded-2xl min-h-[420px]">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+            <Bot className="w-7 h-7 text-primary" />
+          </div>
+          <h2 className="font-heading text-xl font-semibold text-primary tracking-tight">{t('assistant.title')}</h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-sm leading-relaxed">
+            {t('assistant.guest_hint') || 'Accedi o registrati per conversare con l\'assistente AI.'}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-2 mt-6">
+            <Link to="/login">
+              <Button className="rounded-xl h-11"><LogIn className="w-4 h-4 mr-1.5" />{t('auth.login_btn')}</Button>
+            </Link>
+            <Link to="/register">
+              <Button variant="outline" className="rounded-xl h-11">{t('paywall.cta_register')}</Button>
+            </Link>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-7.5rem)] md:min-h-[calc(100vh-7.5rem)]">

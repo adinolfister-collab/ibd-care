@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Pill, Trash2, Pencil, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -49,6 +50,7 @@ const typeColors = {
 export default function Meds() {
   const { t } = useI18n();
   const { isAuthenticated, authChecked } = useAuth();
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -69,11 +71,12 @@ export default function Meds() {
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
+    if (!isAuthenticated) { navigate('/login'); return; }
     if (editing?.id) await base44.entities.Medication.update(editing.id, data);
     else await base44.entities.Medication.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { await base44.entities.Medication.delete(id); load(); };
+  const handleDelete = async (id) => { if (!isAuthenticated) { navigate('/login'); return; } await base44.entities.Medication.delete(id); load(); };
 
   return (
     <AppLayout>

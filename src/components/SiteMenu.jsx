@@ -6,6 +6,7 @@ import {
   FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag, Crown, CreditCard,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
 import { cn } from '@/lib/utils';
 
 // Sezione "Esplora la rivista": elenco visibile di tutte le pagine dell'app.
@@ -35,6 +36,10 @@ const ITEMS = [
 
 export default function SiteMenu() {
   const { t } = useI18n();
+  const { isAuthenticated } = useAuth();
+  const items = isAuthenticated
+    ? ITEMS
+    : ITEMS.filter((it) => it.to !== '/account' && it.to !== '/settings');
 
   return (
     <section className="my-8 md:my-10">
@@ -51,7 +56,7 @@ export default function SiteMenu() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {ITEMS.map((item) => (
+        {items.map((item) => (
           <Link key={item.to} to={item.to} className={cn('group flex items-center gap-3 rounded-xl border px-4 py-3.5 shadow-sm transition-all hover:shadow-md', item.founder ? 'border-terracotta/70 bg-terracotta/10 hover:bg-terracotta/15' : 'border-border bg-card hover:border-terracotta/50')}>
             <span className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors', item.founder ? 'bg-terracotta/20' : 'bg-accent group-hover:bg-terracotta/15')}>
               <item.icon className={cn('w-5 h-5', item.founder ? 'text-terracotta' : 'text-primary')} />

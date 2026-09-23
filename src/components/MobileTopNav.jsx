@@ -57,6 +57,10 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
     },
   ];
 
+  // Account & settings require login — hide them for guests.
+  if (!isAuthenticated) {
+    groups[2].items = groups[2].items.filter((it) => it.to !== '/account' && it.to !== '/settings');
+  }
   // Admin-only voices live in the "Extra" group, mirroring the desktop sidebar.
   if (user?.role === 'admin') {
     groups[2].items.push({ to: '/admin/conversioni', key: 'nav.conversions', icon: TrendingUp });
