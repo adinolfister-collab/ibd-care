@@ -21,8 +21,6 @@ const pad = (n) => (n < 10 ? '0' + n : '' + n);
 export default function Shop() {
   const { t } = useI18n();
   const { user } = useAuth();
-  // Shop in standby for non-admins while advertising channels are being defined.
-  if (user?.role !== 'admin') return <ShopStandby />;
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -60,6 +58,9 @@ export default function Shop() {
     if (groups.altri && groups.altri.length) ordered.push('altri');
     return ordered.map((c, i) => ({ key: c, num: pad(i + 1), products: groups[c] }));
   }, [filtered]);
+
+  // Shop in standby for non-admins while advertising channels are being defined.
+  if (user?.role !== 'admin') return <ShopStandby />;
 
   return (
     <AppLayout>

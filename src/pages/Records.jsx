@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, FileText, Trash2, Pencil, ExternalLink, Stethoscope, FlaskConical, CalendarClock, Search, X, ScanLine, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -52,6 +53,7 @@ export default function Records() {
   const { toast } = useToast();
   const { scanning, scan } = useRecordScanner();
   const { isAuthenticated, authChecked } = useAuth();
+  const navigate = useNavigate();
   const fileRef = useRef(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -78,6 +80,7 @@ export default function Records() {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
+    if (!isAuthenticated) { navigate('/login'); return; }
     const res = await scan(file);
     if (!res) return;
     if (res.kind === 'medication') {
@@ -116,11 +119,12 @@ export default function Records() {
   const openEdit = (item) => { setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
+    if (!isAuthenticated) { navigate('/login'); return; }
     if (editing?.id) await base44.entities.MedicalRecord.update(editing.id, data);
     else await base44.entities.MedicalRecord.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { await base44.entities.MedicalRecord.delete(id); load(); };
+  const handleDelete = async (id) => { if (!isAuthenticated) { navigate('/login'); return; } await base44.entities.MedicalRecord.delete(id); load(); };
 
   return (
     <AppLayout>

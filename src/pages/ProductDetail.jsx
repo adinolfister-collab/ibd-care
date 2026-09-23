@@ -37,13 +37,12 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const { t } = useI18n();
   const { user } = useAuth();
-  // Shop in standby for non-admins while advertising channels are being defined.
-  if (user?.role !== 'admin') return <ShopStandby />;
   const [product, setProduct] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (user?.role !== 'admin') { setLoading(false); return; }
     (async () => {
       setLoading(true);
       try {
@@ -60,7 +59,10 @@ export default function ProductDetail() {
       } catch { setNotFound(true); }
       setLoading(false);
     })();
-  }, [slug]);
+  }, [slug, user?.role]);
+
+  // Shop in standby for non-admins while advertising channels are being defined.
+  if (user?.role !== 'admin') return <ShopStandby />;
 
   if (loading) {
     return (
