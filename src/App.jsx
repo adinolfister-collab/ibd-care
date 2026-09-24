@@ -137,7 +137,7 @@ function App() {
       <BiometricLockProvider>
         <LanguageProvider>
           <QueryClientProvider client={queryClientInstance}>
-            <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+            <ThemeProvider attribute="class" defaultTheme="light" enableSystem={true}>
               <Router>
                 <ScrollToTop />
                 <PageViewBeacon />

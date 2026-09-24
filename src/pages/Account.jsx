@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Settings as SettingsIcon, LogOut, Mail } from 'lucide-react';
+import { User, Settings as SettingsIcon, LogOut, Mail, Trash2, AlertTriangle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
@@ -9,6 +9,17 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { cn } from '@/lib/utils';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from '@/components/ui/alert-dialog';
 
 export default function Account() {
   const { t } = useI18n();
@@ -20,6 +31,35 @@ export default function Account() {
 
   const logout = async () => {
     await base44.auth.logout();
+  };
+
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteStep, setDeleteStep] = useState(1);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+
+  const closeDelete = () => {
+    if (deleting) return;
+    setDeleteOpen(false);
+    setDeleteStep(1);
+    setDeleteError('');
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!user?.id) return;
+    setDeleting(true);
+    setDeleteError('');
+    try {
+      await base44.entities.User.delete(user.id);
+    } catch (err) {
+      setDeleting(false);
+      setDeleteError('Impossibile eliminare l\'account. Riprova o scrivici dalla pagina Contatti.');
+      return;
+    }
+    try {
+      await base44.auth.logout();
+    } catch (_) { /* session already invalidated */ }
+    window.location.href = '/login';
   };
 
   return (
@@ -79,6 +119,66 @@ export default function Account() {
             <LogOut className="w-4 h-4" />
             {t('settings.logout')}
           </button>
+
+          <AlertDialog open={deleteOpen} onOpenChange={(o) => { if (!o) closeDelete(); else setDeleteOpen(true); }}>
+            <AlertDialogTrigger asChild>
+              <button
+                className={cn('w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors')}
+              >
+                <Trash2 className="w-4 h-4" />
+                Elimina Account
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-destructive" />
+                  {deleteStep === 1 ? 'Elimina account definitivamente?' : 'Ultima conferma'}
+                </AlertDialogTitle>
+                <AlertDialogDescription as="div" className="space-y-2">
+                  {deleteStep === 1 ? (
+                    <>
+                      <p>L'eliminazione dell'account è <strong>permanente e irreversibile</strong>. Verranno cancellati per sempre:</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>tutti i tuoi sintomi, pasti, terapie ed esami registrati;</li>
+                        <li>i referti e i documenti caricati nell'archivio;</li>
+                        <li>i messaggi della community e le conversazioni private;</li>
+                        <li>l'abbonamento Premium e i dati dell'account.</li>
+                      </ul>
+                      <p>Questa azione non può essere annullata. Se vuoi solo sospendere l'app, puoi semplicemente uscire.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>Sei sicuro? Confermando ora, <strong>tutti i tuoi dati sanitari saranno cancellati definitivamente</strong> e non potrai recuperarli.</p>
+                      <p>Per procedere tocca "Elimina definitivamente". Questa è l'ultima possibilità per annullare.</p>
+                    </>
+                  )}
+                  {deleteError && (
+                    <p className="text-destructive text-sm font-medium pt-1">{deleteError}</p>
+                  )}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={closeDelete} disabled={deleting}>Annulla</AlertDialogCancel>
+                {deleteStep === 1 ? (
+                  <AlertDialogAction
+                    onClick={(e) => { e.preventDefault(); setDeleteStep(2); }}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Continua
+                  </AlertDialogAction>
+                ) : (
+                  <AlertDialogAction
+                    onClick={(e) => { e.preventDefault(); handleConfirmDelete(); }}
+                    disabled={deleting}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {deleting ? 'Eliminazione…' : 'Elimina definitivamente'}
+                  </AlertDialogAction>
+                )}
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </TabsContent>
       </Tabs>
     </AppLayout>
