@@ -85,7 +85,7 @@ export default function AppLayout({ children }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Sidebar (desktop layout forced at all widths) */}
-      <aside className={cn('fixed inset-y-0 left-0 w-64 flex-col border-r border-border bg-card', 'hidden md:flex')}>
+      <aside className="fixed inset-y-0 left-0 w-64 flex flex-col border-r border-border bg-card">
         <div className="px-6 py-7 flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center">
             <HeartPulse className="w-6 h-6 text-primary" />
@@ -189,18 +189,15 @@ export default function AppLayout({ children }) {
         )}
       </aside>
 
-      {/* Top-right actions (desktop layout, always visible) */}
-      <div className={cn('fixed top-4 right-6 z-40', 'hidden md:flex')}>
+      {/* Top-right actions (always visible) */}
+      <div className="fixed top-4 right-6 z-40 flex">
         <LanguageMenu />
         <NativeAppButton />
         <TopRightActions />
       </div>
 
-      {/* Mobile top navigation */}
-      <MobileTopNav user={user} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
-
       {/* Main content */}
-      <div className="md:pl-64">
+      <div className="pl-64">
         <main className="min-h-screen pb-10 px-4 md:px-10 py-5 md:py-10 max-w-4xl mx-auto">
           {children}
         </main>
