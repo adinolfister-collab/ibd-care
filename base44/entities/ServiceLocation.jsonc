@@ -14,10 +14,18 @@
         "pronto_soccorso"
       ]
     },
-    "address": {
-      "type": "string"
+    "country": {
+      "type": "string",
+      "description": "Nazione del centro o servizio"
+    },
+    "region": {
+      "type": "string",
+      "description": "Regione, stato o provincia"
     },
     "city": {
+      "type": "string"
+    },
+    "address": {
       "type": "string"
     },
     "lat": {
@@ -34,6 +42,20 @@
     },
     "notes": {
       "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "ecco",
+        "manual"
+      ],
+      "default": "manual",
+      "description": "Origine del record: ecco (registro ECCO E-QUALITY) o manual"
+    },
+    "geocoded": {
+      "type": "boolean",
+      "default": false,
+      "description": "True se le coordinate sono state precisate a livello citt\u00e0 via Nominatim"
     }
   },
   "required": [
