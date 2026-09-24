@@ -7,7 +7,12 @@ const KEY = 'ibdcare:forceDesktop';
 const EVENT = 'ibdcare:desktopview-change';
 
 function read() {
-  try { return localStorage.getItem(KEY) === '1'; } catch { return false; }
+  try {
+    const v = localStorage.getItem(KEY);
+    // Default to forced desktop layout (sidebar) so phones mirror the PC
+    // experience; users can still opt into the mobile chip layout via toggle.
+    return v === null ? true : v === '1';
+  } catch { return true; }
 }
 
 export function useDesktopView() {
