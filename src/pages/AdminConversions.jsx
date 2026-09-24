@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { MousePointerClick, Users, Clock, Globe2, TrendingDown } from 'lucide-react';
+import {
+  MousePointerClick,
+  Users,
+  Clock,
+  Globe2,
+  TrendingDown,
+  FileText,
+  Compass,
+  Monitor,
+  Layers,
+} from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
+import ReportTable from '@/components/admin/ReportTable';
 import { cn } from '@/lib/utils';
 
 const RANGES = [
@@ -22,6 +33,8 @@ const FUNNEL_COLORS = [
   'bg-chart-4',
   'bg-chart-5',
 ];
+
+const DEVICE_LABELS = { desktop: 'Desktop', mobile: 'Mobile', tablet: 'Tablet' };
 
 function formatDuration(sec) {
   if (!sec || sec < 1) return '0s';
@@ -62,19 +75,31 @@ export default function AdminConversions() {
   const visitatoriUnici = data?.visitatoriUnici || 0;
   const avgSessionSec = data?.avgSessionSec || 0;
   const funnel = data?.funnel || [];
-  const topCountries = data?.topCountries || [];
+  const topCountries = (data?.topCountries || []).map((c) => ({
+    key: c.country,
+    views: c.sessions,
+    sessions: c.sessions,
+  }));
+  const topPages = data?.topPages || [];
+  const topReferrers = data?.topReferrers || [];
+  const devices = (data?.devices || []).map((d) => ({
+    key: DEVICE_LABELS[d.key] || d.key,
+    views: d.views,
+    sessions: d.sessions,
+  }));
   const sectionDuration = data?.sectionDuration || [];
   const maxFunnel = Math.max(1, ...funnel.map((f) => f.value));
   const premiumRate =
     visite > 0 && funnel.length
       ? Math.round(((funnel[funnel.length - 1]?.value || 0) / visite) * 100)
       : 0;
+  const totalViews = topPages.reduce((a, p) => a + (p.views || 0), 0) || visite;
 
   return (
     <AppLayout>
       <PageHeader
         title="Conversioni"
-        subtitle="Provenienza visitatori, tempo medio di permanenza e funnel di conversione tra le sezioni dell'app."
+        subtitle="Report dettagliati: pagine visitate, provenienza, paese, dispositivo, tempo di permanenza e funnel di conversione."
       />
 
       {/* Range filter */}
@@ -97,42 +122,21 @@ export default function AdminConversions() {
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-        <StatCard
-          icon={MousePointerClick}
-          label="Visite totali"
-          value={loading ? '—' : visite}
-          sub="sessioni uniche"
-        />
-        <StatCard
-          icon={Users}
-          label="Visitatori unici"
-          value={loading ? '—' : visitatoriUnici}
-          sub="anonimi + loggati"
-        />
-        <StatCard
-          icon={Clock}
-          label="Permanenza media"
-          value={loading ? '—' : formatDuration(avgSessionSec)}
-          sub="per sessione"
-        />
-        <StatCard
-          icon={TrendingDown}
-          label="Conversione Premium"
-          value={loading ? '—' : `${premiumRate}%`}
-          sub="abbonamento / visite"
-        />
+        <StatCard icon={MousePointerClick} label="Visite totali" value={loading ? '—' : visite} sub="sessioni uniche" />
+        <StatCard icon={Users} label="Visitatori unici" value={loading ? '—' : visitatoriUnici} sub="anonimi + loggati" />
+        <StatCard icon={Clock} label="Permanenza media" value={loading ? '—' : formatDuration(avgSessionSec)} sub="per sessione" />
+        <StatCard icon={TrendingDown} label="Conversione Premium" value={loading ? '—' : `${premiumRate}%`} sub="abbonamento / visite" />
       </div>
 
       {/* Funnel */}
       <Card className="mb-6">
         <CardContent className="pt-5">
-          <h2 className="font-heading text-lg font-semibold mb-4">
+          <h2 className="font-heading text-lg font-semibold mb-4 flex items-center gap-2">
+            <Layers className="w-4 h-4 text-terracotta" />
             Funnel di conversione
           </h2>
           {loading ? (
-            <div className="h-56 flex items-center justify-center text-sm text-muted-foreground">
-              Caricamento…
-            </div>
+            <div className="h-56 flex items-center justify-center text-sm text-muted-foreground">Caricamento…</div>
           ) : (
             <div className="space-y-3">
               {funnel.map((step, i) => {
@@ -143,11 +147,7 @@ export default function AdminConversions() {
                       <span className="font-medium">{step.label}</span>
                       <span className="text-muted-foreground">
                         <span className="font-semibold text-foreground">{step.value}</span>
-                        {i > 0 && (
-                          <span className="ml-2 text-xs">
-                            {step.pct}% del precedente
-                          </span>
-                        )}
+                        {i > 0 && <span className="ml-2 text-xs">{step.pct}% del precedente</span>}
                       </span>
                     </div>
                     <div className="h-8 w-full rounded-lg bg-muted overflow-hidden">
@@ -167,97 +167,107 @@ export default function AdminConversions() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Paesi top */}
+      {/* Pagine visitate + Provenienza */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card>
           <CardContent className="pt-5">
             <h2 className="font-heading text-lg font-semibold mb-4 flex items-center gap-2">
-              <Globe2 className="w-4 h-4 text-terracotta" />
-              Provenienza (paesi top)
+              <FileText className="w-4 h-4 text-terracotta" />
+              Pagine più visitate
             </h2>
             {loading ? (
-              <div className="h-40 flex items-center justify-center text-sm text-muted-foreground">
-                Caricamento…
-              </div>
-            ) : topCountries.length === 0 ? (
-              <div className="h-40 flex items-center justify-center text-sm text-muted-foreground">
-                Nessun dato di visita.
-              </div>
+              <Loading />
             ) : (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-muted-foreground border-b border-border">
-                    <th className="py-2 font-medium">Paese</th>
-                    <th className="py-2 font-medium text-right">Sessioni</th>
-                    <th className="py-2 font-medium w-32">Distribuzione</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topCountries.map((c) => {
-                    const pct = visite > 0 ? Math.round((c.sessions / visite) * 100) : 0;
-                    return (
-                      <tr key={c.country} className="border-b border-border last:border-0">
-                        <td className="py-2.5">{c.country}</td>
-                        <td className="py-2.5 text-right font-medium">{c.sessions}</td>
-                        <td className="py-2.5">
-                          <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                            <div
-                              className="h-full bg-terracotta rounded-full"
-                              style={{ width: `${Math.max(2, pct)}%` }}
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <ReportTable rows={topPages} total={totalViews} emptyText="Nessuna page-view registrata." />
             )}
           </CardContent>
         </Card>
 
-        {/* Permanenza per sezione */}
         <Card>
           <CardContent className="pt-5">
             <h2 className="font-heading text-lg font-semibold mb-4 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-terracotta" />
-              Permanenza per sezione
+              <Compass className="w-4 h-4 text-terracotta" />
+              Provenienza visitatori
             </h2>
             {loading ? (
-              <div className="h-40 flex items-center justify-center text-sm text-muted-foreground">
-                Caricamento…
-              </div>
-            ) : sectionDuration.length === 0 ? (
-              <div className="h-40 flex items-center justify-center text-sm text-muted-foreground">
-                Nessun dato di permanenza.
-              </div>
+              <Loading />
             ) : (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-muted-foreground border-b border-border">
-                    <th className="py-2 font-medium">Sezione</th>
-                    <th className="py-2 font-medium text-right">Tempo medio</th>
-                    <th className="py-2 font-medium text-right">View</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sectionDuration.map((s) => (
-                    <tr key={s.section} className="border-b border-border last:border-0">
-                      <td className="py-2.5">{s.section}</td>
-                      <td className="py-2.5 text-right font-medium">
-                        {formatDuration(s.avgSec)}
-                      </td>
-                      <td className="py-2.5 text-right text-muted-foreground">{s.views}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <ReportTable rows={topReferrers} total={visite} emptyText="Nessun referrer registrato." barColor="bg-chart-2" />
             )}
           </CardContent>
         </Card>
       </div>
+
+      {/* Paesi + Dispositivi */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <Card>
+          <CardContent className="pt-5">
+            <h2 className="font-heading text-lg font-semibold mb-4 flex items-center gap-2">
+              <Globe2 className="w-4 h-4 text-terracotta" />
+              Nazionalità (paesi top)
+            </h2>
+            {loading ? (
+              <Loading />
+            ) : (
+              <ReportTable rows={topCountries} total={visite} emptyText="Nessun dato di visita." barColor="bg-chart-4" />
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-5">
+            <h2 className="font-heading text-lg font-semibold mb-4 flex items-center gap-2">
+              <Monitor className="w-4 h-4 text-terracotta" />
+              Dispositivi
+            </h2>
+            {loading ? (
+              <Loading />
+            ) : (
+              <ReportTable rows={devices} total={visite} emptyText="Nessun dato dispositivo." barColor="bg-chart-5" />
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Permanenza per sezione */}
+      <Card>
+        <CardContent className="pt-5">
+          <h2 className="font-heading text-lg font-semibold mb-4 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-terracotta" />
+            Permanenza per sezione
+          </h2>
+          {loading ? (
+            <Loading />
+          ) : sectionDuration.length === 0 ? (
+            <div className="h-40 flex items-center justify-center text-sm text-muted-foreground">Nessun dato di permanenza.</div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-muted-foreground border-b border-border">
+                  <th className="py-2 font-medium">Sezione</th>
+                  <th className="py-2 font-medium text-right">Tempo medio</th>
+                  <th className="py-2 font-medium text-right">View</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sectionDuration.map((s) => (
+                  <tr key={s.section} className="border-b border-border last:border-0">
+                    <td className="py-2.5 font-medium">{s.section}</td>
+                    <td className="py-2.5 text-right font-medium tabular-nums">{formatDuration(s.avgSec)}</td>
+                    <td className="py-2.5 text-right text-muted-foreground tabular-nums">{s.views}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </CardContent>
+      </Card>
     </AppLayout>
   );
+}
+
+function Loading() {
+  return <div className="h-40 flex items-center justify-center text-sm text-muted-foreground">Caricamento…</div>;
 }
 
 function StatCard({ icon: Icon, label, value, sub }) {

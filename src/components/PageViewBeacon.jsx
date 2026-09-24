@@ -10,7 +10,46 @@ import { mapPathToSection } from '@/lib/pageSections';
 
 const SESSION_KEY = 'ibd_session_id';
 const SESSION_TS_KEY = 'ibd_session_ts';
+const VISITOR_KEY = 'ibd_visitor_id';
 const GAP_MS = 30 * 60 * 1000; // 30 min di inattivita' -> nuova sessione
+
+function getOrCreateVisitor() {
+  try {
+    let id = localStorage.getItem(VISITOR_KEY);
+    if (!id) {
+      id =
+        (crypto && crypto.randomUUID && crypto.randomUUID()) ||
+        Date.now().toString(36) + Math.random().toString(36).slice(2);
+      localStorage.setItem(VISITOR_KEY, id);
+    }
+    return id;
+  } catch {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+}
+
+function detectDevice() {
+  try {
+    const ua = navigator.userAgent || '';
+    if (/iPad|Tablet|PlayBook|Silk/i.test(ua)) return 'tablet';
+    if (/Mobi|iPhone|Android.*Mobile|Windows Phone/i.test(ua)) return 'mobile';
+    return 'desktop';
+  } catch {
+    return 'desktop';
+  }
+}
+
+function detectReferrer() {
+  try {
+    const ref = document.referrer || '';
+    if (!ref) return 'Direct';
+    const host = new URL(ref).host;
+    if (host === window.location.host) return 'Internal';
+    return host;
+  } catch {
+    return 'Direct';
+  }
+}
 
 function getOrCreateSession() {
   try {
@@ -47,7 +86,11 @@ export default function PageViewBeacon() {
     const sessionId = getOrCreateSession();
     const payload = {
       section,
+      path,
       session_id: sessionId,
+      visitor_id: getOrCreateVisitor(),
+      referrer: detectReferrer(),
+      device: detectDevice(),
       entered_at: new Date().toISOString(),
       user_id: user?.id || '',
     };

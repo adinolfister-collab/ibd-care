@@ -1,11 +1,13 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 
-// Dashboard Conversioni: aggrega PageView (visitatori, paesi, permanenza) +
-// funnel macro-step (visite -> registrazioni -> primo diario -> paywall ->
-// abbonamento Premium). Admin-only: 403 per i non admin.
+// Dashboard Conversioni (stile Analytics): aggrega PageView con percorso,
+// provenienza (referrer), paese, dispositivo e sessioni; unisce il funnel
+// macro-step visite -> registrazioni -> diario -> paywall -> abbonamento.
+// Admin-only: 403 per i non admin.
 
 const RANGE_DAYS: Record<string, number> = { today: 1, '7d': 7, '30d': 30, all: 0 };
 const SESSION_GAP_SEC = 1800; // 30 min: gap tra page-view oltre il quale si chiude la sessione
+const PAGE_LIMIT = 500;
 
 function startOfTodayISO(): string {
   const d = new Date();
@@ -26,6 +28,29 @@ function rangeQuery(range: string): any {
   return q;
 }
 
+// Raggruppa e restituisce i top N per una chiave, con conteggio sessioni uniche
+// e view totali.
+function topBy<T>(
+  items: T[],
+  keyFn: (x: T) => string,
+  sessionFn: (x: T) => string,
+  limit: number,
+) {
+  const views: Record<string, number> = {};
+  const sess: Record<string, Set<string>> = {};
+  for (const it of items) {
+    const k = keyFn(it) || 'Unknown';
+    views[k] = (views[k] || 0) + 1;
+    if (!sess[k]) sess[k] = new Set();
+    const s = sessionFn(it);
+    if (s) sess[k].add(s);
+  }
+  return Object.entries(views)
+    .map(([key, v]) => ({ key, views: v, sessions: sess[key]?.size || 0 }))
+    .sort((a, b) => b.views - a.views)
+    .slice(0, limit);
+}
+
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
@@ -40,16 +65,16 @@ export default async function(req: Request): Promise<Response> {
     const rq = rangeQuery(range);
 
     const [pageviews, users, symptoms, foods, meds, records, events] = await Promise.all([
-      base44.asServiceRole.entities.PageView.filter(rq, '-created_date', 500).catch(() => []),
-      base44.asServiceRole.entities.User.filter(rq, '-created_date', 500).catch(() => []),
-      base44.asServiceRole.entities.SymptomEntry.filter(rq, '-created_date', 500).catch(() => []),
-      base44.asServiceRole.entities.FoodEntry.filter(rq, '-created_date', 500).catch(() => []),
-      base44.asServiceRole.entities.Medication.filter(rq, '-created_date', 500).catch(() => []),
-      base44.asServiceRole.entities.MedicalRecord.filter(rq, '-created_date', 500).catch(() => []),
-      base44.asServiceRole.entities.ConversionEvent.filter(rq, '-created_date', 500).catch(() => []),
+      base44.asServiceRole.entities.PageView.filter(rq, '-created_date', PAGE_LIMIT).catch(() => []),
+      base44.asServiceRole.entities.User.filter(rq, '-created_date', PAGE_LIMIT).catch(() => []),
+      base44.asServiceRole.entities.SymptomEntry.filter(rq, '-created_date', PAGE_LIMIT).catch(() => []),
+      base44.asServiceRole.entities.FoodEntry.filter(rq, '-created_date', PAGE_LIMIT).catch(() => []),
+      base44.asServiceRole.entities.Medication.filter(rq, '-created_date', PAGE_LIMIT).catch(() => []),
+      base44.asServiceRole.entities.MedicalRecord.filter(rq, '-created_date', PAGE_LIMIT).catch(() => []),
+      base44.asServiceRole.entities.ConversionEvent.filter(rq, '-created_date', PAGE_LIMIT).catch(() => []),
     ]);
 
-    // --- Visitatori, paesi, raggruppamento per sessione ---
+    // --- Sessioni, visitatori, raggruppamento ---
     const sessions = new Set<string>();
     const visitors = new Set<string>();
     const countrySessions: Record<string, Set<string>> = {};
@@ -58,10 +83,11 @@ export default async function(req: Request): Promise<Response> {
     for (const pv of pageviews) {
       const sid = pv.session_id || '';
       if (sid) sessions.add(sid);
-      visitors.add(pv.user_id || sid || '');
+      const vid = pv.visitor_id || pv.user_id || sid || '';
+      if (vid) visitors.add(vid);
       const c = pv.country || 'Unknown';
       if (!countrySessions[c]) countrySessions[c] = new Set();
-      countrySessions[c].add(sid);
+      countrySessions[c].add(sid || vid);
       if (sid) {
         (bySession[sid] = bySession[sid] || []).push(pv);
       }
@@ -74,6 +100,26 @@ export default async function(req: Request): Promise<Response> {
       .map(([country, set]) => ({ country, sessions: set.size }))
       .sort((a, b) => b.sessions - a.sessions)
       .slice(0, 10);
+
+    // Pagine visitate (per path), provenienza (referrer), dispositivi
+    const topPages = topBy(
+      pageviews,
+      (pv) => pv.path || '',
+      (pv) => pv.session_id || '',
+      15,
+    );
+    const topReferrers = topBy(
+      pageviews,
+      (pv) => pv.referrer || 'Direct',
+      (pv) => pv.session_id || '',
+      10,
+    );
+    const devices = topBy(
+      pageviews,
+      (pv) => pv.device || 'desktop',
+      (pv) => pv.session_id || '',
+      3,
+    );
 
     // --- Durata sessione + permanenza per sezione ---
     let totalSessionDur = 0;
@@ -152,6 +198,9 @@ export default async function(req: Request): Promise<Response> {
       visitatoriUnici,
       avgSessionSec,
       topCountries,
+      topPages,
+      topReferrers,
+      devices,
       sectionDuration,
       funnel,
     });

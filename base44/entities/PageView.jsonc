@@ -4,7 +4,11 @@
   "properties": {
     "session_id": {
       "type": "string",
-      "description": "Id sessione anonimo (localStorage) oppure user id per i loggati"
+      "description": "Id sessione anonimo (localStorage, ruota dopo 30 min) oppure user id per i loggati"
+    },
+    "visitor_id": {
+      "type": "string",
+      "description": "Id visitatore persistente (localStorage, non ruota) per distinguere nuovi da di ritorno"
     },
     "section": {
       "type": "string",
@@ -16,6 +20,22 @@
         "Abbonamento",
         "Account",
         "Altro"
+      ]
+    },
+    "path": {
+      "type": "string",
+      "description": "Percorso esatto della pagina visitata (es. /symptoms)"
+    },
+    "referrer": {
+      "type": "string",
+      "description": "Sorgente di provenienza: host esterno, 'Direct' o 'Internal'"
+    },
+    "device": {
+      "type": "string",
+      "enum": [
+        "desktop",
+        "mobile",
+        "tablet"
       ]
     },
     "country": {

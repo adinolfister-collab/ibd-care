@@ -68,6 +68,11 @@ export default async function(req: Request): Promise<Response> {
     if (!VALID_SECTIONS.has(section)) section = 'Altro';
     const userId = p.user_id ? String(p.user_id) : '';
     const enteredAt = p.entered_at ? String(p.entered_at) : new Date().toISOString();
+    const path = p.path ? String(p.path).slice(0, 200) : '';
+    const visitorId = p.visitor_id ? String(p.visitor_id).slice(0, 64) : '';
+    const referrer = p.referrer ? String(p.referrer).slice(0, 200) : 'Direct';
+    const deviceRaw = String(p.device || 'desktop');
+    const device = ['desktop', 'mobile', 'tablet'].includes(deviceRaw) ? deviceRaw : 'desktop';
 
     const base44 = createClientFromRequest(req);
     const ip = clientIp(req);
@@ -75,7 +80,11 @@ export default async function(req: Request): Promise<Response> {
 
     await base44.asServiceRole.entities.PageView.create({
       session_id: sessionId,
+      visitor_id: visitorId,
       section,
+      path,
+      referrer,
+      device,
       country,
       entered_at: enteredAt,
       user_id: userId,
