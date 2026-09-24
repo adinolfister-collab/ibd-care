@@ -41,6 +41,7 @@ import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Guida from '@/pages/Guida';
+import ScaricaApp from '@/pages/ScaricaApp';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
 import PageViewBeacon from '@/components/PageViewBeacon';
@@ -86,6 +87,7 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/guida" element={<PageTransition><Guida /></PageTransition>} />
+        <Route path="/scarica" element={<PageTransition><ScaricaApp /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/founders" element={<PageTransition><Founders /></PageTransition>} />
         <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />

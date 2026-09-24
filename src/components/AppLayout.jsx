@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard,   Megaphone, BookOpen } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard,   Megaphone, BookOpen, Smartphone } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -17,6 +17,7 @@ import { useToast } from '@/components/ui/use-toast';
 const navItems = [
   { to: '/', key: 'nav.home', icon: Home, exact: true },
   { to: '/guida', key: 'nav.guide', icon: BookOpen },
+  { to: '/scarica', key: 'nav.download', icon: Smartphone },
   { to: '/founders', key: 'nav.founders', icon: Crown, founder: true },
   { to: '/news', key: 'nav.news', icon: Newspaper },
   { to: '/symptoms', key: 'nav.symptoms', icon: Activity },
