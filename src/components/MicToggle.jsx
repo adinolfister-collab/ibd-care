@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Mic, MicOff } from 'lucide-react';
+import { Mic, Square } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
@@ -18,25 +18,24 @@ const LANG_MAP = {
 };
 
 // Microfono a toggle: un tocco avvia l'ascolto, un altro tocco ferma e
-// invia subito la trascrizione. Niente TTS, niente ciclo di riavvio.
+// invia la trascrizione. L'ascolto sopravvive alle pause di silenzio
+// perché il browser viene riavviato automaticamente finché l'utente
+// non preme stop manualmente.
 export default function MicToggle({ lang, onTranscript }) {
   const { t } = useI18n();
   const supported = !!SpeechRecognition;
   const [listening, setListening] = useState(false);
   const recRef = useRef(null);
   const transcriptRef = useRef('');
+  const manualStopRef = useRef(false);
+  const handlersRef = useRef(null);
 
-  const stop = useCallback(() => {
-    try { recRef.current?.stop(); } catch (_) {}
-  }, []);
-
-  const start = useCallback(() => {
-    if (!supported) return;
-    transcriptRef.current = '';
+  const buildRec = useCallback(() => {
     const rec = new SpeechRecognition();
     rec.lang = LANG_MAP[lang] || 'it-IT';
     rec.interimResults = false;
     rec.continuous = true;
+
     rec.onresult = (e) => {
       const txt = Array.from(e.results)
         .filter((r) => r.isFinal)
@@ -45,24 +44,56 @@ export default function MicToggle({ lang, onTranscript }) {
         .trim();
       if (txt) transcriptRef.current += (transcriptRef.current ? ' ' : '') + txt;
     };
+
     rec.onend = () => {
-      const final = transcriptRef.current.trim();
       recRef.current = null;
-      setListening(false);
-      if (final) onTranscript(final);
+      if (manualStopRef.current) {
+        const final = transcriptRef.current.trim();
+        setListening(false);
+        if (final) onTranscript(final);
+        return;
+      }
+      // Pausa di silenzio: riavvia automaticamente per restare in ascolto
+      // finché l'utente non ferma manualmente.
+      if (!manualStopRef.current) {
+        try {
+          const next = buildRec();
+          recRef.current = next;
+          next.start();
+        } catch (_) {
+          setListening(false);
+        }
+      }
     };
-    rec.onerror = () => {
-      recRef.current = null;
-      setListening(false);
+
+    rec.onerror = (e) => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        manualStopRef.current = true;
+        setListening(false);
+      }
     };
-    recRef.current = rec;
+
+    return rec;
+  }, [lang, onTranscript]);
+
+  const start = useCallback(() => {
+    if (!supported) return;
+    manualStopRef.current = false;
+    transcriptRef.current = '';
     try {
+      const rec = buildRec();
+      recRef.current = rec;
       rec.start();
       setListening(true);
     } catch (_) {
       setListening(false);
     }
-  }, [supported, lang, onTranscript]);
+  }, [supported, buildRec]);
+
+  const stop = useCallback(() => {
+    manualStopRef.current = true;
+    try { recRef.current?.stop(); } catch (_) {}
+  }, []);
 
   const toggle = () => {
     if (!supported) return;
@@ -79,8 +110,8 @@ export default function MicToggle({ lang, onTranscript }) {
         !supported
           ? t('assistant.voice_unsupported')
           : listening
-          ? t('assistant.voice_listening')
-          : t('assistant.voice_listening')
+          ? t('assistant.voice_stop')
+          : t('assistant.voice_start')
       }
       aria-pressed={listening}
       className={cn(
@@ -93,9 +124,9 @@ export default function MicToggle({ lang, onTranscript }) {
       )}
     >
       {!supported ? (
-        <MicOff className="w-5 h-5" />
+        <Mic className="w-5 h-5" />
       ) : listening ? (
-        <MicOff className="w-5 h-5" />
+        <Square className="w-5 h-5" />
       ) : (
         <Mic className="w-5 h-5" />
       )}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Bot, Loader2, Send, Sparkles, LogIn } from 'lucide-react';
+import { Bot, Loader2, Send, Sparkles, LogIn, Volume2, VolumeX } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -25,12 +25,14 @@ export default function Assistant() {
   const [sending, setSending] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [msgCount, setMsgCount] = useState(0);
+  const [voiceOn, setVoiceOn] = useState(false);
   const { user, isAuthenticated } = useAuth();
   const { isSubscribed } = useSubscription();
   const FREE_LIMIT = 3;
   const scrollRef = useRef(null);
   const convRef = useRef(null);
   const taRef = useRef(null);
+  const lastSpokenRef = useRef('');
 
   useEffect(() => {
     const currentMonth = new Date().toISOString().slice(0, 7);
@@ -75,6 +77,24 @@ export default function Assistant() {
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages]);
+
+  // Sintesi vocale (browser TTS): legge l'ultima risposta di Cary quando
+  // la voce è attiva. Marca l'ultima frase letta per non ripeterla.
+  useEffect(() => {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    if (!voiceOn) return;
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== 'assistant' || !last.content) return;
+    const key = last.id || last.content.slice(0, 40);
+    if (lastSpokenRef.current === key) return;
+    lastSpokenRef.current = key;
+    const u = new SpeechSynthesisUtterance(last.content.replace(/[#*_>`]/g, ''));
+    u.lang = lang === 'it' ? 'it-IT' : lang === 'en' ? 'en-US' : (lang || 'it-IT');
+    window.speechSynthesis.speak(u);
+  }, [messages, voiceOn, lang]);
+
+  useEffect(() => () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
 
   const send = async (content) => {
     const value = (content ?? text).trim();
@@ -228,6 +248,18 @@ export default function Assistant() {
             className="flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3.5 text-sm leading-relaxed min-h-[96px] max-h-52 focus:outline-none focus:ring-2 focus:ring-ring"
           />
           <MicToggle lang={lang} onTranscript={send} />
+          <button
+            type="button"
+            onClick={() => setVoiceOn((v) => !v)}
+            title={voiceOn ? t('assistant.voice_on') : t('assistant.voice_off')}
+            aria-pressed={voiceOn}
+            className={cn(
+              'shrink-0 flex items-center justify-center rounded-xl transition-colors min-h-[48px] min-w-[48px] h-12 w-12',
+              voiceOn ? 'bg-terracotta text-terracotta-foreground' : 'bg-muted text-muted-foreground'
+            )}
+          >
+            {voiceOn ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+          </button>
           <button
             onClick={() => send()}
             disabled={!text.trim() || sending}
