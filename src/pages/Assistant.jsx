@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bot, Loader2, Send, Sparkles, LogIn, Volume2, VolumeX } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -33,6 +33,7 @@ export default function Assistant() {
   const convRef = useRef(null);
   const taRef = useRef(null);
   const lastSpokenRef = useRef('');
+  const sendRef = useRef(null);
 
   useEffect(() => {
     const currentMonth = new Date().toISOString().slice(0, 7);
@@ -96,7 +97,7 @@ export default function Assistant() {
 
   useEffect(() => () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
 
-  const send = async (content) => {
+  const send = useCallback(async (content) => {
     const value = (content ?? text).trim();
     if (!value || !conversationId || sending) return;
     if (!isSubscribed && msgCount >= FREE_LIMIT) { setShowPaywall(true); return; }
@@ -113,7 +114,14 @@ export default function Assistant() {
       setSending(false);
       if (!isSubscribed) setMsgCount((c) => Math.max(0, c - 1));
     }
-  };
+  }, [text, conversationId, sending, isSubscribed, msgCount]);
+
+  useEffect(() => { sendRef.current = send; }, [send]);
+
+  // Quando si avvia il microfono, attiva la voce di default (modalità conversazione vocale)
+  const handleMicListeningChange = useCallback((active) => {
+    if (active) setVoiceOn(true);
+  }, []);
 
   const busy = sending && messages[messages.length - 1]?.role !== 'assistant';
 
@@ -247,7 +255,7 @@ export default function Assistant() {
             placeholder={t('assistant.placeholder')}
             className="flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3.5 text-sm leading-relaxed min-h-[96px] max-h-52 focus:outline-none focus:ring-2 focus:ring-ring"
           />
-          <MicToggle lang={lang} onTranscript={send} />
+          <MicToggle lang={lang} onTranscript={send} onListeningChange={handleMicListeningChange} />
           <button
             type="button"
             onClick={() => setVoiceOn((v) => !v)}

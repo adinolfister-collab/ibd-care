@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Mic, Square } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -15,20 +15,36 @@ const LANG_MAP = {
   fr: 'fr-FR',
   de: 'de-DE',
   pt: 'pt-PT',
+  ru: 'ru-RU',
+  pl: 'pl-PL',
+  ro: 'ro-RO',
+  sq: 'sq-AL',
+  zh: 'zh-CN',
 };
 
 // Microfono a toggle: un tocco avvia l'ascolto, un altro tocco ferma e
 // invia la trascrizione. L'ascolto sopravvive alle pause di silenzio
 // perché il browser viene riavviato automaticamente finché l'utente
 // non preme stop manualmente.
-export default function MicToggle({ lang, onTranscript }) {
+export default function MicToggle({ lang, onTranscript, onListeningChange }) {
   const { t } = useI18n();
   const supported = !!SpeechRecognition;
   const [listening, setListening] = useState(false);
   const recRef = useRef(null);
   const transcriptRef = useRef('');
   const manualStopRef = useRef(false);
-  const handlersRef = useRef(null);
+  const restartTimerRef = useRef(null);
+
+  // Mantieni sempre l'ultima callback senza forzare ricostruzioni del riconoscitore
+  const onTranscriptRef = useRef(onTranscript);
+  useEffect(() => { onTranscriptRef.current = onTranscript; }, [onTranscript]);
+  const onListeningChangeRef = useRef(onListeningChange);
+  useEffect(() => { onListeningChangeRef.current = onListeningChange; }, [onListeningChange]);
+
+  const setListeningSafe = useCallback((v) => {
+    setListening(v);
+    onListeningChangeRef.current?.(v);
+  }, []);
 
   const buildRec = useCallback(() => {
     const rec = new SpeechRecognition();
@@ -49,32 +65,37 @@ export default function MicToggle({ lang, onTranscript }) {
       recRef.current = null;
       if (manualStopRef.current) {
         const final = transcriptRef.current.trim();
-        setListening(false);
-        if (final) onTranscript(final);
+        transcriptRef.current = '';
+        setListeningSafe(false);
+        if (final) onTranscriptRef.current(final);
         return;
       }
-      // Pausa di silenzio: riavvia automaticamente per restare in ascolto
-      // finché l'utente non ferma manualmente.
-      if (!manualStopRef.current) {
+      // Pausa di silenzio: riavvia con un piccolo ritardo per restare in
+      // ascolto finché l'utente non ferma manualmente.
+      clearTimeout(restartTimerRef.current);
+      restartTimerRef.current = setTimeout(() => {
+        if (manualStopRef.current) { setListeningSafe(false); return; }
         try {
           const next = buildRec();
           recRef.current = next;
           next.start();
         } catch (_) {
-          setListening(false);
+          setListeningSafe(false);
         }
-      }
+      }, 250);
     };
 
     rec.onerror = (e) => {
+      // 'no-speech' e 'aborted' sono normali durante l'ascolto continuo:
+      // lascia che onend gestisca il riavvio.
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
         manualStopRef.current = true;
-        setListening(false);
+        setListeningSafe(false);
       }
     };
 
     return rec;
-  }, [lang, onTranscript]);
+  }, [lang, setListeningSafe]);
 
   const start = useCallback(() => {
     if (!supported) return;
@@ -84,22 +105,40 @@ export default function MicToggle({ lang, onTranscript }) {
       const rec = buildRec();
       recRef.current = rec;
       rec.start();
-      setListening(true);
+      setListeningSafe(true);
     } catch (_) {
-      setListening(false);
+      setListeningSafe(false);
     }
-  }, [supported, buildRec]);
+  }, [supported, buildRec, setListeningSafe]);
 
   const stop = useCallback(() => {
     manualStopRef.current = true;
+    clearTimeout(restartTimerRef.current);
     try { recRef.current?.stop(); } catch (_) {}
-  }, []);
+    // Alcuni browser non emettono onend se non c'era audio: fallback di invio
+    setTimeout(() => {
+      if (!recRef.current) return;
+      const final = transcriptRef.current.trim();
+      transcriptRef.current = '';
+      recRef.current = null;
+      setListeningSafe(false);
+      if (final) onTranscriptRef.current(final);
+    }, 300);
+  }, [setListeningSafe]);
 
   const toggle = () => {
     if (!supported) return;
     if (listening) stop();
     else start();
   };
+
+  useEffect(() => {
+    return () => {
+      manualStopRef.current = true;
+      clearTimeout(restartTimerRef.current);
+      try { recRef.current?.stop(); } catch (_) {}
+    };
+  }, []);
 
   return (
     <button
