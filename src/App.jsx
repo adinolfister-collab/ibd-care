@@ -42,6 +42,7 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Guida from '@/pages/Guida';
 import ScaricaApp from '@/pages/ScaricaApp';
+import Supporto from '@/pages/Supporto';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
 import PageViewBeacon from '@/components/PageViewBeacon';
@@ -93,6 +94,7 @@ const AuthenticatedApp = () => {
         <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />
         <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
         <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
+        <Route path="/supporto" element={<PageTransition><Supporto /></PageTransition>} />
         <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
         <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
         <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />

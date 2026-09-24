@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
-import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3, ScanLine, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard,   Megaphone, BookOpen, Smartphone } from 'lucide-react';
+import { Home, Activity, Utensils, Pill, FileText, MapPin, FileBarChart, Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon, Bot, Users, User, BarChart3,   ScanLine, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard,   Megaphone, BookOpen, Smartphone, LifeBuoy } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -26,6 +26,7 @@ const navItems = [
   { to: '/records', key: 'nav.records', icon: FileText },
   { to: '/esami', key: 'nav.esami', icon: ScanLine },
   { to: '/assistant', key: 'nav.assistant', icon: Bot },
+  { to: '/supporto', key: 'nav.supporto', icon: LifeBuoy },
   { to: '/community', key: 'nav.community', icon: Users },
   { to: '/trends', key: 'nav.trends', icon: LineChartIcon },
   { to: '/symptom-charts', key: 'nav.symptom_charts', icon: BarChart3 },

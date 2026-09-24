@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { MessagesSquare, MessageSquare } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -23,6 +23,7 @@ export default function Community() {
   const [me, setMe] = useState(null);
   const [tab, setTab] = useState('board');
   const [pendingUser, setPendingUser] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     (async () => {
@@ -32,6 +33,15 @@ export default function Community() {
       } catch (e) {}
     })();
   }, []);
+
+  // Arrivo da "Trova Supporto": apre il DM con la persona suggerita.
+  useEffect(() => {
+    const dmUser = location.state?.dmUser;
+    if (dmUser) {
+      handleDmUser(dmUser);
+      window.history.replaceState({}, '');
+    }
+  }, [location.state]);
 
   const isAdmin = me?.role === 'admin';
 

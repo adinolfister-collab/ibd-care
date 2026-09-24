@@ -19,7 +19,7 @@ export function mapPathToSection(pathname) {
   }
   if (DIARY_PATHS.some((s) => p === s || p.startsWith(s + '/'))) return 'Diario';
   if (p.startsWith('/shop')) return 'Negozio';
-  if (p.startsWith('/community')) return 'Community';
+  if (p.startsWith('/community') || p.startsWith('/supporto')) return 'Community';
   if (p.startsWith('/abbonamento')) return 'Abbonamento';
   if (p.startsWith('/account') || p.startsWith('/settings')) return 'Account';
   return 'Altro';
