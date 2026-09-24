@@ -12,7 +12,8 @@
         "dm_request",
         "dm_message",
         "mention",
-        "reaction"
+        "reaction",
+        "meal_check"
       ]
     },
     "title": {

@@ -1,0 +1,44 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "evening_meal_check",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "remind": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "notifyEveningMealCheck"
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Promemoria serale pasti",
+            "description": "Notifica in-app + push per registrare le reazioni ai pasti della giornata"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 21 * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Rome",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Ogni sera alle 21:00 (Europe/Rome) ricorda agli utenti con notifiche attive di registrare le reazioni ai pasti della giornata.",
+  "name": "Promemoria serale pasti"
+}

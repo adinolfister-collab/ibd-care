@@ -6,6 +6,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
+import CaryAvatar from '@/components/CaryAvatar';
 import MicToggle from '@/components/MicToggle';
 import PremiumPaywall from '@/components/PremiumPaywall';
 import { useAuth } from '@/lib/AuthContext';
@@ -51,7 +52,7 @@ export default function Assistant() {
       try {
         const c = await base44.agents.createConversation({
           agent_name: 'assistente',
-          metadata: { name: 'Assistente IBD' },
+          metadata: { name: 'Cary' },
         });
         if (cancelled) return;
         convRef.current = c;
@@ -140,11 +141,9 @@ export default function Assistant() {
           )}
           {messages.length === 0 && !error && (
             <div className="text-center py-8 px-4">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                <Bot className="w-7 h-7 text-primary" />
-              </div>
-              <p className="text-base font-medium">{t('assistant.greeting')}</p>
-              <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">{t('assistant.hint')}</p>
+              <CaryAvatar className="w-14 h-14 mx-auto mb-3" />
+              <p className="font-heading text-lg font-semibold text-primary">{t('assistant.greeting')}</p>
+              <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">{t('assistant.hint')}</p>
             </div>
           )}
 

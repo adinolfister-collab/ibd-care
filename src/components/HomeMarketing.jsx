@@ -12,6 +12,7 @@ import LanguageMenu from '@/components/LanguageMenu';
 import SiteMenu from '@/components/SiteMenu';
 import { Button } from '@/components/ui/button';
 import InstallAppButton from '@/components/InstallAppButton';
+import HomeCompanionReport from '@/components/HomeCompanionReport';
 
 const STEPS = [
   { icon: Activity, key: 'landing.step1_title', desc: 'landing.step1_desc', color: 'text-emerald-600 bg-emerald-50' },
@@ -86,6 +87,11 @@ export default function HomeMarketing() {
               );
             })}
           </div>
+        </section>
+
+        {/* CARY + REPORT */}
+        <section className="mb-10">
+          <HomeCompanionReport />
         </section>
 
         {/* SEMAFORO TRIGGER HIGHLIGHT */}

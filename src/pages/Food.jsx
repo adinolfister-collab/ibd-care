@@ -3,6 +3,10 @@ import { Plus, Utensils, Trash2, Pencil, BookMarked, ShieldCheck } from 'lucide-
 import { base44 } from '@/api/base44Client';
 import MealTemplateManager from '@/components/MealTemplateManager';
 import DietaryTips from '@/components/DietaryTips';
+import ToleranceOverview from '@/components/ToleranceOverview';
+import CookingCorrelation from '@/components/CookingCorrelation';
+import FoodLessons from '@/components/FoodLessons';
+import FoodReportButton from '@/components/FoodReportButton';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
@@ -170,6 +174,7 @@ export default function Food() {
               <Button onClick={() => setTplMgrOpen(true)} variant="outline" className="rounded-xl"><BookMarked className="w-4 h-4 mr-1.5" />{t('food.templates')}</Button>
             )}
             <Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('food.add')}</Button>
+            <FoodReportButton foods={items} />
           </div>
         }
       />
@@ -187,6 +192,7 @@ export default function Food() {
           ))}
         </div>
       )}
+      <ToleranceOverview foods={items} />
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
@@ -243,6 +249,12 @@ export default function Food() {
           <DietaryTips />
         </div>
       )}
+      <div className="mt-6">
+        <CookingCorrelation foods={items} />
+      </div>
+      <div className="mt-6">
+        <FoodLessons />
+      </div>
       </MagazineEssay>
 
       <FoodFormDialog

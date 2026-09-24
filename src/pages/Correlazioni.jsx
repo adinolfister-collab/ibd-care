@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { computeFoodCorrelation, buildSymptomMap } from '@/lib/correlationStats';
 import { computeTriggerLights } from '@/lib/triggerLight';
 import TriggerLightBadge from '@/components/TriggerLightBadge';
+import CookingCorrelation from '@/components/CookingCorrelation';
 
 const TOP = 12;
 
@@ -109,6 +110,9 @@ export default function Correlazioni() {
           </Card>
         )}
 
+        {!loading && foods.length > 0 && (
+          <CookingCorrelation foods={foods} />
+        )}
         {loading ? (
           <p className="text-muted-foreground">{t('common.loading')}</p>
         ) : bowelData.length === 0 && painData.length === 0 ? (
