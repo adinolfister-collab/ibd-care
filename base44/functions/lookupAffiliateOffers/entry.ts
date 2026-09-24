@@ -1,4 +1,5 @@
 import { secrets } from 'base44:runtime';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 
 // Lookup live delle offerte del programma affiliate marketing per un prodotto.
 // Contratto: POST { query: string, limit?: number } -> { configured, offers, count, fetched_at }
@@ -83,6 +84,14 @@ function normalizeOffers(data, affiliateId) {
 
 export default async function(req) {
   try {
+    // Solo gli amministratori possono invocare il lookup affiliate: la chiamata
+    // usa le chiavi API dell'app verso un network esterno, quindi e' riservata.
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await req.json().catch(() => ({}));
     const query = (body?.query || '').toString().trim();
     if (!query) return Response.json({ error: 'query required' }, { status: 400 });
