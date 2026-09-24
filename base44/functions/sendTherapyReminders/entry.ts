@@ -52,6 +52,7 @@ export default async function(req) {
     const p = romeMinutes(new Date());
     const floor = Math.floor(p.totalMin / WINDOW) * WINDOW;
     let sent = 0;
+    let skipped = 0;
     const errors = [];
 
     for (const m of meds) {
@@ -62,6 +63,12 @@ export default async function(req) {
         return t >= floor && t < floor + WINDOW;
       });
       if (!due) continue;
+      let consent = true;
+      try {
+        const owner = await base44.asServiceRole.entities.User.get(m.created_by_id);
+        if (owner && owner.notifications_enabled === false) consent = false;
+      } catch (_) { /* assume consent if unreadable */ }
+      if (!consent) { skipped++; continue; }
       try {
         await base44.asServiceRole.integrations.Core.SendPushNotification({
           user_id: m.created_by_id,
@@ -76,7 +83,7 @@ export default async function(req) {
       }
     }
 
-    return Response.json({ sent, floor, errors });
+    return Response.json({ sent, skipped, floor, errors });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

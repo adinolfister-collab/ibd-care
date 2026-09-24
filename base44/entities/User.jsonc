@@ -54,6 +54,11 @@
     "ai_messages_month": {
       "type": "string",
       "description": "Mese di riferimento del contatore AI (formato YYYY-MM)"
+    },
+    "notifications_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Consenso dell'utente a ricevere notifiche push native (promemoria terapie, aggiornamenti community)"
     }
   },
   "required": [

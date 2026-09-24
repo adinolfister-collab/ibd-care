@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Globe, LogOut, User as UserIcon, Fingerprint, Database, Trash2 } from 'lucide-react';
+import { ShieldCheck, Globe, LogOut, User as UserIcon, Fingerprint, Database, Trash2, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import {
@@ -24,6 +24,15 @@ export default function Settings() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteAck, setDeleteAck] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [notifBusy, setNotifBusy] = useState(false);
+  const toggleNotif = async (checked) => {
+    setNotifBusy(true);
+    try {
+      await base44.auth.updateMe({ notifications_enabled: checked });
+      setUser((u) => ({ ...(u || {}), notifications_enabled: checked }));
+    } catch (e) {}
+    setNotifBusy(false);
+  };
   const toggleBio = async (checked) => {
     setBioBusy(true);
     try { if (checked) await enable(); else disable(); } catch (e) {}
@@ -139,6 +148,21 @@ export default function Settings() {
               <Switch checked={enabled} disabled={!supported || bioBusy} onCheckedChange={toggleBio} />
             </div>
             {!supported && <p className="text-xs text-muted-foreground mt-3">Il dispositivo non supporta lo sblocco biometrico nel browser.</p>}
+          </CardContent>
+        </Card>
+
+        {/* Notifiche push */}
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><Bell className="w-5 h-5 text-primary" /></div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold">Notifiche push</p>
+                <p className="text-sm text-muted-foreground leading-snug">Ricevi promemoria terapie e aggiornamenti community sul dispositivo. Disattiva quando vuoi.</p>
+              </div>
+              <Switch checked={user?.notifications_enabled !== false} disabled={notifBusy || !user} onCheckedChange={toggleNotif} />
+            </div>
+            {!user && <p className="text-xs text-muted-foreground mt-3">Accedi per gestire le notifiche.</p>}
           </CardContent>
         </Card>
 

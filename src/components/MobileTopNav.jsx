@@ -81,7 +81,10 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
       : location.pathname === item.to || location.pathname.startsWith(item.to + '/');
 
   return (
-    <header className="md:hidden sticky top-0 z-40 bg-card/95 backdrop-blur border-b border-terracotta/50">
+    <header
+      className="md:hidden sticky top-0 z-40 bg-card/95 backdrop-blur border-b border-terracotta/50"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
       <div className="flex items-center justify-between h-12 px-3">
         <div className="flex items-center gap-2 min-w-0">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center shrink-0">

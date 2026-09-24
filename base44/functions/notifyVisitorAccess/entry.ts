@@ -42,9 +42,11 @@ export default async function(req: Request): Promise<Response> {
     const content = parts.join(' · ');
 
     let sent = 0;
+    let skipped = 0;
     const errors: string[] = [];
 
     for (const admin of admins) {
+      if (admin.notifications_enabled === false) { skipped++; continue; }
       try {
         await base44.asServiceRole.integrations.Core.SendPushNotification({
           user_id: admin.id,
@@ -59,7 +61,7 @@ export default async function(req: Request): Promise<Response> {
       }
     }
 
-    return Response.json({ sent, content, errors });
+    return Response.json({ sent, skipped, content, errors });
   } catch (error) {
     return Response.json(
       { error: String((error && error.message) || error) },
