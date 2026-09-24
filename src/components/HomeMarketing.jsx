@@ -11,6 +11,7 @@ import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 import SiteMenu from '@/components/SiteMenu';
 import { Button } from '@/components/ui/button';
+import InstallAppButton from '@/components/InstallAppButton';
 
 const STEPS = [
   { icon: Activity, key: 'landing.step1_title', desc: 'landing.step1_desc', color: 'text-emerald-600 bg-emerald-50' },
@@ -180,6 +181,9 @@ export default function HomeMarketing() {
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </Link>
+            </div>
+            <div className="flex justify-center mt-4">
+              <InstallAppButton />
             </div>
           </div>
         </section>
