@@ -1,0 +1,65 @@
+{
+  "name": "Geocodifica Centri IBD",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "*/10 * * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Rome",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "ibd_centers_geocode",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "geocode": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "seedIBDCenters",
+            "args": {
+              "geocodeBatch": 80
+            }
+          },
+          "then": "check_remaining",
+          "x-base44": {
+            "title": "Geocodifica batch centri",
+            "description": "80 centri per esecuzione"
+          }
+        }
+      },
+      {
+        "check_remaining": {
+          "switch": [
+            {
+              "when": "${ .geocode.remaining == 0 }",
+              "then": "end"
+            },
+            {
+              "when": "${ true }",
+              "then": "end"
+            }
+          ],
+          "x-base44": {
+            "title": "Verifica completamento",
+            "description": "Restano centri da geocodificare?"
+          }
+        }
+      }
+    ]
+  },
+  "description": "Geocodifica automatica dei centri IBD ogni 10 minuti (batch 80) fino al completamento"
+}

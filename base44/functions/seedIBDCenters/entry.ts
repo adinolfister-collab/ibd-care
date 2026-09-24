@@ -295,9 +295,18 @@ export default async function(req) {
               const region = a.state || a.region || '';
               await base44.asServiceRole.entities.ServiceLocation.update(rec.id, { lat, lng, city, region, geocoded: true });
               geocoded++;
-            } else { geoFailed++; }
-          } else { geoFailed++; }
-        } catch (_) { geoFailed++; }
+            } else {
+              await base44.asServiceRole.entities.ServiceLocation.update(rec.id, { geocoded: true });
+              geoFailed++;
+            }
+          } else {
+            await base44.asServiceRole.entities.ServiceLocation.update(rec.id, { geocoded: true });
+            geoFailed++;
+          }
+        } catch (_) {
+          await base44.asServiceRole.entities.ServiceLocation.update(rec.id, { geocoded: true }).catch(() => {});
+          geoFailed++;
+        }
         await sleep(1100);
       }
       remaining = Math.max(0, remaining - geocoded);
