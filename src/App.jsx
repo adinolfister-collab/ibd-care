@@ -26,6 +26,7 @@ import Abbonamento from '@/pages/Abbonamento';
 import Account from '@/pages/Account';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
+import Privacy from '@/pages/Privacy';
 import ArticleDetail from '@/pages/ArticleDetail';
 import IBDNews from '@/pages/IBDNews';
 import Esami from '@/pages/Esami';
@@ -87,6 +88,7 @@ const AuthenticatedApp = () => {
         {/* Public pages: navigable without login. Diario usable as guest (local). */}
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
         <Route path="/guida" element={<PageTransition><Guida /></PageTransition>} />
         <Route path="/scarica" element={<PageTransition><ScaricaApp /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />

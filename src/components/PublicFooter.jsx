@@ -15,6 +15,7 @@ export default function PublicFooter() {
         <Link to="/" className="hover:text-primary hover:underline">Home</Link>
         <Link to="/abbonamento" className="hover:text-primary hover:underline">Abbonamento</Link>
         <Link to="/about" className="hover:text-primary hover:underline">Chi siamo</Link>
+        <Link to="/privacy" className="hover:text-primary hover:underline">Privacy</Link>
         <Link to="/contact" className="hover:text-primary hover:underline">Contatti</Link>
       </nav>
       <p className="mt-3 text-xs">© {new Date().getFullYear()} IBD Care. Tutti i diritti riservati.</p>
