@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { NavLink, useLocation, Link } from 'react-router-dom';
+import { NavLink, useLocation, Link, useNavigate } from 'react-router-dom';
 import {
   Home, Activity, Utensils, Pill, FileText, ScanLine, MapPin, FileBarChart,
   Settings as SettingsIcon, LogOut, LogIn, HeartPulse, LineChart as LineChartIcon,
-  Bot, Users, User, BarChart3, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard, Megaphone, BookOpen,
+  Bot, Users, User, BarChart3, Newspaper, TrendingUp, GitCompare, ShoppingBag, Crown, CreditCard, Megaphone, BookOpen, ArrowLeft,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -18,7 +18,13 @@ import DesktopViewToggle from '@/components/DesktopViewToggle';
 export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
   const { t } = useI18n();
   const location = useLocation();
+  const navigate = useNavigate();
   const activeRef = useRef(null);
+
+  // Root tab screens keep the brand logo; any other route is treated as a
+  // child/detail screen and shows a back button instead.
+  const ROOT_PATHS = ['/', '/symptoms', '/community', '/abbonamento', '/account', '/login'];
+  const isChildScreen = !ROOT_PATHS.includes(location.pathname);
 
   const groups = [
     {
@@ -87,10 +93,23 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
     >
       <div className="flex items-center justify-between h-12 px-3">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center shrink-0">
-            <HeartPulse className="w-4 h-4 text-primary" />
-          </div>
-          <p className="font-heading font-semibold tracking-tight text-sm truncate">{t('app.name')}</p>
+          {isChildScreen ? (
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="h-9 w-9 rounded-full flex items-center justify-center text-foreground hover:bg-accent transition-colors"
+              aria-label={t('common.back')}
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+          ) : (
+            <>
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center shrink-0">
+                <HeartPulse className="w-4 h-4 text-primary" />
+              </div>
+              <p className="font-heading font-semibold tracking-tight text-sm truncate">{t('app.name')}</p>
+            </>
+          )}
         </div>
         <div className="flex items-center gap-1">
           <DesktopViewToggle />

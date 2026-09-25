@@ -13,6 +13,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import HistoryExport from '@/components/HistoryExport';
+import { deleteAccountAndData } from '@/lib/accountDeletion';
 import { useBiometric } from '@/lib/biometric';
 
 export default function Settings() {
@@ -51,13 +52,7 @@ export default function Settings() {
     e.preventDefault();
     setDeleting(true);
     try {
-      await Promise.all([
-        base44.entities.SymptomEntry.deleteMany({}),
-        base44.entities.FoodEntry.deleteMany({}),
-        base44.entities.Medication.deleteMany({}),
-        base44.entities.MedicalRecord.deleteMany({}),
-        base44.entities.MealTemplate.deleteMany({}),
-      ]);
+      await deleteAccountAndData(user?.id);
     } catch (err) {
       console.error('Errore durante la cancellazione dei dati', err);
     }

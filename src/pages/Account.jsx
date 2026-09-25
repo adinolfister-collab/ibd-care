@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { cn } from '@/lib/utils';
+import { deleteAccountAndData } from '@/lib/accountDeletion';
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -50,7 +51,7 @@ export default function Account() {
     setDeleting(true);
     setDeleteError('');
     try {
-      await base44.entities.User.delete(user.id);
+      await deleteAccountAndData(user.id);
     } catch (err) {
       setDeleting(false);
       setDeleteError('Impossibile eliminare l\'account. Riprova o scrivici dalla pagina Contatti.');

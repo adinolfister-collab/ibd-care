@@ -112,12 +112,24 @@
     -webkit-touch-callout: default;
   }
 
-  /* Wider tap targets for icon buttons on mobile */
+  /* Comfortable mobile touch targets: at least 44x44 px */
   @media (max-width: 767px) {
     html {
       font-size: 17px;
     }
-    button.h-9.w-9 {
+    button,
+    [role="button"],
+    [role="tab"],
+    [role="menuitem"],
+    a[role="button"] {
+      min-height: 44px;
+    }
+    /* Square / icon-only tap targets: enforce 44x44 */
+    button.h-9.w-9,
+    a.h-9.w-9,
+    [role="button"].h-9.w-9,
+    button[class*="w-9"][class*="h-9"],
+    a[class*="w-9"][class*="h-9"] {
       min-height: 44px;
       min-width: 44px;
       height: 44px;
