@@ -51,6 +51,23 @@
               "tazza",
               "fetta"
             ]
+          },
+          "kcal": {
+            "type": "number",
+            "description": "Calorie totali dell'item (snapshot al momento della registrazione)"
+          },
+          "proteine": {
+            "type": "number",
+            "description": "Proteine totali (g) dell'item (snapshot al momento della registrazione)"
+          },
+          "kcal_source": {
+            "type": "string",
+            "enum": [
+              "catalog",
+              "manual",
+              "cary"
+            ],
+            "description": "Origine dei valori nutrizionali dell'item"
           }
         },
         "required": [

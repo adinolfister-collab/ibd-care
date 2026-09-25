@@ -20,6 +20,7 @@ import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
 import FoodFormDialog from '@/components/FoodFormDialog';
 import FoodCatalogManager from '@/components/FoodCatalogManager';
+import DailyNutrition from '@/components/DailyNutrition';
 import { catalogToGroups, parseLegacyFoods, serializeItems } from '@/lib/foodCatalog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -181,6 +182,9 @@ export default function Food() {
       <PageEditorial pageKey="food" />
       <SiteMenu />
       <MagazineEssay theme="alimentazione" number="01" eyebrow="Tavolo" title="Pasti e reazioni">
+      <div className="mb-6">
+        <DailyNutrition entries={items} groups={catalogGroups} />
+      </div>
       {authChecked && !isAuthenticated && <GuestBanner />}
       {isAuthenticated && templates.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4">

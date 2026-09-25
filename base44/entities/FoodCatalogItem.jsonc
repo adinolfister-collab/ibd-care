@@ -23,6 +23,14 @@
         "fetta"
       ]
     },
+    "kcal": {
+      "type": "number",
+      "description": "Calorie per 100 g (o 100 ml) di alimento"
+    },
+    "proteine": {
+      "type": "number",
+      "description": "Proteine (g) per 100 g (o 100 ml) di alimento"
+    },
     "order": {
       "type": "number"
     }

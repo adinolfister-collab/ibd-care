@@ -61,13 +61,19 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
 
   const groups = useMemo(() => catalogToGroups(items.length ? items : []), [items]);
 
-  const openNew = () => setEditing({ name: '', category: CATEGORIES[0], default_unit: 'porzione' });
-  const openEdit = (it) => setEditing({ id: it.id, name: it.name, category: it.category, default_unit: it.default_unit || 'porzione' });
+  const openNew = () => setEditing({ name: '', category: CATEGORIES[0], default_unit: 'porzione', kcal: '', proteine: '' });
+  const openEdit = (it) => setEditing({ id: it.id, name: it.name, category: it.category, default_unit: it.default_unit || 'porzione', kcal: it.kcal ?? '', proteine: it.proteine ?? '' });
   const closeEdit = () => setEditing(null);
 
   const save = async () => {
     if (!editing?.name?.trim()) return;
-    const payload = { name: editing.name.trim(), category: editing.category, default_unit: editing.default_unit };
+    const payload = {
+      name: editing.name.trim(),
+      category: editing.category,
+      default_unit: editing.default_unit,
+      kcal: editing.kcal === '' ? null : Number(editing.kcal),
+      proteine: editing.proteine === '' ? null : Number(editing.proteine),
+    };
     try {
       if (editing.id) {
         await base44.entities.FoodCatalogItem.update(editing.id, payload);
@@ -109,6 +115,12 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
                 {g.items.map((it) => (
                   <div key={it.id} className="flex items-center gap-2 px-2.5 py-2">
                     <span className="flex-1 text-sm">{it.name}</span>
+                    {it.kcal != null && (
+                      <span className="text-[11px] text-terracotta font-medium">{it.kcal} kcal</span>
+                    )}
+                    {it.proteine != null && (
+                      <span className="text-[11px] text-primary font-medium">{it.proteine}g</span>
+                    )}
                     {it.default_unit && (
                       <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
                         {it.default_unit}
@@ -169,6 +181,31 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
                   </Select>
                 )}
               </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">{t('food.kcal_field')}</Label>
+                  <Input
+                    type="number"
+                    inputMode="decimal"
+                    value={editing.kcal ?? ''}
+                    onChange={(e) => setEditing({ ...editing, kcal: e.target.value })}
+                    className={fieldClass}
+                    placeholder="0"
+                  />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">{t('food.prot_field')}</Label>
+                  <Input
+                    type="number"
+                    inputMode="decimal"
+                    value={editing.proteine ?? ''}
+                    onChange={(e) => setEditing({ ...editing, proteine: e.target.value })}
+                    className={fieldClass}
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+              <p className="text-[11px] text-muted-foreground italic -mt-1">{t('food.nutrition_per100_hint')}</p>
             </div>
             <DialogFooter className="gap-2 px-6 pb-5 border-t border-border">
               <Button variant="ghost" onClick={closeEdit}>{t('common.cancel')}</Button>
