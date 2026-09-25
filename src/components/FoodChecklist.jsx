@@ -1,10 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { Search, X, Plus, Sparkles, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { UNITS } from '@/lib/foodCatalog';
 import { computeItemNutrition, buildCatalogMap } from '@/lib/nutrition';
 import { useI18n } from '@/lib/i18n';
-import { unitLabel } from '@/lib/enumLabels';
+import UnitSelect from '@/components/UnitSelect';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -223,15 +222,7 @@ function Row({ checked, name, qty, unit, kcal, proteine, onToggle, onQty, onUnit
             placeholder="0"
             className="w-14 rounded-lg border border-input bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
-          <select
-            value={unit || 'porzione'}
-            onChange={(e) => onUnit(e.target.value)}
-            className="rounded-lg border border-input bg-background px-1.5 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-          >
-            {UNITS.map((u) => (
-              <option key={u.value} value={u.value}>{unitLabel(t, u.value)}</option>
-            ))}
-          </select>
+          <UnitSelect value={unit || 'porzione'} onChange={onUnit} />
           <NutritionBadge kcal={kcal} proteine={proteine} />
         </div>
       )}
@@ -296,15 +287,7 @@ function ExtraRow({ it, onQty, onUnit, onNutrition, onDelete }) {
           placeholder="0"
           className="w-14 rounded-lg border border-input bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
         />
-        <select
-          value={it.unit || 'porzione'}
-          onChange={(e) => onUnit(e.target.value)}
-          className="rounded-lg border border-input bg-background px-1.5 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-        >
-          {UNITS.map((u) => (
-            <option key={u.value} value={u.value}>{unitLabel(t, u.value)}</option>
-          ))}
-        </select>
+        <UnitSelect value={it.unit || 'porzione'} onChange={onUnit} />
         <input
           type="number"
           inputMode="decimal"

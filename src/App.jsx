@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -10,45 +11,53 @@ import { BiometricLockProvider } from '@/lib/biometric';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { LanguageProvider } from '@/lib/i18n';
 import { ThemeProvider } from 'next-themes';
-import Home from '@/pages/Home';
-import Symptoms from '@/pages/Symptoms';
-import Food from '@/pages/Food';
-import Meds from '@/pages/Meds';
-import Records from '@/pages/Records';
-import ServicesMap from '@/pages/ServicesMap';
-import Trends from '@/pages/Trends';
-import SymptomCharts from '@/pages/SymptomCharts';
-import Assistant from '@/pages/Assistant';
-import Community from '@/pages/Community';
-import Summary from '@/pages/Summary';
-import Settings from '@/pages/Settings';
-import Abbonamento from '@/pages/Abbonamento';
-import Account from '@/pages/Account';
-import About from '@/pages/About';
-import Contact from '@/pages/Contact';
-import Privacy from '@/pages/Privacy';
-import ArticleDetail from '@/pages/ArticleDetail';
-import IBDNews from '@/pages/IBDNews';
-import Esami from '@/pages/Esami';
-import Correlazioni from '@/pages/Correlazioni';
-import AdminConversions from '@/pages/AdminConversions';
-import Shop from '@/pages/Shop';
-import ShopAdmin from '@/pages/ShopAdmin';
-import MarketingAdmin from '@/pages/MarketingAdmin';
-import ProductDetail from '@/pages/ProductDetail';
-import Founders from '@/pages/Founders';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
-import ForgotPassword from '@/pages/ForgotPassword';
-import ResetPassword from '@/pages/ResetPassword';
-import Guida from '@/pages/Guida';
-import ScaricaApp from '@/pages/ScaricaApp';
-import Supporto from '@/pages/Supporto';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
 import PageViewBeacon from '@/components/PageViewBeacon';
 import SeoMetaManager from '@/components/SeoMetaManager';
-// Add page imports here
+
+// Route-based code-splitting: each page is loaded on demand to keep the
+// initial WebView bundle small and speed up first paint.
+const Home = lazy(() => import('@/pages/Home'));
+const Symptoms = lazy(() => import('@/pages/Symptoms'));
+const Food = lazy(() => import('@/pages/Food'));
+const Meds = lazy(() => import('@/pages/Meds'));
+const Records = lazy(() => import('@/pages/Records'));
+const ServicesMap = lazy(() => import('@/pages/ServicesMap'));
+const Trends = lazy(() => import('@/pages/Trends'));
+const SymptomCharts = lazy(() => import('@/pages/SymptomCharts'));
+const Assistant = lazy(() => import('@/pages/Assistant'));
+const Community = lazy(() => import('@/pages/Community'));
+const Summary = lazy(() => import('@/pages/Summary'));
+const Settings = lazy(() => import('@/pages/Settings'));
+const Abbonamento = lazy(() => import('@/pages/Abbonamento'));
+const Account = lazy(() => import('@/pages/Account'));
+const About = lazy(() => import('@/pages/About'));
+const Contact = lazy(() => import('@/pages/Contact'));
+const Privacy = lazy(() => import('@/pages/Privacy'));
+const ArticleDetail = lazy(() => import('@/pages/ArticleDetail'));
+const IBDNews = lazy(() => import('@/pages/IBDNews'));
+const Esami = lazy(() => import('@/pages/Esami'));
+const Correlazioni = lazy(() => import('@/pages/Correlazioni'));
+const AdminConversions = lazy(() => import('@/pages/AdminConversions'));
+const Shop = lazy(() => import('@/pages/Shop'));
+const ShopAdmin = lazy(() => import('@/pages/ShopAdmin'));
+const MarketingAdmin = lazy(() => import('@/pages/MarketingAdmin'));
+const ProductDetail = lazy(() => import('@/pages/ProductDetail'));
+const Founders = lazy(() => import('@/pages/Founders'));
+const Login = lazy(() => import('@/pages/Login'));
+const Register = lazy(() => import('@/pages/Register'));
+const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
+const Guida = lazy(() => import('@/pages/Guida'));
+const ScaricaApp = lazy(() => import('@/pages/ScaricaApp'));
+const Supporto = lazy(() => import('@/pages/Supporto'));
+
+const PageLoader = () => (
+  <div className="fixed inset-0 flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+  </div>
+);
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -56,11 +65,7 @@ const AuthenticatedApp = () => {
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   // Handle authentication errors
@@ -78,6 +83,7 @@ const AuthenticatedApp = () => {
   return (
     <>
     <SeoMetaManager />
+    <Suspense fallback={<PageLoader />}>
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {/* Auth routes (public) */}
@@ -125,6 +131,7 @@ const AuthenticatedApp = () => {
         <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>
+    </Suspense>
     </>
   );
 };
