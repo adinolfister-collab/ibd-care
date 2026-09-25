@@ -9,6 +9,7 @@ import SavePaywall from '@/components/SavePaywall';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { localeForLang } from '@/lib/enumLabels';
 
 const TYPE_ICON = {
   visita: Stethoscope, esame: FileText, esame_sangue: FlaskConical,
@@ -23,13 +24,13 @@ const TYPE_COLOR = {
   terapia: 'bg-emerald-50 text-emerald-600'
 };
 
-function fmt(d) {
-  try { return new Date(d).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }); }
+function fmt(d, lang) {
+  try { return new Date(d).toLocaleDateString(localeForLang(lang), { day: 'numeric', month: 'short', year: 'numeric' }); }
   catch { return d || '—'; }
 }
 
 export default function ImportData({ onSaved }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { attemptSave, showPaywall, setShowPaywall } = useGuestSaveGate();
@@ -161,7 +162,7 @@ export default function ImportData({ onSaved }) {
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{j.record?.title || j.record?.name || j.file?.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {j.status === 'saved' && (j.record?.record_date || j.record?.start_date) ? fmt(j.record.record_date || j.record.start_date) : j.file?.name}
+                        {j.status === 'saved' && (j.record?.record_date || j.record?.start_date) ? fmt(j.record.record_date || j.record.start_date, lang) : j.file?.name}
                       </p>
                       <div className="mt-1.5 flex items-center gap-2 flex-wrap">
                         {j.status === 'saved' && (
@@ -211,7 +212,7 @@ export default function ImportData({ onSaved }) {
                 const d = j.record.record_date || j.record.start_date;
                 return (
                   <div key={j.id} className="flex items-center gap-3 text-sm">
-                    <span className="text-xs text-muted-foreground w-20 shrink-0">{fmt(d)}</span>
+                    <span className="text-xs text-muted-foreground w-20 shrink-0">{fmt(d, lang)}</span>
                     <span className={cn('h-1.5 w-1.5 rounded-full', TYPE_COLOR[j.type] ? 'bg-terracotta' : 'bg-muted-foreground')} />
                     <span className="truncate">{j.record.title || j.record.name}</span>
                     <span className="ml-auto text-xs text-muted-foreground">{t('import.type_' + j.type) || j.type}</span>

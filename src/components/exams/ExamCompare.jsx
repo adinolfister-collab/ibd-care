@@ -9,15 +9,16 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@
 import EmptyState from '@/components/EmptyState';
 import { exportExamComparison } from '@/lib/examPdf';
 import { cn } from '@/lib/utils';
+import { localeForLang } from '@/lib/enumLabels';
 
 const CATS = ['esame_sangue', 'calprotectina', 'colonscopia', 'ecografia'];
 const NUMERIC = new Set(['esame_sangue', 'calprotectina']);
 const flagColor = { high: 'text-rose-500', low: 'text-amber-500', normal: 'text-emerald-600' };
 const parseNum = (s) => { if (s == null) return null; const n = parseFloat(String(s).replace(/[<>≥≤]/g, '')); return isFinite(n) ? n : null; };
-function fmt(d) { try { return new Date(d).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: '2-digit' }); } catch { return d || '—'; } }
+function fmt(d, lang) { try { return new Date(d).toLocaleDateString(localeForLang(lang), { day: '2-digit', month: 'short', year: '2-digit' }); } catch { return d || '—'; } }
 
 export default function ExamCompare({ reloadKey }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [cat, setCat] = useState('esame_sangue');
   const [all, setAll] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +50,7 @@ export default function ExamCompare({ reloadKey }) {
 
   const chartData = useMemo(() => selRows.map((r) => {
     const m = (r.markers || []).find((mk) => mk.name === marker);
-    return { date: fmt(r.record_date), value: m ? parseNum(m.value) : null, unit: m?.unit || '' };
+    return { date: fmt(r.record_date, lang), value: m ? parseNum(m.value) : null, unit: m?.unit || '' };
   }).filter((d) => d.value != null), [selRows, marker]);
 
   const exportPdf = () => {
@@ -88,7 +89,7 @@ export default function ExamCompare({ reloadKey }) {
               {rows.map((r) => (
                 <label key={r.id} className={cn('inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs cursor-pointer transition-colors', selected.has(r.id) ? 'bg-primary/10 text-primary' : 'bg-accent text-muted-foreground')}>
                   <input type="checkbox" checked={selected.has(r.id)} onChange={() => toggle(r.id)} className="accent-primary" />
-                  <span>{fmt(r.record_date)} · {r.title}</span>
+                  <span>{fmt(r.record_date, lang)} · {r.title}</span>
                 </label>
               ))}
             </div>
@@ -131,7 +132,7 @@ export default function ExamCompare({ reloadKey }) {
                   <tbody>
                     {selRows.map((r) => (
                       <tr key={r.id} className="border-b border-border/60 last:border-0">
-                        <td className="py-2 pr-3 text-muted-foreground whitespace-nowrap">{fmt(r.record_date)}</td>
+                        <td className="py-2 pr-3 text-muted-foreground whitespace-nowrap">{fmt(r.record_date, lang)}</td>
                         {markers.map((m) => {
                           const mk = (r.markers || []).find((x) => x.name === m);
                           return <td key={m} className={cn('py-2 px-2', mk?.flag ? flagColor[mk.flag] : 'text-muted-foreground')}>
@@ -151,7 +152,7 @@ export default function ExamCompare({ reloadKey }) {
               <p className="text-sm font-medium">{t('exams.timeline_label')}</p>
               {selRows.map((r) => (
                 <div key={r.id} className="border-l-2 border-primary/40 pl-3">
-                  <p className="text-xs text-muted-foreground">{fmt(r.record_date)} · {r.title}</p>
+                  <p className="text-xs text-muted-foreground">{fmt(r.record_date, lang)} · {r.title}</p>
                   {r.findings && <p className="text-sm mt-1 whitespace-pre-line">{r.findings}</p>}
                   {r.result_summary && !r.findings && <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">{r.result_summary}</p>}
                 </div>

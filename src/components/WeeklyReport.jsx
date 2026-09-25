@@ -7,12 +7,15 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { useI18n } from '@/lib/i18n';
+import { localeForLang } from '@/lib/enumLabels';
 
 const PRIMARY = '#0d9488';
 const FATIGUE = '#f59e0b';
 const BOWEL = '#0ea5e9';
 
 export default function WeeklyReport() {
+  const { t, lang } = useI18n();
   const [open, setOpen] = useState(false);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -37,7 +40,7 @@ export default function WeeklyReport() {
 
   const fmtDay = (ds) => {
     const d = new Date(ds + 'T00:00:00');
-    return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' });
+    return d.toLocaleDateString(localeForLang(lang), { day: '2-digit', month: '2-digit' });
   };
 
   const exportPdf = async () => {
@@ -78,12 +81,12 @@ export default function WeeklyReport() {
   })) : [];
 
   const statCards = data ? [
-    { label: 'Dolore medio', value: `${data.stats.week_avg_pain}/10`, icon: TrendingUp, color: PRIMARY },
-    { label: 'Stanchezza media', value: `${data.stats.week_avg_fatigue}/10`, icon: Loader2, color: FATIGUE },
-    { label: 'Scariche totali', value: data.stats.total_bowel, icon: Droplet, color: BOWEL },
-    { label: 'Giorni sangue', value: data.stats.blood_days, icon: AlertTriangle, color: '#ef4444' },
-    { label: 'Pasti registrati', value: data.stats.total_meals, icon: Utensils, color: '#22c55e' },
-    { label: 'Pasti con reazione', value: data.stats.reaction_meals, icon: AlertTriangle, color: '#f97316' }
+    { label: t('weekly_report.avg_pain'), value: `${data.stats.week_avg_pain}/10`, icon: TrendingUp, color: PRIMARY },
+    { label: t('weekly_report.avg_fatigue'), value: `${data.stats.week_avg_fatigue}/10`, icon: Loader2, color: FATIGUE },
+    { label: t('weekly_report.total_bowel'), value: data.stats.total_bowel, icon: Droplet, color: BOWEL },
+    { label: t('weekly_report.blood_days'), value: data.stats.blood_days, icon: AlertTriangle, color: '#ef4444' },
+    { label: t('weekly_report.total_meals'), value: data.stats.total_meals, icon: Utensils, color: '#22c55e' },
+    { label: t('weekly_report.reaction_meals'), value: data.stats.reaction_meals, icon: AlertTriangle, color: '#f97316' }
   ] : [];
 
   return (
@@ -95,12 +98,12 @@ export default function WeeklyReport() {
               <Calendar className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="font-semibold text-lg">Report settimanale con grafici</p>
-              <p className="text-sm text-muted-foreground">Sintomi e pasti degli ultimi 7 giorni con trend e cibi sospetti, pronto da condividere con il medico.</p>
+              <p className="font-semibold text-lg">{t('weekly_report.card_title')}</p>
+              <p className="text-sm text-muted-foreground">{t('weekly_report.card_desc')}</p>
             </div>
           </div>
           <Button onClick={() => handleOpen(true)} className="rounded-xl shrink-0">
-            <Calendar className="w-4 h-4 mr-1.5" /> Apri report
+            <Calendar className="w-4 h-4 mr-1.5" /> {t('weekly_report.open')}
           </Button>
         </CardContent>
       </Card>
@@ -108,7 +111,7 @@ export default function WeeklyReport() {
       <Dialog open={open} onOpenChange={handleOpen}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Riepilogo settimanale</DialogTitle>
+            <DialogTitle>{t('weekly_report.dialog_title')}</DialogTitle>
           </DialogHeader>
 
           {loading ? (
@@ -119,8 +122,8 @@ export default function WeeklyReport() {
             <div ref={reportRef} className="bg-white text-slate-800 p-4 -mx-2 rounded-lg space-y-5">
               <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                 <div>
-                  <p className="text-xl font-bold">IBD Care — Report settimanale</p>
-                  <p className="text-sm text-slate-500">Periodo: {data.period.from} — {data.period.to}</p>
+                  <p className="text-xl font-bold">{t('weekly_report.header')}</p>
+                  <p className="text-sm text-slate-500">{t('weekly_report.period')} {data.period.from} — {data.period.to}</p>
                 </div>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: PRIMARY }}>
                   <TrendingUp className="w-5 h-5 text-white" />
@@ -138,7 +141,7 @@ export default function WeeklyReport() {
               </div>
 
               <div className="rounded-xl border border-slate-200 p-3">
-                <p className="text-sm font-semibold mb-2">Trend dolore e stanchezza (0-10)</p>
+                <p className="text-sm font-semibold mb-2">{t('weekly_report.trend_title')}</p>
                 <ResponsiveContainer width="100%" height={200}>
                   <LineChart data={chartData} margin={{ top: 5, right: 10, left: -18, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -146,29 +149,29 @@ export default function WeeklyReport() {
                     <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: '#64748b' }} />
                     <Tooltip />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Line type="monotone" dataKey="dolore" stroke={PRIMARY} strokeWidth={2.5} dot={{ r: 3 }} connectNulls />
-                    <Line type="monotone" dataKey="stanchezza" stroke={FATIGUE} strokeWidth={2.5} dot={{ r: 3 }} connectNulls />
+                    <Line type="monotone" dataKey="dolore" name={t('weekly_report.avg_pain')} stroke={PRIMARY} strokeWidth={2.5} dot={{ r: 3 }} connectNulls />
+                    <Line type="monotone" dataKey="stanchezza" name={t('weekly_report.avg_fatigue')} stroke={FATIGUE} strokeWidth={2.5} dot={{ r: 3 }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
 
               <div className="rounded-xl border border-slate-200 p-3">
-                <p className="text-sm font-semibold mb-2">Scariche giornaliere</p>
+                <p className="text-sm font-semibold mb-2">{t('weekly_report.bowel_title')}</p>
                 <ResponsiveContainer width="100%" height={160}>
                   <BarChart data={chartData} margin={{ top: 5, right: 10, left: -18, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                     <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#64748b' }} />
                     <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#64748b' }} />
                     <Tooltip />
-                    <Bar dataKey="scariche" fill={BOWEL} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="scariche" name={t('weekly_report.total_bowel')} fill={BOWEL} radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
               <div className="rounded-xl border border-slate-200 p-3">
-                <p className="text-sm font-semibold mb-2 flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-amber-500" /> Cibi sospetti (associati a picchi sintomatici)</p>
+                <p className="text-sm font-semibold mb-2 flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-amber-500" /> {t('weekly_report.suspicious_title')}</p>
                 {data.suspicious_foods.length === 0 ? (
-                  <p className="text-sm text-slate-500">Nessuna correlazione rilevata questa settimana.</p>
+                  <p className="text-sm text-slate-500">{t('weekly_report.no_correlation')}</p>
                 ) : (
                   <div className="flex flex-wrap gap-2">
                     {data.suspicious_foods.map((f) => (
@@ -180,17 +183,17 @@ export default function WeeklyReport() {
                 )}
               </div>
 
-              <p className="text-[10px] text-slate-400 border-t border-slate-200 pt-2">Generato da IBD Care · dati privati (GDPR), condividi solo con il medico curante.</p>
+              <p className="text-[10px] text-slate-400 border-t border-slate-200 pt-2">{t('weekly_report.footer')}</p>
             </div>
           ) : (
-            <p className="text-center text-muted-foreground py-12">Impossibile caricare il report.</p>
+            <p className="text-center text-muted-foreground py-12">{t('weekly_report.load_error')}</p>
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Chiudi</Button>
+            <Button variant="outline" onClick={() => setOpen(false)}>{t('weekly_report.close')}</Button>
             <Button onClick={exportPdf} disabled={exporting || loading}>
               {exporting ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Download className="w-4 h-4 mr-1.5" />}
-              Esporta PDF
+              {t('weekly_report.export_pdf')}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -4,11 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { splitItems } from '@/lib/correlationStats';
+import { localeForLang, reactionLabel, mealTypeLabel } from '@/lib/enumLabels';
 
 const R_TONE = { nessuna: 'text-emerald-600', lieve: 'text-amber-600', moderata: 'text-orange-600', severa: 'text-rose-500' };
-const R_LABEL = { nessuna: 'Nessuna', lieve: 'Lieve', moderata: 'Moderata', severa: 'Severa' };
 const R_BG = { 1: 'bg-amber-100 text-amber-700', 2: 'bg-orange-100 text-orange-700', 3: 'bg-rose-100 text-rose-700' };
-const MEAL_LABEL = { colazione: 'Colazione', pranzo: 'Pranzo', cena: 'Cena', spuntino: 'Spuntino' };
 const SEVERITY = { nessuna: 0, lieve: 1, moderata: 2, severa: 3 };
 
 function isS(sym) {
@@ -41,7 +40,7 @@ function SymBadges({ sym, t }) {
   );
 }
 
-function MealsBlock({ title, meals }) {
+function MealsBlock({ title, meals, t }) {
   return (
     <div className="rounded-lg bg-card border border-border p-3">
       <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
@@ -54,8 +53,8 @@ function MealsBlock({ title, meals }) {
           {meals.map((m, i) => (
             <div key={i} className="text-xs">
               <div className="flex items-center gap-1.5">
-                <span className="font-medium">{MEAL_LABEL[m.meal_type] || m.meal_type || '—'}</span>
-                {m.reaction && <span className={cn('font-medium', R_TONE[m.reaction])}>· {R_LABEL[m.reaction] || m.reaction}</span>}
+                <span className="font-medium">{mealTypeLabel(t, m.meal_type) || '—'}</span>
+                {m.reaction && <span className={cn('font-medium', R_TONE[m.reaction])}>· {reactionLabel(t, m.reaction)}</span>}
               </div>
               <p className="text-muted-foreground leading-snug">{m.foods}</p>
             </div>
@@ -67,7 +66,7 @@ function MealsBlock({ title, meals }) {
 }
 
 export default function MealSymptomCorrelation({ entries, foods }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   const { spikes, toAvoid } = useMemo(() => {
     const symMap = new Map();
@@ -167,12 +166,12 @@ export default function MealSymptomCorrelation({ entries, foods }) {
               {spikes.map((s, i) => (
                 <div key={i} className="rounded-xl border border-border p-4 bg-muted/30">
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                    <span className="font-semibold text-sm">{formatDate(s.date)}</span>
+                    <span className="font-semibold text-sm">{formatDate(s.date, lang)}</span>
                     <SymBadges sym={s.sym} t={t} />
                   </div>
                   <div className="grid sm:grid-cols-2 gap-3">
-                    <MealsBlock title={t('symptom_charts.day_before')} meals={s.prevMeals} />
-                    <MealsBlock title={t('symptom_charts.spike_day')} meals={s.dayMeals} />
+                    <MealsBlock title={t('symptom_charts.day_before')} meals={s.prevMeals} t={t} />
+                    <MealsBlock title={t('symptom_charts.spike_day')} meals={s.dayMeals} t={t} />
                   </div>
                 </div>
               ))}
@@ -184,6 +183,6 @@ export default function MealSymptomCorrelation({ entries, foods }) {
   );
 }
 
-function formatDate(d) {
-  try { return new Date(d + 'T00:00:00').toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return d; }
+function formatDate(d, lang) {
+  try { return new Date(d + 'T00:00:00').toLocaleDateString(localeForLang(lang), { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return d; }
 }

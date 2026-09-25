@@ -4,20 +4,19 @@ import { CalendarRange, Download } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useI18n } from '@/lib/i18n';
+import { localeForLang, moodLabel, mealTypeLabel, reactionLabel } from '@/lib/enumLabels';
 
 function curMonth() { return new Date().toISOString().slice(0, 7); }
 
-const moodLabels = { buono: 'Buono', discreto: 'Discreto', giu: 'Giù', ansia: 'Ansia', irritabile: 'Irritabile' };
-const mealLabels = { colazione: 'Colazione', pranzo: 'Pranzo', cena: 'Cena', spuntino: 'Spuntino' };
-const reactionLabels = { nessuna: 'Nessuna', lieve: 'Lieve', moderata: 'Moderata', severa: 'Severa' };
-
-function monthName(m) {
+function monthName(m, lang) {
   const [y, mo] = m.split('-');
   const d = new Date(Number(y), Number(mo) - 1, 1);
-  return d.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+  return d.toLocaleDateString(localeForLang(lang), { month: 'long', year: 'numeric' });
 }
 
 export default function MonthlyReport() {
+  const { t, lang } = useI18n();
   const [month, setMonth] = useState(curMonth());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -29,6 +28,7 @@ export default function MonthlyReport() {
         base44.entities.SymptomEntry.list('-entry_date', 1000),
         base44.entities.FoodEntry.list('-entry_date', 1000),
       ]);
+
       const s = symptoms.filter((x) => (x.entry_date || '').startsWith(month)).sort((a, b) => (a.entry_date || '').localeCompare(b.entry_date || ''));
       const f = food.filter((x) => (x.entry_date || '').startsWith(month)).sort((a, b) => (a.entry_date || '').localeCompare(b.entry_date || ''));
 
@@ -43,9 +43,10 @@ export default function MonthlyReport() {
       doc.setFillColor(...accent);
       doc.roundedRect(M, y, 6, 22, 3, 3, 'F');
       doc.setFont('helvetica', 'bold'); doc.setFontSize(20); doc.setTextColor(30, 41, 59);
-      doc.text('IBD Care — Riepilogo mensile', M + 16, y + 16);
+      doc.text(t('monthly_report.pdf_header'), M + 16, y + 16);
       doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor(100, 116, 139);
-      doc.text(monthName(month).charAt(0).toUpperCase() + monthName(month).slice(1), M + 16, y + 34);
+      const mn = monthName(month, lang);
+      doc.text(mn.charAt(0).toUpperCase() + mn.slice(1), M + 16, y + 34);
       y += 60;
 
       const section = (title) => {
@@ -80,44 +81,50 @@ export default function MonthlyReport() {
       f.forEach((x) => { if (x.reaction) reactions[x.reaction] = (reactions[x.reaction] || 0) + 1; });
       const nonTolerated = f.filter((x) => x.tolerated === false).map((x) => x.foods).filter(Boolean);
 
-      section('Quadro generale del mese');
-      line(`Giorni con sintomi registrati: ${s.length}`);
-      line(`Dolore medio: ${avgPain}/10 · Stanchezza media: ${avgFatigue}/10 · Scariche medie: ${avgBowel}/giorno`);
-      line(`Giorni con sangue nelle feci: ${bloodDays}`);
-      if (maxPainRec) line(`Picco di dolore: ${maxPainRec.pain_level}/10 il ${maxPainRec.entry_date}`);
+      section(t('monthly_report.pdf_overview'));
+      line(t('monthly_report.pdf_days_symptoms').replace('{n}', s.length));
+      line(t('monthly_report.pdf_avg_line').replace('{p}', avgPain).replace('{f}', avgFatigue).replace('{b}', avgBowel));
+      line(t('monthly_report.pdf_blood_days').replace('{n}', bloodDays));
+      if (maxPainRec) line(t('monthly_report.pdf_pain_peak').replace('{p}', maxPainRec.pain_level).replace('{date}', maxPainRec.entry_date));
       if (Object.keys(moodCounts).length) {
-        line(`Umore: ${Object.entries(moodCounts).map(([k, v]) => `${moodLabels[k] || k} (${v})`).join(', ')}`);
+        line(`${t('monthly_report.pdf_mood')} ${Object.entries(moodCounts).map(([k, v]) => `${moodLabel(t, k)} (${v})`).join(', ')}`);
       }
       line('');
-      line(`Pasti registrati: ${mealsCount}`);
+      line(t('monthly_report.pdf_meals_count').replace('{n}', mealsCount));
       if (Object.keys(reactions).length) {
-        line(`Reazioni: ${Object.entries(reactions).map(([k, v]) => `${reactionLabels[k] || k} (${v})`).join(', ')}`);
+        line(`${t('monthly_report.pdf_reactions')} ${Object.entries(reactions).map(([k, v]) => `${reactionLabel(t, k)} (${v})`).join(', ')}`);
       }
       if (nonTolerated.length) {
-        line(`Alimenti NON tollerati: ${[...new Set(nonTolerated)].join(', ')}`);
+        line(`${t('monthly_report.pdf_not_tolerated')} ${[...new Set(nonTolerated)].join(', ')}`);
       }
 
       // Andamento sintomi giorno per giorno
-      section('Andamento dei sintomi (giorno per giorno)');
+      section(t('monthly_report.pdf_symptom_trend'));
       if (!s.length) {
-        line('Nessun sintomo registrato in questo mese.');
+        line(t('monthly_report.pdf_no_symptoms'));
       } else {
         s.forEach((x) => {
-          line(`${x.entry_date} — Dolore ${x.pain_level ?? 0}/10, Stanchezza ${x.fatigue_level ?? 0}/10, Scariche ${x.bowel_movements_count ?? 0}, Bristol ${x.stool_consistency ?? '-'}${x.blood ? ', sangue: sì' : ''}${x.mood ? ', umore: ' + (moodLabels[x.mood] || x.mood) : ''}${x.notes ? ' — ' + x.notes : ''}`);
+          const blood = x.blood ? t('monthly_report.pdf_blood_yes') : '';
+          const mood = x.mood ? t('monthly_report.pdf_mood_tag') + moodLabel(t, x.mood) : '';
+          const notes = x.notes ? ' — ' + x.notes : '';
+          line(`${x.entry_date} — ${x.pain_level ?? 0}/10, ${x.fatigue_level ?? 0}/10, ${x.bowel_movements_count ?? 0}, Bristol ${x.stool_consistency ?? '-'}${blood}${mood}${notes}`);
         });
       }
 
       // Diario alimentare
-      section('Diario alimentare');
+      section(t('monthly_report.pdf_food_diary'));
       if (!f.length) {
-        line('Nessun pasto registrato in questo mese.');
+        line(t('monthly_report.pdf_no_meals'));
       } else {
         const byDate = {};
         f.forEach((x) => { (byDate[x.entry_date] = byDate[x.entry_date] || []).push(x); });
         Object.keys(byDate).sort().forEach((d) => {
           line(`${d}:`);
           byDate[d].forEach((m2) => {
-            line(`   • ${mealLabels[m2.meal_type] || m2.meal_type || '—'} — ${m2.foods}${m2.reaction ? ' (reazione: ' + (reactionLabels[m2.reaction] || m2.reaction) + ')' : ''}${m2.tolerated === false ? ' — NON tollerato' : ''}${m2.notes ? ' — ' + m2.notes : ''}`);
+            const reaction = m2.reaction ? t('monthly_report.pdf_reaction_tag').replace('{r}', reactionLabel(t, m2.reaction)) : '';
+            const notTol = m2.tolerated === false ? t('monthly_report.pdf_not_tolerated_tag') : '';
+            const notes = m2.notes ? ' — ' + m2.notes : '';
+            line(`   • ${mealTypeLabel(t, m2.meal_type) || '—'} — ${m2.foods}${reaction}${notTol}${notes}`);
           });
         });
       }
@@ -127,12 +134,12 @@ export default function MonthlyReport() {
       for (let i = 1; i <= pages; i++) {
         doc.setPage(i);
         doc.setFontSize(8); doc.setTextColor(148, 163, 184);
-        doc.text('Generato da IBD Care · riepilogo mensile privato (GDPR)', M, H - 24);
+        doc.text(t('monthly_report.pdf_footer'), M, H - 24);
       }
 
-      doc.save(`IBD-Care-mensile_${month}.pdf`);
+      doc.save(`${t('monthly_report.export_filename')}_${month}.pdf`);
     } catch (e) {
-      setError('Generazione non riuscita. Riprova.');
+      setError(t('monthly_report.pdf_error'));
     }
     setBusy(false);
   };
@@ -143,12 +150,12 @@ export default function MonthlyReport() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><CalendarRange className="w-5 h-5 text-primary" /></div>
           <div>
-            <p className="font-semibold">Riepilogo mensile</p>
-            <p className="text-sm text-muted-foreground leading-snug">Report mensile dettagliato con andamento dei sintomi e diario alimentare, pronto per le visite mediche.</p>
+            <p className="font-semibold">{t('monthly_report.card_title')}</p>
+            <p className="text-sm text-muted-foreground leading-snug">{t('monthly_report.card_desc')}</p>
           </div>
         </div>
         <div>
-          <label className="text-sm text-muted-foreground">Mese</label>
+          <label className="text-sm text-muted-foreground">{t('monthly_report.month_label')}</label>
           <input
             type="month"
             value={month}
@@ -158,7 +165,7 @@ export default function MonthlyReport() {
         </div>
         <Button onClick={generate} disabled={busy} className="w-full rounded-xl h-12 text-base">
           <Download className="w-5 h-5 mr-2" />
-          {busy ? 'Generazione…' : 'Genera PDF mensile'}
+          {busy ? t('monthly_report.generating') : t('monthly_report.generate_btn')}
         </Button>
         {error && <p className="text-sm text-rose-500">{error}</p>}
       </CardContent>

@@ -8,15 +8,16 @@ import EmptyState from '@/components/EmptyState';
 import PremiumExportButton from '@/components/PremiumExportButton';
 import { exportExamListPdf } from '@/lib/examPdf';
 import { cn } from '@/lib/utils';
+import { localeForLang } from '@/lib/enumLabels';
 
 const CATS = ['all', 'esame_sangue', 'calprotectina', 'colonscopia', 'ecografia'];
 const flagColor = { high: 'bg-rose-50 text-rose-500', low: 'bg-amber-50 text-amber-600', normal: 'bg-emerald-50 text-emerald-600' };
 const catColor = { esame_sangue: 'bg-rose-50 text-rose-500', calprotectina: 'bg-amber-50 text-amber-600', colonscopia: 'bg-violet-50 text-violet-600', ecografia: 'bg-sky-50 text-sky-600' };
 
-function fmt(d) { try { return new Date(d).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }); } catch { return d || '—'; } }
+function fmt(d, lang) { try { return new Date(d).toLocaleDateString(localeForLang(lang), { day: 'numeric', month: 'short', year: 'numeric' }); } catch { return d || '—'; } }
 
 export default function ExamTimeline({ reloadKey }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [cat, setCat] = useState('all');
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +70,7 @@ export default function ExamTimeline({ reloadKey }) {
                       <span className={cn('px-2.5 py-1 rounded-full text-[11px] font-medium', catColor[r.exam_category])}>{t('exams.cat_' + r.exam_category)}</span>
                       <div>
                         <p className="font-semibold">{r.title}</p>
-                        <p className="text-sm text-muted-foreground">{fmt(r.record_date)}{r.provider ? ' · ' + r.provider : ''}</p>
+                        <p className="text-sm text-muted-foreground">{fmt(r.record_date, lang)}{r.provider ? ' · ' + r.provider : ''}</p>
                       </div>
                     </div>
                     <button onClick={() => remove(r.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
