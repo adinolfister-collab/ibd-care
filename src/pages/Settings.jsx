@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Globe, LogOut, User as UserIcon, Fingerprint, Database, Trash2, Bell } from 'lucide-react';
+import { ShieldCheck, Globe, LogOut, User as UserIcon, Fingerprint, Database, Trash2, Bell, Sun, Moon, Monitor } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import {
@@ -7,6 +8,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 import { useI18n } from '@/lib/i18n';
+
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,6 +20,7 @@ import { useBiometric } from '@/lib/biometric';
 
 export default function Settings() {
   const { t, lang, setLang } = useI18n();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const { supported, enabled, enable, disable } = useBiometric();
@@ -94,6 +97,36 @@ export default function Settings() {
                   )}
                 >
                   <span className="text-lg">{l.flag}</span> {l.label}
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Theme */}
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><Sun className="w-5 h-5 text-primary" /></div>
+              <div>
+                <p className="font-semibold">{t('settings.theme')}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { code: 'light', label: t('theme.light'), icon: Sun },
+                { code: 'dark', label: t('theme.dark'), icon: Moon },
+                { code: 'system', label: t('theme.system'), icon: Monitor },
+              ].map((opt) => (
+                <button
+                  key={opt.code}
+                  onClick={() => setTheme(opt.code)}
+                  className={cn(
+                    'flex items-center justify-center gap-2 py-3 rounded-xl text-base font-medium transition-colors',
+                    (theme || 'system') === opt.code ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
+                  )}
+                >
+                  <opt.icon className="w-4 h-4" /> {opt.label}
                 </button>
               ))}
             </div>
