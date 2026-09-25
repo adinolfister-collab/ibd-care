@@ -10,15 +10,10 @@ import { Check, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import FoodChecklist from '@/components/FoodChecklist';
 import { useI18n } from '@/lib/i18n';
+import { MEAL_TYPE_KEYS, REACTION_KEYS } from '@/lib/enumLabels';
 
 const fieldClass = 'mt-1.5 w-full rounded-xl border border-input bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-ring';
 
-const mealTypes = [
-  { value: 'colazione', label: 'Colazione' },
-  { value: 'pranzo', label: 'Pranzo' },
-  { value: 'cena', label: 'Cena' },
-  { value: 'spuntino', label: 'Spuntino' },
-];
 const cookingMethods = [
   { value: 'al_vapore', labelKey: 'food.cooking_al_vapore' },
   { value: 'bollito', labelKey: 'food.cooking_bollito' },
@@ -27,14 +22,8 @@ const cookingMethods = [
   { value: 'fritto', labelKey: 'food.cooking_fritto' },
   { value: 'crudo', labelKey: 'food.cooking_crudo' },
 ];
-const reactions = [
-  { value: 'nessuna', label: 'Nessuna reazione' },
-  { value: 'lieve', label: 'Lieve' },
-  { value: 'moderata', label: 'Moderata' },
-  { value: 'severa', label: 'Severa' },
-];
-
 function MobileSelect({ value, options, onChange, placeholder }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const current = options.find((o) => String(o.value) === String(value));
   return (
@@ -52,7 +41,7 @@ function MobileSelect({ value, options, onChange, placeholder }) {
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerContent className="max-h-[60vh]">
           <DrawerHeader className="text-left pb-2">
-            <DrawerTitle className="text-left text-base">Seleziona</DrawerTitle>
+            <DrawerTitle className="text-left text-base">{t('food.select')}</DrawerTitle>
           </DrawerHeader>
           <div className="overflow-y-auto pb-[env(safe-area-inset-bottom)]">
             {options.map((o) => {
@@ -86,6 +75,9 @@ export default function FoodFormDialog({ open, onOpenChange, title, submitLabel,
   const { t } = useI18n();
   const [data, setData] = useState(initialData || {});
   const [isMobile, setIsMobile] = useState(false);
+
+  const mealTypes = Object.entries(MEAL_TYPE_KEYS).map(([value, key]) => ({ value, label: t(key) }));
+  const reactions = Object.entries(REACTION_KEYS).map(([value, key]) => ({ value, label: t(key) }));
 
   useEffect(() => { if (open) setData(initialData || {}); }, [open, initialData]);
 
@@ -187,7 +179,7 @@ export default function FoodFormDialog({ open, onOpenChange, title, submitLabel,
                 <span className={cn('w-4 h-4 rounded-full border-2 flex items-center justify-center', data.tolerated ? 'border-primary-foreground' : 'border-muted-foreground')}>
                   {data.tolerated && <span className="w-2 h-2 rounded-full bg-primary-foreground" />}
                 </span>
-                {data.tolerated ? 'Sì' : 'No'}
+                {data.tolerated ? t('food.tolerated_yes') : t('food.tolerated_no')}
               </button>
             </div>
 

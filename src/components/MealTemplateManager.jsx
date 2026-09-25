@@ -4,19 +4,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { useI18n } from '@/lib/i18n';
-
-const mealOptions = [
-  { value: 'colazione', label: 'Colazione' },
-  { value: 'pranzo', label: 'Pranzo' },
-  { value: 'cena', label: 'Cena' },
-  { value: 'spuntino', label: 'Spuntino' },
-];
-const mealLabels = { colazione: 'Colazione', pranzo: 'Pranzo', cena: 'Cena', spuntino: 'Spuntino' };
+import { MEAL_TYPE_KEYS } from '@/lib/enumLabels';
 
 export default function MealTemplateManager({ open, onOpenChange, templates, onCreate, onUpdate, onDelete }) {
   const { t } = useI18n();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+
+  const mealOptions = Object.entries(MEAL_TYPE_KEYS).map(([value, key]) => ({ value, label: t(key) }));
+  const mealLabels = Object.fromEntries(Object.entries(MEAL_TYPE_KEYS).map(([v, k]) => [v, t(k)]));
 
   const fields = [
     { name: 'name', label: t('food.template_name'), type: 'text' },

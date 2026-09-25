@@ -6,16 +6,16 @@
 //   Ogni voce include kcal e proteine per 100 g (o 100 ml).
 // - serializeItems / parseLegacyFoods / catalogToGroups: helper di compatibilità.
 
+// Le etichette delle unità sono tradotte via i18n (vedi src/lib/enumLabels.js,
+// UNIT_KEYS). Qui restano solo i valori enum.
 export const UNITS = [
-  { value: 'g', label: 'g' },
-  { value: 'ml', label: 'ml' },
-  { value: 'porzione', label: 'porzione' },
-  { value: 'cucchiaio', label: 'cucchiaio' },
-  { value: 'tazza', label: 'tazza' },
-  { value: 'fetta', label: 'fetta' },
+  { value: 'g' },
+  { value: 'ml' },
+  { value: 'porzione' },
+  { value: 'cucchiaio' },
+  { value: 'tazza' },
+  { value: 'fetta' },
 ];
-
-export const UNIT_LABELS = UNITS.reduce((acc, u) => { acc[u.value] = u.label; return acc; }, {});
 
 // Valori nutrizionali per 100 g (o 100 ml), intesi come alimento COTTO/pronto.
 export const DEFAULT_CATALOG = [

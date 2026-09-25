@@ -9,6 +9,7 @@ import { Edit, Plus, Trash2, Check, ChevronDown, ListPlus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { UNITS, catalogToGroups } from '@/lib/foodCatalog';
 import { useI18n } from '@/lib/i18n';
+import { unitLabel } from '@/lib/enumLabels';
 import { cn } from '@/lib/utils';
 
 const fieldClass = 'mt-1.5 w-full rounded-xl border border-input bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-ring';
@@ -153,7 +154,7 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
             <div className="px-6 pb-4 space-y-3">
               <div>
                 <Label className="text-sm font-medium text-muted-foreground">{t('food.item_name')}</Label>
-                <Input value={editing.name} onChange={(e) => setEditing({ ...editing, name: e.target.value })} className={fieldClass} placeholder="Es. Riso" />
+                <Input value={editing.name} onChange={(e) => setEditing({ ...editing, name: e.target.value })} className={fieldClass} placeholder={t('food.placeholder_example')} />
               </div>
               <div>
                 <Label className="text-sm font-medium text-muted-foreground">{t('food.category')}</Label>
@@ -176,7 +177,7 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
                   <Select value={editing.default_unit} onValueChange={(v) => setEditing({ ...editing, default_unit: v })}>
                     <SelectTrigger className={cn(fieldClass, 'h-12 text-base font-normal')}><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {UNITS.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}
+                      {UNITS.map((u) => <SelectItem key={u.value} value={u.value}>{unitLabel(t, u.value)}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 )}
@@ -221,10 +222,12 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
 }
 
 function CategoryDrawer({ value, onChange }) {
-  return <ListDrawer label="Categoria" value={value} options={CATEGORIES} onChange={onChange} />;
+  const { t } = useI18n();
+  return <ListDrawer label={t('food.category')} value={value} options={CATEGORIES} onChange={onChange} />;
 }
 function UnitDrawer({ value, onChange }) {
-  return <ListDrawer label="Unità" value={value} options={UNITS.map((u) => u.value)} labels={UNITS.map((u) => u.label)} onChange={onChange} />;
+  const { t } = useI18n();
+  return <ListDrawer label={t('food.default_unit')} value={value} options={UNITS.map((u) => u.value)} labels={UNITS.map((u) => unitLabel(t, u.value))} onChange={onChange} />;
 }
 
 function ListDrawer({ label, value, options, labels, onChange }) {

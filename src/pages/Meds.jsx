@@ -13,32 +13,23 @@ import EmptyState from '@/components/EmptyState';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { MED_TYPE_KEYS, MED_FREQUENCY_KEYS, medTypeLabel, medFrequencyLabel } from '@/lib/enumLabels';
 import { cn } from '@/lib/utils';
 
-const types = [
-  { value: 'farmaco_orale', label: 'Farmaco orale' },
-  { value: 'iniezione', label: 'Iniezione' },
-  { value: 'biologico', label: 'Biologico' },
-  { value: 'integratore', label: 'Integratore' },
-];
-const frequencies = [
-  { value: 'giornaliero', label: 'Giornaliero' },
-  { value: 'settimanale', label: 'Settimanale' },
-  { value: 'bisettimanale', label: 'Bisettimanale' },
-  { value: 'mensile', label: 'Mensile' },
-  { value: 'al_bisogno', label: 'Al bisogno' },
-];
-
-const fields = (t) => [
-  { name: 'name', label: t('meds.name'), type: 'text' },
-  { name: 'type', label: t('meds.type'), type: 'select', options: types },
-  { name: 'dosage', label: t('meds.dosage'), type: 'text' },
-  { name: 'frequency', label: t('meds.frequency'), type: 'select', options: frequencies },
-  { name: 'times', label: t('meds.times') + ' (es. 08:00, 20:00)', type: 'text' },
-  { name: 'start_date', label: 'Data inizio', type: 'date' },
-  { name: 'active', label: t('meds.active'), type: 'checkbox' },
-  { name: 'notes', label: t('common.notes'), type: 'textarea' },
-];
+const fields = (t) => {
+  const types = Object.entries(MED_TYPE_KEYS).map(([value, key]) => ({ value, label: t(key) }));
+  const frequencies = Object.entries(MED_FREQUENCY_KEYS).map(([value, key]) => ({ value, label: t(key) }));
+  return [
+    { name: 'name', label: t('meds.name'), type: 'text' },
+    { name: 'type', label: t('meds.type'), type: 'select', options: types },
+    { name: 'dosage', label: t('meds.dosage'), type: 'text' },
+    { name: 'frequency', label: t('meds.frequency'), type: 'select', options: frequencies },
+    { name: 'times', label: t('meds.times') + ' ' + t('meds.times_hint'), type: 'text' },
+    { name: 'start_date', label: t('meds.start_date'), type: 'date' },
+    { name: 'active', label: t('meds.active'), type: 'checkbox' },
+    { name: 'notes', label: t('common.notes'), type: 'textarea' },
+  ];
+};
 
 const typeColors = {
   farmaco_orale: 'bg-sky-50 text-sky-600',
@@ -86,7 +77,7 @@ export default function Meds() {
         action={<Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('meds.add')}</Button>}
       />
       <PageEditorial pageKey="meds" />
-      <MagazineEssay theme="terapie" number="01" eyebrow="Cura" title="I tuoi farmaci">
+      <MagazineEssay theme="terapie" number="01" eyebrow={t('meds.magazine_eyebrow')} title={t('meds.magazine_title')}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
       ) : items.length === 0 ? (
@@ -103,7 +94,7 @@ export default function Meds() {
                     </div>
                     <div>
                       <p className="font-semibold text-lg">{m.name}</p>
-                      <p className="text-sm text-muted-foreground">{labelFor(types, m.type)}{m.dosage ? ' · ' + m.dosage : ''}</p>
+                      <p className="text-sm text-muted-foreground">{medTypeLabel(t, m.type)}{m.dosage ? ' · ' + m.dosage : ''}</p>
                     </div>
                   </div>
                   <div className="flex gap-1">
@@ -115,8 +106,8 @@ export default function Meds() {
                   <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                     <Clock className="w-4 h-4" /> {m.times || '—'}
                   </span>
-                  <span className="text-muted-foreground">· {labelFor(frequencies, m.frequency)}</span>
-                  {m.active && <span className="text-xs bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full font-medium ml-auto">Attivo</span>}
+                  <span className="text-muted-foreground">· {medFrequencyLabel(t, m.frequency)}</span>
+                  {m.active && <span className="text-xs bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full font-medium ml-auto">{t('meds.active')}</span>}
                 </div>
                 {m.notes && <p className="text-sm text-muted-foreground mt-3">{m.notes}</p>}
               </CardContent>
@@ -138,9 +129,4 @@ export default function Meds() {
       <EditorialBlock sectionKey="meds_adherence" align="left" />
     </AppLayout>
   );
-}
-
-function labelFor(opts, v) {
-  const o = opts.find((x) => x.value === v);
-  return o ? o.label : v || '—';
 }

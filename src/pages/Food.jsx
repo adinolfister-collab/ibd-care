@@ -22,31 +22,19 @@ import FoodFormDialog from '@/components/FoodFormDialog';
 import FoodCatalogManager from '@/components/FoodCatalogManager';
 import DailyNutrition from '@/components/DailyNutrition';
 import { catalogToGroups, parseLegacyFoods, serializeItems } from '@/lib/foodCatalog';
+import { MEAL_TYPE_KEYS, REACTION_KEYS, reactionLabel, unitLabel, localeForLang } from '@/lib/enumLabels';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import PullToRefresh from '@/components/PullToRefresh';
 
-const mealTypes = [
-  { value: 'colazione', label: 'Colazione' },
-  { value: 'pranzo', label: 'Pranzo' },
-  { value: 'cena', label: 'Cena' },
-  { value: 'spuntino', label: 'Spuntino' },
-];
-const reactions = [
-  { value: 'nessuna', label: 'Nessuna reazione' },
-  { value: 'lieve', label: 'Lieve' },
-  { value: 'moderata', label: 'Moderata' },
-  { value: 'severa', label: 'Severa' },
-];
-
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 
 const reactionTone = { nessuna: 'text-emerald-600', lieve: 'text-amber-600', moderata: 'text-orange-600', severa: 'text-rose-500' };
 
 export default function Food() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated, authChecked } = useAuth();
   const isAdmin = user?.role === 'admin';
@@ -129,7 +117,7 @@ export default function Food() {
       setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
       base44.entities.FoodEntry.update(editing.id, payload).catch(() => {
         setItems((prev) => prev.map((it) => (it.id === editing.id ? previous : it)));
-        toast({ title: 'Errore', description: 'Modifica non salvata, riprova.', variant: 'destructive' });
+        toast({ title: t('common.error'), description: t('food.error_save'), variant: 'destructive' });
       });
     } else {
       const tempId = `temp_${Date.now()}`;
@@ -138,7 +126,7 @@ export default function Food() {
         .then((created) => setItems((prev) => prev.map((it) => (it.id === tempId ? created : it))))
         .catch(() => {
           setItems((prev) => prev.filter((it) => it.id !== tempId));
-          toast({ title: 'Errore', description: 'Aggiunta non riuscita, riprova.', variant: 'destructive' });
+          toast({ title: t('common.error'), description: t('food.error_add'), variant: 'destructive' });
         });
     }
   };
@@ -181,7 +169,7 @@ export default function Food() {
       />
       <PageEditorial pageKey="food" />
       <SiteMenu />
-      <MagazineEssay theme="alimentazione" number="01" eyebrow="Tavolo" title="Pasti e reazioni">
+      <MagazineEssay theme="alimentazione" number="01" eyebrow={t('food.magazine_eyebrow')} title={t('food.magazine_title')}>
       <div className="mb-6">
         <DailyNutrition entries={items} groups={catalogGroups} />
       </div>
@@ -206,15 +194,15 @@ export default function Food() {
         <div className="space-y-6">
           {dates.map((d) => (
             <div key={d}>
-              <p className="text-sm font-semibold text-muted-foreground mb-2 sticky top-0">{formatDate(d)}</p>
+              <p className="text-sm font-semibold text-muted-foreground mb-2 sticky top-0">{formatDate(d, lang)}</p>
               <div className="space-y-3">
                 {grouped[d].map((it) => (
                   <Card key={it.id} className="border-0 shadow-sm">
                     <CardContent className="p-5">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-medium bg-accent text-accent-foreground px-2.5 py-1 rounded-full capitalize">{it.meal_type || '—'}</span>
-                          {it.reaction && <span className={cn('text-xs font-medium', reactionTone[it.reaction])}>· {labelFor(it.reaction)}</span>}
+                          <span className="text-xs font-medium bg-accent text-accent-foreground px-2.5 py-1 rounded-full">{it.meal_type ? t(MEAL_TYPE_KEYS[it.meal_type]) : '—'}</span>
+                          {it.reaction && <span className={cn('text-xs font-medium', reactionTone[it.reaction])}>· {reactionLabel(t, it.reaction)}</span>}
                         </div>
                         <div className="flex gap-1">
                           <button onClick={() => openEdit(it)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
@@ -227,9 +215,9 @@ export default function Food() {
                             <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-terracotta/10 text-accent-foreground text-xs">
                               <span className="font-medium">{f.name}</span>
                               {f.qty ? (
-                                <span className="text-muted-foreground">{f.qty}{f.unit && f.unit !== 'porzione' ? ' ' + f.unit : ''}</span>
+                                <span className="text-muted-foreground">{f.qty}{f.unit && f.unit !== 'porzione' ? ' ' + unitLabel(t, f.unit) : ''}</span>
                               ) : (f.unit && f.unit !== 'porzione' ? (
-                                <span className="text-muted-foreground">{f.unit}</span>
+                                <span className="text-muted-foreground">{unitLabel(t, f.unit)}</span>
                               ) : null)}
                             </span>
                           ))}
@@ -292,10 +280,6 @@ export default function Food() {
   );
 }
 
-function labelFor(v) {
-  const m = { nessuna: 'Nessuna reazione', lieve: 'Lieve', moderata: 'Moderata', severa: 'Severa' };
-  return m[v] || v;
-}
-function formatDate(d) {
-  try { return new Date(d).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return d; }
+function formatDate(d, lang) {
+  try { return new Date(d).toLocaleDateString(localeForLang(lang), { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return d; }
 }

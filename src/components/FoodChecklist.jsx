@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { UNITS } from '@/lib/foodCatalog';
 import { computeItemNutrition, buildCatalogMap } from '@/lib/nutrition';
 import { useI18n } from '@/lib/i18n';
+import { unitLabel } from '@/lib/enumLabels';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -180,6 +181,7 @@ function NutritionBadge({ kcal, proteine }) {
 }
 
 function Row({ checked, name, qty, unit, kcal, proteine, onToggle, onQty, onUnit }) {
+  const { t } = useI18n();
   return (
     <div
       className={cn(
@@ -227,7 +229,7 @@ function Row({ checked, name, qty, unit, kcal, proteine, onToggle, onQty, onUnit
             className="rounded-lg border border-input bg-background px-1.5 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           >
             {UNITS.map((u) => (
-              <option key={u.value} value={u.value}>{u.label}</option>
+              <option key={u.value} value={u.value}>{unitLabel(t, u.value)}</option>
             ))}
           </select>
           <NutritionBadge kcal={kcal} proteine={proteine} />
@@ -280,7 +282,7 @@ function ExtraRow({ it, onQty, onUnit, onNutrition, onDelete }) {
           type="button"
           onClick={onDelete}
           className="shrink-0 p-1 rounded-lg text-muted-foreground hover:text-rose-500 hover:bg-rose-50"
-          aria-label="Rimuovi"
+          aria-label={t('food.aria_remove')}
         >
           <X className="w-4 h-4" />
         </button>
@@ -300,7 +302,7 @@ function ExtraRow({ it, onQty, onUnit, onNutrition, onDelete }) {
           className="rounded-lg border border-input bg-background px-1.5 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
         >
           {UNITS.map((u) => (
-            <option key={u.value} value={u.value}>{u.label}</option>
+            <option key={u.value} value={u.value}>{unitLabel(t, u.value)}</option>
           ))}
         </select>
         <input

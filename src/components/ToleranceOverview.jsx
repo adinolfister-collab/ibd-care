@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Sparkles, ThumbsUp } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/lib/i18n';
+import { localeForLang } from '@/lib/enumLabels';
 import { splitItems } from '@/lib/correlationStats';
 import { cn } from '@/lib/utils';
 
@@ -10,7 +11,7 @@ function dayStr(d) { return d.toISOString().slice(0, 10); }
 // Punteggio tolleranza settimanale + tavolo della tolleranza (safe foods).
 // Calcolo client-side puro dagli FoodEntry degli ultimi 7 giorni.
 export default function ToleranceOverview({ foods }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   const { score, total, tolerated, safeFoods, trend } = useMemo(() => {
     const today = new Date();
@@ -31,7 +32,7 @@ export default function ToleranceOverview({ foods }) {
       const dayMeals = week.filter((f) => f.entry_date === key);
       const ok = dayMeals.filter((f) => !f.reaction || f.reaction === 'nessuna').length;
       const ratio = dayMeals.length ? Math.round((ok / dayMeals.length) * 100) : null;
-      const wd = d.toLocaleDateString('it-IT', { weekday: 'narrow' });
+      const wd = d.toLocaleDateString(localeForLang(lang), { weekday: 'narrow' });
       days.push({ key, wd, ratio });
     }
 

@@ -32,3 +32,13 @@ npx skills add base44/skills
 - Prefer the existing Base44 CLI workflow over adding new npm scripts for Base44-specific tasks.
 - Reuse the existing SDK client and Vite plugin patterns before adding new Base44 integration paths.
 - Run the relevant checks from `package.json` before finishing code changes.
+
+## i18n / Stringhe visibili (obbligatorio)
+
+Questa app è multilingua via `src/lib/i18n` (dizionari `it`/`en` + altri, `it` è la fonte canonica, `en` deve rispecchiarla). Regola fissa per ogni modifica:
+
+- **Nessuna stringa visibile hardcodata** (italiano o inglese) nel JSX: label, bottoni, placeholder, empty state, titoli di toast, etichette di enum vanno sempre attraverso `t('chiave')` da `useI18n()`.
+- I valori enum salvati nelle entità (es. `meal_type='colazione'`, `reaction='lieve'`, `cooking_method`, `unit`, `med type/frequency`, `pain_location`, `mood`, `record type`, `exam_category`, `service type`, `community category`, `product category`) **non si traducono**: si mostrano tramite l'helper centralizzato `src/lib/enumLabels.js` (es. `t(MEAL_TYPE_KEYS[v])` o `mealTypeLabel(t, v)`). Non dichiarare array di label locali nelle pagine.
+- Quando aggiungi una nuova stringa visibile, **nella stessa modifica** aggiungi la chiave a `src/lib/i18n/locales/it.js` e a `src/lib/i18n/locales/en.js`. Le altre lingue (es/fr/de/pt/ru/pl/ro/sq/zh) ricadono automaticamente sull'italiano via `t()`, ma si possono tradurre quando utile.
+- Date/numeri formattati: usa `localeForLang(lang)` da `src/lib/enumLabels.js` (con `lang` da `useI18n()`), mai un locale hardcodato come `'it-IT'`.
+- Lascia stare i contenuti genuinely data-driven (note libere inserite dall'utente, nomi alimenti del catalogo, contenuti editoriali già strutturati per lingua come `foodLessons.js` e `editorialContent.js`).

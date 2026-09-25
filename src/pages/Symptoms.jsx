@@ -16,55 +16,34 @@ import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { exportSymptomDiaryPdf } from '@/lib/symptomPdf';
+import { PAIN_LOCATION_KEYS, MOOD_KEYS, BRISTOL_KEYS, localeForLang } from '@/lib/enumLabels';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import PullToRefresh from '@/components/PullToRefresh';
 
-const painLocations = [
-  { value: 'nessuno', label: 'Nessuno' },
-  { value: 'addome_inferiore', label: 'Addome inferiore' },
-  { value: 'addome_superiore', label: 'Addome superiore' },
-  { value: 'fianco_dx', label: 'Fianco destro' },
-  { value: 'fianco_sx', label: 'Fianco sinistro' },
-  { value: 'generico', label: 'Generico' },
-];
-
-const bristol = [
-  { value: 1, label: '1 — Palline dure' },
-  { value: 2, label: '2 — A salsiccia' },
-  { value: 3, label: '3 — A salsiccia con crepe' },
-  { value: 4, label: '4 — Salsiccia liscia (normale)' },
-  { value: 5, label: '5 — Pezzi morbidi' },
-  { value: 6, label: '6 — A fiocchi morbidi' },
-  { value: 7, label: '7 — Liquido' },
-];
-
-const moods = [
-  { value: 'buono', label: 'Buono' },
-  { value: 'discreto', label: 'Discreto' },
-  { value: 'giu', label: 'Giù' },
-  { value: 'ansia', label: 'Ansia' },
-  { value: 'irritabile', label: 'Irritabile' },
-];
-
-const fields = (t) => [
-  { name: 'entry_date', label: t('common.date'), type: 'date' },
-  { name: 'pain_level', label: t('symptoms.pain') + ' (0–10)', type: 'slider', min: 0, max: 10 },
-  { name: 'pain_location', label: t('symptoms.pain_location'), type: 'select', options: painLocations },
-  { name: 'fatigue_level', label: t('symptoms.fatigue') + ' (0–10)', type: 'slider', min: 0, max: 10 },
-  { name: 'bowel_movements_count', label: t('symptoms.bowel'), type: 'number', min: 0 },
-  { name: 'stool_consistency', label: t('symptoms.stool') + ' (scala Bristol)', type: 'select', options: bristol },
-  { name: 'blood', label: t('symptoms.blood'), type: 'checkbox' },
-  { name: 'mood', label: t('symptoms.mood'), type: 'select', options: moods },
-  { name: 'notes', label: t('common.notes'), type: 'textarea' },
-];
+const fields = (t) => {
+  const painLocations = Object.entries(PAIN_LOCATION_KEYS).map(([value, key]) => ({ value, label: t(key) }));
+  const moods = Object.entries(MOOD_KEYS).map(([value, key]) => ({ value, label: t(key) }));
+  const bristol = [1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: n, label: t(BRISTOL_KEYS[n]) }));
+  return [
+    { name: 'entry_date', label: t('common.date'), type: 'date' },
+    { name: 'pain_level', label: t('symptoms.pain') + ' (0–10)', type: 'slider', min: 0, max: 10 },
+    { name: 'pain_location', label: t('symptoms.pain_location'), type: 'select', options: painLocations },
+    { name: 'fatigue_level', label: t('symptoms.fatigue') + ' (0–10)', type: 'slider', min: 0, max: 10 },
+    { name: 'bowel_movements_count', label: t('symptoms.bowel'), type: 'number', min: 0 },
+    { name: 'stool_consistency', label: t('symptoms.stool') + ' (scala Bristol)', type: 'select', options: bristol },
+    { name: 'blood', label: t('symptoms.blood'), type: 'checkbox' },
+    { name: 'mood', label: t('symptoms.mood'), type: 'select', options: moods },
+    { name: 'notes', label: t('common.notes'), type: 'textarea' },
+  ];
+};
 
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
 }
 
 export default function Symptoms() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { toast } = useToast();
   const { isAuthenticated, authChecked } = useAuth();
   const [items, setItems] = useState([]);
@@ -123,7 +102,7 @@ export default function Symptoms() {
       setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
       base44.entities.SymptomEntry.update(editing.id, data).catch(() => {
         setItems((prev) => prev.map((it) => (it.id === editing.id ? previous : it)));
-        toast({ title: 'Errore', description: 'Modifica non salvata, riprova.', variant: 'destructive' });
+        toast({ title: t('common.error'), description: t('common.error_save'), variant: 'destructive' });
       });
     } else {
       const tempId = `temp_${Date.now()}`;
@@ -134,7 +113,7 @@ export default function Symptoms() {
         .then((created) => setItems((prev) => prev.map((it) => (it.id === tempId ? created : it))))
         .catch(() => {
           setItems((prev) => prev.filter((it) => it.id !== tempId));
-          toast({ title: 'Errore', description: 'Aggiunta non riuscita, riprova.', variant: 'destructive' });
+          toast({ title: t('common.error'), description: t('common.error_add'), variant: 'destructive' });
         });
     }
   };
@@ -173,7 +152,7 @@ export default function Symptoms() {
       />
       <PageEditorial pageKey="symptoms" />
       <SiteMenu />
-      <MagazineEssay theme="sintomi" number="01" eyebrow="Diario" title="Le tue registrazioni">
+      <MagazineEssay theme="sintomi" number="01" eyebrow={t('symptoms.magazine_eyebrow')} title={t('symptoms.magazine_title')}>
       {authChecked && !isAuthenticated && <GuestBanner />}
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
@@ -187,8 +166,8 @@ export default function Symptoms() {
               <CardContent className="p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-semibold text-lg">{formatDate(it.entry_date)}</p>
-                    {it.blood && <span className="inline-block mt-1 text-xs bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full font-medium">Sangue presente</span>}
+                    <p className="font-semibold text-lg">{formatDate(it.entry_date, lang)}</p>
+                    {it.blood && <span className="inline-block mt-1 text-xs bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full font-medium">{t('symptoms.blood_present')}</span>}
                   </div>
                   <div className="flex gap-1">
                     <button onClick={() => openEdit(it)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
@@ -199,7 +178,7 @@ export default function Symptoms() {
                   <Mini label={t('symptoms.pain')} value={`${it.pain_level ?? 0}/10`} tone={tone(it.pain_level)} />
                   <Mini label={t('symptoms.fatigue')} value={`${it.fatigue_level ?? 0}/10`} tone={tone(it.fatigue_level)} />
                   <Mini label={t('symptoms.bowel')} value={it.bowel_movements_count ?? 0} />
-                  <Mini label={t('symptoms.stool')} value={it.stool_consistency ? `Tipo ${it.stool_consistency}` : '—'} />
+                  <Mini label={t('symptoms.stool')} value={it.stool_consistency ? t('symptoms.stool_type').replace('{n}', it.stool_consistency) : '—'} />
                 </div>
                 {it.notes && <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{it.notes}</p>}
               </CardContent>
@@ -233,7 +212,7 @@ function Mini({ label, value, tone }) {
   );
 }
 function tone(v) { if (v == null) return ''; if (v >= 7) return 'text-rose-500'; if (v >= 4) return 'text-amber-600'; return 'text-emerald-600'; }
-function formatDate(d) {
+function formatDate(d, lang) {
   if (!d) return '';
-  try { return new Date(d).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return d; }
+  try { return new Date(d).toLocaleDateString(localeForLang(lang), { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return d; }
 }

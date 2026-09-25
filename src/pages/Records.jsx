@@ -16,27 +16,23 @@ import { useToast } from '@/components/ui/use-toast';
 import useRecordScanner from '@/hooks/useRecordScanner';
 import { useAuth } from '@/lib/AuthContext';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+import { RECORD_TYPE_KEYS, recordTypeLabel, localeForLang } from '@/lib/enumLabels';
 import { cn } from '@/lib/utils';
 
-const types = [
-  { value: 'visita', label: 'Visita' },
-  { value: 'esame', label: 'Esame' },
-  { value: 'esame_sangue', label: 'Esame del sangue' },
-  { value: 'referto', label: 'Referto' },
-  { value: 'controllo', label: 'Controllo clinico' },
-];
-
-const fields = (t) => [
-  { name: 'record_date', label: t('common.date'), type: 'date' },
-  { name: 'type', label: t('records.type'), type: 'select', options: types },
-  { name: 'title', label: 'Titolo', type: 'text' },
-  { name: 'provider', label: t('records.provider'), type: 'text' },
-  { name: 'location', label: t('records.location'), type: 'text' },
-  { name: 'result_summary', label: t('records.result'), type: 'textarea' },
-  { name: 'report_file_url', label: t('records.report'), type: 'file' },
-  { name: 'next_appointment', label: t('records.next'), type: 'date' },
-  { name: 'notes', label: t('common.notes'), type: 'textarea' },
-];
+const fields = (t) => {
+  const types = Object.entries(RECORD_TYPE_KEYS).map(([value, key]) => ({ value, label: t(key) }));
+  return [
+    { name: 'record_date', label: t('common.date'), type: 'date' },
+    { name: 'type', label: t('records.type'), type: 'select', options: types },
+    { name: 'title', label: t('exams.title_field'), type: 'text' },
+    { name: 'provider', label: t('records.provider'), type: 'text' },
+    { name: 'location', label: t('records.location'), type: 'text' },
+    { name: 'result_summary', label: t('records.result'), type: 'textarea' },
+    { name: 'report_file_url', label: t('records.report'), type: 'file' },
+    { name: 'next_appointment', label: t('records.next'), type: 'date' },
+    { name: 'notes', label: t('common.notes'), type: 'textarea' },
+  ];
+};
 
 const typeIcon = { visita: Stethoscope, esame: FileText, esame_sangue: FlaskConical, referto: FileText, controllo: CalendarClock };
 const typeColors = {
@@ -50,12 +46,13 @@ const typeColors = {
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 
 export default function Records() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { toast } = useToast();
   const { scanning, scan } = useRecordScanner();
   const { isAuthenticated, authChecked } = useAuth();
   const navigate = useNavigate();
   const fileRef = useRef(null);
+  const types = Object.entries(RECORD_TYPE_KEYS).map(([value, key]) => ({ value, label: t(key) }));
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -85,7 +82,7 @@ export default function Records() {
     const res = await scan(file);
     if (!res) return;
     if (res.kind === 'medication') {
-      toast({ title: 'Terapia salvata', description: res.medication?.name || '' });
+      toast({ title: t('records.therapy_saved'), description: res.medication?.name || '' });
       load();
     } else if (res.kind === 'record') {
       setEditing(res.record);
@@ -157,40 +154,40 @@ export default function Records() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cerca referti per titolo, medico, struttura o note…"
+              placeholder={t('records.search_placeholder')}
               className="w-full rounded-xl border border-input bg-background pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="rounded-xl bg-background text-sm"><SelectValue placeholder="Tutti i tipi" /></SelectTrigger>
+              <SelectTrigger className="rounded-xl bg-background text-sm"><SelectValue placeholder={t('records.all_types')} /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tutti i tipi</SelectItem>
+                <SelectItem value="all">{t('records.all_types')}</SelectItem>
                 {types.map((tp) => (<SelectItem key={tp.value} value={tp.value}>{tp.label}</SelectItem>))}
               </SelectContent>
             </Select>
             <input
               value={locFilter}
               onChange={(e) => setLocFilter(e.target.value)}
-              placeholder="Nome struttura o medico"
+              placeholder={t('records.provider_placeholder')}
               className="rounded-xl border border-input bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[11px] text-muted-foreground">Dal</label>
+              <label className="text-[11px] text-muted-foreground">{t('summary.from')}</label>
               <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
             <div>
-              <label className="text-[11px] text-muted-foreground">Al</label>
+              <label className="text-[11px] text-muted-foreground">{t('summary.to')}</label>
               <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
           </div>
           {hasFilters && (
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">{filtered.length} referti trovati</span>
+              <span className="text-xs text-muted-foreground">{t('records.results_count').replace('{n}', filtered.length)}</span>
               <button onClick={resetFilters} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-                <X className="w-3.5 h-3.5" /> Azzera filtri
+                <X className="w-3.5 h-3.5" /> {t('records.reset_filters')}
               </button>
             </div>
           )}
@@ -200,7 +197,7 @@ export default function Records() {
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
       ) : filtered.length === 0 ? (
-        <EmptyState icon={FileText} title={hasFilters ? 'Nessun referto corrisponde ai filtri' : t('common.empty')} description={hasFilters ? 'Modifica la ricerca o azzera i filtri.' : t('records.subtitle')} />
+        <EmptyState icon={FileText} title={hasFilters ? t('records.no_filter_match') : t('common.empty')} description={hasFilters ? t('records.no_filter_match_desc') : t('records.subtitle')} />
       ) : (
         <div className="space-y-3">
           {filtered.map((r) => {
@@ -215,7 +212,7 @@ export default function Records() {
                       </div>
                       <div>
                         <p className="font-semibold text-lg">{r.title}</p>
-                        <p className="text-sm text-muted-foreground">{labelFor(types, r.type)} · {formatDate(r.record_date)}</p>
+                        <p className="text-sm text-muted-foreground">{recordTypeLabel(t, r.type)} · {formatDate(r.record_date, lang)}</p>
                       </div>
                     </div>
                     <div className="flex gap-1">
@@ -233,7 +230,7 @@ export default function Records() {
                     )}
                     {r.next_appointment && (
                       <span className="inline-flex items-center gap-1.5 text-sm text-amber-600">
-                        <CalendarClock className="w-4 h-4" /> {t('records.next')}: {formatDate(r.next_appointment)}
+                        <CalendarClock className="w-4 h-4" /> {t('records.next')}: {formatDate(r.next_appointment, lang)}
                       </span>
                     )}
                   </div>
@@ -258,5 +255,4 @@ export default function Records() {
   );
 }
 
-function labelFor(opts, v) { const o = opts.find((x) => x.value === v); return o ? o.label : v || '—'; }
-function formatDate(d) { try { return new Date(d).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }); } catch { return d; } }
+function formatDate(d, lang) { try { return new Date(d).toLocaleDateString(localeForLang(lang), { day: 'numeric', month: 'short', year: 'numeric' }); } catch { return d; } }
