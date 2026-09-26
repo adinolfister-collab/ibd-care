@@ -610,6 +610,7 @@ const it = {
   'food.nutrition_empty': 'Registra un pasto per vedere le calorie e le proteine della giornata.',
   'food.kcal_unit': 'kcal',
   'food.prot_unit': 'g prot',
+  'food.carb_unit': 'g carb',
   'food.nutrition_disclaimer': 'Valori stimati dal catalogo (per 100 g) e dalle quantità inserite. Indicativi.',
   'food.cary_estimate': 'Stima con Cary',
   'food.cary_estimating': 'Stima…',

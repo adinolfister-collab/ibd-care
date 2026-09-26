@@ -610,6 +610,7 @@ const en = {
   'food.nutrition_empty': 'Log a meal to see your daily calories and protein.',
   'food.kcal_unit': 'kcal',
   'food.prot_unit': 'g prot',
+  'food.carb_unit': 'g carb',
   'food.nutrition_disclaimer': 'Estimated from the catalog (per 100 g) and the quantities you entered. Indicative.',
   'food.cary_estimate': 'Estimate with Cary',
   'food.cary_estimating': 'Estimating…',
