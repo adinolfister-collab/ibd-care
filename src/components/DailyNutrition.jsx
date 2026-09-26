@@ -24,7 +24,7 @@ export default function DailyNutrition({ entries, groups }) {
           <Flame className="w-4 h-4 text-terracotta" />
           <h2 className="font-heading text-lg font-semibold text-primary">{t('food.nutrition_today')}</h2>
         </div>
-        {totals.kcal === 0 && totals.proteine === 0 ? (
+        {totals.kcal === 0 && totals.proteine === 0 && totals.carboidrati === 0 ? (
           <p className="text-sm text-muted-foreground">{t('food.nutrition_empty')}</p>
         ) : (
           <>
@@ -39,13 +39,18 @@ export default function DailyNutrition({ entries, groups }) {
                 <span className="font-heading text-2xl font-semibold text-foreground">{totals.proteine}</span>
                 <span className="text-sm text-muted-foreground">{t('food.prot_unit')}</span>
               </div>
+              <div className="flex items-baseline gap-1.5">
+                <Wheat className="w-4 h-4 text-amber-600 self-center" />
+                <span className="font-heading text-2xl font-semibold text-foreground">{totals.carboidrati}</span>
+                <span className="text-sm text-muted-foreground">{t('food.carb_unit')}</span>
+              </div>
             </div>
             {totals.foods.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {totals.foods.map((f, i) => (
                   <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-card/80 text-xs border border-border">
                     <span className="font-medium">{f.name}</span>
-                    <span className="text-muted-foreground">· {f.kcal} {t('food.kcal_unit')} · {f.proteine} {t('food.prot_unit')}</span>
+                    <span className="text-muted-foreground">· {f.kcal} {t('food.kcal_unit')} · {f.proteine} {t('food.prot_unit')} · {f.carboidrati} {t('food.carb_unit')}</span>
                   </span>
                 ))}
               </div>
