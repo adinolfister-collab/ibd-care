@@ -6,6 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#1f4f4f" />
+    <script>
+      // Forza tema chiaro "rivista mediterranea" su ogni dispositivo:
+      // previene il flash nero iniziale nella WebView rimuovendo subito
+      // eventuali preferenze .dark persistite da next-themes.
+      try {
+        localStorage.setItem('theme', 'light');
+        var html = document.documentElement;
+        html.classList.remove('dark');
+        html.classList.add('light');
+      } catch (e) {}
+    </script>
 
     <!-- SEO principale -->
     <title>IBD Care – Diario sintomi IBD, alimentazione e terapie</title>
