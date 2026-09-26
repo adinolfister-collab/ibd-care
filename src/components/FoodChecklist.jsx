@@ -45,7 +45,7 @@ export default function FoodChecklist({ groups, value = [], onChange }) {
     } else {
       const item = { name, qty: '', unit: defaultUnit || 'porzione' };
       const n = computeItemNutrition(item, catalogEntry);
-      onChange([...value, { ...item, kcal: n.kcal, proteine: n.proteine, kcal_source: 'catalog' }]);
+      onChange([...value, { ...item, kcal: n.kcal, proteine: n.proteine, carboidrati: n.carboidrati, kcal_source: 'catalog' }]);
     }
   };
 
@@ -100,7 +100,7 @@ export default function FoodChecklist({ groups, value = [], onChange }) {
                 it={it}
                 onQty={(v) => setItem(it.name, { qty: v })}
                 onUnit={(v) => setItem(it.name, { unit: v })}
-                onNutrition={(kcal, proteine, source) => setItem(it.name, { kcal, proteine, kcal_source: source })}
+                onNutrition={(kcal, proteine, carboidrati, source) => setItem(it.name, { kcal, proteine, carboidrati, kcal_source: source })}
                 onDelete={() => removeExtra(it.name)}
               />
             ))}
@@ -124,14 +124,15 @@ export default function FoodChecklist({ groups, value = [], onChange }) {
                     unit={sel?.unit || it.default_unit}
                     kcal={sel?.kcal}
                     proteine={sel?.proteine}
+                    carboidrati={sel?.carboidrati}
                     onToggle={() => toggle(it.name, checked, it.default_unit, it)}
                     onQty={(v) => {
                       const n = computeItemNutrition({ name: it.name, qty: v, unit: sel?.unit || it.default_unit }, it);
-                      setItem(it.name, { qty: v, kcal: n.kcal, proteine: n.proteine, kcal_source: 'catalog' });
+                      setItem(it.name, { qty: v, kcal: n.kcal, proteine: n.proteine, carboidrati: n.carboidrati, kcal_source: 'catalog' });
                     }}
                     onUnit={(v) => {
                       const n = computeItemNutrition({ name: it.name, qty: sel?.qty, unit: v }, it);
-                      setItem(it.name, { unit: v, kcal: n.kcal, proteine: n.proteine, kcal_source: 'catalog' });
+                      setItem(it.name, { unit: v, kcal: n.kcal, proteine: n.proteine, carboidrati: n.carboidrati, kcal_source: 'catalog' });
                     }}
                   />
                 );
@@ -166,7 +167,7 @@ function Group({ title, tone, children }) {
   );
 }
 
-function NutritionBadge({ kcal, proteine }) {
+function NutritionBadge({ kcal, proteine, carboidrati }) {
   const { t } = useI18n();
   return (
     <span className="shrink-0 inline-flex items-center gap-1 text-[11px] text-muted-foreground whitespace-nowrap">
@@ -175,11 +176,14 @@ function NutritionBadge({ kcal, proteine }) {
       <span className="text-muted-foreground/40">·</span>
       <span className="text-primary font-medium">{proteine || 0}</span>
       <span>{t('food.prot_unit')}</span>
+      <span className="text-muted-foreground/40">·</span>
+      <span className="text-amber-600 font-medium">{carboidrati || 0}</span>
+      <span>{t('food.carb_unit')}</span>
     </span>
   );
 }
 
-function Row({ checked, name, qty, unit, kcal, proteine, onToggle, onQty, onUnit }) {
+function Row({ checked, name, qty, unit, kcal, proteine, carboidrati, onToggle, onQty, onUnit }) {
   const { t } = useI18n();
   return (
     <div
@@ -223,7 +227,7 @@ function Row({ checked, name, qty, unit, kcal, proteine, onToggle, onQty, onUnit
             className="w-14 rounded-lg border border-input bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           <UnitSelect value={unit || 'porzione'} onChange={onUnit} />
-          <NutritionBadge kcal={kcal} proteine={proteine} />
+          <NutritionBadge kcal={kcal} proteine={proteine} carboidrati={carboidrati} />
         </div>
       )}
     </div>
@@ -246,7 +250,7 @@ function ExtraRow({ it, onQty, onUnit, onNutrition, onDelete }) {
       if (data && (data.error || !data.kcal)) {
         throw new Error(data.error || 'Nessun valore');
       }
-      onNutrition(Number(data.kcal) || 0, Number(data.proteine) || 0, 'cary');
+      onNutrition(Number(data.kcal) || 0, Number(data.proteine) || 0, Number(data.carboidrati) || 0, 'cary');
       if (data.note) {
         toast({ title: t('food.cary_estimate_done'), description: data.note });
       }
@@ -292,7 +296,7 @@ function ExtraRow({ it, onQty, onUnit, onNutrition, onDelete }) {
           type="number"
           inputMode="decimal"
           value={it.kcal ?? ''}
-          onChange={(e) => onNutrition(Number(e.target.value) || 0, Number(it.proteine) || 0, 'manual')}
+          onChange={(e) => onNutrition(Number(e.target.value) || 0, Number(it.proteine) || 0, Number(it.carboidrati) || 0, 'manual')}
           placeholder={t('food.kcal_unit')}
           className="w-16 rounded-lg border border-input bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           aria-label={t('food.kcal_unit')}
@@ -301,10 +305,19 @@ function ExtraRow({ it, onQty, onUnit, onNutrition, onDelete }) {
           type="number"
           inputMode="decimal"
           value={it.proteine ?? ''}
-          onChange={(e) => onNutrition(Number(it.kcal) || 0, Number(e.target.value) || 0, 'manual')}
+          onChange={(e) => onNutrition(Number(it.kcal) || 0, Number(e.target.value) || 0, Number(it.carboidrati) || 0, 'manual')}
           placeholder={t('food.prot_unit')}
           className="w-16 rounded-lg border border-input bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           aria-label={t('food.prot_unit')}
+        />
+        <input
+          type="number"
+          inputMode="decimal"
+          value={it.carboidrati ?? ''}
+          onChange={(e) => onNutrition(Number(it.kcal) || 0, Number(it.proteine) || 0, Number(e.target.value) || 0, 'manual')}
+          placeholder={t('food.carb_unit')}
+          className="w-16 rounded-lg border border-input bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+          aria-label={t('food.carb_unit')}
         />
         <button
           type="button"

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Flame, Beef } from 'lucide-react';
+import { Flame, Beef, Wheat } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { computeDayTotals, buildCatalogMap } from '@/lib/nutrition';
 import { useI18n } from '@/lib/i18n';

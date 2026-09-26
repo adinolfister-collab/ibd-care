@@ -60,6 +60,10 @@
             "type": "number",
             "description": "Proteine totali (g) dell'item (snapshot al momento della registrazione)"
           },
+          "carboidrati": {
+            "type": "number",
+            "description": "Carboidrati totali (g) dell'item (snapshot al momento della registrazione)"
+          },
           "kcal_source": {
             "type": "string",
             "enum": [

@@ -62,8 +62,8 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
 
   const groups = useMemo(() => catalogToGroups(items.length ? items : []), [items]);
 
-  const openNew = () => setEditing({ name: '', category: CATEGORIES[0], default_unit: 'porzione', kcal: '', proteine: '' });
-  const openEdit = (it) => setEditing({ id: it.id, name: it.name, category: it.category, default_unit: it.default_unit || 'porzione', kcal: it.kcal ?? '', proteine: it.proteine ?? '' });
+  const openNew = () => setEditing({ name: '', category: CATEGORIES[0], default_unit: 'porzione', kcal: '', proteine: '', carboidrati: '', portion_grams: '' });
+  const openEdit = (it) => setEditing({ id: it.id, name: it.name, category: it.category, default_unit: it.default_unit || 'porzione', kcal: it.kcal ?? '', proteine: it.proteine ?? '', carboidrati: it.carboidrati ?? '', portion_grams: it.portion_grams ?? '' });
   const closeEdit = () => setEditing(null);
 
   const save = async () => {
@@ -74,6 +74,8 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
       default_unit: editing.default_unit,
       kcal: editing.kcal === '' ? null : Number(editing.kcal),
       proteine: editing.proteine === '' ? null : Number(editing.proteine),
+      carboidrati: editing.carboidrati === '' ? null : Number(editing.carboidrati),
+      portion_grams: editing.portion_grams === '' ? null : Number(editing.portion_grams),
     };
     try {
       if (editing.id) {
@@ -117,14 +119,20 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
                   <div key={it.id} className="flex items-center gap-2 px-2.5 py-2">
                     <span className="flex-1 text-sm">{it.name}</span>
                     {it.kcal != null && (
-                      <span className="text-[11px] text-terracotta font-medium">{it.kcal} kcal</span>
+                      <span className="text-[11px] text-terracotta font-medium">{it.kcal} {t('food.kcal_unit')}</span>
                     )}
                     {it.proteine != null && (
-                      <span className="text-[11px] text-primary font-medium">{it.proteine}g</span>
+                      <span className="text-[11px] text-primary font-medium">{it.proteine}{t('unit.g')}</span>
+                    )}
+                    {it.carboidrati != null && (
+                      <span className="text-[11px] text-amber-600 font-medium">{it.carboidrati}{t('unit.g')}</span>
+                    )}
+                    {it.portion_grams != null && (
+                      <span className="text-[11px] text-muted-foreground">{it.portion_grams}{t('unit.g')}</span>
                     )}
                     {it.default_unit && (
                       <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
-                        {it.default_unit}
+                        {unitLabel(t, it.default_unit)}
                       </span>
                     )}
                     <button onClick={() => openEdit(it)} className="p-1.5 rounded-lg hover:bg-accent text-muted-foreground" aria-label={t('common.edit')}>
@@ -182,9 +190,9 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
                   </Select>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <Label className="text-sm font-medium text-muted-foreground">{t('food.kcal_field')}</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">{t('food.kcal_field')}</Label>
                   <Input
                     type="number"
                     inputMode="decimal"
@@ -195,7 +203,7 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
                   />
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-muted-foreground">{t('food.prot_field')}</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">{t('food.prot_field')}</Label>
                   <Input
                     type="number"
                     inputMode="decimal"
@@ -205,6 +213,29 @@ export default function FoodCatalogManager({ open, onOpenChange, onChanged }) {
                     placeholder="0"
                   />
                 </div>
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground">{t('food.carb_field')}</Label>
+                  <Input
+                    type="number"
+                    inputMode="decimal"
+                    value={editing.carboidrati ?? ''}
+                    onChange={(e) => setEditing({ ...editing, carboidrati: e.target.value })}
+                    className={fieldClass}
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm font-medium text-muted-foreground">{t('food.portion_grams_field')}</Label>
+                <Input
+                  type="number"
+                  inputMode="decimal"
+                  value={editing.portion_grams ?? ''}
+                  onChange={(e) => setEditing({ ...editing, portion_grams: e.target.value })}
+                  className={fieldClass}
+                  placeholder="0"
+                />
+                <p className="text-[11px] text-muted-foreground italic mt-1">{t('food.portion_grams_hint')}</p>
               </div>
               <p className="text-[11px] text-muted-foreground italic -mt-1">{t('food.nutrition_per100_hint')}</p>
             </div>
