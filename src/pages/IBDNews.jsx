@@ -12,7 +12,6 @@ import NewsShareButtons from '@/components/NewsShareButtons';
 import PageShareButtons from '@/components/PageShareButtons';
 import CopyLinkBox from '@/components/CopyLinkBox';
 import AppLayout from '@/components/AppLayout';
-import SiteMenu from '@/components/SiteMenu';
 import PublicFooter from '@/components/PublicFooter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -105,7 +104,6 @@ export default function IBDNews() {
           )}
         />
         <PageEditorial pageKey="news" />
-        <SiteMenu />
         <CopyLinkBox url="https://ibd-care.it/news" />
 
         <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">

@@ -11,7 +11,6 @@ import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import EditorialSlider from '@/components/EditorialSlider';
 import HomeCompanionReport from '@/components/HomeCompanionReport';
-import SiteMenu from '@/components/SiteMenu';
 import MagazineEssay from '@/components/MagazineEssay';
 import ShareApp from '@/components/ShareApp';
 import DownloadApp from '@/components/DownloadApp';
@@ -96,7 +95,6 @@ export default function Home() {
       <PageEditorial pageKey="home" />
       <EditorialSlider />
       <HomeCompanionReport />
-      <SiteMenu />
 
       {/* N. 01 — Stato di oggi */}
       <MagazineEssay theme="sintomi" number="01" eyebrow="Diario · oggi" title={t('home.today_status')} to="/symptoms">

@@ -11,7 +11,6 @@ import EditorialBlock from '@/components/EditorialBlock';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 import NativeAppButton from '@/components/NativeAppButton';
-import SiteMenu from '@/components/SiteMenu';
 import AbbonamentoFeatures from '@/components/AbbonamentoFeatures';
 import FoundersBanner from '@/components/FoundersBanner';
 
@@ -47,7 +46,6 @@ export default function Abbonamento() {
         <PageEditorial pageKey="abbonamento" />
         <div className="mb-6"><FoundersBanner /></div>
         <AbbonamentoFeatures />
-        <SiteMenu />
 
         {isAuthenticated ? (
           <AbbonamentoPlans />

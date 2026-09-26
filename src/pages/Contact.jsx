@@ -9,7 +9,6 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import AppLayout from '@/components/AppLayout';
-import SiteMenu from '@/components/SiteMenu';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 
@@ -32,7 +31,6 @@ export default function Contact() {
       <div className="w-full max-w-2xl mx-auto">
         <PageHeader title="Contatti" subtitle="Siamo qui per ascoltarti: supporto, suggerimenti e segnala la tua esperienza con IBD Care." />
         <PageEditorial pageKey="contact" />
-        <SiteMenu />
 
         <p className="text-muted-foreground mb-6 leading-relaxed select-text">
           Siamo qui per ascoltarti. Scrivici per supporto tecnico, suggerimenti o per segnalarci

@@ -4,13 +4,15 @@ import {
   Newspaper, Users, Activity, Utensils, Info, Mail,
   Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin,
   FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag, Crown, CreditCard, BookOpen,
+  TrendingUp, Megaphone,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import { cn } from '@/lib/utils';
 
 // Sezione "Esplora la rivista": elenco visibile di tutte le pagine dell'app.
-// App pubblica: nessuna voce è bloccata.
+// App pubblica: nessuna voce è bloccata. Account/settings nascoste ai guest;
+// le voci admin (conversioni, marketing, shop admin) solo per role=admin.
 const ITEMS = [
   { to: '/news', key: 'nav.news', icon: Newspaper },
   { to: '/community', key: 'nav.community', icon: Users },
@@ -35,12 +37,21 @@ const ITEMS = [
   { to: '/account', key: 'settings.account', icon: User },
 ];
 
+const ADMIN_ITEMS = [
+  { to: '/admin/conversioni', key: 'nav.conversions', icon: TrendingUp },
+  { to: '/admin/marketing', key: 'nav.marketing', icon: Megaphone },
+  { to: '/shop/admin', key: 'shop.admin_nav', icon: ShoppingBag },
+];
+
 export default function SiteMenu() {
   const { t } = useI18n();
-  const { isAuthenticated } = useAuth();
-  const items = isAuthenticated
+  const { isAuthenticated, user } = useAuth();
+  let items = isAuthenticated
     ? ITEMS
     : ITEMS.filter((it) => it.to !== '/account' && it.to !== '/settings');
+  if (user?.role === 'admin') {
+    items = [...items, ...ADMIN_ITEMS.map((it) => ({ ...it, admin: true }))];
+  }
 
   return (
     <section className="my-8 md:my-10">
@@ -58,14 +69,26 @@ export default function SiteMenu() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {items.map((item) => (
-          <Link key={item.to} to={item.to} className={cn('group flex items-center gap-3 rounded-xl border px-4 py-3.5 shadow-sm transition-all hover:shadow-md', item.founder ? 'border-terracotta/70 bg-terracotta/10 hover:bg-terracotta/15' : 'border-border bg-card hover:border-terracotta/50')}>
-            <span className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors', item.founder ? 'bg-terracotta/20' : 'bg-accent group-hover:bg-terracotta/15')}>
-              <item.icon className={cn('w-5 h-5', item.founder ? 'text-terracotta' : 'text-primary')} />
+          <Link
+            key={item.to}
+            to={item.to}
+            className={cn(
+              'group flex items-center gap-3 rounded-xl border px-4 py-3.5 shadow-sm transition-all hover:shadow-md',
+              item.founder
+                ? 'border-terracotta/70 bg-terracotta/10 hover:bg-terracotta/15'
+                : item.admin
+                  ? 'border-primary/30 bg-primary/5 hover:border-primary/50'
+                  : 'border-border bg-card hover:border-terracotta/50'
+            )}
+          >
+            <span className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors', item.founder ? 'bg-terracotta/20' : item.admin ? 'bg-primary/10' : 'bg-accent group-hover:bg-terracotta/15')}>
+              <item.icon className={cn('w-5 h-5', item.founder ? 'text-terracotta' : item.admin ? 'text-primary' : 'text-primary')} />
             </span>
             <span className={cn('flex-1 min-w-0 font-heading text-base md:text-lg font-medium tracking-tight truncate', item.founder ? 'text-terracotta' : 'text-foreground')}>
               {t(item.key)}
             </span>
             {item.founder && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-terracotta text-terracotta-foreground px-1.5 py-0.5 rounded-full shrink-0">Founder</span>}
+            {item.admin && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-primary/15 text-primary px-1.5 py-0.5 rounded-full shrink-0">Admin</span>}
           </Link>
         ))}
       </div>

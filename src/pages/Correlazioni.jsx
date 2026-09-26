@@ -8,7 +8,6 @@ import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
-import SiteMenu from '@/components/SiteMenu';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { computeFoodCorrelation, buildSymptomMap } from '@/lib/correlationStats';
@@ -80,7 +79,6 @@ export default function Correlazioni() {
         subtitle={t('correlazioni.subtitle') || 'Quali cibi sembrano associarsi a più scariche o più dolore negli ultimi 30 giorni'}
       />
       <PageEditorial pageKey="correlazioni" />
-      <SiteMenu />
 
       <div className="space-y-6 md:space-y-8">
         {!loading && triggerItems.length > 0 && (

@@ -8,7 +8,6 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
-import SiteMenu from '@/components/SiteMenu';
 import CommunityFoundersRanking from '@/components/CommunityFoundersRanking';
 import PageShareButtons from '@/components/PageShareButtons';
 import AppLayout from '@/components/AppLayout';
@@ -69,7 +68,6 @@ export default function Community() {
       />
       <PageEditorial pageKey="community" />
       <CommunityFoundersRanking />
-      <SiteMenu />
 
       {/* Tabs */}
       <div className="flex items-center gap-2 mb-5 border-b border-border">

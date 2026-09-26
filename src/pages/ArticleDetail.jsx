@@ -11,7 +11,6 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import AppLayout from '@/components/AppLayout';
-import SiteMenu from '@/components/SiteMenu';
 import { Card, CardContent } from '@/components/ui/card';
 
 const APP_URL = 'https://ibd-care.it';
@@ -105,7 +104,6 @@ export default function ArticleDetail() {
           )}
           <PageHeader title={article.title} subtitle={article.source ? `${article.source}` : undefined} />
           <PageEditorial pageKey="article" />
-          <SiteMenu />
           <Card className="border-0 shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4">

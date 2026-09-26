@@ -9,7 +9,6 @@ import PublicFooter from '@/components/PublicFooter';
 import FoundersBanner from '@/components/FoundersBanner';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
-import SiteMenu from '@/components/SiteMenu';
 import { Button } from '@/components/ui/button';
 import InstallAppButton from '@/components/InstallAppButton';
 import HomeCompanionReport from '@/components/HomeCompanionReport';
@@ -160,7 +159,6 @@ export default function HomeMarketing() {
         </section>
 
         <div className="mb-8"><FoundersBanner /></div>
-        <SiteMenu />
 
         {/* CTA FINALE */}
         <section className="mb-10">
