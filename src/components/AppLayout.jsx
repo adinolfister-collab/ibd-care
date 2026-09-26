@@ -12,6 +12,8 @@ import MobileBottomNav from '@/components/MobileBottomNav';
 import NativeAppButton from '@/components/NativeAppButton';
 import { guestSymptoms, guestFoods, guestRecords, syncGuestEntriesToCloud } from '@/lib/guestEntries';
 import { useToast } from '@/components/ui/use-toast';
+import { useDesktopView } from '@/hooks/useDesktopView';
+import DesktopViewToggle from '@/components/DesktopViewToggle';
 
 // Public app — every section is open to all visitors. Account management
 // (settings/account/admin) requires login, enforced by the route guard.
@@ -45,6 +47,7 @@ export default function AppLayout({ children }) {
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { forceDesktop } = useDesktopView();
   const [syncingGuest, setSyncingGuest] = useState(false);
 
   // On first authenticated mount, migrate any guest entries saved on the
@@ -87,10 +90,10 @@ export default function AppLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <MobileTopNav user={user} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
-      <MobileBottomNav isAuthenticated={isAuthenticated} />
-      {/* Sidebar (desktop only; mobile uses top bar + bottom tab bar) */}
-      <aside className="hidden md:flex flex-col fixed inset-y-0 left-0 w-64 border-r border-border bg-card">
+      {!forceDesktop && <MobileTopNav user={user} isAuthenticated={isAuthenticated} onLogout={handleLogout} />}
+      {!forceDesktop && <MobileBottomNav isAuthenticated={isAuthenticated} />}
+      {/* Sidebar: desktop, or mobile when forceDesktop is active */}
+      <aside className={cn('flex-col fixed inset-y-0 left-0 w-64 border-r border-border bg-card', forceDesktop ? 'flex z-50' : 'hidden md:flex')}>
         <div className="px-6 py-7 flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center">
             <HeartPulse className="w-6 h-6 text-primary" />
@@ -194,15 +197,16 @@ export default function AppLayout({ children }) {
         )}
       </aside>
 
-      {/* Top-right actions (desktop only; mobile has them in the top bar) */}
-      <div className="hidden md:flex fixed right-6 z-40" style={{ top: 'calc(env(safe-area-inset-top) + 1rem)' }}>
+      {/* Top-right actions: desktop, or mobile when forceDesktop is active */}
+      <div className={cn('fixed right-6 z-40', forceDesktop ? 'flex' : 'hidden md:flex')} style={{ top: 'calc(env(safe-area-inset-top) + 1rem)' }}>
+        <DesktopViewToggle />
         <LanguageMenu />
         <NativeAppButton />
         <TopRightActions />
       </div>
 
       {/* Main content */}
-      <div className="pl-0 md:pl-64">
+      <div className={forceDesktop ? 'pl-64' : 'pl-0 md:pl-64'}>
         <main className="min-h-screen px-4 md:px-10 pt-5 md:py-10 pb-28 md:pb-10 max-w-4xl mx-auto">
           {children}
         </main>

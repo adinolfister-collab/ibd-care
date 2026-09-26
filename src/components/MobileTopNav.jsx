@@ -23,7 +23,7 @@ export default function MobileTopNav({ user, isAuthenticated, onLogout }) {
 
   // Root tab screens keep the brand logo; any other route is treated as a
   // child/detail screen and shows a back button instead.
-  const ROOT_PATHS = ['/', '/symptoms', '/community', '/abbonamento', '/account', '/login'];
+  const ROOT_PATHS = ['/', '/symptoms', '/community', '/abbonamento', '/account', '/login', '/food', '/meds', '/records', '/esami', '/trends', '/symptom-charts', '/correlazioni', '/assistant', '/supporto', '/map', '/summary', '/shop', '/settings'];
   const isChildScreen = !ROOT_PATHS.includes(location.pathname);
 
   const groups = [
