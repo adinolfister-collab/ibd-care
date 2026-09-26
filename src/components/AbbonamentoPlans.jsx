@@ -115,7 +115,7 @@ export default function AbbonamentoPlans() {
           <button
             onClick={manage}
             disabled={manageLoading}
-            className="mt-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border border-emerald-300 text-emerald-700 bg-white hover:bg-emerald-50 transition-colors disabled:opacity-60"
+            className="mt-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border border-emerald-300 text-emerald-700 bg-card hover:bg-emerald-50 transition-colors disabled:opacity-60"
           >
             {manageLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Settings className="w-4 h-4" />}
             {manageLoading ? t('premium.redirecting') : t('premium.manage_subscription')}

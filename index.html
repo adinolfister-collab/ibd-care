@@ -7,14 +7,16 @@
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#1f4f4f" />
     <script>
-      // Forza tema chiaro "rivista mediterranea" su ogni dispositivo:
-      // previene il flash nero iniziale nella WebView rimuovendo subito
-      // eventuali preferenze .dark persistite da next-themes.
+      // Anti-FOUC: applica subito il tema (light/dark) rispettando la
+      // preferenza salvata o, in assenza, quella di sistema. Evita il flash
+      // di tema sbagliato prima dell'inizializzazione di next-themes.
       try {
-        localStorage.setItem('theme', 'light');
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var dark = saved === 'dark' || ((!saved || saved === 'system') && prefersDark);
         var html = document.documentElement;
-        html.classList.remove('dark');
-        html.classList.add('light');
+        if (dark) html.classList.add('dark');
+        else html.classList.remove('dark');
       } catch (e) {}
     </script>
 

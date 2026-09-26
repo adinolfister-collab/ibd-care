@@ -137,3 +137,40 @@
     }
   }
 }
+
+/* === Dark-mode semantic tint overrides ===
+   L'app usa tinte chiare (bg-*-50/-100, text-*-600/700/800, border-*-200/300)
+   per badge di stato semantici (emerald = ok, amber = attenzione, rose = pericolo).
+   In dark mode questi box chiari risalterebbero come macchie chiare su sfondo scuro
+   e i testi scuri sarebbero illeggibili. Sostituiamo qui le tinte chiare con
+   varianti translucide e i testi scuri con toni più luminosi, mantenendo
+   leggibilità e identità cromatica del brand "rivista mediterranea".
+   Regole non-layered → prevalgono sulle utility Tailwind sotto .dark. */
+.dark .bg-emerald-50,
+.dark .hover\:bg-emerald-50:hover { background-color: rgb(16 185 129 / 0.12); }
+.dark .bg-emerald-100 { background-color: rgb(16 185 129 / 0.20); }
+.dark .bg-amber-50,
+.dark .hover\:bg-amber-50:hover { background-color: rgb(245 158 11 / 0.12); }
+.dark .bg-amber-100 { background-color: rgb(245 158 11 / 0.20); }
+.dark .bg-rose-50,
+.dark .hover\:bg-rose-50:hover { background-color: rgb(244 63 94 / 0.12); }
+.dark .bg-rose-100 { background-color: rgb(244 63 94 / 0.20); }
+.dark .bg-rose-200\/60 { background-color: rgb(244 63 94 / 0.22); }
+
+.dark .text-emerald-600,
+.dark .text-emerald-700,
+.dark .text-emerald-700\/80,
+.dark .text-emerald-800 { color: rgb(110 231 183); }
+.dark .text-amber-600,
+.dark .text-amber-700,
+.dark .text-amber-800 { color: rgb(252 211 77); }
+.dark .text-rose-600,
+.dark .text-rose-700,
+.dark .text-rose-800 { color: rgb(253 164 175); }
+
+.dark .border-emerald-200,
+.dark .border-emerald-200\/60,
+.dark .border-emerald-300 { border-color: rgb(16 185 129 / 0.35); }
+.dark .border-amber-200,
+.dark .border-amber-300 { border-color: rgb(245 158 11 / 0.35); }
+.dark .border-rose-200 { border-color: rgb(244 63 94 / 0.35); }

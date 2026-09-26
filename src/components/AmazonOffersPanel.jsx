@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import {
   AMAZON_PARTNER_TAG, AMAZON_STORE, isAmazonUrl, extractAmazonAsin,
@@ -233,19 +234,18 @@ export default function AmazonOffersPanel() {
               </div>
               <div>
                 <Label htmlFor="amz-product">{t('shop.amazon_product')}</Label>
-                <select
-                  id="amz-product"
-                  value={productId}
-                  onChange={(e) => setProductId(e.target.value)}
-                  className="mt-1 w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <option value="">— Seleziona prodotto —</option>
-                  {products.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}{p.category ? ' · ' + t(CATEGORY_LABEL_KEY[p.category]) : ''}
-                    </option>
-                  ))}
-                </select>
+                <Select value={productId} onValueChange={(v) => setProductId(v)}>
+                  <SelectTrigger id="amz-product" className="mt-1 w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                    <SelectValue placeholder="— Seleziona prodotto —" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {products.map((p) => (
+                      <SelectItem key={p.id} value={p.id}>
+                        {p.name}{p.category ? ' · ' + t(CATEGORY_LABEL_KEY[p.category]) : ''}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

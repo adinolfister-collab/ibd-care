@@ -150,7 +150,7 @@ export default function Correlazioni() {
                         />
                         <Tooltip
                           cursor={{ fill: 'hsl(var(--accent))' }}
-                          contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', fontSize: 12 }}
+                          contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', background: 'hsl(var(--card))', color: 'hsl(var(--card-foreground))', fontSize: 12 }}
                         />
                         <Bar dataKey="avgBowel" name={t('symptoms.bowel')} fill="hsl(var(--chart-2))" radius={[0, 6, 6, 0]} />
                       </BarChart>
@@ -189,7 +189,7 @@ export default function Correlazioni() {
                         />
                         <Tooltip
                           cursor={{ fill: 'hsl(var(--accent))' }}
-                          contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', fontSize: 12 }}
+                          contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', background: 'hsl(var(--card))', color: 'hsl(var(--card-foreground))', fontSize: 12 }}
                         />
                         <Bar dataKey="avgPain" name={t('symptoms.pain')} fill="hsl(var(--chart-1))" radius={[0, 6, 6, 0]} />
                       </BarChart>

@@ -142,7 +142,7 @@ export default function MealSymptomCorrelation({ entries, foods }) {
                   className={cn('inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border', R_BG[f.maxSev] || 'bg-amber-100 text-amber-700', 'border-current/20')}
                 >
                   {f.item}
-                  <span className="text-xs font-semibold rounded-full bg-white/40 px-1.5 py-0.5">{f.count}</span>
+                  <span className="text-xs font-semibold rounded-full bg-white/40 dark:bg-white/15 px-1.5 py-0.5">{f.count}</span>
                 </span>
               ))}
             </div>
