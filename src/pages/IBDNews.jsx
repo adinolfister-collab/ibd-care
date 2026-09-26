@@ -7,6 +7,7 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
+import PullToRefresh from '@/components/PullToRefresh';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import NewsShareButtons from '@/components/NewsShareButtons';
 import PageShareButtons from '@/components/PageShareButtons';
@@ -124,6 +125,7 @@ export default function IBDNews() {
         ) : visible.length === 0 ? (
           <EmptyState icon={Newspaper} title={t('news.empty')} />
         ) : (
+          <PullToRefresh onRefresh={load}>
           <div className="space-y-3">
             {visible.map((a) => (
               <Card key={a.id} className="border-0 shadow-sm">
@@ -157,6 +159,7 @@ export default function IBDNews() {
               </Card>
             ))}
           </div>
+          </PullToRefresh>
         )}
 
         <EditorialBlock sectionKey="article_share" align="right" />

@@ -9,6 +9,7 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
+import PullToRefresh from '@/components/PullToRefresh';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -199,6 +200,7 @@ export default function Records() {
       ) : filtered.length === 0 ? (
         <EmptyState icon={FileText} title={hasFilters ? t('records.no_filter_match') : t('common.empty')} description={hasFilters ? t('records.no_filter_match_desc') : t('records.subtitle')} />
       ) : (
+        <PullToRefresh onRefresh={load}>
         <div className="space-y-3">
           {filtered.map((r) => {
             const Icon = typeIcon[r.type] || FileText;
@@ -239,6 +241,7 @@ export default function Records() {
             );
           })}
         </div>
+        </PullToRefresh>
       )}
 
       <EntityFormDialog

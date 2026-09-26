@@ -12,7 +12,7 @@ import ExploreMenu from '@/components/ExploreMenu';
 // Senza più sidebar né toggle vista-desktop. Niente barra di chip: la
 // navigazione tra sezioni vive nel blocco "Esplora la rivista" (pannello +
 // sezione in fondo al contenuto).
-const ROOT_PATHS = ['/', '/symptoms', '/community', '/abbonamento', '/account', '/login', '/food', '/meds', '/records', '/esami', '/trends', '/symptom-charts', '/correlazioni', '/assistant', '/supporto', '/map', '/summary', '/shop', '/settings'];
+const ROOT_PATHS = ['/', '/symptoms', '/community', '/abbonamento', '/account', '/login'];
 
 export default function MobileTopNav({ isAuthenticated, onLogout }) {
   const { t } = useI18n();

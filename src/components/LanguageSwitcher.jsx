@@ -1,5 +1,7 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useIsMobile } from '@/hooks/use-mobile';
+import MobileSelectDrawer from '@/components/MobileSelectDrawer';
 import { useI18n } from '@/lib/i18n';
 import { Globe } from 'lucide-react';
 
@@ -17,8 +19,25 @@ const LANGS = [
   { code: 'zh', label: '中文' },
 ];
 
+const options = LANGS.map((l) => ({ value: l.code, label: l.label }));
+
 export default function LanguageSwitcher({ className }) {
   const { lang, setLang } = useI18n();
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <MobileSelectDrawer
+        value={lang}
+        options={options}
+        onChange={setLang}
+        placeholder={lang}
+        icon={Globe}
+        triggerClassName={className}
+      />
+    );
+  }
+
   return (
     <Select value={lang} onValueChange={setLang}>
       <SelectTrigger className={className}>

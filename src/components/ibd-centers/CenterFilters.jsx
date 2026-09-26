@@ -2,6 +2,8 @@ import React from 'react';
 import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { useIsMobile } from '@/hooks/use-mobile';
+import MobileSelectDrawer from '@/components/MobileSelectDrawer';
 import { cn } from '@/lib/utils';
 
 const typeMeta = {
@@ -14,6 +16,11 @@ const typeMeta = {
 export default function CenterFilters({
   countries, regions, cities, filters, onFilter, onReset, typeLabels, t, hasActive,
 }) {
+  const isMobile = useIsMobile();
+  const countryOptions = [{ value: 'all', label: t('map.all_countries') }, ...countries.map((c) => ({ value: c, label: c }))];
+  const regionOptions = [{ value: 'all', label: t('map.all_regions') }, ...regions.map((r) => ({ value: r, label: r }))];
+  const cityOptions = [{ value: 'all', label: t('map.all_cities') }, ...cities.map((c) => ({ value: c, label: c }))];
+
   return (
     <div className="space-y-3">
       <div className="relative">
@@ -27,29 +34,56 @@ export default function CenterFilters({
       </div>
 
       <div className="grid grid-cols-1 gap-2">
-        <Select value={filters.country || 'all'} onValueChange={(v) => onFilter({ country: v === 'all' ? '' : v, region: '', city: '' })}>
-          <SelectTrigger className="w-full"><SelectValue placeholder={t('map.all_countries')} /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t('map.all_countries')}</SelectItem>
-            {countries.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        {isMobile ? (
+          <>
+            <MobileSelectDrawer
+              value={filters.country || 'all'}
+              options={countryOptions}
+              onChange={(v) => onFilter({ country: v === 'all' ? '' : v, region: '', city: '' })}
+              placeholder={t('map.all_countries')}
+            />
+            <MobileSelectDrawer
+              value={filters.region || 'all'}
+              options={regionOptions}
+              onChange={(v) => onFilter({ region: v === 'all' ? '' : v, city: '' })}
+              placeholder={t('map.all_regions')}
+              disabled={!filters.country}
+            />
+            <MobileSelectDrawer
+              value={filters.city || 'all'}
+              options={cityOptions}
+              onChange={(v) => onFilter({ city: v === 'all' ? '' : v })}
+              placeholder={t('map.all_cities')}
+              disabled={!filters.region}
+            />
+          </>
+        ) : (
+          <>
+            <Select value={filters.country || 'all'} onValueChange={(v) => onFilter({ country: v === 'all' ? '' : v, region: '', city: '' })}>
+              <SelectTrigger className="w-full"><SelectValue placeholder={t('map.all_countries')} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('map.all_countries')}</SelectItem>
+                {countries.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
 
-        <Select value={filters.region || 'all'} onValueChange={(v) => onFilter({ region: v === 'all' ? '' : v, city: '' })} disabled={!filters.country}>
-          <SelectTrigger className="w-full"><SelectValue placeholder={t('map.all_regions')} /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t('map.all_regions')}</SelectItem>
-            {regions.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-          </SelectContent>
-        </Select>
+            <Select value={filters.region || 'all'} onValueChange={(v) => onFilter({ region: v === 'all' ? '' : v, city: '' })} disabled={!filters.country}>
+              <SelectTrigger className="w-full"><SelectValue placeholder={t('map.all_regions')} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('map.all_regions')}</SelectItem>
+                {regions.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+              </SelectContent>
+            </Select>
 
-        <Select value={filters.city || 'all'} onValueChange={(v) => onFilter({ city: v === 'all' ? '' : v })} disabled={!filters.region}>
-          <SelectTrigger className="w-full"><SelectValue placeholder={t('map.all_cities')} /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t('map.all_cities')}</SelectItem>
-            {cities.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-          </SelectContent>
-        </Select>
+            <Select value={filters.city || 'all'} onValueChange={(v) => onFilter({ city: v === 'all' ? '' : v })} disabled={!filters.region}>
+              <SelectTrigger className="w-full"><SelectValue placeholder={t('map.all_cities')} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('map.all_cities')}</SelectItem>
+                {cities.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </>
+        )}
       </div>
 
       <div className="flex gap-1.5 flex-wrap">
