@@ -28,11 +28,11 @@ export default function Register() {
     e.preventDefault();
     setError("");
     if (password !== confirmPassword) {
-      setError(t('register.password_mismatch') || "Le password non coincidono");
+      setError(t('register.password_mismatch'));
       return;
     }
     if (!consent) {
-      setError(t('register.consent_required') || "Devi accettare l'informativa sulla privacy per registrarti");
+      setError(t('register.consent_required'));
       return;
     }
     setLoading(true);
@@ -41,7 +41,7 @@ export default function Register() {
       try { base44.analytics.track({ eventName: 'user_registered' }); } catch (e) { /* non blocking */ }
       setShowOtp(true);
     } catch (err) {
-      setError(err.message || "Registration failed");
+      setError(err.message || t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -63,7 +63,7 @@ export default function Register() {
       } catch (e) { /* non blocking */ }
       window.location.href = safeReturnTo();
     } catch (err) {
-      setError(err.message || "Invalid verification code");
+      setError(err.message || t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -74,11 +74,11 @@ export default function Register() {
     try {
       await base44.auth.resendOtp(email);
       toast({
-        title: t('register.code_sent') || "Code sent",
-        description: t('register.check_email') || "Check your email for the new code.",
+        title: t('register.code_sent'),
+        description: t('register.check_email'),
       });
     } catch (err) {
-      setError(err.message || "Failed to resend code");
+      setError(err.message || t('common.error'));
     }
   };
 
@@ -131,9 +131,9 @@ export default function Register() {
           )}
         </Button>
         <p className="text-center text-sm text-muted-foreground mt-4">
-          {t('register.no_code') || "Didn't receive the code?"}{" "}
+          {t('register.no_code')}{" "}
           <button onClick={handleResend} className="text-primary font-medium hover:underline">
-            {t('register.resend') || "Resend"}
+            {t('register.resend')}
           </button>
         </p>
       </AuthLayout>
@@ -164,7 +164,7 @@ export default function Register() {
         </span>
         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-semibold">
           <CheckCircle2 className="w-3.5 h-3.5" />
-          {t('register.no_card_badge') || "Nessuna carta richiesta"}
+          {t('register.no_card_badge')}
         </span>
       </div>
 
@@ -246,7 +246,7 @@ export default function Register() {
         <div className="flex items-start gap-2.5">
           <Checkbox id="consent" checked={consent} onCheckedChange={setConsent} className="mt-0.5" />
           <label htmlFor="consent" className="text-xs text-muted-foreground leading-relaxed select-text">
-            {t('register.consent_text') || "Ho letto e accetto l'Informativa sulla privacy e acconsento al trattamento dei miei dati di salute personali ai sensi del GDPR per la gestione del mio diario IBD. Posso revocare il consenso in qualsiasi momento dall'area Account."}
+            {t('register.consent_text')}
           </label>
         </div>
         <Button type="submit" className="w-full h-12 font-medium" disabled={loading || !consent}>

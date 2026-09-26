@@ -67,7 +67,7 @@ export default function Settings() {
 
   return (
     <AppLayout>
-      <PageHeader title={t('settings.title')} subtitle="Privacy, lingua ed esportazione dei tuoi dati sanitari." />
+      <PageHeader title={t('settings.title')} subtitle={t('settings.subtitle')} />
 
       <div className="space-y-4">
         {/* Language */}
@@ -142,10 +142,10 @@ export default function Settings() {
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">{t('settings.privacy_desc')}</p>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> Ogni registrazione è accessibile solo dal tuo account.</li>
-              <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> I referti caricati restano privati e associati a te.</li>
-              <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> Il riepilogo PDF è generato sul dispositivo, non sui server.</li>
-              <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> L'accesso è protetto da login; puoi attivare il blocco biometrico del dispositivo dalle impostazioni di sistema.</li>
+              <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> {t('settings.privacy_1')}</li>
+              <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> {t('settings.privacy_2')}</li>
+              <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> {t('settings.privacy_3')}</li>
+              <li className="flex items-start gap-2"><span className="text-emerald-600 mt-0.5">✓</span> {t('settings.privacy_4')}</li>
             </ul>
           </CardContent>
         </Card>
@@ -156,8 +156,8 @@ export default function Settings() {
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><Database className="w-5 h-5 text-primary" /></div>
               <div>
-                <p className="font-semibold">Esporta tutti i tuoi dati</p>
-                <p className="text-sm text-muted-foreground leading-snug mt-0.5">Scarica l'intero storico di sintomi, pasti e referti in un unico file CSV o PDF.</p>
+                <p className="font-semibold">{t('settings.export_title')}</p>
+                <p className="text-sm text-muted-foreground leading-snug mt-0.5">{t('settings.export_desc')}</p>
               </div>
             </div>
             <HistoryExport />
@@ -170,12 +170,12 @@ export default function Settings() {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><Fingerprint className="w-5 h-5 text-primary" /></div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold">Blocco biometrico</p>
-                <p className="text-sm text-muted-foreground leading-snug">Sblocca l'app con impronta o riconoscimento facciale per proteggere i tuoi dati sanitari privati.</p>
+                <p className="font-semibold">{t('settings.biometric_title')}</p>
+                <p className="text-sm text-muted-foreground leading-snug">{t('settings.biometric_desc')}</p>
               </div>
               <Switch checked={enabled} disabled={!supported || bioBusy} onCheckedChange={toggleBio} />
             </div>
-            {!supported && <p className="text-xs text-muted-foreground mt-3">Il dispositivo non supporta lo sblocco biometrico nel browser.</p>}
+            {!supported && <p className="text-xs text-muted-foreground mt-3">{t('settings.biometric_unsupported')}</p>}
           </CardContent>
         </Card>
 
@@ -185,12 +185,12 @@ export default function Settings() {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><Bell className="w-5 h-5 text-primary" /></div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold">Notifiche push</p>
-                <p className="text-sm text-muted-foreground leading-snug">Ricevi promemoria terapie e aggiornamenti community sul dispositivo. Disattiva quando vuoi.</p>
+                <p className="font-semibold">{t('settings.notifications_title')}</p>
+                <p className="text-sm text-muted-foreground leading-snug">{t('settings.notifications_desc')}</p>
               </div>
               <Switch checked={user?.notifications_enabled !== false} disabled={notifBusy || !user} onCheckedChange={toggleNotif} />
             </div>
-            {!user && <p className="text-xs text-muted-foreground mt-3">Accedi per gestire le notifiche.</p>}
+            {!user && <p className="text-xs text-muted-foreground mt-3">{t('settings.notifications_login')}</p>}
           </CardContent>
         </Card>
 
@@ -211,7 +211,7 @@ export default function Settings() {
               onClick={() => { setDeleteAck(false); setDeleteOpen(true); }}
               className="w-full flex items-center justify-center gap-2 py-3 mt-2 rounded-xl text-sm font-medium border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors"
             >
-              <Trash2 className="w-4 h-4" /> Elimina account
+              <Trash2 className="w-4 h-4" /> {t('settings.delete_account')}
             </button>
           </CardContent>
         </Card>
@@ -219,9 +219,9 @@ export default function Settings() {
         <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Elimina account e dati sanitari</AlertDialogTitle>
+              <AlertDialogTitle>{t('settings.delete_title')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Stai per cancellare definitivamente il tuo account IBD Care insieme a tutti i sintomi, pasti, terapie, referti e modelli salvati. Questa azione è irreversibile e i dati non potranno essere recuperati.
+                {t('settings.delete_desc')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <label className="flex items-start gap-3 text-sm text-muted-foreground">
@@ -231,16 +231,16 @@ export default function Settings() {
                 onChange={(e) => setDeleteAck(e.target.checked)}
                 className="mt-1 h-4 w-4 rounded border-border accent-destructive"
               />
-              <span>Ho compreso che l'eliminazione è permanente e cancellerà tutti i miei dati sanitari.</span>
+              <span>{t('settings.delete_ack')}</span>
             </label>
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={deleting} className="min-h-[44px]">Annulla</AlertDialogCancel>
+              <AlertDialogCancel disabled={deleting} className="min-h-[44px]">{t('common.cancel')}</AlertDialogCancel>
               <AlertDialogAction
                 disabled={!deleteAck || deleting}
                 onClick={handleDeleteAccount}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90 min-h-[44px]"
               >
-                {deleting ? 'Eliminazione…' : 'Elimina definitivamente'}
+                {deleting ? t('settings.deleting') : t('settings.delete_confirm')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

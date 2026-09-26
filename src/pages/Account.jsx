@@ -54,7 +54,7 @@ export default function Account() {
       await deleteAccountAndData(user.id);
     } catch (err) {
       setDeleting(false);
-      setDeleteError('Impossibile eliminare l\'account. Riprova o scrivici dalla pagina Contatti.');
+      setDeleteError(t('account.delete_error'));
       return;
     }
     try {
@@ -65,12 +65,12 @@ export default function Account() {
 
   return (
     <AppLayout>
-      <PageHeader title={t('settings.account')} subtitle="Gestisci profilo e impostazioni" />
+      <PageHeader title={t('settings.account')} subtitle={t('account.subtitle')} />
 
       <Tabs defaultValue="profilo" className="w-full">
         <TabsList className="grid grid-cols-2 w-full mb-5">
-          <TabsTrigger value="profilo">Profilo</TabsTrigger>
-          <TabsTrigger value="impostazioni">Impostazioni</TabsTrigger>
+          <TabsTrigger value="profilo">{t('account.tab_profile')}</TabsTrigger>
+          <TabsTrigger value="impostazioni">{t('account.tab_settings')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profilo" className="mt-0 space-y-4">
@@ -81,7 +81,7 @@ export default function Account() {
                   <User className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold text-foreground">{user?.full_name || 'Utente'}</p>
+                  <p className="font-semibold text-foreground">{user?.full_name || t('account.user_default')}</p>
                   <p className="text-sm text-muted-foreground capitalize">{user?.role || 'user'}</p>
                 </div>
               </div>
@@ -107,7 +107,7 @@ export default function Account() {
                 <SettingsIcon className="w-5 h-5 text-muted-foreground" />
                 <div>
                   <p className="font-medium">{t('settings.title')}</p>
-                  <p className="text-xs text-muted-foreground">Privacy, dati ed esportazione</p>
+                  <p className="text-xs text-muted-foreground">{t('account.settings_card_desc')}</p>
                 </div>
               </CardContent>
             </Card>
@@ -127,31 +127,31 @@ export default function Account() {
                 className={cn('w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors')}
               >
                 <Trash2 className="w-4 h-4" />
-                Elimina Account
+                {t('account.delete_btn')}
               </button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle className="flex items-center gap-2">
                   <AlertTriangle className="w-5 h-5 text-destructive" />
-                  {deleteStep === 1 ? 'Elimina account definitivamente?' : 'Ultima conferma'}
+                  {deleteStep === 1 ? t('account.delete_step1_title') : t('account.delete_step2_title')}
                 </AlertDialogTitle>
                 <AlertDialogDescription as="div" className="space-y-2">
                   {deleteStep === 1 ? (
                     <>
-                      <p>L'eliminazione dell'account è <strong>permanente e irreversibile</strong>. Verranno cancellati per sempre:</p>
+                      <p>{t('account.delete_step1_desc')}</p>
                       <ul className="list-disc pl-5 space-y-1">
-                        <li>tutti i tuoi sintomi, pasti, terapie ed esami registrati;</li>
-                        <li>i referti e i documenti caricati nell'archivio;</li>
-                        <li>i messaggi della community e le conversazioni private;</li>
-                        <li>l'abbonamento Premium e i dati dell'account.</li>
+                        <li>{t('account.delete_item1')}</li>
+                        <li>{t('account.delete_item2')}</li>
+                        <li>{t('account.delete_item3')}</li>
+                        <li>{t('account.delete_item4')}</li>
                       </ul>
-                      <p>Questa azione non può essere annullata. Se vuoi solo sospendere l'app, puoi semplicemente uscire.</p>
+                      <p>{t('account.delete_step1_note')}</p>
                     </>
                   ) : (
                     <>
-                      <p>Sei sicuro? Confermando ora, <strong>tutti i tuoi dati sanitari saranno cancellati definitivamente</strong> e non potrai recuperarli.</p>
-                      <p>Per procedere tocca "Elimina definitivamente". Questa è l'ultima possibilità per annullare.</p>
+                      <p>{t('account.delete_step2_desc')}</p>
+                      <p>{t('account.delete_step2_hint')}</p>
                     </>
                   )}
                   {deleteError && (
@@ -160,13 +160,13 @@ export default function Account() {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel onClick={closeDelete} disabled={deleting}>Annulla</AlertDialogCancel>
+                <AlertDialogCancel onClick={closeDelete} disabled={deleting}>{t('common.cancel')}</AlertDialogCancel>
                 {deleteStep === 1 ? (
                   <AlertDialogAction
                     onClick={(e) => { e.preventDefault(); setDeleteStep(2); }}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
-                    Continua
+                    {t('account.delete_continue')}
                   </AlertDialogAction>
                 ) : (
                   <AlertDialogAction
@@ -174,7 +174,7 @@ export default function Account() {
                     disabled={deleting}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
-                    {deleting ? 'Eliminazione…' : 'Elimina definitivamente'}
+                    {deleting ? t('settings.deleting') : t('settings.delete_confirm')}
                   </AlertDialogAction>
                 )}
               </AlertDialogFooter>

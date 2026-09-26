@@ -11,17 +11,19 @@ import EditorialBlock from '@/components/EditorialBlock';
 import AppLayout from '@/components/AppLayout';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
+import { useI18n } from '@/lib/i18n';
 
 const CONTACT_EMAIL = 'supporto@ibdcare.app';
 
 export default function Contact() {
+  const { t } = useI18n();
   const [form, setForm] = useState({ name: '', email: '', message: '' });
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Contatto IBD Care — ${form.name || 'Utente'}`);
+    const subject = encodeURIComponent(t('contact.mailto_subject').replace('{name}', form.name || t('account.user_default')));
     const body = encodeURIComponent(
-      `${form.message}\n\n---\nNome: ${form.name}\nEmail: ${form.email}`
+      `${form.message}\n\n---\n${t('contact.body_name')}: ${form.name}\n${t('contact.body_email')}: ${form.email}`
     );
     window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
   };
@@ -29,47 +31,46 @@ export default function Contact() {
   return (
     <AppLayout>
       <div className="w-full max-w-2xl mx-auto">
-        <PageHeader title="Contatti" subtitle="Siamo qui per ascoltarti: supporto, suggerimenti e segnala la tua esperienza con IBD Care." />
+        <PageHeader title={t('nav.contact')} subtitle={t('contact.subtitle')} />
         <PageEditorial pageKey="contact" />
 
         <p className="text-muted-foreground mb-6 leading-relaxed select-text">
-          Siamo qui per ascoltarti. Scrivici per supporto tecnico, suggerimenti o per segnalarci
-          la tua esperienza con IBD Care: leggiamo ogni messaggio e rispondiamo il prima possibile.
+          {t('contact.intro')}
         </p>
 
         <div className="grid md:grid-cols-5 gap-6">
           <div className="md:col-span-2 space-y-3">
             <div className="rounded-xl bg-card border border-border p-4">
               <p className="flex items-center gap-2 text-sm font-medium text-foreground mb-1">
-                <Mail className="w-4 h-4 text-primary" /> Email
+                <Mail className="w-4 h-4 text-primary" /> {t('contact.email_label')}
               </p>
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-sm text-primary hover:underline break-all select-text">
                 {CONTACT_EMAIL}
               </a>
             </div>
             <div className="rounded-xl bg-card border border-border p-4 text-sm text-muted-foreground">
-              <p className="font-medium text-foreground mb-1">Comunità</p>
-              Unisciti alla board community interna all'app per confrontarti con altre persone che vivono con l'IBD.
+              <p className="font-medium text-foreground mb-1">{t('contact.community_label')}</p>
+              {t('contact.community_desc')}
             </div>
           </div>
 
           <form onSubmit={onSubmit} className="md:col-span-3 space-y-4 rounded-xl bg-card border border-border p-5">
             <div>
-              <Label htmlFor="name" className="mb-1.5">Nome</Label>
-              <Input id="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Il tuo nome" />
+              <Label htmlFor="name" className="mb-1.5">{t('contact.name')}</Label>
+              <Input id="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={t('contact.name_placeholder')} />
             </div>
             <div>
-              <Label htmlFor="email" className="mb-1.5">Email</Label>
-              <Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="nome@email.com" />
+              <Label htmlFor="email" className="mb-1.5">{t('contact.email_label')}</Label>
+              <Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder={t('contact.email_placeholder')} />
             </div>
             <div>
-              <Label htmlFor="message" className="mb-1.5">Messaggio</Label>
-              <Textarea id="message" required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Come possiamo aiutarti?" />
+              <Label htmlFor="message" className="mb-1.5">{t('contact.message')}</Label>
+              <Textarea id="message" required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={t('contact.message_placeholder')} />
             </div>
             <Button type="submit" className="w-full rounded-xl">
-              <Send className="w-4 h-4 mr-1.5" /> Invia messaggio
+              <Send className="w-4 h-4 mr-1.5" /> {t('contact.send')}
             </Button>
-            <p className="text-xs text-muted-foreground text-center">Il messaggio verrà aperto nel tuo client di posta.</p>
+            <p className="text-xs text-muted-foreground text-center">{t('contact.mailto_hint')}</p>
           </form>
         </div>
 
