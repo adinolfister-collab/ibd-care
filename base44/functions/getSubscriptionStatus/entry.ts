@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { secrets } from 'base44:runtime';
-import { profileFieldsFromSubscription } from '../../shared/subscriptionSync.ts';
+import { profileFieldsFromSubscription, TRIAL_DAYS } from '../../shared/subscriptionSync.ts';
 
 export default async function(req: Request): Promise<Response> {
   let base44;
@@ -9,9 +9,8 @@ export default async function(req: Request): Promise<Response> {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    // Founder campaign grants bypass Stripe: lifetime = active forever,
-    // three_months = active until free_until. These must be honored before
-    // the Stripe sync, which would otherwise overwrite subscription_status.
+    // 1) Founder campaign grants bypass Stripe/trial: lifetime = active forever,
+    // three_months = active until free_until.
     if (user.subscription_status === 'lifetime') {
       return Response.json({ status: 'active', grant: 'lifetime' });
     }
@@ -26,12 +25,52 @@ export default async function(req: Request): Promise<Response> {
     }
 
     const secretKey = secrets.get('STRIPE_SECRET_KEY');
-    if (!secretKey) return Response.json({ error: 'Stripe non configurato' }, { status: 500 });
 
-    const headers = { 'Authorization': `Bearer ${secretKey}`, 'Stripe-Version': '2025-10-29.clover' };
+    // 2) 30-day free trial (app-side): starts automatically on first verified
+    //    login for users with no prior subscription and no free_until. A user
+    //    whose free_until already elapsed (past) is NOT re-granted a trial.
+    const hasFreeUntil = !!user.free_until;
+    const neverSubscribed = ['none', undefined, null, 'expired', 'canceled'].includes(user.subscription_status);
+    if (!hasFreeUntil && neverSubscribed && secretKey) {
+      const trialEnd = new Date(Date.now() + TRIAL_DAYS * 86400000).toISOString();
+      try {
+        await base44.auth.updateMe({ free_until: trialEnd });
+        try {
+          await base44.analytics.track({ eventName: 'trial_started', properties: { days: TRIAL_DAYS } });
+        } catch (e) { /* non blocking */ }
+        return Response.json({
+          status: 'trialing',
+          trial: true,
+          trialRemaining: TRIAL_DAYS,
+          trialEnd: new Date(trialEnd).getTime(),
+        });
+      } catch (e) {
+        console.error('trial start failed', e);
+      }
+    }
 
+    // Active 30-day trial in progress.
+    if (hasFreeUntil && neverSubscribed) {
+      const endMs = new Date(user.free_until).getTime();
+      if (!isNaN(endMs)) {
+        const days = Math.max(0, Math.ceil((endMs - Date.now()) / 86400000));
+        if (days > 0) {
+          return Response.json({
+            status: 'trialing',
+            trial: true,
+            trialRemaining: days,
+            trialEnd: endMs,
+          });
+        }
+        // Trial elapsed and no subscription → expired (read-only).
+        return Response.json({ status: 'expired', trial: true, trialEnd: endMs });
+      }
+    }
+
+    // 3) Stripe subscription sync (web fallback / pre-Play users).
     let sub = null;
-    if (user.email) {
+    if (secretKey && user.email) {
+      const headers = { 'Authorization': `Bearer ${secretKey}`, 'Stripe-Version': '2025-10-29.clover' };
       const custRes = await fetch(`https://api.stripe.com/v1/customers?email=${encodeURIComponent(user.email)}&limit=20`, { headers });
       const custData = await custRes.json();
       const customers = (custData.data || []).filter((c) => (c.email || '').toLowerCase() === user.email.toLowerCase());
@@ -41,13 +80,11 @@ export default async function(req: Request): Promise<Response> {
         const found = (subData.data || []).find((s) => ['active', 'trialing'].includes(s.status));
         if (found) { sub = found; break; }
       }
-    }
-
-    // Sync the resolved Stripe status onto the user profile (does not touch promo_start_date).
-    try {
-      await base44.auth.updateMe(profileFieldsFromSubscription(sub));
-    } catch (e) {
-      console.error('sync subscription to profile failed', e);
+      try {
+        await base44.auth.updateMe(profileFieldsFromSubscription(sub));
+      } catch (e) {
+        console.error('sync subscription to profile failed', e);
+      }
     }
 
     if (sub) {
@@ -61,9 +98,11 @@ export default async function(req: Request): Promise<Response> {
       });
     }
 
-    // No active Stripe subscription and no founder grant: the diary is free for
-    // life, so the user simply has no Premium entitlement. AI and PDF export
-    // require a subscription.
+    // No active subscription. If a trial was ever used (free_until set, past),
+    // the entitlement is expired (read-only); otherwise genuinely none.
+    if (hasFreeUntil) {
+      return Response.json({ status: 'expired', trial: true });
+    }
     return Response.json({ status: 'none' });
   } catch (error) {
     console.error('getSubscriptionStatus', error);
