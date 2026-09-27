@@ -5,6 +5,9 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.49';
 // il badge "utenti online" e' pubblico.
 const WINDOW_MS = 10 * 60 * 1000;
 
+// Account admin da escludere dal conteggio utenti online.
+const EXCLUDED_ADMIN_ID = '6a80de4be246a7b03417c239';
+
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
@@ -16,7 +19,9 @@ export default async function(req: Request): Promise<Response> {
     );
     const sessions = new Set<string>();
     for (const r of recent as any[]) {
-      if (r && r.session_id) sessions.add(r.session_id);
+      if (!r) continue;
+      if (r.user_id && String(r.user_id) === EXCLUDED_ADMIN_ID) continue;
+      if (r.session_id) sessions.add(r.session_id);
     }
     return Response.json({ count: sessions.size });
   } catch (error) {

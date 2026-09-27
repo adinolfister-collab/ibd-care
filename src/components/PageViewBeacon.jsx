@@ -13,6 +13,10 @@ const SESSION_TS_KEY = 'ibd_session_ts';
 const VISITOR_KEY = 'ibd_visitor_id';
 const GAP_MS = 30 * 60 * 1000; // 30 min di inattivita' -> nuova sessione
 
+// Account admin da escludere da tutte le metriche di tracciamento
+// (da oggi in avanti; lo storico gia' registrato resta nei report).
+const EXCLUDED_ADMIN_ID = '6a80de4be246a7b03417c239';
+
 function getOrCreateVisitor() {
   try {
     let id = localStorage.getItem(VISITOR_KEY);
@@ -81,6 +85,9 @@ export default function PageViewBeacon() {
     const path = location.pathname;
     if (path === lastPath.current) return;
     lastPath.current = path;
+
+    // Non tracciare le visite dell'account admin escluso
+    if (user?.id === EXCLUDED_ADMIN_ID) return;
 
     const section = mapPathToSection(path);
     const sessionId = getOrCreateSession();

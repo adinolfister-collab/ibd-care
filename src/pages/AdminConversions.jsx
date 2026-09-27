@@ -23,6 +23,7 @@ const RANGES = [
   { value: 'today', label: 'Oggi' },
   { value: '7d', label: '7 giorni' },
   { value: '30d', label: '30 giorni' },
+  { value: '90d', label: '90 giorni' },
   { value: 'all', label: 'Totale' },
 ];
 

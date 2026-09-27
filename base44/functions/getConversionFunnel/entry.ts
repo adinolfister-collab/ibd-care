@@ -5,7 +5,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 // macro-step visite -> registrazioni -> diario -> paywall -> abbonamento.
 // Admin-only: 403 per i non admin.
 
-const RANGE_DAYS: Record<string, number> = { today: 1, '7d': 7, '30d': 30, all: 0 };
+const RANGE_DAYS: Record<string, number> = { today: 1, '7d': 7, '30d': 30, '90d': 90, all: 0 };
 const SESSION_GAP_SEC = 1800; // 30 min: gap tra page-view oltre il quale si chiude la sessione
 const PAGE_LIMIT = 500;
 
