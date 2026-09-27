@@ -11,6 +11,7 @@ import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
 import MealSpikes from '@/components/MealSpikes';
 import DiseaseCourse from '@/components/DiseaseCourse';
+import DoctorSummaryExport from '@/components/DoctorSummaryExport';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -235,6 +236,7 @@ export default function Trends() {
           <Utensils className="w-4 h-4" />
           {t('trends.overlay')}
         </button>
+        <DoctorSummaryExport range={range} />
       </div>
 
       {overlay && (
