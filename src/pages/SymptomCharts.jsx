@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { BarChart3, TrendingUp, TrendingDown, Minus, Utensils } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
@@ -9,11 +9,19 @@ import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import MealSymptomCorrelation from '@/components/MealSymptomCorrelation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { reactionLabel } from '@/lib/enumLabels';
 
 const PAIN_COLOR = 'hsl(8 70% 58%)';
 const FATIGUE_COLOR = 'hsl(43 74% 50%)';
+const REACTION_COLORS = {
+  nessuna: 'hsl(142 71% 45%)',
+  lieve: 'hsl(43 74% 50%)',
+  moderata: 'hsl(25 95% 53%)',
+  severa: 'hsl(0 84% 60%)',
+};
+const REACTION_ORDER = ['nessuna', 'lieve', 'moderata', 'severa'];
 
 function keyOf(d) { return d.toISOString().slice(0, 10); }
 function startOfWeek(d) {
@@ -49,6 +57,23 @@ function ChartTooltip({ active, payload, t }) {
         {t('symptom_charts.fatigue')}: <span className="font-medium">{p.fatigue ?? '—'}</span>
       </p>
       <p className="text-xs text-muted-foreground mt-1">{p.count} {t('symptom_charts.entries')}</p>
+    </div>
+  );
+}
+
+function MealChartTooltip({ active, payload, t }) {
+  if (!active || !payload || !payload.length) return null;
+  const p = payload[0].payload;
+  return (
+    <div className="rounded-xl border border-border bg-card shadow-md p-3" style={{ minWidth: 180 }}>
+      <p className="font-semibold text-sm mb-1.5">{p.label}</p>
+      <p className="text-sm mb-1">{t('symptom_charts.meals_count')}: <span className="font-medium">{p.count}</span></p>
+      {REACTION_ORDER.map((r) => p[r] > 0 && (
+        <p key={r} className="text-sm flex items-center gap-1.5">
+          <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: REACTION_COLORS[r] }} />
+          {reactionLabel(t, r)}: <span className="font-medium">{p[r]}</span>
+        </p>
+      ))}
     </div>
   );
 }
@@ -133,6 +158,38 @@ export default function SymptomCharts() {
     };
   }, [entries, buckets]);
 
+  const mealBuckets = useMemo(() => {
+    if (!foods || !foods.length) return [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const out = [];
+
+    if (mode === 'weekly') {
+      const thisWeek = startOfWeek(today);
+      for (let i = 7; i >= 0; i--) {
+        const start = new Date(thisWeek);
+        start.setDate(start.getDate() - 7 * i);
+        const end = new Date(start);
+        end.setDate(end.getDate() + 6);
+        out.push(buildMealBucket(foods, keyOf(start), keyOf(end), fmtWeek(start)));
+      }
+    } else {
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      for (let i = 5; i >= 0; i--) {
+        const start = new Date(monthStart.getFullYear(), monthStart.getMonth() - i, 1);
+        const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+        out.push(buildMealBucket(foods, keyOf(start), keyOf(end), fmtMonth(start, lang)));
+      }
+    }
+    return out;
+  }, [foods, mode, lang]);
+
+  const mealStats = useMemo(() => {
+    const total = mealBuckets.reduce((a, b) => a + b.count, 0);
+    const tolerated = mealBuckets.reduce((a, b) => a + (b.nessuna || 0), 0);
+    return { total, toleratedPct: total ? Math.round((tolerated / total) * 100) : null };
+  }, [mealBuckets]);
+
   const TrendBadge = ({ dir }) => {
     const label = dir === 'improving' ? t('symptom_charts.improving') : dir === 'worsening' ? t('symptom_charts.worsening') : t('symptom_charts.stable');
     const Icon = dir === 'improving' ? TrendingDown : dir === 'worsening' ? TrendingUp : Minus;
@@ -144,7 +201,9 @@ export default function SymptomCharts() {
     );
   };
 
-  const hasData = buckets.some((b) => b.pain !== null || b.fatigue !== null);
+  const hasSymptomData = buckets.some((b) => b.pain !== null || b.fatigue !== null);
+  const hasMealData = mealBuckets.some((b) => b.count > 0);
+  const hasData = hasSymptomData || hasMealData;
 
   return (
     <AppLayout>
@@ -191,6 +250,8 @@ export default function SymptomCharts() {
         <EmptyState icon={BarChart3} title={t('symptom_charts.no_data')} />
       ) : (
         <div className="space-y-5">
+          {hasSymptomData && (
+          <>
           <div className="grid grid-cols-2 gap-4">
             <Card>
               <CardHeader className="pb-2">
@@ -232,6 +293,43 @@ export default function SymptomCharts() {
               </div>
             </CardContent>
           </Card>
+          </>
+          )}
+
+          {hasMealData && (
+          <Card>
+            <CardHeader className="pb-1">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <CardTitle className="text-lg flex items-center gap-2"><Utensils className="w-5 h-5 text-primary" />{t('symptom_charts.meals_title')}</CardTitle>
+                  <CardDescription>{t('symptom_charts.meals_subtitle')}</CardDescription>
+                </div>
+                {mealStats.toleratedPct !== null && (
+                  <div className="text-right shrink-0">
+                    <p className="text-2xl font-semibold leading-none">{mealStats.total}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{t('symptom_charts.meals_total')} · {mealStats.toleratedPct}% {t('symptom_charts.meals_tolerated')}</p>
+                  </div>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-72 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={mealBuckets} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="label" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} interval="preserveStartEnd" minTickGap={12} />
+                    <YAxis tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} />
+                    <Tooltip content={<MealChartTooltip t={t} />} cursor={{ fill: 'hsl(var(--accent))', opacity: 0.3 }} />
+                    <Legend />
+                    {REACTION_ORDER.map((r) => (
+                      <Bar key={r} dataKey={r} stackId="a" name={reactionLabel(t, r)} fill={REACTION_COLORS[r]} />
+                    ))}
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+          )}
         </div>
       )}
       <EditorialBlock sectionKey="symptomcharts_detail" align="left" />
@@ -247,4 +345,14 @@ function buildBucket(entries, startKey, endKey, label) {
     return Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10;
   };
   return { label, pain: avg('pain_level'), fatigue: avg('fatigue_level'), count: inRange.length };
+}
+
+function buildMealBucket(foods, startKey, endKey, label) {
+  const inRange = foods.filter((f) => f.entry_date && f.entry_date >= startKey && f.entry_date <= endKey);
+  const counts = { nessuna: 0, lieve: 0, moderata: 0, severa: 0 };
+  inRange.forEach((f) => {
+    const r = f.reaction && REACTION_ORDER.includes(f.reaction) ? f.reaction : 'nessuna';
+    counts[r] += 1;
+  });
+  return { label, count: inRange.length, ...counts };
 }
