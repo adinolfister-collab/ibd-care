@@ -8,6 +8,7 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import CaryAvatar from '@/components/CaryAvatar';
 import MicToggle from '@/components/MicToggle';
+import PremiumLockBadge from '@/components/PremiumLockBadge';
 import PremiumPaywall from '@/components/PremiumPaywall';
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -160,6 +161,12 @@ export default function Assistant() {
         subtitle={t('assistant.subtitle')}
       />
       <PageEditorial pageKey="assistant" compact />
+
+      {!isSubscribed && (
+        <div className="mb-3">
+          <PremiumLockBadge showLabel />
+        </div>
+      )}
 
       <Card className="flex-1 flex flex-col overflow-hidden rounded-2xl min-h-[420px]">
         {/* Messages */}

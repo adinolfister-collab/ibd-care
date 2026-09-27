@@ -8,6 +8,9 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
+import { isPremiumRoute } from '@/lib/premiumRoutes';
+import PremiumLockBadge from '@/components/PremiumLockBadge';
 import { cn } from '@/lib/utils';
 
 // Sezione "Esplora la rivista": elenco visibile di tutte le pagine dell'app.
@@ -46,6 +49,7 @@ const ADMIN_ITEMS = [
 export default function SiteMenu() {
   const { t } = useI18n();
   const { isAuthenticated, user } = useAuth();
+  const { isSubscribed } = useSubscription();
   let items = isAuthenticated
     ? ITEMS
     : ITEMS.filter((it) => it.to !== '/account' && it.to !== '/settings');
@@ -87,6 +91,7 @@ export default function SiteMenu() {
             <span className={cn('flex-1 min-w-0 font-heading text-base md:text-lg font-medium tracking-tight truncate', item.founder ? 'text-terracotta' : 'text-foreground')}>
               {t(item.key)}
             </span>
+            {!isSubscribed && isPremiumRoute(item.to) && <PremiumLockBadge size="nav" className="ml-1" />}
             {item.founder && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-terracotta text-terracotta-foreground px-1.5 py-0.5 rounded-full shrink-0">Founder</span>}
             {item.admin && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-primary/15 text-primary px-1.5 py-0.5 rounded-full shrink-0">Admin</span>}
           </Link>

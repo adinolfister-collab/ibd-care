@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Home, Activity, Users, Sparkles, User as UserIcon, LogIn } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
+import { useSubscription } from '@/hooks/useSubscription';
+import { isPremiumRoute } from '@/lib/premiumRoutes';
+import PremiumLockBadge from '@/components/PremiumLockBadge';
 import { cn } from '@/lib/utils';
 
 // Mobile-only fixed bottom tab bar for the native webview. Hidden on md+
@@ -22,6 +25,7 @@ const STACK_LIMIT = 5;
 
 export default function MobileBottomNav({ isAuthenticated }) {
   const { t } = useI18n();
+  const { isSubscribed } = useSubscription();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -100,7 +104,12 @@ export default function MobileBottomNav({ isAuthenticated }) {
                   : 'text-muted-foreground hover:text-accent-foreground'
               )}
             >
-              <item.icon className={cn('w-5 h-5', isActive && 'text-primary')} />
+              <span className="relative">
+                <item.icon className={cn('w-5 h-5', isActive && 'text-primary')} />
+                {!isSubscribed && isPremiumRoute(item.to) && (
+                  <PremiumLockBadge size="nav" className="absolute -top-1 -right-1.5 bg-card rounded-full p-0.5 box-content" />
+                )}
+              </span>
               <span className="leading-none">{t(item.key)}</span>
             </NavLink>
           );

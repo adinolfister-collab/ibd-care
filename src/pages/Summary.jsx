@@ -8,7 +8,6 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import WeeklyReport from '@/components/WeeklyReport';
 import MonthlyReport from '@/components/MonthlyReport';
+import PremiumExportButton from '@/components/PremiumExportButton';
 
 function defaultFrom() {
   const d = new Date();
@@ -192,10 +192,14 @@ export default function Summary() {
               <Textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className="mt-1.5 rounded-xl" placeholder="Es. dolore aumentato dopo aver sospeso la terapia…" />
             </div>
 
-            <Button onClick={generate} disabled={busy} className="w-full rounded-xl h-12 text-base">
-              <Download className="w-5 h-5 mr-2" />
-              {busy ? t('common.loading') : t('summary.generate')}
-            </Button>
+            <PremiumExportButton
+              onExport={generate}
+              label={t('summary.generate')}
+              lockedLabel={t('summary.pdf_locked')}
+              feature="summary_pdf"
+              icon={Download}
+              className="w-full h-12 text-base"
+            />
           </CardContent>
         </Card>
 
