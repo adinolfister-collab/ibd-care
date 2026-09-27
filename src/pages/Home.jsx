@@ -19,7 +19,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import PullToRefresh from '@/components/PullToRefresh';
-import NewsIBD from '@/components/NewsIBD';
+import AppQrCode from '@/components/AppQrCode';
 
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
@@ -185,9 +185,9 @@ export default function Home() {
         </Card>
       </MagazineEssay>
 
-      {/* Notizie IBD */}
+      {/* Scarica l'app — QR code */}
       <div className="mb-8 md:mb-10">
-        <NewsIBD />
+        <AppQrCode />
       </div>
       </PullToRefresh>
       <EditorialBlock sectionKey="home_insight" align="right" number="05" to="/summary" />

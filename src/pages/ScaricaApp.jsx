@@ -4,6 +4,7 @@ import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import InstallAppButton from '@/components/InstallAppButton';
+import AppQrCode from '@/components/AppQrCode';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function ScaricaApp() {
@@ -14,6 +15,10 @@ export default function ScaricaApp() {
 
       <div className="mb-6 flex justify-center">
         <InstallAppButton />
+      </div>
+
+      <div className="mb-8">
+        <AppQrCode />
       </div>
 
       <div className="grid md:grid-cols-3 gap-4 mb-8">
