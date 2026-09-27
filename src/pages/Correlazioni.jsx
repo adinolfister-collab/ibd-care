@@ -14,33 +14,37 @@ import { computeFoodCorrelation, buildSymptomMap } from '@/lib/correlationStats'
 import { computeTriggerLights } from '@/lib/triggerLight';
 import TriggerLightBadge from '@/components/TriggerLightBadge';
 import CookingCorrelation from '@/components/CookingCorrelation';
+import ChartRangeSelector from '@/components/ChartRangeSelector';
+import ReadonlyBadge from '@/components/ReadonlyBadge';
+import { useSubscription } from '@/hooks/useSubscription';
+import { getRange, DEFAULT_RANGE_KEY, FREE_RANGE_KEY, cutoffDateForRange, listLimitForRange } from '@/lib/chartRanges';
 
 const TOP = 12;
 
 export default function Correlazioni() {
   const { t, lang } = useI18n();
+  const { isSubscribed } = useSubscription();
   const [foods, setFoods] = useState([]);
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [rangeKey, setRangeKey] = useState(DEFAULT_RANGE_KEY);
 
-  const cutoff = useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - 30);
-    return d.toISOString().slice(0, 10);
-  }, []);
+  const range = getRange(rangeKey);
+  const cutoff = useMemo(() => cutoffDateForRange(range), [range]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       setLoading(true);
       try {
+        const limit = listLimitForRange(range);
         const [f, s] = await Promise.all([
-          base44.entities.FoodEntry.list('-entry_date', 400),
-          base44.entities.SymptomEntry.list('-entry_date', 400),
+          base44.entities.FoodEntry.list('-entry_date', limit),
+          base44.entities.SymptomEntry.list('-entry_date', limit),
         ]);
         if (cancelled) return;
-        setFoods(f.filter((x) => (x.entry_date || '') >= cutoff));
-        setEntries(s.filter((x) => (x.entry_date || '') >= cutoff));
+        setFoods(cutoff ? f.filter((x) => (x.entry_date || '') >= cutoff) : f);
+        setEntries(cutoff ? s.filter((x) => (x.entry_date || '') >= cutoff) : s);
       } catch {
         if (!cancelled) { setFoods([]); setEntries([]); }
       } finally {
@@ -48,7 +52,7 @@ export default function Correlazioni() {
       }
     })();
     return () => { cancelled = true; };
-  }, [cutoff]);
+  }, [cutoff, range]);
 
   const stats = useMemo(() => {
     const symMap = buildSymptomMap(entries);
@@ -79,6 +83,11 @@ export default function Correlazioni() {
         subtitle={t('correlazioni.subtitle') || 'Quali cibi sembrano associarsi a più scariche o più dolore negli ultimi 30 giorni'}
       />
       <PageEditorial pageKey="correlazioni" />
+
+      <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+        <ChartRangeSelector value={rangeKey} onChange={setRangeKey} feature="correlazioni_range" className="mb-0" />
+        {rangeKey === FREE_RANGE_KEY && !isSubscribed && <ReadonlyBadge />}
+      </div>
 
       <div className="space-y-6 md:space-y-8">
         {!loading && triggerItems.length > 0 && (

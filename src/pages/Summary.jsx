@@ -16,6 +16,8 @@ import { cn } from '@/lib/utils';
 import WeeklyReport from '@/components/WeeklyReport';
 import MonthlyReport from '@/components/MonthlyReport';
 import PremiumExportButton from '@/components/PremiumExportButton';
+import PremiumLockBadge from '@/components/PremiumLockBadge';
+import { useSubscription } from '@/hooks/useSubscription';
 
 function defaultFrom() {
   const d = new Date();
@@ -26,6 +28,7 @@ function todayStr() { return new Date().toISOString().slice(0, 10); }
 
 export default function Summary() {
   const { t } = useI18n();
+  const { isSubscribed } = useSubscription();
   const [from, setFrom] = useState(defaultFrom());
   const [to, setTo] = useState(todayStr());
   const [inc, setInc] = useState({ symptoms: true, food: true, meds: true, records: true });
@@ -192,6 +195,11 @@ export default function Summary() {
               <Textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className="mt-1.5 rounded-xl" placeholder="Es. dolore aumentato dopo aver sospeso la terapia…" />
             </div>
 
+            {!isSubscribed && (
+              <p className="text-sm font-medium flex items-center gap-1.5 text-terracotta">
+                <PremiumLockBadge /> {t('summary.pdf_locked')}
+              </p>
+            )}
             <PremiumExportButton
               onExport={generate}
               label={t('summary.generate')}

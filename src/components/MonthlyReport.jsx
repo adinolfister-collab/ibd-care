@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import jsPDF from 'jspdf';
 import { CalendarRange, Download } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useI18n } from '@/lib/i18n';
 import { localeForLang, moodLabel, mealTypeLabel, reactionLabel } from '@/lib/enumLabels';
+import PremiumLockBadge from '@/components/PremiumLockBadge';
+import PremiumExportButton from '@/components/PremiumExportButton';
+import { useSubscription } from '@/hooks/useSubscription';
 
 function curMonth() { return new Date().toISOString().slice(0, 7); }
 
@@ -17,6 +19,7 @@ function monthName(m, lang) {
 
 export default function MonthlyReport() {
   const { t, lang } = useI18n();
+  const { isSubscribed } = useSubscription();
   const [month, setMonth] = useState(curMonth());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -150,7 +153,10 @@ export default function MonthlyReport() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><CalendarRange className="w-5 h-5 text-primary" /></div>
           <div>
-            <p className="font-semibold">{t('monthly_report.card_title')}</p>
+            <p className="font-semibold flex items-center gap-1.5">
+              {t('monthly_report.card_title')}
+              {!isSubscribed && <PremiumLockBadge />}
+            </p>
             <p className="text-sm text-muted-foreground leading-snug">{t('monthly_report.card_desc')}</p>
           </div>
         </div>
@@ -163,10 +169,14 @@ export default function MonthlyReport() {
             className="mt-1.5 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
-        <Button onClick={generate} disabled={busy} className="w-full rounded-xl h-12 text-base">
-          <Download className="w-5 h-5 mr-2" />
-          {busy ? t('monthly_report.generating') : t('monthly_report.generate_btn')}
-        </Button>
+        <PremiumExportButton
+          onExport={generate}
+          label={t('monthly_report.generate_btn')}
+          lockedLabel={t('monthly_report.locked') || t('summary.pdf_locked')}
+          feature="monthly_pdf"
+          icon={Download}
+          className="w-full h-12 text-base"
+        />
         {error && <p className="text-sm text-rose-500">{error}</p>}
       </CardContent>
     </Card>

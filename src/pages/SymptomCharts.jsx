@@ -3,15 +3,19 @@ import { BarChart3, TrendingUp, TrendingDown, Minus, Utensils } from 'lucide-rea
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useSubscription } from '@/hooks/useSubscription';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import MealSymptomCorrelation from '@/components/MealSymptomCorrelation';
+import ChartRangeSelector from '@/components/ChartRangeSelector';
+import ReadonlyBadge from '@/components/ReadonlyBadge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { reactionLabel } from '@/lib/enumLabels';
+import { getRange, DEFAULT_RANGE_KEY, FREE_RANGE_KEY, cutoffDateForRange, listLimitForRange } from '@/lib/chartRanges';
 
 const PAIN_COLOR = 'hsl(8 70% 58%)';
 const FATIGUE_COLOR = 'hsl(43 74% 50%)';
@@ -31,10 +35,11 @@ function startOfWeek(d) {
   x.setDate(x.getDate() - day);
   return x;
 }
+function fmtDay(d) {
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
 function fmtWeek(d) {
-  const dd = String(d.getDate()).padStart(2, '0');
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  return `${dd}/${mm}`;
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 function fmtMonth(d, lang) {
   try {
@@ -42,6 +47,49 @@ function fmtMonth(d, lang) {
   } catch {
     return `m${d.getMonth() + 1}`;
   }
+}
+
+// Finestre temporali per il range selezionato: daily per 7/15gg, settimanale
+// per 30gg, mensile per 90gg e storico completo.
+function windowsForRange(rangeKey, lang) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (rangeKey === '7g') {
+    const out = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today); d.setDate(d.getDate() - i);
+      out.push({ start: new Date(d), end: new Date(d), label: fmtDay(d) });
+    }
+    return out;
+  }
+  if (rangeKey === '15g') {
+    const out = [];
+    for (let i = 14; i >= 0; i--) {
+      const d = new Date(today); d.setDate(d.getDate() - i);
+      out.push({ start: new Date(d), end: new Date(d), label: fmtDay(d) });
+    }
+    return out;
+  }
+  if (rangeKey === '30g') {
+    const out = [];
+    const thisWeekStart = startOfWeek(today);
+    for (let i = 4; i >= 0; i--) {
+      const start = new Date(thisWeekStart); start.setDate(start.getDate() - 7 * i);
+      const end = new Date(start); end.setDate(end.getDate() + 6);
+      out.push({ start, end, label: fmtWeek(start) });
+    }
+    return out;
+  }
+  // 90gg e storico → bucket mensili (3 o 12)
+  const months = rangeKey === '90g' ? 3 : 12;
+  const out = [];
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  for (let i = months - 1; i >= 0; i--) {
+    const start = new Date(monthStart.getFullYear(), monthStart.getMonth() - i, 1);
+    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    out.push({ start, end, label: fmtMonth(start, lang) });
+  }
+  return out;
 }
 
 function ChartTooltip({ active, payload, t }) {
@@ -80,19 +128,23 @@ function MealChartTooltip({ active, payload, t }) {
 
 export default function SymptomCharts() {
   const { t, lang } = useI18n();
+  const { isSubscribed } = useSubscription();
   const [entries, setEntries] = useState(null);
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mode, setMode] = useState('weekly');
+  const [rangeKey, setRangeKey] = useState(DEFAULT_RANGE_KEY);
   const [view, setView] = useState('trend');
+
+  const range = getRange(rangeKey);
 
   useEffect(() => {
     let alive = true;
     (async () => {
       try {
+        const limit = listLimitForRange(range);
         const [symp, food] = await Promise.all([
-          base44.entities.SymptomEntry.list('-entry_date', 1000),
-          base44.entities.FoodEntry.list('-entry_date', 1000),
+          base44.entities.SymptomEntry.list('-entry_date', limit),
+          base44.entities.FoodEntry.list('-entry_date', limit),
         ]);
         if (!alive) return;
         setEntries(symp);
@@ -104,36 +156,29 @@ export default function SymptomCharts() {
       }
     })();
     return () => { alive = false; };
-  }, []);
+  }, [range]);
+
+  const cutoff = useMemo(() => cutoffDateForRange(range), [range]);
+
+  // dati filtrati per la finestra selezionata (usati sia dal trend sia dalla correlazione)
+  const viewEntries = useMemo(() => {
+    if (!entries) return [];
+    if (!cutoff) return entries;
+    return entries.filter((e) => (e.entry_date || '') >= cutoff);
+  }, [entries, cutoff]);
+  const viewFoods = useMemo(() => {
+    if (!cutoff) return foods;
+    return foods.filter((f) => (f.entry_date || '') >= cutoff);
+  }, [foods, cutoff]);
 
   const buckets = useMemo(() => {
-    if (!entries || !entries.length) return [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const out = [];
-
-    if (mode === 'weekly') {
-      const thisWeek = startOfWeek(today);
-      for (let i = 7; i >= 0; i--) {
-        const start = new Date(thisWeek);
-        start.setDate(start.getDate() - 7 * i);
-        const end = new Date(start);
-        end.setDate(end.getDate() + 6);
-        out.push(buildBucket(entries, keyOf(start), keyOf(end), fmtWeek(start)));
-      }
-    } else {
-      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-      for (let i = 5; i >= 0; i--) {
-        const start = new Date(monthStart.getFullYear(), monthStart.getMonth() - i, 1);
-        const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
-        out.push(buildBucket(entries, keyOf(start), keyOf(end), fmtMonth(start, lang)));
-      }
-    }
-    return out;
-  }, [entries, mode, lang]);
+    if (!viewEntries || !viewEntries.length) return [];
+    const wins = windowsForRange(rangeKey, lang);
+    return wins.map((w) => buildBucket(viewEntries, keyOf(w.start), keyOf(w.end), w.label));
+  }, [viewEntries, rangeKey, lang]);
 
   const stats = useMemo(() => {
-    const all = (entries || []).filter((e) => e.entry_date);
+    const all = viewEntries.filter((e) => e.entry_date);
     const avg = (field) => {
       const vals = all.map((e) => e[field]).filter((v) => v !== null && v !== undefined);
       if (!vals.length) return null;
@@ -156,33 +201,13 @@ export default function SymptomCharts() {
       painTrend: trendOf('pain', buckets),
       fatigueTrend: trendOf('fatigue', buckets),
     };
-  }, [entries, buckets]);
+  }, [viewEntries, buckets]);
 
   const mealBuckets = useMemo(() => {
-    if (!foods || !foods.length) return [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const out = [];
-
-    if (mode === 'weekly') {
-      const thisWeek = startOfWeek(today);
-      for (let i = 7; i >= 0; i--) {
-        const start = new Date(thisWeek);
-        start.setDate(start.getDate() - 7 * i);
-        const end = new Date(start);
-        end.setDate(end.getDate() + 6);
-        out.push(buildMealBucket(foods, keyOf(start), keyOf(end), fmtWeek(start)));
-      }
-    } else {
-      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-      for (let i = 5; i >= 0; i--) {
-        const start = new Date(monthStart.getFullYear(), monthStart.getMonth() - i, 1);
-        const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
-        out.push(buildMealBucket(foods, keyOf(start), keyOf(end), fmtMonth(start, lang)));
-      }
-    }
-    return out;
-  }, [foods, mode, lang]);
+    if (!viewFoods || !viewFoods.length) return [];
+    const wins = windowsForRange(rangeKey, lang);
+    return wins.map((w) => buildMealBucket(viewFoods, keyOf(w.start), keyOf(w.end), w.label));
+  }, [viewFoods, rangeKey, lang]);
 
   const mealStats = useMemo(() => {
     const total = mealBuckets.reduce((a, b) => a + b.count, 0);
@@ -204,6 +229,7 @@ export default function SymptomCharts() {
   const hasSymptomData = buckets.some((b) => b.pain !== null || b.fatigue !== null);
   const hasMealData = mealBuckets.some((b) => b.count > 0);
   const hasData = hasSymptomData || hasMealData;
+  const isFreeView = rangeKey === FREE_RANGE_KEY;
 
   return (
     <AppLayout>
@@ -223,27 +249,13 @@ export default function SymptomCharts() {
             {v === 'trend' ? t('symptom_charts.view_trend') : <span className="inline-flex items-center gap-1.5"><Utensils className="w-4 h-4" />{t('symptom_charts.view_correlation')}</span>}
           </button>
         ))}
+        {isFreeView && !isSubscribed && <ReadonlyBadge className="ml-auto" />}
       </div>
 
-      {view === 'trend' && (
-      <div className="flex items-center gap-2 mb-4">
-        {['weekly', 'monthly'].map((m) => (
-          <button
-            key={m}
-            onClick={() => setMode(m)}
-            className={cn(
-              'px-4 py-2 rounded-full text-sm font-medium transition-colors',
-              mode === m ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
-            )}
-          >
-            {t('symptom_charts.' + m)}
-          </button>
-        ))}
-      </div>
-      )}
+      <ChartRangeSelector value={rangeKey} onChange={setRangeKey} feature="symptom_charts_range" />
 
-      {view === 'correlation' && !loading && (entries?.length || foods.length) ? (
-        <MealSymptomCorrelation entries={entries} foods={foods} />
+      {view === 'correlation' && !loading && (viewEntries.length || viewFoods.length) ? (
+        <MealSymptomCorrelation entries={viewEntries} foods={viewFoods} />
       ) : loading ? (
         <div className="py-20 text-center text-muted-foreground">{t('common.loading')}</div>
       ) : !hasData ? (
