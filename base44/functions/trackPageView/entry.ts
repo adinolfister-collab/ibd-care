@@ -30,22 +30,32 @@ function isPrivate(ip: string): boolean {
   );
 }
 
+async function fetchJsonWithTimeout(url: string, ms: number): Promise<any> {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (_) {
+    return null;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 async function lookupCountry(ip: string): Promise<string> {
   if (!ip || isPrivate(ip)) return 'Unknown';
   if (geoCache.has(ip)) return geoCache.get(ip);
   let country = 'Unknown';
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), 3000);
-  try {
-    const res = await fetch(`https://ipapi.co/${ip}/json/`, { signal: ctrl.signal });
-    if (res.ok) {
-      const j: any = await res.json();
-      if (j && j.country_name) country = j.country_name;
-    }
-  } catch (_) {
-    /* timeout / network — keep Unknown */
-  } finally {
-    clearTimeout(t);
+  // 1) ipapi.co — restituisce country_name
+  const a = await fetchJsonWithTimeout(`https://ipapi.co/${ip}/json/`, 3000);
+  if (a && a.country_name) {
+    country = String(a.country_name);
+  } else {
+    // 2) ipwho.is — fallback, restituisce country
+    const b = await fetchJsonWithTimeout(`https://ipwho.is/${ip}`, 3000);
+    if (b && b.success && b.country) country = String(b.country);
   }
   geoCache.set(ip, country);
   if (geoCache.size > 2000) geoCache.clear();

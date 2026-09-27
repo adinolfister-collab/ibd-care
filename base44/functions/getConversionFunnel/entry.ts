@@ -77,17 +77,26 @@ export default async function(req: Request): Promise<Response> {
     // --- Sessioni, visitatori, raggruppamento ---
     const sessions = new Set<string>();
     const visitors = new Set<string>();
+    const anonimiVisitors = new Set<string>();
+    const loggedVisitors = new Set<string>();
     const countrySessions: Record<string, Set<string>> = {};
     const bySession: Record<string, any[]> = {};
 
     for (const pv of pageviews) {
       const sid = pv.session_id || '';
       if (sid) sessions.add(sid);
-      const vid = pv.visitor_id || pv.user_id || sid || '';
-      if (vid) visitors.add(vid);
+      const uid = pv.user_id ? String(pv.user_id) : '';
+      const vid = pv.visitor_id ? String(pv.visitor_id) : '';
+      if (uid) {
+        loggedVisitors.add(uid);
+        visitors.add(uid);
+      } else if (vid) {
+        anonimiVisitors.add(vid);
+        visitors.add(vid);
+      }
       const c = pv.country || 'Unknown';
       if (!countrySessions[c]) countrySessions[c] = new Set();
-      countrySessions[c].add(sid || vid);
+      countrySessions[c].add(sid || vid || uid);
       if (sid) {
         (bySession[sid] = bySession[sid] || []).push(pv);
       }
@@ -95,6 +104,8 @@ export default async function(req: Request): Promise<Response> {
 
     const visite = sessions.size;
     const visitatoriUnici = visitors.size;
+    const visitatoriAnonimi = anonimiVisitors.size;
+    const visitatoriLoggati = loggedVisitors.size;
 
     const topCountries = Object.entries(countrySessions)
       .map(([country, set]) => ({ country, sessions: set.size }))
@@ -196,6 +207,8 @@ export default async function(req: Request): Promise<Response> {
       range,
       visite,
       visitatoriUnici,
+      visitatoriAnonimi,
+      visitatoriLoggati,
       avgSessionSec,
       topCountries,
       topPages,

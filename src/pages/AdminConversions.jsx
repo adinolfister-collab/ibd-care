@@ -36,6 +36,102 @@ const FUNNEL_COLORS = [
 
 const DEVICE_LABELS = { desktop: 'Desktop', mobile: 'Mobile', tablet: 'Tablet' };
 
+// Etichette leggibili per i percorsi (path nudi -> nomi in italiano)
+const PAGE_LABELS = {
+  '/': 'Home',
+  '/about': 'Chi siamo',
+  '/privacy': 'Privacy',
+  '/guida': 'Guida',
+  '/scarica': 'Scarica app',
+  '/contact': 'Contatti',
+  '/founders': 'Founders',
+  '/news': 'IBD News',
+  '/community': 'Community',
+  '/supporto': 'Supporto',
+  '/symptoms': 'Sintomi',
+  '/food': 'Diario alimentare',
+  '/meds': 'Farmaci',
+  '/records': 'Cartelle cliniche',
+  '/esami': 'Esami',
+  '/trends': 'Andamenti',
+  '/symptom-charts': 'Grafici sintomi',
+  '/correlazioni': 'Correlazioni',
+  '/assistant': 'Assistente Cary',
+  '/map': 'Mappa servizi',
+  '/summary': 'Riepilogo',
+  '/abbonamento': 'Abbonamento',
+  '/shop': 'Negozio',
+  '/settings': 'Impostazioni',
+  '/account': 'Account',
+  '/login': 'Login',
+  '/register': 'Registrati',
+  '/forgot-password': 'Password dimenticata',
+  '/reset-password': 'Reset password',
+  '/admin/conversioni': 'Conversioni',
+  '/admin/marketing': 'Marketing',
+  '/shop/admin': 'Gestione negozio',
+};
+
+// Nomi dei paesi da inglese a italiano (fallback: nome originale)
+const COUNTRY_IT = {
+  'Italy': 'Italia',
+  'United States': 'Stati Uniti',
+  'United Kingdom': 'Regno Unito',
+  'Germany': 'Germania',
+  'France': 'Francia',
+  'Spain': 'Spagna',
+  'Switzerland': 'Svizzera',
+  'Netherlands': 'Paesi Bassi',
+  'Belgium': 'Belgio',
+  'Portugal': 'Portogallo',
+  'Russia': 'Russia',
+  'Poland': 'Polonia',
+  'Romania': 'Romania',
+  'Albania': 'Albania',
+  'Greece': 'Grecia',
+  'Sweden': 'Svezia',
+  'Norway': 'Norvegia',
+  'Denmark': 'Danimarca',
+  'Finland': 'Finlandia',
+  'Austria': 'Austria',
+  'Ireland': 'Irlanda',
+  'Croatia': 'Croazia',
+  'Czech Republic': 'Repubblica Ceca',
+  'Czechia': 'Cechia',
+  'Hungary': 'Ungheria',
+  'Brazil': 'Brasile',
+  'Argentina': 'Argentina',
+  'Mexico': 'Messico',
+  'Canada': 'Canada',
+  'Australia': 'Australia',
+  'Japan': 'Giappone',
+  'China': 'Cina',
+  'India': 'India',
+  'Turkey': 'Turchia',
+  'Egypt': 'Egitto',
+  'Morocco': 'Marocco',
+  'South Africa': 'Sudafrica',
+  'United Arab Emirates': 'Emirati Arabi Uniti',
+  'Saudi Arabia': 'Arabia Saudita',
+  'Israel': 'Israele',
+  'Singapore': 'Singapore',
+  'South Korea': 'Corea del Sud',
+  'Indonesia': 'Indonesia',
+};
+
+function pageLabel(path) {
+  if (!path || path === 'Unknown') return 'Percorso non rilevato';
+  if (PAGE_LABELS[path]) return PAGE_LABELS[path];
+  if (path.startsWith('/shop/') && path !== '/shop/admin') return 'Prodotto negozio';
+  if (path.startsWith('/news/')) return 'Articolo news';
+  return path;
+}
+
+function countryLabel(c) {
+  if (!c || c === 'Unknown') return 'Non rilevato';
+  return COUNTRY_IT[c] || c;
+}
+
 function formatDuration(sec) {
   if (!sec || sec < 1) return '0s';
   const m = Math.floor(sec / 60);
@@ -73,14 +169,20 @@ export default function AdminConversions() {
 
   const visite = data?.visite || 0;
   const visitatoriUnici = data?.visitatoriUnici || 0;
+  const visitatoriAnonimi = data?.visitatoriAnonimi || 0;
+  const visitatoriLoggati = data?.visitatoriLoggati || 0;
   const avgSessionSec = data?.avgSessionSec || 0;
   const funnel = data?.funnel || [];
   const topCountries = (data?.topCountries || []).map((c) => ({
-    key: c.country,
+    key: c.country || 'Unknown',
+    label: countryLabel(c.country),
     views: c.sessions,
     sessions: c.sessions,
   }));
-  const topPages = data?.topPages || [];
+  const topPages = (data?.topPages || []).map((p) => ({
+    ...p,
+    label: pageLabel(p.key),
+  }));
   const topReferrers = data?.topReferrers || [];
   const devices = (data?.devices || []).map((d) => ({
     key: DEVICE_LABELS[d.key] || d.key,
@@ -123,7 +225,12 @@ export default function AdminConversions() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <StatCard icon={MousePointerClick} label="Visite totali" value={loading ? '—' : visite} sub="sessioni uniche" />
-        <StatCard icon={Users} label="Visitatori unici" value={loading ? '—' : visitatoriUnici} sub="anonimi + loggati" />
+        <StatCard
+          icon={Users}
+          label="Visitatori unici"
+          value={loading ? '—' : visitatoriUnici}
+          sub={loading ? 'anonimi + loggati' : `${visitatoriAnonimi} anonimi · ${visitatoriLoggati} loggati`}
+        />
         <StatCard icon={Clock} label="Permanenza media" value={loading ? '—' : formatDuration(avgSessionSec)} sub="per sessione" />
         <StatCard icon={TrendingDown} label="Conversione Premium" value={loading ? '—' : `${premiumRate}%`} sub="abbonamento / visite" />
       </div>

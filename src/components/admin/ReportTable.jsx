@@ -29,7 +29,7 @@ export default function ReportTable({ rows, total, emptyText, barColor = 'bg-ter
           const pct = base > 0 ? Math.round((v / base) * 100) : 0;
           return (
             <tr key={r.key} className="border-b border-border last:border-0">
-              <td className="py-2.5 truncate max-w-[14rem] font-medium" title={r.key}>{r.key}</td>
+              <td className="py-2.5 truncate max-w-[14rem] font-medium" title={r.key}>{r.label || r.key}</td>
               <td className="py-2.5 text-right tabular-nums">{r.views || 0}</td>
               <td className="py-2.5 text-right tabular-nums text-muted-foreground">{r.sessions || 0}</td>
               <td className="py-2.5">
