@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LogOut, LogIn, HeartPulse, ArrowLeft } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
-import LanguageMenu from '@/components/LanguageMenu';
+import LanguageChips from '@/components/LanguageChips';
 import NativeAppButton from '@/components/NativeAppButton';
 import TopRightActions from '@/components/TopRightActions';
 import ExploreMenu from '@/components/ExploreMenu';
@@ -47,7 +47,6 @@ export default function MobileTopNav({ isAuthenticated, onLogout }) {
         </div>
         <div className="flex items-center gap-1">
           <ExploreMenu />
-          <LanguageMenu />
           <NativeAppButton />
           <TopRightActions />
           {isAuthenticated ? (
@@ -68,6 +67,9 @@ export default function MobileTopNav({ isAuthenticated, onLogout }) {
             </Link>
           )}
         </div>
+      </div>
+      <div className="px-3 border-t border-terracotta/30">
+        <LanguageChips />
       </div>
     </header>
   );

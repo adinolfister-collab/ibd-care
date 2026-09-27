@@ -174,3 +174,7 @@
 .dark .border-amber-200,
 .dark .border-amber-300 { border-color: rgb(245 158 11 / 0.35); }
 .dark .border-rose-200 { border-color: rgb(244 63 94 / 0.35); }
+
+/* Hide scrollbar for horizontal chip strips (language selector) */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
