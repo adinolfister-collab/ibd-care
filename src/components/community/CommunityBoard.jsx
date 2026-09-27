@@ -17,6 +17,8 @@ import { useCommunityUsers } from './useCommunityUsers';
 import { timeAgoShort } from './helpers';
 import { cn } from '@/lib/utils';
 import { clearFoundersCache } from '@/hooks/useFoundersRanking';
+import { useWriteGuard } from '@/hooks/useWriteGuard';
+import PremiumPaywall from '@/components/PremiumPaywall';
 
 const CATEGORIES = [
   { value: 'generale', icon: MessageSquare, tone: 'bg-accent text-accent-foreground' },
@@ -51,6 +53,7 @@ export default function CommunityBoard({ me, isAdmin, onDmUser }) {
   const { t } = useI18n();
   const { toast } = useToast();
   const users = useCommunityUsers();
+  const { guard, showPaywall, setShowPaywall } = useWriteGuard();
   const [messages, setMessages] = useState(null);
   const [posting, setPosting] = useState(false);
   const [replyTo, setReplyTo] = useState(null);
@@ -92,6 +95,7 @@ export default function CommunityBoard({ me, isAdmin, onDmUser }) {
   };
 
   const post = async (content, mentions, shared, parentId = null, cat = category) => {
+    if (!guard()) return;
     const text = (content || '').trim();
     if ((!text && !shared) || posting) return;
     if (containsBanned(text)) {
@@ -424,6 +428,7 @@ export default function CommunityBoard({ me, isAdmin, onDmUser }) {
           })}
         </div>
       )}
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </div>
   );
 }
