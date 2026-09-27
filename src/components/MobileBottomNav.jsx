@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Home, Activity, Users, Sparkles, User as UserIcon, LogIn } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useAuth } from '@/lib/AuthContext';
 import { isPremiumRoute } from '@/lib/premiumRoutes';
 import PremiumLockBadge from '@/components/PremiumLockBadge';
 import { cn } from '@/lib/utils';
@@ -26,6 +27,7 @@ const STACK_LIMIT = 5;
 export default function MobileBottomNav({ isAuthenticated }) {
   const { t } = useI18n();
   const { isSubscribed } = useSubscription();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -106,7 +108,7 @@ export default function MobileBottomNav({ isAuthenticated }) {
             >
               <span className="relative">
                 <item.icon className={cn('w-5 h-5', isActive && 'text-primary')} />
-                {!isSubscribed && isPremiumRoute(item.to) && (
+                {(!isSubscribed || user?.role === 'admin') && isPremiumRoute(item.to) && (
                   <PremiumLockBadge size="nav" className="absolute -top-1 -right-1.5 bg-card rounded-full p-0.5 box-content" />
                 )}
               </span>

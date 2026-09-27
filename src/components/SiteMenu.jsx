@@ -91,7 +91,7 @@ export default function SiteMenu() {
             <span className={cn('flex-1 min-w-0 font-heading text-base md:text-lg font-medium tracking-tight truncate', item.founder ? 'text-terracotta' : 'text-foreground')}>
               {t(item.key)}
             </span>
-            {!isSubscribed && isPremiumRoute(item.to) && <PremiumLockBadge size="nav" className="ml-1" />}
+            {(!isSubscribed || user?.role === 'admin') && isPremiumRoute(item.to) && <PremiumLockBadge size="nav" className="ml-1" />}
             {item.founder && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-terracotta text-terracotta-foreground px-1.5 py-0.5 rounded-full shrink-0">Founder</span>}
             {item.admin && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-primary/15 text-primary px-1.5 py-0.5 rounded-full shrink-0">Admin</span>}
           </Link>

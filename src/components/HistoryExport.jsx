@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import jsPDF from 'jspdf';
 import { FileText, FileSpreadsheet } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { Button } from '@/components/ui/button';
+import PremiumExportButton from '@/components/PremiumExportButton';
 
 function csvCell(v) {
   const s = (v ?? '').toString();
@@ -19,11 +19,10 @@ async function gatherAll() {
 }
 
 export default function HistoryExport() {
-  const [busy, setBusy] = useState(null);
   const [error, setError] = useState('');
 
   const exportCSV = async () => {
-    setBusy('csv'); setError('');
+    setError('');
     try {
       const { symptoms, food, records } = await gatherAll();
       const lines = ['Data;Categoria;Titolo;Dettagli'];
@@ -70,11 +69,10 @@ export default function HistoryExport() {
     } catch (e) {
       setError('Esportazione non riuscita. Riprova.');
     }
-    setBusy(null);
   };
 
   const exportPDF = async () => {
-    setBusy('pdf'); setError('');
+    setError('');
     try {
       const { symptoms, food, records } = await gatherAll();
       const doc = new jsPDF({ unit: 'pt', format: 'a4' });
@@ -135,20 +133,27 @@ export default function HistoryExport() {
     } catch (e) {
       setError('Esportazione non riuscita. Riprova.');
     }
-    setBusy(null);
   };
 
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        <Button onClick={exportCSV} disabled={!!busy} variant="outline" className="rounded-xl h-11">
-          <FileSpreadsheet className="w-4 h-4 mr-2" />
-          {busy === 'csv' ? 'Generazione…' : 'Scarica CSV'}
-        </Button>
-        <Button onClick={exportPDF} disabled={!!busy} className="rounded-xl h-11">
-          <FileText className="w-4 h-4 mr-2" />
-          {busy === 'pdf' ? 'Generazione…' : 'Scarica PDF'}
-        </Button>
+        <PremiumExportButton
+          onExport={exportCSV}
+          label="Scarica CSV"
+          lockedLabel="Premium · CSV"
+          feature="settings_csv_export"
+          icon={FileSpreadsheet}
+          className="h-11"
+        />
+        <PremiumExportButton
+          onExport={exportPDF}
+          label="Scarica PDF"
+          lockedLabel="Premium · PDF"
+          feature="settings_pdf_export"
+          icon={FileText}
+          className="h-11"
+        />
       </div>
       {error && <p className="text-sm text-rose-500">{error}</p>}
     </div>
