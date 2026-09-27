@@ -22,6 +22,7 @@ const Home = lazy(() => import('@/pages/Home'));
 const Symptoms = lazy(() => import('@/pages/Symptoms'));
 const Food = lazy(() => import('@/pages/Food'));
 const Meds = lazy(() => import('@/pages/Meds'));
+const MedicationCalendarPage = lazy(() => import('@/pages/MedicationCalendar'));
 const Records = lazy(() => import('@/pages/Records'));
 const ServicesMap = lazy(() => import('@/pages/ServicesMap'));
 const Trends = lazy(() => import('@/pages/Trends'));
@@ -106,6 +107,7 @@ const AuthenticatedApp = () => {
         <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
         <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
         <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
+        <Route path="/meds/calendar" element={<PageTransition><MedicationCalendarPage /></PageTransition>} />
         <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
         <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
         <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />

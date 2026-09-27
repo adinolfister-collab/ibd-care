@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Pill, Trash2, Pencil, Clock } from 'lucide-react';
+import { Plus, Pill, Trash2, Pencil, Clock, CalendarDays } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -77,7 +77,16 @@ export default function Meds() {
       <PageHeader
         title={t('meds.title')}
         subtitle={t('meds.subtitle')}
-        action={<Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('meds.add')}</Button>}
+        action={
+          <div className="flex gap-2 flex-wrap">
+            {items.length > 0 && (
+              <Button variant="outline" onClick={() => navigate('/meds/calendar')} className="rounded-xl">
+                <CalendarDays className="w-4 h-4 mr-1.5" /> {t('meds.cal.open')}
+              </Button>
+            )}
+            <Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('meds.add')}</Button>
+          </div>
+        }
       />
       <PageEditorial pageKey="meds" />
       <MagazineEssay theme="terapie" number="01" eyebrow={t('meds.magazine_eyebrow')} title={t('meds.magazine_title')}>
