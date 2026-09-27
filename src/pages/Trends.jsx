@@ -5,6 +5,9 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useAuth } from '@/lib/AuthContext';
+import DemoBanner from '@/components/DemoBanner';
+import { demoSymptoms, demoFoods } from '@/lib/demoData';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
@@ -66,6 +69,7 @@ function TrendsTooltip({ active, payload, field, color, label, t, overlay }) {
 export default function Trends() {
   const { t } = useI18n();
   const { isSubscribed } = useSubscription();
+  const { isAuthenticated } = useAuth();
   const [entries, setEntries] = useState(null);
   const [foods, setFoods] = useState([]);
   const [rangeKey, setRangeKey] = useState(DEFAULT_RANGE_KEY);
@@ -78,6 +82,12 @@ export default function Trends() {
   useEffect(() => {
     let alive = true;
     (async () => {
+      if (!isAuthenticated) {
+        setEntries(demoSymptoms);
+        setFoods(demoFoods);
+        setLoading(false);
+        return;
+      }
       try {
         const limit = listLimitForRange(range);
         const [symp, food] = await Promise.all([
@@ -222,6 +232,7 @@ export default function Trends() {
     <div>
       <PageHeader title={t('trends.title')} subtitle={t('trends.subtitle')} />
       <PageEditorial pageKey="trends" />
+      {!isAuthenticated && <DemoBanner />}
       <MagazineEssay theme="alimentazione" number="01" eyebrow={t('trends.eyebrow')} title={t('trends.charts_title')}>
       <Link to="/symptom-charts" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline mb-4">
         <BarChart3 className="w-4 h-4" /> {t('symptom_charts.title')} →

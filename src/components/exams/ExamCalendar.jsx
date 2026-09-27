@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Loader2, CalendarDays, ChevronLeft, ChevronRight, MapPin, Stethoscope } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
+import { demoRecords } from '@/lib/demoData';
 import {
   startOfMonth, endOfMonth, startOfWeek, endOfWeek,
   eachDayOfInterval, isSameDay, isSameMonth, addMonths, format, isToday, isAfter, parseISO,
@@ -20,12 +22,18 @@ const catColor = {
 
 export default function ExamCalendar({ reloadKey }) {
   const { t } = useI18n();
+  const { isAuthenticated } = useAuth();
   const [cursor, setCursor] = useState(new Date());
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
     setLoading(true);
+    if (!isAuthenticated) {
+      setItems(demoRecords);
+      setLoading(false);
+      return;
+    }
     try {
       const data = await base44.entities.MedicalRecord.list('-record_date', 400);
       setItems(data);

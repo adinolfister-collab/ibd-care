@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Loader2, Trash2, FileText, ExternalLink } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
+import { demoRecords } from '@/lib/demoData';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import EmptyState from '@/components/EmptyState';
@@ -18,12 +20,18 @@ function fmt(d, lang) { try { return new Date(d).toLocaleDateString(localeForLan
 
 export default function ExamTimeline({ reloadKey }) {
   const { t, lang } = useI18n();
+  const { isAuthenticated } = useAuth();
   const [cat, setCat] = useState('all');
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
     setLoading(true);
+    if (!isAuthenticated) {
+      setItems(demoRecords.filter((r) => r.exam_category));
+      setLoading(false);
+      return;
+    }
     try {
       const data = await base44.entities.MedicalRecord.list('-record_date', 400);
       setItems(data.filter((r) => r.exam_category));
@@ -73,7 +81,7 @@ export default function ExamTimeline({ reloadKey }) {
                         <p className="text-sm text-muted-foreground">{fmt(r.record_date, lang)}{r.provider ? ' · ' + r.provider : ''}</p>
                       </div>
                     </div>
-                    <button onClick={() => remove(r.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
+                    {isAuthenticated && <button onClick={() => remove(r.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>}
                   </div>
 
                   {markers.length > 0 && (

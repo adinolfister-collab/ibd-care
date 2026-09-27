@@ -4,6 +4,9 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useAuth } from '@/lib/AuthContext';
+import DemoBanner from '@/components/DemoBanner';
+import { demoSymptoms, demoFoods } from '@/lib/demoData';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -129,6 +132,7 @@ function MealChartTooltip({ active, payload, t }) {
 export default function SymptomCharts() {
   const { t, lang } = useI18n();
   const { isSubscribed } = useSubscription();
+  const { isAuthenticated } = useAuth();
   const [entries, setEntries] = useState(null);
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -140,6 +144,12 @@ export default function SymptomCharts() {
   useEffect(() => {
     let alive = true;
     (async () => {
+      if (!isAuthenticated) {
+        setEntries(demoSymptoms);
+        setFoods(demoFoods);
+        setLoading(false);
+        return;
+      }
       try {
         const limit = listLimitForRange(range);
         const [symp, food] = await Promise.all([
@@ -235,6 +245,7 @@ export default function SymptomCharts() {
     <AppLayout>
       <PageHeader title={t('symptom_charts.title')} subtitle={t('symptom_charts.subtitle')} />
       <PageEditorial pageKey="symptomcharts" />
+      {!isAuthenticated && <DemoBanner />}
 
       <div className="flex items-center gap-2 mb-4">
         {['trend', 'correlation'].map((v) => (

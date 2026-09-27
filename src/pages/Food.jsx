@@ -10,8 +10,8 @@ import FoodReportButton from '@/components/FoodReportButton';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
-import GuestBanner from '@/components/GuestBanner';
-import { guestFoods } from '@/lib/guestEntries';
+import DemoBanner from '@/components/DemoBanner';
+import { demoFoods } from '@/lib/demoData';
 import { useWriteGuard } from '@/hooks/useWriteGuard';
 import ReadonlyBanner from '@/components/ReadonlyBanner';
 import PremiumPaywall from '@/components/PremiumPaywall';
@@ -53,7 +53,7 @@ export default function Food() {
   const load = async () => {
     setLoading(true);
     if (!isAuthenticated) {
-      setItems(guestFoods.list());
+      setItems(demoFoods);
       setLoading(false);
       return;
     }
@@ -68,7 +68,7 @@ export default function Food() {
   };
   const refresh = async () => {
     if (!isAuthenticated) {
-      setItems(guestFoods.list());
+      setItems(demoFoods);
       return;
     }
     const data = await base44.entities.FoodEntry.list('-entry_date', 200);
@@ -172,7 +172,7 @@ export default function Food() {
       <div className="mb-6">
         <DailyNutrition entries={items} groups={catalogGroups} />
       </div>
-      {authChecked && !isAuthenticated && <GuestBanner />}
+      {authChecked && !isAuthenticated && <DemoBanner />}
       {isAuthenticated && templates.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
           {templates.map((tpl) => (

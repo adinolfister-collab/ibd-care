@@ -17,6 +17,9 @@ import CookingCorrelation from '@/components/CookingCorrelation';
 import ChartRangeSelector from '@/components/ChartRangeSelector';
 import ReadonlyBadge from '@/components/ReadonlyBadge';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useAuth } from '@/lib/AuthContext';
+import DemoBanner from '@/components/DemoBanner';
+import { demoSymptoms, demoFoods } from '@/lib/demoData';
 import { getRange, DEFAULT_RANGE_KEY, FREE_RANGE_KEY, cutoffDateForRange, listLimitForRange } from '@/lib/chartRanges';
 
 const TOP = 12;
@@ -24,6 +27,7 @@ const TOP = 12;
 export default function Correlazioni() {
   const { t, lang } = useI18n();
   const { isSubscribed } = useSubscription();
+  const { isAuthenticated } = useAuth();
   const [foods, setFoods] = useState([]);
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,6 +40,14 @@ export default function Correlazioni() {
     let cancelled = false;
     (async () => {
       setLoading(true);
+      if (!isAuthenticated) {
+        const fd = cutoff ? demoFoods.filter((x) => (x.entry_date || '') >= cutoff) : demoFoods;
+        const sd = cutoff ? demoSymptoms.filter((x) => (x.entry_date || '') >= cutoff) : demoSymptoms;
+        setFoods(fd);
+        setEntries(sd);
+        setLoading(false);
+        return;
+      }
       try {
         const limit = listLimitForRange(range);
         const [f, s] = await Promise.all([
@@ -83,6 +95,7 @@ export default function Correlazioni() {
         subtitle={t('correlazioni.subtitle')}
       />
       <PageEditorial pageKey="correlazioni" />
+      {!isAuthenticated && <DemoBanner />}
 
       <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
         <ChartRangeSelector value={rangeKey} onChange={setRangeKey} feature="correlazioni_range" className="mb-0" />

@@ -13,7 +13,8 @@ import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
-import GuestBanner from '@/components/GuestBanner';
+import DemoBanner from '@/components/DemoBanner';
+import { demoMeds } from '@/lib/demoData';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -54,7 +55,7 @@ export default function Meds() {
 
   const load = async () => {
     setLoading(true);
-    if (!isAuthenticated) { setItems([]); setLoading(false); return; }
+    if (!isAuthenticated) { setItems(demoMeds); setLoading(false); return; }
     try {
       const data = await base44.entities.Medication.list('-created_date', 200);
       setItems(data);
@@ -93,7 +94,7 @@ export default function Meds() {
       <ReadonlyBanner />
       <PageEditorial pageKey="meds" />
       <MagazineEssay theme="terapie" number="01" eyebrow={t('meds.magazine_eyebrow')} title={t('meds.magazine_title')}>
-      {authChecked && !isAuthenticated && <GuestBanner />}
+      {authChecked && !isAuthenticated && <DemoBanner />}
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
       ) : items.length === 0 ? (

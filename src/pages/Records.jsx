@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Plus, FileText, Trash2, Pencil, ExternalLink, Stethoscope, FlaskConical, CalendarClock, Search, X, ScanLine, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { guestRecords } from '@/lib/guestEntries';
+import { demoRecords } from '@/lib/demoData';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
-import GuestBanner from '@/components/GuestBanner';
+import DemoBanner from '@/components/DemoBanner';
 import PullToRefresh from '@/components/PullToRefresh';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
@@ -69,7 +69,7 @@ export default function Records() {
 
   const load = async () => {
     setLoading(true);
-    if (!isAuthenticated) { setItems(guestRecords.list()); setLoading(false); return; }
+    if (!isAuthenticated) { setItems(demoRecords); setLoading(false); return; }
     try {
       const data = await base44.entities.MedicalRecord.list('-record_date', 200);
       setItems(data);
@@ -146,7 +146,7 @@ export default function Records() {
       <ReadonlyBanner />
       <PageEditorial pageKey="records" />
 
-      {authChecked && !isAuthenticated && <GuestBanner />}
+      {authChecked && !isAuthenticated && <DemoBanner />}
 
       {/* Search & advanced filters */}
       <Card className="border-0 shadow-sm mb-4">

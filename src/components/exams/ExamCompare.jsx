@@ -3,6 +3,8 @@ import { Loader2, Download, FileText } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
+import { demoRecords } from '@/lib/demoData';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
@@ -19,6 +21,7 @@ function fmt(d, lang) { try { return new Date(d).toLocaleDateString(localeForLan
 
 export default function ExamCompare({ reloadKey }) {
   const { t, lang } = useI18n();
+  const { isAuthenticated } = useAuth();
   const [cat, setCat] = useState('esame_sangue');
   const [all, setAll] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,6 +31,11 @@ export default function ExamCompare({ reloadKey }) {
 
   const load = async () => {
     setLoading(true);
+    if (!isAuthenticated) {
+      setAll(demoRecords.filter((r) => r.exam_category));
+      setLoading(false);
+      return;
+    }
     try { const data = await base44.entities.MedicalRecord.list('-record_date', 500); setAll(data.filter((r) => r.exam_category)); }
     catch (e) { /* ignore */ }
     setLoading(false);
@@ -68,7 +76,7 @@ export default function ExamCompare({ reloadKey }) {
           <SelectTrigger className="rounded-xl bg-background w-full sm:w-56"><SelectValue /></SelectTrigger>
           <SelectContent>{CATS.map((c) => <SelectItem key={c} value={c}>{t('exams.cat_' + c)}</SelectItem>)}</SelectContent>
         </Select>
-        {rows.length > 0 && (
+        {isAuthenticated && rows.length > 0 && (
           <Button variant="outline" onClick={exportPdf} disabled={!selRows.length || busy} className="rounded-xl ml-auto">
             {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4 mr-1.5" />}
             {t('exams.export_pdf')}

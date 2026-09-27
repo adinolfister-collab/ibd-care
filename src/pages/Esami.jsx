@@ -12,6 +12,7 @@ import ExamCompare from '@/components/exams/ExamCompare';
 import ExamCalendar from '@/components/exams/ExamCalendar';
 import ImportData from '@/components/exams/ImportData';
 import PremiumLockedCard from '@/components/PremiumLockedCard';
+import DemoBanner from '@/components/DemoBanner';
 import PremiumPaywall from '@/components/PremiumPaywall';
 import { usePremiumGate } from '@/hooks/usePremiumGate';
 import { useToast } from '@/components/ui/use-toast';
@@ -41,6 +42,7 @@ export default function Esami() {
     <AppLayout>
       <PageHeader title={t('exams.title')} subtitle={t('exams.subtitle')} />
       <PageEditorial pageKey="esami" />
+      {!isAuthenticated && ['timeline', 'compare', 'calendar'].includes(tab) && <DemoBanner />}
 
       <Tabs value={tab} onValueChange={setTab} className="mt-2">
         <TabsList className="flex flex-wrap h-auto p-1 bg-accent rounded-xl gap-1">

@@ -4,8 +4,8 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
-import GuestBanner from '@/components/GuestBanner';
-import { guestSymptoms } from '@/lib/guestEntries';
+import DemoBanner from '@/components/DemoBanner';
+import { demoSymptoms } from '@/lib/demoData';
 import { useWriteGuard } from '@/hooks/useWriteGuard';
 import ReadonlyBanner from '@/components/ReadonlyBanner';
 import PremiumPaywall from '@/components/PremiumPaywall';
@@ -57,7 +57,7 @@ export default function Symptoms() {
   const load = async () => {
     setLoading(true);
     if (!isAuthenticated) {
-      setItems(guestSymptoms.list());
+      setItems(demoSymptoms);
       setLoading(false);
       return;
     }
@@ -72,7 +72,7 @@ export default function Symptoms() {
   };
   const refresh = async () => {
     if (!isAuthenticated) {
-      setItems(guestSymptoms.list());
+      setItems(demoSymptoms);
       return;
     }
     const data = await base44.entities.SymptomEntry.list('-entry_date', 1000);
@@ -149,7 +149,7 @@ export default function Symptoms() {
       <ReadonlyBanner />
       <PageEditorial pageKey="symptoms" />
       <MagazineEssay theme="sintomi" number="01" eyebrow={t('symptoms.magazine_eyebrow')} title={t('symptoms.magazine_title')}>
-      {authChecked && !isAuthenticated && <GuestBanner />}
+      {authChecked && !isAuthenticated && <DemoBanner />}
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
