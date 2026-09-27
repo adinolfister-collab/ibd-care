@@ -10,10 +10,14 @@ import PageEditorial from '@/components/PageEditorial';
 import EmptyState from '@/components/EmptyState';
 import MedicationCalendar from '@/components/meds/MedicationCalendar';
 import { Button } from '@/components/ui/button';
+import { useWriteGuard } from '@/hooks/useWriteGuard';
+import ReadonlyBanner from '@/components/ReadonlyBanner';
+import PremiumPaywall from '@/components/PremiumPaywall';
 
 export default function MedicationCalendarPage() {
   const { t } = useI18n();
   const { isAuthenticated, authChecked } = useAuth();
+  const { guard, showPaywall, setShowPaywall } = useWriteGuard();
   const [meds, setMeds] = useState([]);
   const [doses, setDoses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +41,7 @@ export default function MedicationCalendarPage() {
   useEffect(() => { load(); }, [load]);
 
   const onMark = async (med, day) => {
+    if (!guard()) return;
     await base44.entities.MedicationDose.create({
       medication_id: med.id,
       medication_name: med.name,
@@ -48,6 +53,7 @@ export default function MedicationCalendarPage() {
     load();
   };
   const onSkip = async (med, day) => {
+    if (!guard()) return;
     await base44.entities.MedicationDose.create({
       medication_id: med.id,
       medication_name: med.name,
@@ -58,6 +64,7 @@ export default function MedicationCalendarPage() {
     load();
   };
   const onRemove = async (dose) => {
+    if (!guard()) return;
     await base44.entities.MedicationDose.delete(dose.id);
     load();
   };
@@ -75,6 +82,7 @@ export default function MedicationCalendarPage() {
           </Button>
         }
       />
+      <ReadonlyBanner />
       <PageEditorial pageKey="meds" />
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
@@ -87,6 +95,7 @@ export default function MedicationCalendarPage() {
           <MedicationCalendar meds={meds} doses={doses} onMark={onMark} onSkip={onSkip} onRemove={onRemove} />
         </div>
       )}
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </AppLayout>
   );
 }

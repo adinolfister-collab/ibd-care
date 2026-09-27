@@ -1043,6 +1043,18 @@ const pt = {
   'guide.intro_eyebrow': 'Começa aqui',
   'guide.eyebrow_feature': 'Função',
   'guide.eyebrow_premium': 'Premium',
+  'trial.badge': 'Teste: {n} d',
+  'trial.tagline': '30 dias de teste gr\u00e1tis com todas as fun\u00e7\u00f5es, depois Premium desde 0,99 \u20ac/m\u00eas. Cancele quando quiser.',
+  'trial.during_title': 'Teste gr\u00e1tis: {n} dias restantes',
+  'trial.during_hint': 'Tem acesso a todas as fun\u00e7\u00f5es Premium. Subscreva para continuar a registar depois.',
+  'trial.during_desc': 'Ainda tem {n} dias de teste com todas as fun\u00e7\u00f5es Premium. Subscreva para as manter depois.',
+  'trial.expired_title': 'Teste expirado',
+  'trial.expired_desc': 'O seu per\u00edodo de teste terminou. Subscreva para continuar a registar sintomas, refei\u00e7\u00f5es, terapias e exames. Os seus dados mant\u00eam-se vis\u00edveis.',
+  'trial.readonly_hint': 'Teste expirado \u2014 subscreva para adicionar registos',
+  'trial.cta_subscribe': 'Subscrever agora',
+  'premium.play_billing_note': 'Pagamento gerido pelo Google Play. Cancele quando quiser.',
+  'premium.web_checkout_note': 'Pagamento seguro na web. Cancele quando quiser.',
+  'premium.subtitle': '30 dias de teste gr\u00e1tis com todas as fun\u00e7\u00f5es, depois Premium desde 0,99 \u20ac/m\u00eas. Cancele quando quiser.',
 };
 
 export default pt;

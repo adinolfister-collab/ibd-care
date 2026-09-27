@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Check, Loader2, CreditCard, Crown, Settings } from 'lucide-react';
+import { Sparkles, Check, Loader2, CreditCard, Crown, Settings, Lock, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useToast } from '@/components/ui/use-toast';
 import { clearSubscriptionCache } from '@/hooks/useSubscription';
+import { isPlayBillingAvailable, launchPlayBilling } from '@/lib/playBilling';
 import { cn } from '@/lib/utils';
 
-// Two side-by-side plan cards (Monthly + Annual with savings badge) shown on
-// the Abbonamento page for authenticated users. Checkout still goes through
-// Stripe (createSubscriptionCheckout with plan param); when Lemon Squeezy is
-// activated, swap the invoked function name here.
+// Plans shown on the Abbonamento page. Checkout routes to Google Play Billing
+// when the native bridge is present (Android build), otherwise to Stripe web
+// checkout. The 30-day trial is app-side, so this UI surfaces the trial
+// countdown and the expired (read-only) state.
 export default function AbbonamentoPlans() {
   const { t } = useI18n();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(null); // 'monthly' | 'yearly' | null
+  const [loading, setLoading] = useState(null);
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [subscription, setSubscription] = useState(null);
   const [manageLoading, setManageLoading] = useState(false);
+  const playAvailable = isPlayBillingAvailable();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -34,15 +36,29 @@ export default function AbbonamentoPlans() {
   }, []);
 
   const isActive = subscription && ['active', 'trialing'].includes(subscription.status);
+  const isExpired = subscription?.status === 'expired';
+  const isTrialing = subscription?.status === 'trialing';
 
   const subscribe = async (plan) => {
-    if (window.self !== window.top) {
-      setError(t('premium.iframe_blocked'));
-      return;
-    }
-    setLoading(plan);
     setError('');
+    setLoading(plan);
     try {
+      if (playAvailable) {
+        const data = await launchPlayBilling(plan);
+        if (data?.status === 'active') {
+          setStatus('success');
+          clearSubscriptionCache();
+          navigate('/abbonamento?checkout=success');
+          return;
+        }
+        throw new Error(data?.error || t('premium.checkout_error'));
+      }
+      // Stripe web fallback
+      if (window.self !== window.top) {
+        setError(t('premium.iframe_blocked'));
+        setLoading(null);
+        return;
+      }
       const res = await base44.functions.invoke('createSubscriptionCheckout', { plan });
       if (res.data?.url) {
         window.location.href = res.data.url;
@@ -96,6 +112,29 @@ export default function AbbonamentoPlans() {
 
   return (
     <div className="space-y-4">
+      {/* Trial countdown banner */}
+      {isTrialing && (
+        <div className="rounded-2xl border border-terracotta/40 bg-terracotta/[0.07] px-4 py-3 flex items-center gap-3">
+          <Clock className="w-5 h-5 text-terracotta shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-foreground">
+              {t('trial.during_title', { n: subscription?.trialRemaining ?? 0 }).replace('{n}', String(subscription?.trialRemaining ?? 0))}
+            </p>
+            <p className="text-xs text-muted-foreground leading-snug">{t('trial.during_hint')}</p>
+          </div>
+        </div>
+      )}
+      {/* Expired / read-only banner */}
+      {isExpired && (
+        <div className="rounded-2xl border border-terracotta/40 bg-terracotta/[0.07] px-4 py-3 flex items-center gap-3">
+          <Lock className="w-5 h-5 text-terracotta shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-foreground">{t('trial.expired_title')}</p>
+            <p className="text-xs text-muted-foreground leading-snug">{t('trial.expired_desc')}</p>
+          </div>
+        </div>
+      )}
+
       {status === 'success' && (
         <p className="text-sm text-emerald-600 bg-emerald-50 rounded-xl px-3 py-2">{t('premium.success')}</p>
       )}
@@ -104,7 +143,7 @@ export default function AbbonamentoPlans() {
       )}
       {error && <p className="text-sm text-rose-600 bg-rose-50 rounded-xl px-3 py-2">{error}</p>}
 
-      {isActive ? (
+      {isActive && !isTrialing ? (
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 space-y-1">
           <p className="text-sm font-semibold text-emerald-700 flex items-center gap-1.5">
             <Crown className="w-4 h-4" /> {t('premium.active_title')}
@@ -112,78 +151,82 @@ export default function AbbonamentoPlans() {
           {subscription.cancelAtPeriodEnd && (
             <p className="text-xs text-muted-foreground">{t('premium.cancelled_note')}</p>
           )}
-          <button
-            onClick={manage}
-            disabled={manageLoading}
-            className="mt-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border border-emerald-300 text-emerald-700 bg-card hover:bg-emerald-50 transition-colors disabled:opacity-60"
-          >
-            {manageLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Settings className="w-4 h-4" />}
-            {manageLoading ? t('premium.redirecting') : t('premium.manage_subscription')}
-          </button>
+          {!playAvailable && (
+            <button
+              onClick={manage}
+              disabled={manageLoading}
+              className="mt-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border border-emerald-300 text-emerald-700 bg-card hover:bg-emerald-50 transition-colors disabled:opacity-60"
+            >
+              {manageLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Settings className="w-4 h-4" />}
+              {manageLoading ? t('premium.redirecting') : t('premium.manage_subscription')}
+            </button>
+          )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {plans.map((plan) => (
-            <div
-              key={plan.id}
-              className={cn(
-                'rounded-2xl border bg-card shadow-sm overflow-hidden flex flex-col',
-                plan.featured ? 'border-terracotta ring-1 ring-terracotta/30' : 'border-border'
-              )}
-            >
-              <div className={cn('px-5 py-4', plan.featured ? 'bg-terracotta/10' : 'bg-accent/40')}>
-                <div className="flex items-center justify-between">
-                  <p className="font-heading font-semibold text-foreground">
-                    {plan.id === 'monthly' ? t('premium.monthly') : t('premium.yearly')}
-                  </p>
-                  {plan.badge && (
-                    <span className="text-[0.65rem] font-semibold uppercase tracking-wide bg-terracotta text-terracotta-foreground px-2 py-0.5 rounded-full">
-                      {plan.badge}
-                    </span>
-                  )}
+        <>
+          <p className="text-center text-sm text-muted-foreground">{t('trial.tagline')}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {plans.map((plan) => (
+              <div
+                key={plan.id}
+                className={cn(
+                  'rounded-2xl border bg-card shadow-sm overflow-hidden flex flex-col',
+                  plan.featured ? 'border-terracotta ring-1 ring-terracotta/30' : 'border-border'
+                )}
+              >
+                <div className={cn('px-5 py-4', plan.featured ? 'bg-terracotta/10' : 'bg-accent/40')}>
+                  <div className="flex items-center justify-between">
+                    <p className="font-heading font-semibold text-foreground">
+                      {plan.id === 'monthly' ? t('premium.monthly') : t('premium.yearly')}
+                    </p>
+                    {plan.badge && (
+                      <span className="text-[0.65rem] font-semibold uppercase tracking-wide bg-terracotta text-terracotta-foreground px-2 py-0.5 rounded-full">
+                        {plan.badge}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-baseline gap-1.5 mt-2">
+                    {plan.compareAt && (
+                      <span className="text-base text-muted-foreground line-through">{plan.compareAt}</span>
+                    )}
+                    <span className="text-3xl font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground text-sm">{plan.period}</span>
+                  </div>
                 </div>
-                <div className="flex items-baseline gap-1.5 mt-2">
-                  {plan.compareAt && (
-                    <span className="text-base text-muted-foreground line-through">{plan.compareAt}</span>
-                  )}
-                  <span className="text-3xl font-bold">{plan.price}</span>
-                  <span className="text-muted-foreground text-sm">{plan.period}</span>
+                <div className="p-5 flex flex-col flex-1">
+                  <ul className="space-y-2 text-sm flex-1">
+                    {features.map((f) => (
+                      <li key={f} className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-primary shrink-0" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={() => subscribe(plan.id)}
+                    disabled={loading !== null}
+                    className={cn(
+                      'w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-base font-semibold transition-colors disabled:opacity-60 mt-4',
+                      plan.featured
+                        ? 'bg-terracotta text-terracotta-foreground hover:bg-terracotta/90'
+                        : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                    )}
+                  >
+                    {loading === plan.id ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <CreditCard className="w-5 h-5" />
+                    )}
+                    {loading === plan.id ? t('premium.redirecting') : t('premium.cta_subscribe')}
+                  </button>
                 </div>
               </div>
-              <div className="p-5 flex flex-col flex-1">
-                <ul className="space-y-2 text-sm flex-1">
-                  {features.map((f) => (
-                    <li key={f} className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-primary shrink-0" /> {f}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-4 flex items-center gap-2 rounded-xl bg-primary/5 px-3 py-2.5 text-sm text-primary">
-                  <Crown className="w-4 h-4 shrink-0" />
-                  <span><strong>{t('premium.free_diary_note')}</strong> {t('premium.premium_unlock_note')}</span>
-                </div>
-                <button
-                  onClick={() => subscribe(plan.id)}
-                  disabled={loading !== null}
-                  className={cn(
-                    'w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-base font-semibold transition-colors disabled:opacity-60 mt-4',
-                    plan.featured
-                      ? 'bg-terracotta text-terracotta-foreground hover:bg-terracotta/90'
-                      : 'bg-primary text-primary-foreground hover:bg-primary/90'
-                  )}
-                >
-                  {loading === plan.id ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <CreditCard className="w-5 h-5" />
-                  )}
-                  {loading === plan.id ? t('premium.redirecting') : t('premium.cta_subscribe')}
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
+      <p className="text-center text-xs text-muted-foreground">
+        {playAvailable ? t('premium.play_billing_note') : t('premium.web_checkout_note')}
+      </p>
       <p className="text-center text-xs text-muted-foreground">{t('premium.footer')}</p>
     </div>
   );

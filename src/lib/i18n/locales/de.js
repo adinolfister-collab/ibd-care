@@ -1043,6 +1043,18 @@ const de = {
   'guide.intro_eyebrow': 'Hier starten',
   'guide.eyebrow_feature': 'Funktion',
   'guide.eyebrow_premium': 'Premium',
+  'trial.badge': 'Test: {n} T.',
+  'trial.tagline': '30 Tage kostenloser Test mit allen Funktionen, danach Premium ab 0,99 \u20ac/Monat. Jederzeit k\u00fcndbar.',
+  'trial.during_title': 'Kostenloser Test: noch {n} Tage',
+  'trial.during_hint': 'Du hast Zugriff auf alle Premium-Funktionen. Abonniere, um danach weiter zu erfassen.',
+  'trial.during_desc': 'Du hast noch {n} Tage Test mit allen Premium-Funktionen. Abonniere, um sie zu behalten.',
+  'trial.expired_title': 'Test abgelaufen',
+  'trial.expired_desc': 'Dein Testzeitraum ist beendet. Abonniere, um weiter Symptome, Mahlzeiten, Therapien und Untersuchungen zu erfassen. Deine Daten bleiben sichtbar.',
+  'trial.readonly_hint': 'Test abgelaufen \u2014 abonniere, um neue Eintr\u00e4ge zu erfassen',
+  'trial.cta_subscribe': 'Jetzt abonnieren',
+  'premium.play_billing_note': 'Zahlung \u00fcber Google Play. Jederzeit k\u00fcndbar.',
+  'premium.web_checkout_note': 'Sichere Web-Zahlung. Jederzeit k\u00fcndbar.',
+  'premium.subtitle': '30 Tage kostenloser Test mit allen Funktionen, danach Premium ab 0,99 \u20ac/Monat. Jederzeit k\u00fcndbar.',
 };
 
 export default de;

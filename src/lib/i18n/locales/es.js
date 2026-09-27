@@ -1043,6 +1043,18 @@ const es = {
   'guide.intro_eyebrow': 'Empieza aquí',
   'guide.eyebrow_feature': 'Función',
   'guide.eyebrow_premium': 'Premium',
+  'trial.badge': 'Prueba: {n} d',
+  'trial.tagline': '30 días de prueba gratuita con todas las funciones, luego Premium desde 0,99 €/mes. Cancela cuando quieras.',
+  'trial.during_title': 'Prueba gratuita: {n} días restantes',
+  'trial.during_hint': 'Tienes acceso a todas las funciones Premium. Suscríbete para seguir registrando al terminar.',
+  'trial.during_desc': 'Te quedan {n} días de prueba con todas las funciones Premium. Suscríbete para conservarlas después.',
+  'trial.expired_title': 'Prueba finalizada',
+  'trial.expired_desc': 'Tu periodo de prueba ha terminado. Suscríbete para seguir registrando síntomas, comidas, terapias y análisis. Tus datos siguen visibles.',
+  'trial.readonly_hint': 'Prueba finalizada — suscríbete para añadir registros',
+  'trial.cta_subscribe': 'Suscríbete ahora',
+  'premium.play_billing_note': 'Pago gestionado por Google Play. Cancela cuando quieras.',
+  'premium.web_checkout_note': 'Pago seguro por web. Cancela cuando quieras.',
+  'premium.subtitle': '30 días de prueba gratuita con todas las funciones, luego Premium desde 0,99 €/mes. Cancela cuando quieras.',
 };
 
 export default es;

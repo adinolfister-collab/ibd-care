@@ -16,7 +16,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import useRecordScanner from '@/hooks/useRecordScanner';
 import { useAuth } from '@/lib/AuthContext';
-import { useRegisterGate } from '@/hooks/useRegisterGate';
+import { useWriteGuard } from '@/hooks/useWriteGuard';
+import ReadonlyBanner from '@/components/ReadonlyBanner';
+import PremiumPaywall from '@/components/PremiumPaywall';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { RECORD_TYPE_KEYS, recordTypeLabel, localeForLang } from '@/lib/enumLabels';
 import { cn } from '@/lib/utils';
@@ -52,7 +54,7 @@ export default function Records() {
   const { toast } = useToast();
   const { scanning, scan } = useRecordScanner();
   const { isAuthenticated, authChecked } = useAuth();
-  const gate = useRegisterGate();
+  const { guard, showPaywall, setShowPaywall } = useWriteGuard();
   const fileRef = useRef(null);
   const types = Object.entries(RECORD_TYPE_KEYS).map(([value, key]) => ({ value, label: t(key) }));
   const [items, setItems] = useState([]);
@@ -80,7 +82,7 @@ export default function Records() {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
-    if (!gate()) return;
+    if (!guard()) return;
     const res = await scan(file);
     if (!res) return;
     if (res.kind === 'medication') {
@@ -115,16 +117,16 @@ export default function Records() {
   const hasFilters = !!(search || typeFilter !== 'all' || dateFrom || dateTo || locFilter);
   const resetFilters = () => { setSearch(''); setTypeFilter('all'); setDateFrom(''); setDateTo(''); setLocFilter(''); };
 
-  const openNew = () => { if (!gate()) return; setEditing({ record_date: todayStr() }); setOpen(true); };
-  const openEdit = (item) => { if (!gate()) return; setEditing(item); setOpen(true); };
+  const openNew = () => { if (!guard()) return; setEditing({ record_date: todayStr() }); setOpen(true); };
+  const openEdit = (item) => { if (!guard()) return; setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
-    if (!gate()) return;
+    if (!guard()) return;
     if (editing?.id) await base44.entities.MedicalRecord.update(editing.id, data);
     else await base44.entities.MedicalRecord.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { if (!gate()) return; await base44.entities.MedicalRecord.delete(id); load(); };
+  const handleDelete = async (id) => { if (!guard()) return; await base44.entities.MedicalRecord.delete(id); load(); };
 
   return (
     <AppLayout>
@@ -141,6 +143,7 @@ export default function Records() {
           </div>
         }
       />
+      <ReadonlyBanner />
       <PageEditorial pageKey="records" />
 
       {authChecked && !isAuthenticated && <GuestBanner />}
@@ -252,6 +255,7 @@ export default function Records() {
         onSubmit={handleSubmit}
       />
       <EditorialBlock sectionKey="records_archive" align="right" />
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </AppLayout>
   );
 }

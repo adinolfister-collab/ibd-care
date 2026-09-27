@@ -6,6 +6,7 @@ import LanguageChips from '@/components/LanguageChips';
 import NativeAppButton from '@/components/NativeAppButton';
 import TopRightActions from '@/components/TopRightActions';
 import ExploreMenu from '@/components/ExploreMenu';
+import TrialBadge from '@/components/TrialBadge';
 
 // Header universale (visibile su tutti i breakpoint): logo/back a sinistra,
 // azioni a destra (Esplora, lingua, app nativa, azioni, logout/login).
@@ -42,6 +43,7 @@ export default function MobileTopNav({ isAuthenticated, onLogout }) {
                 <HeartPulse className="w-4 h-4 text-primary" />
               </div>
               <p className="font-heading font-semibold tracking-tight text-sm truncate">{t('app.name')}</p>
+              <TrialBadge />
             </>
           )}
         </div>

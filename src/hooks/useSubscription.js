@@ -37,6 +37,12 @@ export function useSubscription() {
     }
   }, [load]);
 
-  const isSubscribed = ['active', 'trialing'].includes(state.data?.status);
-  return { ...state, isSubscribed, reload: load };
+  const status = state.data?.status || 'none';
+  const isSubscribed = ['active', 'trialing'].includes(status);
+  const isTrialing = status === 'trialing';
+  const isExpired = status === 'expired';
+  const trialRemaining = state.data?.trialRemaining ?? 0;
+  const trialEnd = state.data?.trialEnd ?? null;
+
+  return { ...state, status, isSubscribed, isTrialing, isExpired, trialRemaining, trialEnd, reload: load };
 }

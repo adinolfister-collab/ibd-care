@@ -971,6 +971,18 @@ const sq = {
   'guide.intro_eyebrow': 'Fillo këtu',
   'guide.eyebrow_feature': 'Funksioni',
   'guide.eyebrow_premium': 'Premium',
+  'trial.badge': 'Prov\u00eb: {n} d',
+  'trial.tagline': '30 dit\u00eb prov\u00eb falas me t\u00eb gjitha funksionet, pastaj Premium nga 0,99 \u20ac/muaj.',
+  'trial.during_title': 'Prov\u00eb falas: {n} dit\u00eb t\u00eb mbetura',
+  'trial.during_hint': 'Ke qasje n\u00eb t\u00eb gjitha funksionet Premium. Abonohu p\u00ebr t\u00eb vazhduar regjistrin.',
+  'trial.during_desc': 'T\u00eb mbeten {n} dit\u00eb prov\u00eb. Abonohu p\u00ebr t\u00eb mbajtur funksionet Premium.',
+  'trial.expired_title': 'Prova p\u00ebrfundoi',
+  'trial.expired_desc': 'Periudha e prov\u00ebs p\u00ebrfundoi. Abonohu p\u00ebr t\u00eb vazhduar t\u00eb regjistro\u0307sh simptome, vakte, terapi dhe analiza. T\u00eb dh\u00ebnat e tua mbeten t\u00eb lexueshme.',
+  'trial.readonly_hint': 'Prova p\u00ebrfundoi \u2014 abonohu p\u00ebr t\u00eb shtuar regjistrime',
+  'trial.cta_subscribe': 'Abonohu tani',
+  'premium.play_billing_note': 'Pagesa menaxhuar nga Google Play.',
+  'premium.web_checkout_note': 'Pages\u00eb e sigurt n\u00eb web.',
+  'premium.subtitle': '30 dit\u00eb prov\u00eb falas me t\u00eb gjitha funksionet, pastaj Premium nga 0,99 \u20ac/muaj.',
 };
 
 export default sq;

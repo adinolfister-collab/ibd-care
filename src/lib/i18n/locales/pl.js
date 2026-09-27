@@ -1224,6 +1224,18 @@ const pl = {
   'guide.intro_eyebrow': 'Zacznij tutaj',
   'guide.eyebrow_feature': 'Funkcja',
   'guide.eyebrow_premium': 'Premium',
+  'trial.badge': 'Pr\u00f3ba: {n} d',
+  'trial.tagline': '30 dni darmowej wersji pr\u00f3bnej ze wszystkimi funkcjami, potem Premium od 0,99 \u20ac/mies.',
+  'trial.during_title': 'Wersja pr\u00f3bna: pozosta\u0142o {n} dni',
+  'trial.during_hint': 'Masz dost\u0119p do wszystkich funkcji Premium. Subskrybuj, aby kontynuowa\u0107 wpisy.',
+  'trial.during_desc': 'Zosta\u0142o Ci {n} dni wersji pr\u00f3bnej. Subskrybuj, aby zachowa\u0107 funkcje Premium.',
+  'trial.expired_title': 'Wersja pr\u00f3bna wygas\u0142a',
+  'trial.expired_desc': 'Tw\u00f3j okres pr\u00f3bny zako\u0144czy\u0142 si\u0119. Subskrybuj, aby nadal zapisywa\u0107 objawy, posi\u0142ki, terapie i badania. Twoje dane pozostaj\u0105 do wgl\u0105du.',
+  'trial.readonly_hint': 'Wersja pr\u00f3bna wygas\u0142a \u2014 subskrybuj, aby dodawa\u0107 wpisy',
+  'trial.cta_subscribe': 'Subskrybuj teraz',
+  'premium.play_billing_note': 'P\u0142atno\u015b\u0107 przez Google Play.',
+  'premium.web_checkout_note': 'Bezpieczna p\u0142atno\u015b\u0107 przez web.',
+  'premium.subtitle': '30 dni darmowej wersji pr\u00f3bnej ze wszystkimi funkcjami, potem Premium od 0,99 \u20ac/mies.',
 };
 
 export default pl;

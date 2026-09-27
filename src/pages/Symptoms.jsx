@@ -6,7 +6,9 @@ import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
 import { guestSymptoms } from '@/lib/guestEntries';
-import { useRegisterGate } from '@/hooks/useRegisterGate';
+import { useWriteGuard } from '@/hooks/useWriteGuard';
+import ReadonlyBanner from '@/components/ReadonlyBanner';
+import PremiumPaywall from '@/components/PremiumPaywall';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
@@ -46,7 +48,7 @@ export default function Symptoms() {
   const { t, lang } = useI18n();
   const { toast } = useToast();
   const { isAuthenticated, authChecked } = useAuth();
-  const gate = useRegisterGate();
+  const { guard, showPaywall, setShowPaywall } = useWriteGuard();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -81,18 +83,18 @@ export default function Symptoms() {
   }, [isAuthenticated, authChecked]);
 
   const openNew = () => {
-    if (!gate()) return;
+    if (!guard()) return;
     setEditing({ entry_date: todayStr() });
     setOpen(true);
   };
   const openEdit = (item) => {
-    if (!gate()) return;
+    if (!guard()) return;
     setEditing(item);
     setOpen(true);
   };
 
   const handleSubmit = (data) => {
-    if (!gate()) return;
+    if (!guard()) return;
     setOpen(false);
     const payload = { ...data, pain_level: data.pain_level ?? 0, fatigue_level: data.fatigue_level ?? 0 };
     if (editing?.id) {
@@ -117,7 +119,7 @@ export default function Symptoms() {
   };
 
   const handleDelete = async (id) => {
-    if (!gate()) return;
+    if (!guard()) return;
     await base44.entities.SymptomEntry.delete(id);
     load();
   };
@@ -144,6 +146,7 @@ export default function Symptoms() {
           </div>
         }
       />
+      <ReadonlyBanner />
       <PageEditorial pageKey="symptoms" />
       <MagazineEssay theme="sintomi" number="01" eyebrow={t('symptoms.magazine_eyebrow')} title={t('symptoms.magazine_title')}>
       {authChecked && !isAuthenticated && <GuestBanner />}
@@ -192,6 +195,7 @@ export default function Symptoms() {
         onSubmit={handleSubmit}
       />
       <EditorialBlock sectionKey="symptoms_journal" align="left" />
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </AppLayout>
   );
 }

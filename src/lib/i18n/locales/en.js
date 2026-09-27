@@ -1202,6 +1202,18 @@ const en = {
   'community.board_title': 'The board',
   'meds.cal.skipped_abbr': 'sk.',
   'assistant.guest_hint': 'Log in or sign up to chat with the AI assistant.',
+  'trial.badge': 'Trial: {n} d',
+  'trial.tagline': '30-day free trial with all features, then Premium from $0.99/mo. Cancel anytime.',
+  'trial.during_title': 'Free trial: {n} days left',
+  'trial.during_hint': 'You have access to all Premium features. Subscribe to keep recording after it ends.',
+  'trial.during_desc': 'You still have {n} days of trial with all Premium features. Subscribe to keep them after it ends.',
+  'trial.expired_title': 'Trial expired',
+  'trial.expired_desc': 'Your free trial has ended. Subscribe to keep logging symptoms, meals, therapies and exams. Your data stays readable.',
+  'trial.readonly_hint': 'Trial expired — subscribe to add new entries',
+  'trial.cta_subscribe': 'Subscribe now',
+  'premium.play_billing_note': 'Payment handled by Google Play. Cancel anytime.',
+  'premium.web_checkout_note': 'Secure web checkout. Cancel anytime.',
+  'premium.subtitle': '30-day free trial with all features, then Premium from $0.99/mo. Cancel anytime.',
 };
 
 export default en;

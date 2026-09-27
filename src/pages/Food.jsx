@@ -12,7 +12,9 @@ import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
 import { guestFoods } from '@/lib/guestEntries';
-import { useRegisterGate } from '@/hooks/useRegisterGate';
+import { useWriteGuard } from '@/hooks/useWriteGuard';
+import ReadonlyBanner from '@/components/ReadonlyBanner';
+import PremiumPaywall from '@/components/PremiumPaywall';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
@@ -37,7 +39,7 @@ export default function Food() {
   const { t, lang } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated, authChecked } = useAuth();
-  const gate = useRegisterGate();
+  const { guard, showPaywall, setShowPaywall } = useWriteGuard();
   const isAdmin = user?.role === 'admin';
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,16 +98,16 @@ export default function Food() {
     loadCatalog();
   }, [isAuthenticated, authChecked]);
 
-  const openNew = () => { if (!gate()) return; setEditing({ entry_date: todayStr(), tolerated: true, items: [] }); setOpen(true); };
+  const openNew = () => { if (!guard()) return; setEditing({ entry_date: todayStr(), tolerated: true, items: [] }); setOpen(true); };
   const openEdit = (it) => {
-    if (!gate()) return;
+    if (!guard()) return;
     const sel = Array.isArray(it.items) && it.items.length ? it.items : parseLegacyFoods(it.foods);
     setEditing({ ...it, items: sel, tolerated: it.tolerated ?? true });
     setOpen(true);
   };
 
   const handleSubmit = (data) => {
-    if (!gate()) return;
+    if (!guard()) return;
     setOpen(false);
     const sel = Array.isArray(data.items) ? data.items : [];
     const payload = { ...data, items: sel, foods: serializeItems(sel) || data.foods || '' };
@@ -128,7 +130,7 @@ export default function Food() {
     }
   };
   const handleDelete = async (id) => {
-    if (!gate()) return;
+    if (!guard()) return;
     await base44.entities.FoodEntry.delete(id);
     load();
   };
@@ -164,6 +166,7 @@ export default function Food() {
           </div>
         }
       />
+      <ReadonlyBanner />
       <PageEditorial pageKey="food" />
       <MagazineEssay theme="alimentazione" number="01" eyebrow={t('food.magazine_eyebrow')} title={t('food.magazine_title')}>
       <div className="mb-6">
@@ -272,6 +275,7 @@ export default function Food() {
         />
       )}
       <EditorialBlock sectionKey="food_reactions" align="right" />
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </AppLayout>
   );
 }

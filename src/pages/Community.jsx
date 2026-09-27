@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import CommunityBoard from '@/components/community/CommunityBoard';
 import CommunityDm from '@/components/community/CommunityDm';
 import NotificationsBell from '@/components/community/NotificationsBell';
+import ReadonlyBanner from '@/components/ReadonlyBanner';
 
 export default function Community() {
   const { t } = useI18n();
@@ -66,6 +67,7 @@ export default function Community() {
           </div>
         }
       />
+      <ReadonlyBanner />
       <PageEditorial pageKey="community" />
       <CommunityFoundersRanking />
 

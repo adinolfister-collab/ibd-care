@@ -4,7 +4,9 @@ import { Plus, Pill, Trash2, Pencil, Clock, CalendarDays } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
-import { useRegisterGate } from '@/hooks/useRegisterGate';
+import { useWriteGuard } from '@/hooks/useWriteGuard';
+import ReadonlyBanner from '@/components/ReadonlyBanner';
+import PremiumPaywall from '@/components/PremiumPaywall';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -44,7 +46,7 @@ export default function Meds() {
   const { t } = useI18n();
   const { isAuthenticated, authChecked } = useAuth();
   const navigate = useNavigate();
-  const gate = useRegisterGate();
+  const { guard, showPaywall, setShowPaywall } = useWriteGuard();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -61,16 +63,16 @@ export default function Meds() {
   };
   useEffect(() => { load(); }, [isAuthenticated, authChecked]);
 
-  const openNew = () => { if (!gate()) return; setEditing({ active: true }); setOpen(true); };
-  const openEdit = (item) => { if (!gate()) return; setEditing(item); setOpen(true); };
+  const openNew = () => { if (!guard()) return; setEditing({ active: true }); setOpen(true); };
+  const openEdit = (item) => { if (!guard()) return; setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
-    if (!gate()) return;
+    if (!guard()) return;
     if (editing?.id) await base44.entities.Medication.update(editing.id, data);
     else await base44.entities.Medication.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { if (!gate()) return; await base44.entities.Medication.delete(id); load(); };
+  const handleDelete = async (id) => { if (!guard()) return; await base44.entities.Medication.delete(id); load(); };
 
   return (
     <AppLayout>
@@ -88,6 +90,7 @@ export default function Meds() {
           </div>
         }
       />
+      <ReadonlyBanner />
       <PageEditorial pageKey="meds" />
       <MagazineEssay theme="terapie" number="01" eyebrow={t('meds.magazine_eyebrow')} title={t('meds.magazine_title')}>
       {authChecked && !isAuthenticated && <GuestBanner />}
@@ -140,6 +143,7 @@ export default function Meds() {
         onSubmit={handleSubmit}
       />
       <EditorialBlock sectionKey="meds_adherence" align="left" />
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </AppLayout>
   );
 }

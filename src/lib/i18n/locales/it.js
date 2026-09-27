@@ -1202,6 +1202,18 @@ const it = {
   'community.board_title': 'La board',
   'meds.cal.skipped_abbr': 'salt.',
   'assistant.guest_hint': 'Accedi o registrati per conversare con l\'assistente AI.',
+  'trial.badge': 'Prova: {n} gg',
+  'trial.tagline': '30 giorni di prova gratuita con tutte le funzioni, poi Premium da €0,99/mese. Disdici quando vuoi.',
+  'trial.during_title': 'Prova gratuita: {n} giorni rimanenti',
+  'trial.during_hint': 'Hai accesso a tutte le funzioni Premium. Al termine, abbonati per continuare a registrare.',
+  'trial.during_desc': 'Hai ancora {n} giorni di prova con tutte le funzioni Premium. Abbonati per mantenerle dopo la scadenza.',
+  'trial.expired_title': 'Prova scaduta',
+  'trial.expired_desc': 'Il tuo periodo di prova è terminato. Abbonati per continuare a registrare sintomi, pasti, terapie ed esami. I tuoi dati restano consultabili in sola lettura.',
+  'trial.readonly_hint': 'Prova scaduta — abbonati per registrare nuovi dati',
+  'trial.cta_subscribe': 'Abbonati ora',
+  'premium.play_billing_note': 'Pagamento gestito da Google Play. Cancella in qualsiasi momento.',
+  'premium.web_checkout_note': 'Pagamento sicuro via web. Cancella in qualsiasi momento.',
+  'premium.subtitle': '30 giorni di prova gratuita con tutte le funzioni, poi Premium da €0,99/mese. Disdici quando vuoi.',
 };
 
 export default it;

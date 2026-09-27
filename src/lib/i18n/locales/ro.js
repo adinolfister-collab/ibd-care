@@ -971,6 +971,18 @@ const ro = {
   'guide.intro_eyebrow': 'Începe aici',
   'guide.eyebrow_feature': 'Funcție',
   'guide.eyebrow_premium': 'Premium',
+  'trial.badge': 'Prob\u0103: {n} z',
+  'trial.tagline': '30 de zile de prob\u0103 gratuit\u0103 cu toate func\u021biile, apoi Premium de la 0,99 \u20ac/lun\u0103.',
+  'trial.during_title': 'Prob\u0103 gratuit\u0103: {n} zile r\u0103mase',
+  'trial.during_hint': 'Ave\u021bi acces la toate func\u021biile Premium. Abona\u021bi-v\u0103 pentru a continua \u00eenregistr\u0103rile.',
+  'trial.during_desc': 'Mai ave\u021bi {n} zile de prob\u0103. Abona\u021bi-v\u0103 pentru a p\u0103stra func\u021biile Premium.',
+  'trial.expired_title': 'Proba expirat\u0103',
+  'trial.expired_desc': 'Perioada de prob\u0103 s-a \u00eencheiat. Abona\u021bi-v\u0103 pentru a continua s\u0103 \u00eenregistra\u021bi simptome, mese, terapii \u0219i examene. Datele r\u0103m\u00e2n vizibile.',
+  'trial.readonly_hint': 'Prob\u0103 expirat\u0103 \u2014 abona\u021bi-v\u0103 pentru ad\u0103ug\u0103ri',
+  'trial.cta_subscribe': 'Abona\u021bi-v\u0103 acum',
+  'premium.play_billing_note': 'Plat\u0103 gestionat\u0103 de Google Play.',
+  'premium.web_checkout_note': 'Plat\u0103 securizat\u0103 pe web.',
+  'premium.subtitle': '30 de zile de prob\u0103 gratuit\u0103 cu toate func\u021biile, apoi Premium de la 0,99 \u20ac/lun\u0103.',
 };
 
 export default ro;

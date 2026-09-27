@@ -1043,6 +1043,18 @@ const fr = {
   'guide.intro_eyebrow': 'Commencez ici',
   'guide.eyebrow_feature': 'Fonction',
   'guide.eyebrow_premium': 'Premium',
+  'trial.badge': 'Essai : {n} j',
+  'trial.tagline': '30 jours d\u2019essai gratuit avec toutes les fonctions, puis Premium d\u00e8s 0,99 \u20ac/mois. Annulez \u00e0 tout moment.',
+  'trial.during_title': 'Essai gratuit : {n} jours restants',
+  'trial.during_hint': 'Vous avez acc\u00e8s \u00e0 toutes les fonctions Premium. Abonnez-vous pour continuer apr\u00e8s.',
+  'trial.during_desc': 'Il vous reste {n} jours d\u2019essai avec toutes les fonctions Premium. Abonnez-vous pour les conserver.',
+  'trial.expired_title': 'Essai expir\u00e9',
+  'trial.expired_desc': 'Votre p\u00e9riode d\u2019essai est termin\u00e9e. Abonnez-vous pour continuer \u00e0 enregistrer sympt\u00f4mes, repas, th\u00e9rapies et examens. Vos donn\u00e9es restent consultables.',
+  'trial.readonly_hint': 'Essai expir\u00e9 \u2014 abonnez-vous pour ajouter des donn\u00e9es',
+  'trial.cta_subscribe': 'Abonnez-vous',
+  'premium.play_billing_note': 'Paiement g\u00e9r\u00e9 par Google Play. Annulez \u00e0 tout moment.',
+  'premium.web_checkout_note': 'Paiement s\u00e9curis\u00e9 sur le web. Annulez \u00e0 tout moment.',
+  'premium.subtitle': '30 jours d\u2019essai gratuit avec toutes les fonctions, puis Premium d\u00e8s 0,99 \u20ac/mois. Annulez \u00e0 tout moment.',
 };
 
 export default fr;
