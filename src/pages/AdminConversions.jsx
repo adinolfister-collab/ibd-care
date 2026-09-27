@@ -17,6 +17,7 @@ import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import ReportTable from '@/components/admin/ReportTable';
+import TrialUsersTable from '@/components/admin/TrialUsersTable';
 import { cn } from '@/lib/utils';
 
 const RANGES = [
@@ -371,6 +372,11 @@ export default function AdminConversions() {
           )}
         </CardContent>
       </Card>
+
+      {/* Utenti & Trial */}
+      <div className="mt-6">
+        <TrialUsersTable />
+      </div>
     </AppLayout>
   );
 }
