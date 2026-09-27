@@ -41,7 +41,7 @@ export default function MedicationCalendarPage() {
   useEffect(() => { load(); }, [load]);
 
   const onMark = async (med, day) => {
-    if (!guard()) return;
+    if (!guard('dose_write')) return;
     await base44.entities.MedicationDose.create({
       medication_id: med.id,
       medication_name: med.name,
@@ -53,7 +53,7 @@ export default function MedicationCalendarPage() {
     load();
   };
   const onSkip = async (med, day) => {
-    if (!guard()) return;
+    if (!guard('dose_write')) return;
     await base44.entities.MedicationDose.create({
       medication_id: med.id,
       medication_name: med.name,
@@ -64,7 +64,7 @@ export default function MedicationCalendarPage() {
     load();
   };
   const onRemove = async (dose) => {
-    if (!guard()) return;
+    if (!guard('dose_write')) return;
     await base44.entities.MedicationDose.delete(dose.id);
     load();
   };

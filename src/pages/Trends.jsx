@@ -68,7 +68,7 @@ function TrendsTooltip({ active, payload, field, color, label, t, overlay }) {
 
 export default function Trends() {
   const { t } = useI18n();
-  const { isSubscribed } = useSubscription();
+  const { isExpired } = useSubscription();
   const { isAuthenticated } = useAuth();
   const [entries, setEntries] = useState(null);
   const [foods, setFoods] = useState([]);
@@ -252,7 +252,7 @@ export default function Trends() {
           {t('trends.overlay')}
         </button>
         <div className="flex items-center gap-2">
-          {isFreeView && !isSubscribed && <ReadonlyBadge />}
+          {isFreeView && isExpired && <ReadonlyBadge />}
           <DoctorSummaryExport range={rangeDays ?? 90} />
         </div>
       </div>

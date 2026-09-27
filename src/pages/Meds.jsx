@@ -64,16 +64,16 @@ export default function Meds() {
   };
   useEffect(() => { load(); }, [isAuthenticated, authChecked]);
 
-  const openNew = () => { if (!guard()) return; setEditing({ active: true }); setOpen(true); };
-  const openEdit = (item) => { if (!guard()) return; setEditing(item); setOpen(true); };
+  const openNew = () => { if (!guard('med_write')) return; setEditing({ active: true }); setOpen(true); };
+  const openEdit = (item) => { if (!guard('med_write')) return; setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
-    if (!guard()) return;
+    if (!guard('med_write')) return;
     if (editing?.id) await base44.entities.Medication.update(editing.id, data);
     else await base44.entities.Medication.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { if (!guard()) return; await base44.entities.Medication.delete(id); load(); };
+  const handleDelete = async (id) => { if (!guard('med_write')) return; await base44.entities.Medication.delete(id); load(); };
 
   return (
     <AppLayout>

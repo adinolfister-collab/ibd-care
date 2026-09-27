@@ -26,7 +26,7 @@ const TOP = 12;
 
 export default function Correlazioni() {
   const { t, lang } = useI18n();
-  const { isSubscribed } = useSubscription();
+  const { isExpired } = useSubscription();
   const { isAuthenticated } = useAuth();
   const [foods, setFoods] = useState([]);
   const [entries, setEntries] = useState([]);
@@ -99,7 +99,7 @@ export default function Correlazioni() {
 
       <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
         <ChartRangeSelector value={rangeKey} onChange={setRangeKey} feature="correlazioni_range" className="mb-0" />
-        {rangeKey === FREE_RANGE_KEY && !isSubscribed && <ReadonlyBadge />}
+        {rangeKey === FREE_RANGE_KEY && isExpired && <ReadonlyBadge />}
       </div>
 
       <div className="space-y-6 md:space-y-8">

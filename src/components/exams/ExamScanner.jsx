@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import { useGuestSaveGate } from '@/hooks/useGuestSaveGate';
+import { trackTrialFeature } from '@/lib/trialTracking';
 import SavePaywall from '@/components/SavePaywall';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -31,6 +32,7 @@ export default function ExamScanner({ onSaved, initialData }) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!isAuthenticated && !attemptSave('cloud')) return;
+    trackTrialFeature('exam_scan', 'used');
     setError(null);
     setDuplicate(null);
     setScanning(true);

@@ -83,18 +83,18 @@ export default function Symptoms() {
   }, [isAuthenticated, authChecked]);
 
   const openNew = () => {
-    if (!guard()) return;
+    if (!guard('symptom_write')) return;
     setEditing({ entry_date: todayStr() });
     setOpen(true);
   };
   const openEdit = (item) => {
-    if (!guard()) return;
+    if (!guard('symptom_write')) return;
     setEditing(item);
     setOpen(true);
   };
 
   const handleSubmit = (data) => {
-    if (!guard()) return;
+    if (!guard('symptom_write')) return;
     setOpen(false);
     const payload = { ...data, pain_level: data.pain_level ?? 0, fatigue_level: data.fatigue_level ?? 0 };
     if (editing?.id) {
@@ -119,7 +119,7 @@ export default function Symptoms() {
   };
 
   const handleDelete = async (id) => {
-    if (!guard()) return;
+    if (!guard('symptom_write')) return;
     await base44.entities.SymptomEntry.delete(id);
     load();
   };

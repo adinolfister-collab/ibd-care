@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Bot, Loader2, Send, Sparkles, LogIn, Volume2, VolumeX } from 'lucide-react';
+import { Loader2, Send, Sparkles, Volume2, VolumeX } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -8,12 +7,12 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import CaryAvatar from '@/components/CaryAvatar';
 import MicToggle from '@/components/MicToggle';
-import PremiumLockBadge from '@/components/PremiumLockBadge';
+import GuestSignupCard from '@/components/GuestSignupCard';
 import PremiumPaywall from '@/components/PremiumPaywall';
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import { trackTrialFeature } from '@/lib/trialTracking';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export default function Assistant() {
@@ -25,21 +24,14 @@ export default function Assistant() {
   const [error, setError] = useState(false);
   const [sending, setSending] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
-  const [msgCount, setMsgCount] = useState(0);
   const [voiceOn, setVoiceOn] = useState(false);
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { isSubscribed } = useSubscription();
-  const FREE_LIMIT = 3;
   const scrollRef = useRef(null);
   const convRef = useRef(null);
   const taRef = useRef(null);
   const lastSpokenRef = useRef('');
   const sendRef = useRef(null);
-
-  useEffect(() => {
-    const currentMonth = new Date().toISOString().slice(0, 7);
-    setMsgCount(user?.ai_messages_month === currentMonth ? (user.ai_messages_count || 0) : 0);
-  }, [user?.ai_messages_count, user?.ai_messages_month]);
 
   const autoGrow = () => {
     const el = taRef.current;
@@ -101,21 +93,21 @@ export default function Assistant() {
   const send = useCallback(async (content) => {
     const value = (content ?? text).trim();
     if (!value || !conversationId || sending) return;
-    if (!isSubscribed && msgCount >= FREE_LIMIT) { setShowPaywall(true); return; }
+    // Scaduto: paywall immediato al primo messaggio (niente teaser gratuito)
+    if (!isSubscribed) {
+      trackTrialFeature('assistant_msg', 'blocked');
+      setShowPaywall(true);
+      return;
+    }
     setText('');
     setSending(true);
-    if (!isSubscribed) setMsgCount((c) => c + 1);
     try {
       await base44.agents.addMessage(convRef.current, { role: 'user', content: value });
-      if (!isSubscribed) {
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        try { await base44.auth.updateMe({ ai_messages_count: msgCount + 1, ai_messages_month: currentMonth }); } catch (e) { /* non blocking */ }
-      }
+      trackTrialFeature('assistant_msg', 'used');
     } catch (e) {
       setSending(false);
-      if (!isSubscribed) setMsgCount((c) => Math.max(0, c - 1));
     }
-  }, [text, conversationId, sending, isSubscribed, msgCount]);
+  }, [text, conversationId, sending, isSubscribed]);
 
   useEffect(() => { sendRef.current = send; }, [send]);
 
@@ -126,30 +118,13 @@ export default function Assistant() {
 
   const busy = sending && messages[messages.length - 1]?.role !== 'assistant';
 
-  // The AI assistant needs an account to create conversations and track the
-  // free monthly quota — guests are asked to log in first.
+  // Ospite: card morbida di invito alla registrazione (niente lucchetto)
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col min-h-[calc(100vh-7.5rem)]">
         <PageHeader title={t('assistant.title')} subtitle={t('assistant.subtitle')} />
         <PageEditorial pageKey="assistant" compact />
-        <Card className="flex-1 flex flex-col items-center justify-center text-center p-8 rounded-2xl min-h-[420px]">
-          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-            <Bot className="w-7 h-7 text-primary" />
-          </div>
-          <h2 className="font-heading text-xl font-semibold text-primary tracking-tight">{t('assistant.title')}</h2>
-          <p className="text-sm text-muted-foreground mt-2 max-w-sm leading-relaxed">
-            {t('assistant.guest_hint')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-2 mt-6">
-            <Link to="/login">
-              <Button className="rounded-xl h-11"><LogIn className="w-4 h-4 mr-1.5" />{t('auth.login_btn')}</Button>
-            </Link>
-            <Link to="/register">
-              <Button variant="outline" className="rounded-xl h-11">{t('paywall.cta_register')}</Button>
-            </Link>
-          </div>
-        </Card>
+        <GuestSignupCard feature="assistant_msg" className="mt-2" />
       </div>
     );
   }
@@ -161,12 +136,6 @@ export default function Assistant() {
         subtitle={t('assistant.subtitle')}
       />
       <PageEditorial pageKey="assistant" compact />
-
-      {!isSubscribed && (
-        <div className="mb-3">
-          <PremiumLockBadge showLabel />
-        </div>
-      )}
 
       <Card className="flex-1 flex flex-col overflow-hidden rounded-2xl min-h-[420px]">
         {/* Messages */}
@@ -240,15 +209,6 @@ export default function Assistant() {
             </div>
           )}
         </div>
-
-        {/* Free message counter */}
-        {!isSubscribed && (
-          <div className="px-4 py-2 text-center border-t border-border bg-accent/30">
-            <span className="text-xs text-muted-foreground">
-              {msgCount < FREE_LIMIT ? t('assistant.free_count').replace('{n}', String(msgCount)) : t('assistant.limit_reached')}
-            </span>
-          </div>
-        )}
 
         {/* Input */}
         <div className="border-t border-border p-4 md:p-5 flex items-end gap-2.5 bg-card">

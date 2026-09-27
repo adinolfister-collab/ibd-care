@@ -26,7 +26,7 @@ const STACK_LIMIT = 5;
 
 export default function MobileBottomNav({ isAuthenticated }) {
   const { t } = useI18n();
-  const { isSubscribed } = useSubscription();
+  const { isExpired } = useSubscription();
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -108,7 +108,7 @@ export default function MobileBottomNav({ isAuthenticated }) {
             >
               <span className="relative">
                 <item.icon className={cn('w-5 h-5', isActive && 'text-primary')} />
-                {(!isSubscribed || user?.role === 'admin') && isPremiumRoute(item.to) && (
+                {isExpired && isPremiumRoute(item.to) && (
                   <PremiumLockBadge size="nav" className="absolute -top-1 -right-1.5 bg-card rounded-full p-0.5 box-content" />
                 )}
               </span>

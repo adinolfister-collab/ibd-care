@@ -61,7 +61,7 @@ const ADMIN_ITEMS = [
   { to: '/shop/admin', key: 'shop.admin_nav', icon: ShoppingBag },
 ];
 
-function MenuCard({ item, t, isSubscribed, isAdmin }) {
+function MenuCard({ item, t, isExpired }) {
   return (
     <Link
       to={item.to}
@@ -80,14 +80,14 @@ function MenuCard({ item, t, isSubscribed, isAdmin }) {
       <span className={cn('flex-1 min-w-0 font-heading text-base md:text-lg font-medium tracking-tight truncate', item.founder ? 'text-terracotta' : 'text-foreground')}>
         {t(item.key)}
       </span>
-      {(!isSubscribed || isAdmin) && isPremiumRoute(item.to) && <PremiumLockBadge size="nav" className="ml-1" />}
+      {isExpired && isPremiumRoute(item.to) && <PremiumLockBadge size="nav" className="ml-1" />}
       {item.founder && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-terracotta text-terracotta-foreground px-1.5 py-0.5 rounded-full shrink-0">Founder</span>}
       {item.admin && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-primary/15 text-primary px-1.5 py-0.5 rounded-full shrink-0">Admin</span>}
     </Link>
   );
 }
 
-function Group({ titleKey, items, t, isSubscribed, isAdmin }) {
+function Group({ titleKey, items, t, isExpired }) {
   if (!items.length) return null;
   return (
     <div>
@@ -99,7 +99,7 @@ function Group({ titleKey, items, t, isSubscribed, isAdmin }) {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {items.map((item) => (
-          <MenuCard key={item.to} item={item} t={t} isSubscribed={isSubscribed} isAdmin={isAdmin} />
+          <MenuCard key={item.to} item={item} t={t} isExpired={isExpired} />
         ))}
       </div>
     </div>
@@ -109,7 +109,7 @@ function Group({ titleKey, items, t, isSubscribed, isAdmin }) {
 export default function SiteMenu() {
   const { t } = useI18n();
   const { isAuthenticated, user } = useAuth();
-  const { isSubscribed } = useSubscription();
+  const { isExpired } = useSubscription();
   const isAdmin = user?.role === 'admin';
 
   const accountItems = isAuthenticated
@@ -132,13 +132,13 @@ export default function SiteMenu() {
       </div>
 
       <div className="space-y-7">
-        <Group titleKey="nav.group_diario" items={DIARIO} t={t} isSubscribed={isSubscribed} isAdmin={isAdmin} />
-        <Group titleKey="nav.group_analisi" items={ANALISI} t={t} isSubscribed={isSubscribed} isAdmin={isAdmin} />
-        <Group titleKey="nav.group_community" items={COMMUNITY} t={t} isSubscribed={isSubscribed} isAdmin={isAdmin} />
-        <Group titleKey="nav.group_risorse" items={RISORSE} t={t} isSubscribed={isSubscribed} isAdmin={isAdmin} />
-        <Group titleKey="nav.group_account" items={accountItems} t={t} isSubscribed={isSubscribed} isAdmin={isAdmin} />
+        <Group titleKey="nav.group_diario" items={DIARIO} t={t} isExpired={isExpired} />
+        <Group titleKey="nav.group_analisi" items={ANALISI} t={t} isExpired={isExpired} />
+        <Group titleKey="nav.group_community" items={COMMUNITY} t={t} isExpired={isExpired} />
+        <Group titleKey="nav.group_risorse" items={RISORSE} t={t} isExpired={isExpired} />
+        <Group titleKey="nav.group_account" items={accountItems} t={t} isExpired={isExpired} />
         {adminItems.length > 0 && (
-          <Group titleKey="nav.group_admin" items={adminItems} t={t} isSubscribed={isSubscribed} isAdmin={isAdmin} />
+          <Group titleKey="nav.group_admin" items={adminItems} t={t} isExpired={isExpired} />
         )}
       </div>
     </section>

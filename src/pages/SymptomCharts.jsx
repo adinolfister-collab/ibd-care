@@ -131,7 +131,7 @@ function MealChartTooltip({ active, payload, t }) {
 
 export default function SymptomCharts() {
   const { t, lang } = useI18n();
-  const { isSubscribed } = useSubscription();
+  const { isExpired } = useSubscription();
   const { isAuthenticated } = useAuth();
   const [entries, setEntries] = useState(null);
   const [foods, setFoods] = useState([]);
@@ -260,7 +260,7 @@ export default function SymptomCharts() {
             {v === 'trend' ? t('symptom_charts.view_trend') : <span className="inline-flex items-center gap-1.5"><Utensils className="w-4 h-4" />{t('symptom_charts.view_correlation')}</span>}
           </button>
         ))}
-        {isFreeView && !isSubscribed && <ReadonlyBadge className="ml-auto" />}
+        {isFreeView && isExpired && <ReadonlyBadge className="ml-auto" />}
       </div>
 
       <ChartRangeSelector value={rangeKey} onChange={setRangeKey} feature="symptom_charts_range" />

@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import { useGuestSaveGate } from '@/hooks/useGuestSaveGate';
+import { trackTrialFeature } from '@/lib/trialTracking';
 import SavePaywall from '@/components/SavePaywall';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -42,6 +43,7 @@ export default function ImportData({ onSaved }) {
     const files = Array.from(fileList || []);
     if (!files.length) return;
     if (!isAuthenticated && !attemptSave('cloud')) return;
+    trackTrialFeature('exam_import', 'used');
     setBusy(true);
     const start = files.map((f) => ({ id: Math.random().toString(36).slice(2), file: f, status: 'scanning' }));
     setJobs((cur) => [...start, ...cur]);

@@ -12,9 +12,11 @@ import ExamCompare from '@/components/exams/ExamCompare';
 import ExamCalendar from '@/components/exams/ExamCalendar';
 import ImportData from '@/components/exams/ImportData';
 import PremiumLockedCard from '@/components/PremiumLockedCard';
+import GuestSignupCard from '@/components/GuestSignupCard';
 import DemoBanner from '@/components/DemoBanner';
 import PremiumPaywall from '@/components/PremiumPaywall';
 import { usePremiumGate } from '@/hooks/usePremiumGate';
+import { trackTrialFeature } from '@/lib/trialTracking';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function Esami() {
@@ -22,7 +24,7 @@ export default function Esami() {
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const gate = useRegisterGate();
-  const { isSubscribed, showPaywall, setShowPaywall } = usePremiumGate();
+  const { isSubscribed, isGuest, showPaywall, setShowPaywall } = usePremiumGate();
   const [tab, setTab] = useState('scan');
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -56,8 +58,10 @@ export default function Esami() {
         <TabsContent value="scan" className="mt-4">
           {isSubscribed ? (
             <ExamScanner onSaved={handleSaved} />
+          ) : isGuest ? (
+            <GuestSignupCard feature="exam_scan" />
           ) : (
-            <PremiumLockedCard onUnlock={openPaywall} />
+            <PremiumLockedCard onUnlock={() => { trackTrialFeature('exam_scan', 'blocked'); openPaywall(); }} />
           )}
         </TabsContent>
         <TabsContent value="timeline" className="mt-4">
@@ -72,8 +76,10 @@ export default function Esami() {
         <TabsContent value="import" className="mt-4">
           {isSubscribed ? (
             <ImportData onSaved={handleSaved} />
+          ) : isGuest ? (
+            <GuestSignupCard feature="exam_import" />
           ) : (
-            <PremiumLockedCard onUnlock={openPaywall} />
+            <PremiumLockedCard onUnlock={() => { trackTrialFeature('exam_import', 'blocked'); openPaywall(); }} />
           )}
         </TabsContent>
       </Tabs>

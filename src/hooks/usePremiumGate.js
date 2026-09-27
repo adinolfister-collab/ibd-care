@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useAuth } from '@/lib/AuthContext';
 
 /**
  * Gate for premium (subscription-gated) actions. After the 30-day trial
@@ -8,7 +9,9 @@ import { useSubscription } from '@/hooks/useSubscription';
  * both "none" (no trial yet / web visitor) and "expired" states.
  */
 export function usePremiumGate() {
-  const { isSubscribed, loading, status } = useSubscription();
+  const { isSubscribed, loading, status, isExpired, isTrialing } = useSubscription();
+  const { isAuthenticated } = useAuth();
+  const isGuest = !isAuthenticated;
   const [showPaywall, setShowPaywall] = useState(false);
 
   const requirePremium = useCallback(() => {
@@ -17,7 +20,7 @@ export function usePremiumGate() {
     return false;
   }, [isSubscribed]);
 
-  return { isSubscribed, loading, status, requirePremium, showPaywall, setShowPaywall };
+  return { isSubscribed, loading, status, isExpired, isTrialing, isGuest, requirePremium, showPaywall, setShowPaywall };
 }
 
 /**
@@ -26,8 +29,10 @@ export function usePremiumGate() {
  * and surface a read-only banner when the trial has expired.
  */
 export function useWriteGate() {
-  const { isSubscribed, loading, status } = useSubscription();
+  const { isSubscribed, loading, status, isExpired } = useSubscription();
+  const { isAuthenticated } = useAuth();
   const canWrite = loading ? true : isSubscribed;
   const isReadOnly = !loading && !isSubscribed && status === 'expired';
-  return { canWrite, isReadOnly, loading, status };
+  const isGuest = !isAuthenticated;
+  return { canWrite, isReadOnly, isGuest, isExpired, loading, status };
 }

@@ -29,7 +29,7 @@ function todayStr() { return new Date().toISOString().slice(0, 10); }
 
 export default function Summary() {
   const { t } = useI18n();
-  const { isSubscribed } = useSubscription();
+  const { isExpired } = useSubscription();
   const [from, setFrom] = useState(defaultFrom());
   const [to, setTo] = useState(todayStr());
   const [inc, setInc] = useState({ symptoms: true, food: true, meds: true, records: true });
@@ -196,7 +196,7 @@ export default function Summary() {
               <Textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className="mt-1.5 rounded-xl" placeholder={t('summary.note_placeholder')} />
             </div>
 
-            {!isSubscribed && (
+            {isExpired && (
               <p className="text-sm font-medium flex items-center gap-1.5 text-terracotta">
                 <PremiumLockBadge /> {t('summary.pdf_locked')}
               </p>

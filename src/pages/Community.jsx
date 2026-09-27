@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { MessagesSquare, MessageSquare } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -11,6 +11,7 @@ import MagazineEssay from '@/components/MagazineEssay';
 import CommunityFoundersRanking from '@/components/CommunityFoundersRanking';
 import PageShareButtons from '@/components/PageShareButtons';
 import AppLayout from '@/components/AppLayout';
+import GuestSignupCard from '@/components/GuestSignupCard';
 import { cn } from '@/lib/utils';
 import CommunityBoard from '@/components/community/CommunityBoard';
 import CommunityDm from '@/components/community/CommunityDm';
@@ -100,13 +101,7 @@ export default function Community() {
       <MagazineEssay theme="community" number="01" eyebrow={tab === 'board' ? t('community.eyebrow_board') : t('community.eyebrow_dm')} title={tab === 'board' ? t('community.board_title') : t('community.dm_title')}>
         {tab === 'board' ? (
           authChecked && !isAuthenticated ? (
-            <div className="rounded-xl bg-accent/50 border border-border px-4 py-6 text-center">
-              <p className="text-sm text-muted-foreground mb-3">{t('community.login_to_post')}</p>
-              <div className="flex justify-center gap-2">
-                <Link to="/login" className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">{t('community.login_btn')}</Link>
-                <Link to="/register" className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-accent transition-colors">{t('community.register_btn')}</Link>
-              </div>
-            </div>
+            <GuestSignupCard feature="community_post" />
           ) : me ? (
             <CommunityBoard me={me} isAdmin={isAdmin} onDmUser={handleDmUser} />
           ) : (
@@ -114,12 +109,7 @@ export default function Community() {
           )
         ) : (
           authChecked && !isAuthenticated ? (
-            <div className="rounded-xl bg-accent/50 border border-border px-4 py-6 text-center">
-              <p className="text-sm text-muted-foreground mb-3">{t('community.login_to_post')}</p>
-              <div className="flex justify-center gap-2">
-                <Link to="/login" className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">{t('community.login_btn')}</Link>
-              </div>
-            </div>
+            <GuestSignupCard feature="dm" />
           ) : me ? (
             <CommunityDm me={me} pendingUser={pendingUser} onPendingHandled={() => setPendingUser(null)} />
           ) : (

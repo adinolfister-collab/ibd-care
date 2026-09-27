@@ -19,7 +19,7 @@ function monthName(m, lang) {
 
 export default function MonthlyReport() {
   const { t, lang } = useI18n();
-  const { isSubscribed } = useSubscription();
+  const { isExpired } = useSubscription();
   const [month, setMonth] = useState(curMonth());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -155,7 +155,7 @@ export default function MonthlyReport() {
           <div>
             <p className="font-semibold flex items-center gap-1.5">
               {t('monthly_report.card_title')}
-              {!isSubscribed && <PremiumLockBadge />}
+              {isExpired && <PremiumLockBadge />}
             </p>
             <p className="text-sm text-muted-foreground leading-snug">{t('monthly_report.card_desc')}</p>
           </div>

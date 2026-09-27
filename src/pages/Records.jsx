@@ -82,7 +82,7 @@ export default function Records() {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
-    if (!guard()) return;
+    if (!guard('record_write')) return;
     const res = await scan(file);
     if (!res) return;
     if (res.kind === 'medication') {
@@ -117,16 +117,16 @@ export default function Records() {
   const hasFilters = !!(search || typeFilter !== 'all' || dateFrom || dateTo || locFilter);
   const resetFilters = () => { setSearch(''); setTypeFilter('all'); setDateFrom(''); setDateTo(''); setLocFilter(''); };
 
-  const openNew = () => { if (!guard()) return; setEditing({ record_date: todayStr() }); setOpen(true); };
-  const openEdit = (item) => { if (!guard()) return; setEditing(item); setOpen(true); };
+  const openNew = () => { if (!guard('record_write')) return; setEditing({ record_date: todayStr() }); setOpen(true); };
+  const openEdit = (item) => { if (!guard('record_write')) return; setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
-    if (!guard()) return;
+    if (!guard('record_write')) return;
     if (editing?.id) await base44.entities.MedicalRecord.update(editing.id, data);
     else await base44.entities.MedicalRecord.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { if (!guard()) return; await base44.entities.MedicalRecord.delete(id); load(); };
+  const handleDelete = async (id) => { if (!guard('record_write')) return; await base44.entities.MedicalRecord.delete(id); load(); };
 
   return (
     <AppLayout>

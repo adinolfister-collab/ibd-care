@@ -95,7 +95,7 @@ export default function CommunityBoard({ me, isAdmin, onDmUser }) {
   };
 
   const post = async (content, mentions, shared, parentId = null, cat = category) => {
-    if (!guard()) return;
+    if (!guard('community_post')) return;
     const text = (content || '').trim();
     if ((!text && !shared) || posting) return;
     if (containsBanned(text)) {

@@ -98,16 +98,16 @@ export default function Food() {
     loadCatalog();
   }, [isAuthenticated, authChecked]);
 
-  const openNew = () => { if (!guard()) return; setEditing({ entry_date: todayStr(), tolerated: true, items: [] }); setOpen(true); };
+  const openNew = () => { if (!guard('food_write')) return; setEditing({ entry_date: todayStr(), tolerated: true, items: [] }); setOpen(true); };
   const openEdit = (it) => {
-    if (!guard()) return;
+    if (!guard('food_write')) return;
     const sel = Array.isArray(it.items) && it.items.length ? it.items : parseLegacyFoods(it.foods);
     setEditing({ ...it, items: sel, tolerated: it.tolerated ?? true });
     setOpen(true);
   };
 
   const handleSubmit = (data) => {
-    if (!guard()) return;
+    if (!guard('food_write')) return;
     setOpen(false);
     const sel = Array.isArray(data.items) ? data.items : [];
     const payload = { ...data, items: sel, foods: serializeItems(sel) || data.foods || '' };
@@ -130,7 +130,7 @@ export default function Food() {
     }
   };
   const handleDelete = async (id) => {
-    if (!guard()) return;
+    if (!guard('food_write')) return;
     await base44.entities.FoodEntry.delete(id);
     load();
   };
