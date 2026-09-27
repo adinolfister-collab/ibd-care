@@ -4,12 +4,14 @@ import { Plus, Pill, Trash2, Pencil, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
+import { useRegisterGate } from '@/hooks/useRegisterGate';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import EmptyState from '@/components/EmptyState';
+import GuestBanner from '@/components/GuestBanner';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -42,6 +44,7 @@ export default function Meds() {
   const { t } = useI18n();
   const { isAuthenticated, authChecked } = useAuth();
   const navigate = useNavigate();
+  const gate = useRegisterGate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -58,16 +61,16 @@ export default function Meds() {
   };
   useEffect(() => { load(); }, [isAuthenticated, authChecked]);
 
-  const openNew = () => { setEditing({ active: true }); setOpen(true); };
-  const openEdit = (item) => { setEditing(item); setOpen(true); };
+  const openNew = () => { if (!gate()) return; setEditing({ active: true }); setOpen(true); };
+  const openEdit = (item) => { if (!gate()) return; setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
-    if (!isAuthenticated) { navigate('/login'); return; }
+    if (!gate()) return;
     if (editing?.id) await base44.entities.Medication.update(editing.id, data);
     else await base44.entities.Medication.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { if (!isAuthenticated) { navigate('/login'); return; } await base44.entities.Medication.delete(id); load(); };
+  const handleDelete = async (id) => { if (!gate()) return; await base44.entities.Medication.delete(id); load(); };
 
   return (
     <AppLayout>
@@ -78,6 +81,7 @@ export default function Meds() {
       />
       <PageEditorial pageKey="meds" />
       <MagazineEssay theme="terapie" number="01" eyebrow={t('meds.magazine_eyebrow')} title={t('meds.magazine_title')}>
+      {authChecked && !isAuthenticated && <GuestBanner />}
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
       ) : items.length === 0 ? (

@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
 import { guestFoods } from '@/lib/guestEntries';
+import { useRegisterGate } from '@/hooks/useRegisterGate';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
@@ -36,6 +37,7 @@ export default function Food() {
   const { t, lang } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated, authChecked } = useAuth();
+  const gate = useRegisterGate();
   const isAdmin = user?.role === 'admin';
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -94,23 +96,19 @@ export default function Food() {
     loadCatalog();
   }, [isAuthenticated, authChecked]);
 
-  const openNew = () => { setEditing({ entry_date: todayStr(), tolerated: true, items: [] }); setOpen(true); };
+  const openNew = () => { if (!gate()) return; setEditing({ entry_date: todayStr(), tolerated: true, items: [] }); setOpen(true); };
   const openEdit = (it) => {
+    if (!gate()) return;
     const sel = Array.isArray(it.items) && it.items.length ? it.items : parseLegacyFoods(it.foods);
     setEditing({ ...it, items: sel, tolerated: it.tolerated ?? true });
     setOpen(true);
   };
 
   const handleSubmit = (data) => {
+    if (!gate()) return;
     setOpen(false);
     const sel = Array.isArray(data.items) ? data.items : [];
     const payload = { ...data, items: sel, foods: serializeItems(sel) || data.foods || '' };
-    if (!isAuthenticated) {
-      if (editing?.id) guestFoods.update(editing.id, payload);
-      else guestFoods.add(payload);
-      setItems(guestFoods.list());
-      return;
-    }
     if (editing?.id) {
       const previous = items.find((it) => it.id === editing.id) || editing;
       setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
@@ -130,7 +128,7 @@ export default function Food() {
     }
   };
   const handleDelete = async (id) => {
-    if (!isAuthenticated) { guestFoods.remove(id); setItems(guestFoods.list()); return; }
+    if (!gate()) return;
     await base44.entities.FoodEntry.delete(id);
     load();
   };

@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import GuestBanner from '@/components/GuestBanner';
 import { guestSymptoms } from '@/lib/guestEntries';
+import { useRegisterGate } from '@/hooks/useRegisterGate';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
@@ -45,6 +46,7 @@ export default function Symptoms() {
   const { t, lang } = useI18n();
   const { toast } = useToast();
   const { isAuthenticated, authChecked } = useAuth();
+  const gate = useRegisterGate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -79,23 +81,20 @@ export default function Symptoms() {
   }, [isAuthenticated, authChecked]);
 
   const openNew = () => {
+    if (!gate()) return;
     setEditing({ entry_date: todayStr() });
     setOpen(true);
   };
   const openEdit = (item) => {
+    if (!gate()) return;
     setEditing(item);
     setOpen(true);
   };
 
   const handleSubmit = (data) => {
+    if (!gate()) return;
     setOpen(false);
     const payload = { ...data, pain_level: data.pain_level ?? 0, fatigue_level: data.fatigue_level ?? 0 };
-    if (!isAuthenticated) {
-      if (editing?.id) guestSymptoms.update(editing.id, payload);
-      else guestSymptoms.add(payload);
-      setItems(guestSymptoms.list());
-      return;
-    }
     if (editing?.id) {
       const previous = items.find((it) => it.id === editing.id) || editing;
       setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
@@ -118,11 +117,7 @@ export default function Symptoms() {
   };
 
   const handleDelete = async (id) => {
-    if (!isAuthenticated) {
-      guestSymptoms.remove(id);
-      setItems(guestSymptoms.list());
-      return;
-    }
+    if (!gate()) return;
     await base44.entities.SymptomEntry.delete(id);
     load();
   };

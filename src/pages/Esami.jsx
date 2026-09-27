@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
+import { useRegisterGate } from '@/hooks/useRegisterGate';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -20,7 +20,7 @@ export default function Esami() {
   const { t } = useI18n();
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const gate = useRegisterGate();
   const { isSubscribed, showPaywall, setShowPaywall } = usePremiumGate();
   const [tab, setTab] = useState('scan');
   const [refreshKey, setRefreshKey] = useState(0);
@@ -28,7 +28,7 @@ export default function Esami() {
   // Scanner AI and import are Premium services: guests must log in first,
   // authenticated free users see the subscription paywall.
   const openPaywall = () => {
-    if (!isAuthenticated) { navigate('/login'); return; }
+    if (!gate()) return;
     setShowPaywall(true);
   };
 

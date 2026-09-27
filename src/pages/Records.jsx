@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Plus, FileText, Trash2, Pencil, ExternalLink, Stethoscope, FlaskConical, CalendarClock, Search, X, ScanLine, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { guestRecords } from '@/lib/guestEntries';
@@ -9,6 +8,7 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
+import GuestBanner from '@/components/GuestBanner';
 import PullToRefresh from '@/components/PullToRefresh';
 import EntityFormDialog from '@/components/EntityFormDialog';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import useRecordScanner from '@/hooks/useRecordScanner';
 import { useAuth } from '@/lib/AuthContext';
+import { useRegisterGate } from '@/hooks/useRegisterGate';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { RECORD_TYPE_KEYS, recordTypeLabel, localeForLang } from '@/lib/enumLabels';
 import { cn } from '@/lib/utils';
@@ -51,7 +52,7 @@ export default function Records() {
   const { toast } = useToast();
   const { scanning, scan } = useRecordScanner();
   const { isAuthenticated, authChecked } = useAuth();
-  const navigate = useNavigate();
+  const gate = useRegisterGate();
   const fileRef = useRef(null);
   const types = Object.entries(RECORD_TYPE_KEYS).map(([value, key]) => ({ value, label: t(key) }));
   const [items, setItems] = useState([]);
@@ -79,7 +80,7 @@ export default function Records() {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
-    if (!isAuthenticated) { navigate('/login'); return; }
+    if (!gate()) return;
     const res = await scan(file);
     if (!res) return;
     if (res.kind === 'medication') {
@@ -114,21 +115,16 @@ export default function Records() {
   const hasFilters = !!(search || typeFilter !== 'all' || dateFrom || dateTo || locFilter);
   const resetFilters = () => { setSearch(''); setTypeFilter('all'); setDateFrom(''); setDateTo(''); setLocFilter(''); };
 
-  const openNew = () => { setEditing({ record_date: todayStr() }); setOpen(true); };
-  const openEdit = (item) => { setEditing(item); setOpen(true); };
+  const openNew = () => { if (!gate()) return; setEditing({ record_date: todayStr() }); setOpen(true); };
+  const openEdit = (item) => { if (!gate()) return; setEditing(item); setOpen(true); };
 
   const handleSubmit = async (data) => {
-    if (!isAuthenticated) {
-      if (editing?.id) guestRecords.update(editing.id, data);
-      else guestRecords.add(data);
-      setOpen(false); setItems(guestRecords.list());
-      return;
-    }
+    if (!gate()) return;
     if (editing?.id) await base44.entities.MedicalRecord.update(editing.id, data);
     else await base44.entities.MedicalRecord.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { if (!isAuthenticated) { guestRecords.remove(id); setItems(guestRecords.list()); return; } await base44.entities.MedicalRecord.delete(id); load(); };
+  const handleDelete = async (id) => { if (!gate()) return; await base44.entities.MedicalRecord.delete(id); load(); };
 
   return (
     <AppLayout>
@@ -146,6 +142,8 @@ export default function Records() {
         }
       />
       <PageEditorial pageKey="records" />
+
+      {authChecked && !isAuthenticated && <GuestBanner />}
 
       {/* Search & advanced filters */}
       <Card className="border-0 shadow-sm mb-4">
