@@ -41,7 +41,7 @@ export default function Guida() {
       <div className="w-full max-w-2xl mx-auto">
         <PageHeader title={t('guide.title')} subtitle={t('guide.subtitle')} />
 
-        <MagazineEssay theme="serena" number="00" eyebrow="Inizia da qui" title={t('guide.intro_title')}>
+        <MagazineEssay theme="serena" number="00" eyebrow={t('guide.intro_eyebrow')} title={t('guide.intro_title')}>
           <div className="space-y-5">
             <p className="text-sm md:text-base text-foreground/90 leading-relaxed select-text">{t('guide.intro_desc')}</p>
             <Step n="1" title={t('guide.intro_s1_t')} desc={t('guide.intro_s1_d')} />
@@ -55,7 +55,7 @@ export default function Guida() {
         </MagazineEssay>
 
         {SECTIONS.map((s) => (
-          <MagazineEssay key={s.n} theme={s.theme} number={s.n} eyebrow={s.premium ? 'Premium' : 'Funzione'} title={t(s.tk)} to={s.to}>
+          <MagazineEssay key={s.n} theme={s.theme} number={s.n} eyebrow={s.premium ? t('guide.eyebrow_premium') : t('guide.eyebrow_feature')} title={t(s.tk)} to={s.to}>
             <div className="space-y-5">
               <p className="text-sm md:text-base text-foreground/90 leading-relaxed select-text">{t(s.dk)}</p>
               <Step n="1" title={t(s.tk.replace('_title', '_s1_t'))} desc={t(s.tk.replace('_title', '_s1_d'))} />

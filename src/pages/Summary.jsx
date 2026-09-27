@@ -3,6 +3,7 @@ import jsPDF from 'jspdf';
 import { FileBarChart, Download, ShieldCheck } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import { mealTypeLabel, reactionLabel, medTypeLabel, medFrequencyLabel, recordTypeLabel, moodLabel } from '@/lib/enumLabels';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -63,11 +64,11 @@ export default function Summary() {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(20);
     doc.setTextColor(30, 41, 59);
-    doc.text('IBD Care — Report di sintesi', M + 16, y + 16);
+    doc.text(t('summary.pdf_title'), M + 16, y + 16);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
     doc.setTextColor(100, 116, 139);
-    doc.text(`Periodo: ${from} — ${to}`, M + 16, y + 34);
+    doc.text(t('summary.pdf_period').replace('{from}', from).replace('{to}', to), M + 16, y + 34);
     y += 60;
 
     const section = (title) => {
@@ -92,39 +93,39 @@ export default function Summary() {
     };
 
     if (inc.symptoms) {
-      section('Diario dei sintomi');
-      if (symptoms.length === 0) line('Nessuna registrazione nel periodo.');
+      section(t('summary.pdf_section_symptoms'));
+      if (symptoms.length === 0) line(t('summary.pdf_no_symptoms'));
       symptoms.forEach((s) => {
-        line(`${s.entry_date} — Dolore ${s.pain_level ?? 0}/10, Stanchezza ${s.fatigue_level ?? 0}/10, Scariche ${s.bowel_movements_count ?? 0}, Bristol ${s.stool_consistency ?? '-'}${s.blood ? ', sangue: sì' : ''}${s.mood ? ', umore: ' + s.mood : ''}${s.notes ? ' — ' + s.notes : ''}`);
+        line(`${s.entry_date} — ${t('symptom_pdf.pain')} ${s.pain_level ?? 0}/10, ${t('symptom_pdf.fatigue')} ${s.fatigue_level ?? 0}/10, ${t('symptom_pdf.bowel')} ${s.bowel_movements_count ?? 0}, ${t('summary.pdf_bristol').replace('{n}', s.stool_consistency ?? '-')}${s.blood ? ', ' + t('summary.pdf_blood_yes') : ''}${s.mood ? ', ' + t('summary.pdf_mood').replace('{v}', moodLabel(t, s.mood)) : ''}${s.notes ? ' — ' + s.notes : ''}`);
       });
     }
 
     if (inc.food) {
-      section('Tracciamento alimentare');
-      if (food.length === 0) line('Nessun pasto registrato nel periodo.');
+      section(t('summary.pdf_section_food'));
+      if (food.length === 0) line(t('summary.pdf_no_food'));
       food.forEach((f) => {
-        line(`${f.entry_date} · ${f.meal_type || '—'} — ${f.foods}${f.reaction ? ' (reazione: ' + f.reaction + ')' : ''}${f.tolerated === false ? ' — NON tollerato' : ''}${f.notes ? ' — ' + f.notes : ''}`);
+        line(`${f.entry_date} · ${f.meal_type ? mealTypeLabel(t, f.meal_type) : '—'} — ${f.foods}${f.reaction ? ' (' + t('summary.pdf_reaction').replace('{v}', reactionLabel(t, f.reaction)) + ')' : ''}${f.tolerated === false ? ' — ' + t('summary.pdf_not_tolerated') : ''}${f.notes ? ' — ' + f.notes : ''}`);
       });
     }
 
     if (inc.meds) {
-      section('Terapie');
-      if (meds.length === 0) line('Nessuna terapia registrata.');
+      section(t('summary.pdf_section_meds'));
+      if (meds.length === 0) line(t('summary.pdf_no_meds'));
       meds.forEach((m) => {
-        line(`${m.name} (${m.type})${m.dosage ? ', ' + m.dosage : ''} — ${m.frequency || ''}, orari: ${m.times || '—'}${m.active ? '' : ' (non attivo)'}${m.notes ? ' — ' + m.notes : ''}`);
+        line(`${m.name} (${medTypeLabel(t, m.type)})${m.dosage ? ', ' + m.dosage : ''} — ${m.frequency ? medFrequencyLabel(t, m.frequency) : ''}, ${t('summary.pdf_times').replace('{v}', m.times || '—')}${m.active ? '' : ' ' + t('summary.pdf_not_active')}${m.notes ? ' — ' + m.notes : ''}`);
       });
     }
 
     if (inc.records) {
-      section('Esami e visite');
-      if (records.length === 0) line('Nessun esame o visita nel periodo.');
+      section(t('summary.pdf_section_records'));
+      if (records.length === 0) line(t('summary.pdf_no_records'));
       records.forEach((r) => {
-        line(`${r.record_date} · ${r.title} (${r.type})${r.provider ? ' — ' + r.provider : ''}${r.result_summary ? ' — ' + r.result_summary : ''}${r.next_appointment ? ' — prossimo: ' + r.next_appointment : ''}`);
+        line(`${r.record_date} · ${r.title} (${recordTypeLabel(t, r.type)})${r.provider ? ' — ' + r.provider : ''}${r.result_summary ? ' — ' + r.result_summary : ''}${r.next_appointment ? ' — ' + t('summary.pdf_next').replace('{v}', r.next_appointment) : ''}`);
       });
     }
 
     if (note.trim()) {
-      section('Nota per il medico');
+      section(t('summary.pdf_note_section'));
       line(note.trim());
     }
 
@@ -134,7 +135,7 @@ export default function Summary() {
       doc.setPage(i);
       doc.setFontSize(8);
       doc.setTextColor(148, 163, 184);
-      doc.text('Generato da IBD Care · dati privati, solo per uso personale e del medico curante (GDPR)', M, doc.internal.pageSize.getHeight() - 24);
+      doc.text(t('summary.pdf_footer'), M, doc.internal.pageSize.getHeight() - 24);
     }
 
     doc.save(`IBD-Care-report_${from}_${to}.pdf`);
@@ -152,7 +153,7 @@ export default function Summary() {
     <AppLayout>
       <PageHeader title={t('summary.title')} subtitle={t('summary.subtitle')} />
       <PageEditorial pageKey="summary" />
-      <MagazineEssay theme="esami" number="01" eyebrow="Report" title="Report e PDF">
+      <MagazineEssay theme="esami" number="01" eyebrow={t('summary.eyebrow')} title={t('summary.report_title')}>
       <div className="grid gap-4">
         <WeeklyReport />
         <MonthlyReport />
@@ -192,7 +193,7 @@ export default function Summary() {
 
             <div>
               <Label className="text-sm text-muted-foreground">{t('summary.note')}</Label>
-              <Textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className="mt-1.5 rounded-xl" placeholder="Es. dolore aumentato dopo aver sospeso la terapia…" />
+              <Textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className="mt-1.5 rounded-xl" placeholder={t('summary.note_placeholder')} />
             </div>
 
             {!isSubscribed && (
@@ -215,7 +216,7 @@ export default function Summary() {
           <CardContent className="p-5 flex items-start gap-3">
             <ShieldCheck className="w-6 h-6 text-primary shrink-0 mt-0.5" />
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Il PDF viene generato sul tuo dispositivo e contiene solo i dati che hai selezionato. Condividilo solo con il tuo medico curante.
+              {t('summary.privacy_note')}
             </p>
           </CardContent>
         </Card>

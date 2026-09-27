@@ -222,7 +222,7 @@ export default function Trends() {
     <div>
       <PageHeader title={t('trends.title')} subtitle={t('trends.subtitle')} />
       <PageEditorial pageKey="trends" />
-      <MagazineEssay theme="alimentazione" number="01" eyebrow="Trend" title="I tuoi grafici">
+      <MagazineEssay theme="alimentazione" number="01" eyebrow={t('trends.eyebrow')} title={t('trends.charts_title')}>
       <Link to="/symptom-charts" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline mb-4">
         <BarChart3 className="w-4 h-4" /> {t('symptom_charts.title')} →
       </Link>

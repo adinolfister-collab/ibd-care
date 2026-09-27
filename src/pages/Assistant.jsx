@@ -139,7 +139,7 @@ export default function Assistant() {
           </div>
           <h2 className="font-heading text-xl font-semibold text-primary tracking-tight">{t('assistant.title')}</h2>
           <p className="text-sm text-muted-foreground mt-2 max-w-sm leading-relaxed">
-            {t('assistant.guest_hint') || 'Accedi o registrati per conversare con l\'assistente AI.'}
+            {t('assistant.guest_hint')}
           </p>
           <div className="flex flex-col sm:flex-row gap-2 mt-6">
             <Link to="/login">

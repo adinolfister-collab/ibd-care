@@ -95,7 +95,7 @@ export default function Community() {
         })}
       </div>
 
-      <MagazineEssay theme="community" number="01" eyebrow={tab === 'board' ? 'Board' : 'DM'} title={tab === 'board' ? 'La board' : t('community.dm_title')}>
+      <MagazineEssay theme="community" number="01" eyebrow={tab === 'board' ? t('community.eyebrow_board') : t('community.eyebrow_dm')} title={tab === 'board' ? t('community.board_title') : t('community.dm_title')}>
         {tab === 'board' ? (
           authChecked && !isAuthenticated ? (
             <div className="rounded-xl bg-accent/50 border border-border px-4 py-6 text-center">

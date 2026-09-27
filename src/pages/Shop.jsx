@@ -67,7 +67,7 @@ export default function Shop() {
       <PageHeader title={t('shop.title')} subtitle={t('shop.subtitle')} />
       <PageEditorial pageKey="shop" />
 
-      <MagazineEssay theme="esami" number="01" eyebrow="Negozio" title={t('shop.title')}>
+      <MagazineEssay theme="esami" number="01" eyebrow={t('shop.eyebrow')} title={t('shop.title')}>
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <button onClick={() => setFilter('all')} className={cn('px-4 py-1.5 rounded-full text-sm font-medium transition-colors', filter === 'all' ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground hover:bg-accent/70')}>
             {t('shop.category_all')}

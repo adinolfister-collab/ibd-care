@@ -35,14 +35,14 @@ export default function Contact() {
       });
       if (res?.data?.error) throw new Error(res.data.error);
       toast({
-        title: t('contact.success_title') || 'Messaggio inviato',
-        description: t('contact.success_desc') || 'Grazie! Ti risponderemo al più presto.',
+        title: t('contact.success_title'),
+        description: t('contact.success_desc'),
       });
       setForm({ name: '', email: '', message: '' });
     } catch (err) {
       toast({
-        title: t('contact.error_title') || 'Invio non riuscito',
-        description: err?.message || (t('contact.error_desc') || 'Riprova tra poco o scrivici direttamente via email.'),
+        title: t('contact.error_title'),
+        description: err?.message || t('contact.error_desc'),
         variant: 'destructive',
       });
     } finally {
@@ -91,7 +91,7 @@ export default function Contact() {
             </div>
             <Button type="submit" className="w-full rounded-xl" disabled={sending}>
               {sending
-                ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> {t('contact.sending') || 'Invio…'}</>
+                ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> {t('contact.sending')}</>
                 : <><Send className="w-4 h-4 mr-1.5" /> {t('contact.send')}</>}
             </Button>
             <p className="text-xs text-muted-foreground text-center">{t('contact.mailto_hint')}</p>

@@ -79,8 +79,8 @@ export default function Correlazioni() {
   return (
     <AppLayout>
       <PageHeader
-        title={t('correlazioni.title') || 'Correlazioni cibo–sintomi'}
-        subtitle={t('correlazioni.subtitle') || 'Quali cibi sembrano associarsi a più scariche o più dolore negli ultimi 30 giorni'}
+        title={t('correlazioni.title')}
+        subtitle={t('correlazioni.subtitle')}
       />
       <PageEditorial pageKey="correlazioni" />
 
@@ -125,8 +125,8 @@ export default function Correlazioni() {
         ) : bowelData.length === 0 && painData.length === 0 ? (
           <EmptyState
             icon={TrendingDown}
-            title={t('correlazioni.empty') || 'Non ci sono ancora dati sufficienti'}
-            description={t('correlazioni.empty_desc') || 'Continua a registrare pasti e sintomi: le correlazioni appariranno qui.'}
+            title={t('correlazioni.empty')}
+            description={t('correlazioni.empty_desc')}
           />
         ) : (
           <>
@@ -135,15 +135,15 @@ export default function Correlazioni() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Activity className="w-5 h-5 text-chart-2" />
-                  {t('correlazioni.bowel_title') || 'Cibi e numero di scariche'}
+                  {t('correlazioni.bowel_title')}
                 </CardTitle>
                 <CardDescription>
-                  {t('correlazioni.bowel_desc') || 'Media delle scariche nel giorno del pasto e in quello successivo, per cibo.'}
+                  {t('correlazioni.bowel_desc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {bowelData.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">{t('correlazioni.no_data') || 'Nessun dato disponibile.'}</p>
+                  <p className="text-sm text-muted-foreground">{t('correlazioni.no_data')}</p>
                 ) : (
                   <div className="h-72 md:h-80">
                     <ResponsiveContainer width="100%" height="100%">
@@ -174,15 +174,15 @@ export default function Correlazioni() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Activity className="w-5 h-5 text-chart-1" />
-                  {t('correlazioni.pain_title') || 'Cibi e livello di dolore'}
+                  {t('correlazioni.pain_title')}
                 </CardTitle>
                 <CardDescription>
-                  {t('correlazioni.pain_desc') || 'Media del dolore (0–10) nel giorno del pasto e in quello successivo, per cibo.'}
+                  {t('correlazioni.pain_desc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {painData.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">{t('correlazioni.no_data') || 'Nessun dato disponibile.'}</p>
+                  <p className="text-sm text-muted-foreground">{t('correlazioni.no_data')}</p>
                 ) : (
                   <div className="h-72 md:h-80">
                     <ResponsiveContainer width="100%" height="100%">

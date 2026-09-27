@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import {
   startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval,
   format, isToday, isBefore, startOfDay, addMonths, subMonths, isSameDay,
-  parseISO,
 } from 'date-fns';
 import { it as itLocale, enUS as enLocale } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Check, X, Clock, Pill } from 'lucide-react';
@@ -13,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from '@/components/ui/dialog';
-import { medTypeLabel } from '@/lib/enumLabels';
+
 
 // Restituisce l'elenco dei farmaci che ci si aspetta di assumere in un dato
 // giorno, in base alla frequenza e alla data di inizio. Solo le terapie
@@ -29,7 +28,7 @@ const expectedForDay = (meds, day) => {
   });
 };
 
-const DayCell = ({ day, monthDate, meds, dosesByDate, today, onOpen }) => {
+const DayCell = ({ day, monthDate, meds, dosesByDate, today, onOpen, t }) => {
   const isCurrentMonth = day.getMonth() === monthDate.getMonth();
   const key = format(day, 'yyyy-MM-dd');
   const expected = expectedForDay(meds, day);
@@ -99,7 +98,7 @@ const DayCell = ({ day, monthDate, meds, dosesByDate, today, onOpen }) => {
           )}
           {skipped > 0 && (
             <span className="inline-flex items-center text-[0.6rem] md:text-xs text-muted-foreground font-medium">
-              {skipped} salt.
+              {skipped} {t('meds.cal.skipped_abbr')}
             </span>
           )}
         </div>
@@ -124,7 +123,7 @@ const StatusBadge = ({ status, t }) => {
   return <span className={cn('text-xs px-2 py-0.5 rounded-full font-medium', map[status])}>{label}</span>;
 };
 
-const DayDetail = ({ day, meds, doses, onClose, onMark, onSkip, onRemove, t }) => {
+const DayDetail = ({ day, meds, doses, onClose, onMark, onSkip, onRemove, t, locale }) => {
   const key = format(day, 'yyyy-MM-dd');
   const dayDoses = doses.filter((d) => d.dose_date === key);
   const expected = expectedForDay(meds, day);
@@ -152,7 +151,7 @@ const DayDetail = ({ day, meds, doses, onClose, onMark, onSkip, onRemove, t }) =
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Pill className="w-4 h-4 text-terracotta" />
-            {format(day, 'EEEE d MMMM', { locale: itLocale })}
+            {format(day, 'EEEE d MMMM', { locale })}
           </DialogTitle>
           <DialogDescription>{t('meds.cal.detail_desc')}</DialogDescription>
         </DialogHeader>
@@ -261,6 +260,7 @@ export default function MedicationCalendar({ meds, doses, onMark, onSkip, onRemo
             meds={meds}
             dosesByDate={dosesByDate}
             today={today}
+            t={t}
             onOpen={(d) => {
               if (d.getMonth() !== monthDate.getMonth()) return;
               setSelected(d);
@@ -286,6 +286,7 @@ export default function MedicationCalendar({ meds, doses, onMark, onSkip, onRemo
           onSkip={onSkip}
           onRemove={onRemove}
           t={t}
+          locale={locale}
         />
       )}
     </div>

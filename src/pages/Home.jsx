@@ -97,7 +97,7 @@ export default function Home() {
       <HomeCompanionReport />
 
       {/* N. 01 — Stato di oggi */}
-      <MagazineEssay theme="sintomi" number="01" eyebrow="Diario · oggi" title={t('home.today_status')} to="/symptoms">
+      <MagazineEssay theme="sintomi" number="01" eyebrow={t('home.eyebrow_today')} title={t('home.today_status')} to="/symptoms">
         <Card className="border-0 shadow-sm bg-gradient-to-br from-primary/5 to-accent/40">
           <CardContent className="p-6">
             {todaySymptom ? (
@@ -105,11 +105,11 @@ export default function Home() {
                 <Stat label={t('symptoms.pain')} value={`${todaySymptom.pain_level ?? 0}/10`} tone={tone(todaySymptom.pain_level)} />
                 <Stat label={t('symptoms.fatigue')} value={`${todaySymptom.fatigue_level ?? 0}/10`} tone={tone(todaySymptom.fatigue_level)} />
                 <Stat label={t('symptoms.bowel')} value={todaySymptom.bowel_movements_count ?? 0} />
-                <Stat label={t('symptoms.stool')} value={`Tipo ${todaySymptom.stool_consistency ?? '-'}`} />
+                <Stat label={t('symptoms.stool')} value={t('symptoms.stool_type').replace('{n}', todaySymptom.stool_consistency ?? '-')} />
               </div>
             ) : (
               <div className="flex items-center justify-between gap-3 flex-wrap">
-                <p className="text-muted-foreground">{t('home.no_today') || 'Nessuna registrazione per oggi.'}</p>
+                <p className="text-muted-foreground">{t('home.no_today')}</p>
                 <Link to="/symptoms">
                   <Button className="rounded-xl">
                     <Plus className="w-4 h-4 mr-1.5" /> {t('home.log_symptom')}
@@ -122,7 +122,7 @@ export default function Home() {
       </MagazineEssay>
 
       {/* N. 02 — Accesso rapido */}
-      <MagazineEssay theme="alimentazione" number="02" eyebrow="Tavolo quotidiano" title={t('home.quick_actions')}>
+      <MagazineEssay theme="alimentazione" number="02" eyebrow={t('home.eyebrow_quick')} title={t('home.quick_actions')}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {quickActions.map((a) => (
             <Link key={a.to} to={a.to}>
@@ -140,7 +140,7 @@ export default function Home() {
       </MagazineEssay>
 
       {/* N. 03 — Promemoria terapie */}
-      <MagazineEssay theme="terapie" number="03" eyebrow="Cura quotidiana" title={t('home.med_reminders')} to="/meds">
+      <MagazineEssay theme="terapie" number="03" eyebrow={t('home.eyebrow_care')} title={t('home.med_reminders')} to="/meds">
         <Card className="border border-border shadow-sm bg-card">
           <CardContent className="p-4">
             {meds.length === 0 ? (
@@ -163,7 +163,7 @@ export default function Home() {
       </MagazineEssay>
 
       {/* N. 04 — Registrazioni recenti */}
-      <MagazineEssay theme="serena" number="04" eyebrow="Cronologia" title={t('home.recent')} to="/symptoms">
+      <MagazineEssay theme="serena" number="04" eyebrow={t('home.eyebrow_history')} title={t('home.recent')} to="/symptoms">
         <Card className="border border-border shadow-sm bg-card">
           <CardContent className="p-4">
             {recent.length === 0 ? (
