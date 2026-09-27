@@ -125,7 +125,8 @@ function pageLabel(path) {
   if (PAGE_LABELS[path]) return PAGE_LABELS[path];
   if (path.startsWith('/shop/') && path !== '/shop/admin') return 'Prodotto negozio';
   if (path.startsWith('/news/')) return 'Articolo news';
-  return path;
+  // Qualsiasi altro path non mappato corrisponde a una rotta inesistente (404)
+  return 'Pagina non trovata';
 }
 
 function countryLabel(c) {
