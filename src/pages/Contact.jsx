@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Send } from 'lucide-react';
+import { Mail, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,21 +11,43 @@ import EditorialBlock from '@/components/EditorialBlock';
 import AppLayout from '@/components/AppLayout';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
+import { useToast } from '@/components/ui/use-toast';
+import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 
 const CONTACT_EMAIL = 'supporto@ibdcare.app';
 
 export default function Contact() {
   const { t } = useI18n();
+  const { toast } = useToast();
   const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [sending, setSending] = useState(false);
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent(t('contact.mailto_subject').replace('{name}', form.name || t('account.user_default')));
-    const body = encodeURIComponent(
-      `${form.message}\n\n---\n${t('contact.body_name')}: ${form.name}\n${t('contact.body_email')}: ${form.email}`
-    );
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    if (sending) return;
+    setSending(true);
+    try {
+      const res = await base44.functions.invoke('sendContactMessage', {
+        name: form.name,
+        email: form.email,
+        message: form.message,
+      });
+      if (res?.data?.error) throw new Error(res.data.error);
+      toast({
+        title: t('contact.success_title') || 'Messaggio inviato',
+        description: t('contact.success_desc') || 'Grazie! Ti risponderemo al più presto.',
+      });
+      setForm({ name: '', email: '', message: '' });
+    } catch (err) {
+      toast({
+        title: t('contact.error_title') || 'Invio non riuscito',
+        description: err?.message || (t('contact.error_desc') || 'Riprova tra poco o scrivici direttamente via email.'),
+        variant: 'destructive',
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -67,8 +89,10 @@ export default function Contact() {
               <Label htmlFor="message" className="mb-1.5">{t('contact.message')}</Label>
               <Textarea id="message" required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={t('contact.message_placeholder')} />
             </div>
-            <Button type="submit" className="w-full rounded-xl">
-              <Send className="w-4 h-4 mr-1.5" /> {t('contact.send')}
+            <Button type="submit" className="w-full rounded-xl" disabled={sending}>
+              {sending
+                ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> {t('contact.sending') || 'Invio…'}</>
+                : <><Send className="w-4 h-4 mr-1.5" /> {t('contact.send')}</>}
             </Button>
             <p className="text-xs text-muted-foreground text-center">{t('contact.mailto_hint')}</p>
           </form>
