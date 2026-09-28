@@ -42,6 +42,7 @@ const IBDNews = lazy(() => import('@/pages/IBDNews'));
 const Esami = lazy(() => import('@/pages/Esami'));
 const Correlazioni = lazy(() => import('@/pages/Correlazioni'));
 const AdminConversions = lazy(() => import('@/pages/AdminConversions'));
+const AdminGuestPreview = lazy(() => import('@/pages/AdminGuestPreview'));
 const Shop = lazy(() => import('@/pages/Shop'));
 const ShopAdmin = lazy(() => import('@/pages/ShopAdmin'));
 const MarketingAdmin = lazy(() => import('@/pages/MarketingAdmin'));
@@ -127,6 +128,7 @@ const AuthenticatedApp = () => {
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
           <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} requireRole="admin" />}>
             <Route path="/admin/conversioni" element={<PageTransition><AdminConversions /></PageTransition>} />
+            <Route path="/admin/guest-preview" element={<PageTransition><AdminGuestPreview /></PageTransition>} />
             <Route path="/admin/marketing" element={<PageTransition><MarketingAdmin /></PageTransition>} />
             <Route path="/shop/admin" element={<PageTransition><ShopAdmin /></PageTransition>} />
           </Route>

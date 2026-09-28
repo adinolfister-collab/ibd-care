@@ -4,7 +4,7 @@ import {
   Newspaper, Users, Activity, Utensils, Info, Mail,
   Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin,
   FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag, Crown, CreditCard, BookOpen,
-  TrendingUp, Megaphone,
+  TrendingUp, Megaphone, Eye,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -58,6 +58,7 @@ const ACCOUNT_AUTH = [
 const ADMIN_ITEMS = [
   { to: '/admin/conversioni', key: 'nav.conversions', icon: TrendingUp },
   { to: '/admin/marketing', key: 'nav.marketing', icon: Megaphone },
+  { to: '/admin/guest-preview', key: 'nav.guest_preview', icon: Eye },
   { to: '/shop/admin', key: 'shop.admin_nav', icon: ShoppingBag },
 ];
 

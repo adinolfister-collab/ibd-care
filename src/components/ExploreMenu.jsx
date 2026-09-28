@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { Compass } from 'lucide-react';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import SiteMenu from '@/components/SiteMenu';
-import GuestPreviewToggle from '@/components/GuestPreviewToggle';
 import { useI18n } from '@/lib/i18n';
 
 // Bottone "Esplora" nella top nav: apre il blocco Esplora la rivista in un
@@ -34,9 +33,6 @@ export default function ExploreMenu() {
         <SheetTitle className="sr-only">{title}</SheetTitle>
         <p className="text-sm text-muted-foreground mb-3">{desc}</p>
         <SiteMenu />
-        <div className="mt-6">
-          <GuestPreviewToggle />
-        </div>
       </SheetContent>
     </Sheet>
   );
