@@ -33,45 +33,10 @@ export default async function(req: Request): Promise<Response> {
       is_me: !!(mySignup && mySignup.id === s.id),
     }));
 
-    // … plus active community participants who never formally joined the
-    // campaign. They appear in the ranking as "in attesa" based on their
-    // earliest community message, so people like Esposito are visible even
-    // without a confirmed CampaignSignup.
-    const knownUserIds = new Set<string>();
-    const knownNames = new Set<string>();
-    for (const s of mine) {
-      if (s.created_by_id && s.created_by_id !== 'ai_generated') knownUserIds.add(s.created_by_id);
-      if (s.display_name) knownNames.add((s.display_name || '').toLowerCase());
-    }
-    const provisional: any[] = [];
-    try {
-      const messages = await base44.asServiceRole.entities.CommunityMessage.list('-created_date', 500) as any[];
-      const byAuthor = new Map<string, { name: string; first: string }>();
-      for (const m of messages) {
-        const uid = m.created_by_id;
-        const key = (uid && uid !== 'ai_generated') ? uid : `name:${m.author_name || 'Utente'}`;
-        const date = m.created_date;
-        const prev = byAuthor.get(key);
-        if (!prev || (date && date < prev.first)) {
-          byAuthor.set(key, { name: m.author_name || 'Utente', first: date });
-        }
-      }
-      for (const [key, info] of byAuthor) {
-        if (key.startsWith('name:')) {
-          if (knownNames.has(info.name.toLowerCase())) continue;
-        } else if (knownUserIds.has(key)) {
-          continue;
-        }
-        provisional.push({
-          display_name: info.name,
-          first_message_date: info.first,
-          is_me: key === myUserId,
-        });
-      }
-      provisional.sort((a, b) => ((a.first_message_date || '') < (b.first_message_date || '') ? -1 : 1));
-    } catch (e) { console.error('community authors scan', e); }
-
-    const pending = [...pendingSignup, ...provisional];
+    // Pending = only explicit unconfirmed signups (the community-message
+    // confirmation step has been removed: join now confirms immediately, so
+    // this list is normally empty).
+    const pending = pendingSignup;
 
     return Response.json({
       ranking: confirmed.map((s) => ({

@@ -36,9 +36,9 @@ const SECTIONS = [
   { n: '09', theme: 'esami', to: '/abbonamento', tk: 'guide.s9_title', dk: 'guide.s9_desc', premium: true },
 ];
 
-export default function Guida() {
+export default function Demo() {
   const { t } = useI18n();
-  const demoUrl = typeof window !== 'undefined' ? `${window.location.origin}/guida` : 'https://ibd-care.it/guida';
+  const demoUrl = typeof window !== 'undefined' ? `${window.location.origin}/demo` : 'https://ibd-care.it/demo';
 
   return (
     <AppLayout>
@@ -91,7 +91,7 @@ export default function Guida() {
           </MagazineEssay>
         ))}
 
-        {/* Band finale: trial CTA */}
+        {/* Band finale: registrazione */}
         <div className="my-8 rounded-2xl bg-terracotta/[0.08] border border-terracotta/30 p-6 text-center">
           <p className="font-heading text-xl md:text-2xl font-semibold text-foreground leading-snug">{t('guide.final_title')}</p>
           <p className="text-sm md:text-base text-muted-foreground mt-2 max-w-md mx-auto leading-relaxed">{t('guide.final_desc')}</p>

@@ -18,7 +18,7 @@ const STATIC_ROUTES = [
   { path: '/', titleKey: null, descKey: null },
   { path: '/about', titleKey: 'about.title', descKey: 'about.subtitle' },
   { path: '/privacy', titleKey: 'privacy.title', descKey: 'privacy.subtitle', noindex: true },
-  { path: '/guida', titleKey: 'guide.title', descKey: 'guide.subtitle' },
+  { path: '/demo', titleKey: 'guide.title', descKey: 'guide.subtitle' },
   { path: '/contact', titleKey: 'nav.contact', descKey: 'app.tagline' },
   { path: '/founders', titleKey: 'nav.founders', descKey: 'app.tagline' },
   { path: '/news', titleKey: 'news.title', descKey: 'news.page_subtitle' },

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, Utensils, ShieldCheck, HeartPulse, ArrowRight, Lock, Eye, Sparkles } from 'lucide-react';
+import { Activity, Utensils, ShieldCheck, HeartPulse, ArrowRight, Lock, Eye, Sparkles, Play } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { Image } from '@/components/ui/image';
 import { themeImage } from '@/lib/themeImages';
@@ -86,6 +86,24 @@ export default function HomeMarketing() {
               );
             })}
           </div>
+        </section>
+
+        {/* DEMO PROMO */}
+        <section className="mb-10">
+          <Link to="/demo" className="block rounded-2xl border-2 border-terracotta/50 bg-gradient-to-br from-terracotta/10 to-accent/40 p-6 md:p-8 hover:shadow-md transition-shadow">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-terracotta/20 flex items-center justify-center shrink-0">
+                <Play className="w-6 h-6 text-terracotta" />
+              </div>
+              <div>
+                <h2 className="font-heading text-xl md:text-2xl font-semibold text-foreground">{t('home.demo_title')}</h2>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed mt-2 max-w-md">{t('home.demo_desc')}</p>
+                <span className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-terracotta">
+                  {t('home.demo_cta')} <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
+            </div>
+          </Link>
         </section>
 
         {/* CARY + REPORT */}

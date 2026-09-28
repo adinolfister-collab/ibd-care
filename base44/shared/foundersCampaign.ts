@@ -3,8 +3,8 @@
 // computation never diverges across functions.
 
 export const CAMPAIGN = 'founders';
-export const LIFETIME_SLOTS = 50;
-export const TOTAL_SLOTS = 250;
+export const LIFETIME_SLOTS = 10;
+export const TOTAL_SLOTS = 50;
 export const THREE_MONTHS_DAYS = 90;
 
 export function slotTypeForRank(rank: number): 'lifetime' | 'three_months' {

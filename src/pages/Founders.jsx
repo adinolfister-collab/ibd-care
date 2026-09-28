@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Crown, Trophy, Users, Sparkles, Loader2, ArrowRight, CheckCircle2, Clock } from 'lucide-react';
+import { Crown, Trophy, Users, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -21,7 +21,6 @@ export default function Founders() {
   const counts = data?.counts;
   const mySignup = data?.mySignup;
   const ranking = data?.ranking || [];
-  const pending = data?.pending || [];
 
   const join = async () => {
     if (joining) return;
@@ -33,7 +32,12 @@ export default function Founders() {
       } else if (res.data?.joined) {
         clearFoundersCache();
         await reload();
-        toast({ title: t('founders.status_pending') });
+        if (res.data?.confirmed) {
+          const isLife = res.data?.slot_type === 'lifetime';
+          toast({ title: (isLife ? t('founders.confirm_toast') : t('founders.confirm_toast_three')).replace('{n}', res.data.rank || '') });
+        } else {
+          toast({ title: t('founders.status_pending') });
+        }
       } else if (res.data?.error) {
         toast({ title: t('founders.join_error'), variant: 'destructive' });
       }
@@ -81,14 +85,14 @@ export default function Founders() {
           <div className="rounded-2xl border-2 border-terracotta/60 bg-gradient-to-br from-terracotta/10 to-accent/30 p-5 text-center">
             <Crown className="w-6 h-6 text-terracotta mx-auto mb-1.5" />
             <p className="font-heading text-3xl font-semibold text-foreground">
-              {loading ? '–' : `${counts?.lifetime || 0}/${counts?.lifetimeTotal || 50}`}
+              {loading ? '–' : `${counts?.lifetime || 0}/${counts?.lifetimeTotal || 10}`}
             </p>
             <p className="text-xs text-muted-foreground mt-0.5">{t('founders.counter_lifetime')}</p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-5 text-center">
             <Users className="w-6 h-6 text-primary mx-auto mb-1.5" />
             <p className="font-heading text-3xl font-semibold text-foreground">
-              {loading ? '–' : `${counts?.confirmed || 0}/${counts?.total || 250}`}
+              {loading ? '–' : `${counts?.confirmed || 0}/${counts?.total || 50}`}
             </p>
             <p className="text-xs text-muted-foreground mt-0.5">{t('founders.counter_total')}</p>
           </div>
@@ -129,11 +133,6 @@ export default function Founders() {
             <li className="flex items-start gap-2"><span className="text-terracotta font-heading font-semibold">2.</span><span>{t('founders.how_2')}</span></li>
             <li className="flex items-start gap-2"><span className="text-terracotta font-heading font-semibold">3.</span><span>{t('founders.how_3')}</span></li>
           </ol>
-          {mySignup && !mySignup.confirmed && (
-            <Link to="/community" className="mt-3 inline-flex items-center gap-1 text-sm text-terracotta font-medium hover:underline">
-              {t('community.title')} <ArrowRight className="w-4 h-4" />
-            </Link>
-          )}
         </div>
 
         {/* Ranking */}
@@ -149,49 +148,24 @@ export default function Founders() {
           </div>
           {loading ? (
             <div className="px-4 py-10 text-center text-muted-foreground text-sm">{t('founders.loading')}</div>
-          ) : ranking.length === 0 && pending.length === 0 ? (
+          ) : ranking.length === 0 ? (
             <div className="px-4 py-10 text-center text-muted-foreground text-sm">{t('founders.loading')}</div>
           ) : (
-            <div>
-              <ol className="divide-y divide-border">
-                {ranking.map((r) => (
-                  <li key={r.rank} className="flex items-center gap-3 px-4 py-2.5">
-                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-terracotta/15 text-terracotta text-sm font-heading font-semibold shrink-0">
-                      {r.rank}
-                    </span>
-                    <span className="font-medium text-foreground text-sm flex-1 truncate">
-                      {r.display_name}
-                    </span>
-                    <span className={cn('text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0', r.slot_type === 'lifetime' ? 'bg-terracotta/15 text-terracotta' : 'bg-accent text-accent-foreground')}>
-                      {r.slot_type === 'lifetime' ? t('founders.badge_lifetime') : t('founders.badge_three_months')}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-              {pending.length > 0 && (
-                <>
-                  <div className="px-4 py-2 border-t border-border bg-muted/40 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                    <p className="text-xs font-medium text-muted-foreground">{t('founders.pending_section')}</p>
-                  </div>
-                  <ol className="divide-y divide-border">
-                    {pending.map((r, i) => (
-                      <li key={`p${i}`} className="flex items-center gap-3 px-4 py-2.5 opacity-60">
-                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-muted text-muted-foreground shrink-0">
-                          <Clock className="w-3.5 h-3.5" />
-                        </span>
-                        <span className="font-medium text-foreground text-sm flex-1 truncate">
-                          {r.display_name}
-                        </span>
-                        <span className="text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 bg-muted text-muted-foreground">
-                          {t('founders.badge_pending')}
-                        </span>
-                      </li>
-                    ))}
-                  </ol>
-                </>
-              )}
-            </div>
+            <ol className="divide-y divide-border">
+              {ranking.map((r) => (
+                <li key={r.rank} className="flex items-center gap-3 px-4 py-2.5">
+                  <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-terracotta/15 text-terracotta text-sm font-heading font-semibold shrink-0">
+                    {r.rank}
+                  </span>
+                  <span className="font-medium text-foreground text-sm flex-1 truncate">
+                    {r.display_name}
+                  </span>
+                  <span className={cn('text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0', r.slot_type === 'lifetime' ? 'bg-terracotta/15 text-terracotta' : 'bg-accent text-accent-foreground')}>
+                    {r.slot_type === 'lifetime' ? t('founders.badge_lifetime') : t('founders.badge_three_months')}
+                  </span>
+                </li>
+              ))}
+            </ol>
           )}
         </div>
       </div>

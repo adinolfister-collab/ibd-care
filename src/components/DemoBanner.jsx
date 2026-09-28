@@ -3,14 +3,17 @@ import { Link } from 'react-router-dom';
 import { Eye, RotateCcw } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { clearAllGuestEntries } from '@/lib/guestEntries';
+import { getDemoTrialState } from '@/lib/demoTrial';
 
-// Banner mostrato in cima alle pagine diario ai visitatori non autenticati
-// (modalità demo). Avvisa esplicitamente che i dati restano sul dispositivo e
-// non sono reali, invita a registrarsi per la prova di 30 giorni e offre un
-// pulsante "Azzera demo" per ripartire da zero. `onReset` (opzionale) viene
-// chiamato dopo la pulizia per ricaricare i dati della pagina.
+// Banner demo con countdown dei giorni rimasti. Mostrato in cima alle
+// pagine diario ai visitatori non autenticati durante la trial device di
+// 30gg. Alla scadenza non viene renderizzato: interviene il DemoExpiredGate
+// a tutto schermo (gestito in AppLayout). `onReset` (opzionale) viene
+// chiamato dopo l'azzeramento dei dati demo per ricaricare la pagina.
 export default function DemoBanner({ className = '', onReset }) {
   const { t } = useI18n();
+  const trial = getDemoTrialState();
+  const days = trial.daysRemaining;
   const handleReset = () => {
     clearAllGuestEntries();
     onReset?.();
@@ -21,7 +24,7 @@ export default function DemoBanner({ className = '', onReset }) {
         <Eye className="w-4 h-4 text-terracotta shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground">{t('demo.mode_title')}</p>
-          <p className="text-xs text-muted-foreground leading-snug">{t('demo.mode_desc')}</p>
+          <p className="text-xs text-muted-foreground leading-snug">{t('demo.banner_days').replace('{n}', days)}</p>
         </div>
         <Link
           to="/register"

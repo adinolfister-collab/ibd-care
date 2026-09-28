@@ -39,7 +39,7 @@ const COMMUNITY = [
 const RISORSE = [
   { to: '/assistant', key: 'nav.assistant', icon: Bot },
   { to: '/map', key: 'nav.map', icon: MapPin },
-  { to: '/guida', key: 'nav.guide', icon: BookOpen },
+  { to: '/demo', key: 'nav.guide', icon: BookOpen },
   { to: '/about', key: 'nav.about', icon: Info },
   { to: '/contact', key: 'nav.contact', icon: Mail },
 ];

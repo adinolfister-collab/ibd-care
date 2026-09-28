@@ -52,7 +52,7 @@ const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
 const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
-const Guida = lazy(() => import('@/pages/Guida'));
+const Demo = lazy(() => import('@/pages/Demo'));
 const ScaricaApp = lazy(() => import('@/pages/ScaricaApp'));
 const Supporto = lazy(() => import('@/pages/Supporto'));
 
@@ -98,7 +98,7 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
-        <Route path="/guida" element={<PageTransition><Guida /></PageTransition>} />
+        <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
         <Route path="/scarica" element={<PageTransition><ScaricaApp /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/founders" element={<PageTransition><Founders /></PageTransition>} />

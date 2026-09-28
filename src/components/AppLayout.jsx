@@ -5,18 +5,35 @@ import { base44 } from '@/api/base44Client';
 import MobileTopNav from '@/components/MobileTopNav';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import SiteMenu from '@/components/SiteMenu';
+import DemoExpiredGate from '@/components/DemoExpiredGate';
 import { guestSymptoms, guestFoods, guestRecords, syncGuestEntriesToCloud } from '@/lib/guestEntries';
+import { getDemoTrialState, ensureDemoTrialStarted, isDemoEnabledPath } from '@/lib/demoTrial';
 import { useToast } from '@/components/ui/use-toast';
 
 // Layout mobile-first unico per tutti i breakpoint: header universale in alto,
 // bottom tab bar su mobile, contenuto centrato a piena larghezza (nessuna
 // sidebar fissa, nessun toggle vista-desktop). Il blocco "Esplora la rivista"
 // è la navigazione tra sezioni, sempre presente in fondo al contenuto.
+//
+// Per gli ospiti anonimi sulle rotte demo-enabled: avvia la trial device di
+// 30gg al primo ingresso e, una volta scaduta, mostra il DemoExpiredGate a
+// tutto schermo al posto del contenuto (la demo è l'unica trial gratuita).
 export default function AppLayout({ children }) {
   const { t } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
   const [syncingGuest, setSyncingGuest] = useState(false);
+
+  const path = typeof window !== 'undefined' ? window.location.pathname : '';
+  const gateGuest = !isAuthenticated && isDemoEnabledPath(path);
+  // Avvia la trial demo device al primo ingresso in una rotta demo-enabled,
+  // in modo sincrono: così il DemoBanner legge subito i 30 giorni rimasti
+  // invece di mostrare 0 al primo paint. Idempotente.
+  if (gateGuest && !getDemoTrialState().started) {
+    ensureDemoTrialStarted();
+  }
+  const trial = getDemoTrialState();
+  const demoExpired = gateGuest && trial.expired;
 
   // Al primo mount autenticato, migra le registrazioni guest dal dispositivo
   // alle entità cloud dell'utente, poi svuota la cache locale.
@@ -60,8 +77,14 @@ export default function AppLayout({ children }) {
       <MobileTopNav user={user} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
       <MobileBottomNav isAuthenticated={isAuthenticated} />
       <main className="min-h-screen pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] md:px-10 pt-5 md:py-10 pb-28 md:pb-12 max-w-4xl mx-auto">
-        {children}
-        <SiteMenu />
+        {demoExpired ? (
+          <DemoExpiredGate />
+        ) : (
+          <>
+            {children}
+            <SiteMenu />
+          </>
+        )}
       </main>
     </div>
   );

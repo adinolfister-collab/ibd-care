@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { secrets } from 'base44:runtime';
-import { profileFieldsFromSubscription, TRIAL_DAYS } from '../../shared/subscriptionSync.ts';
+import { profileFieldsFromSubscription } from '../../shared/subscriptionSync.ts';
 
 export default async function(req: Request): Promise<Response> {
   let base44;
@@ -26,28 +26,13 @@ export default async function(req: Request): Promise<Response> {
 
     const secretKey = secrets.get('STRIPE_SECRET_KEY');
 
-    // 2) 30-day free trial (app-side): starts automatically on first verified
-    //    login for users with no prior subscription and no free_until. A user
-    //    whose free_until already elapsed (past) is NOT re-granted a trial.
+    // 2) No more auto-trial at registration: the 30-day demo (device-tracked)
+    //    is the only free trial. New users with no subscription and no
+    //    free_until go straight to the Stripe sync / 'none' path below.
+    //    A free_until set by a Founder grant or a previously started (now
+    //    elapsed) trial is still honored here.
     const hasFreeUntil = !!user.free_until;
     const neverSubscribed = ['none', undefined, null, 'expired', 'canceled'].includes(user.subscription_status);
-    if (!hasFreeUntil && neverSubscribed && secretKey) {
-      const trialEnd = new Date(Date.now() + TRIAL_DAYS * 86400000).toISOString();
-      try {
-        await base44.auth.updateMe({ free_until: trialEnd });
-        try {
-          await base44.analytics.track({ eventName: 'trial_started', properties: { days: TRIAL_DAYS } });
-        } catch (e) { /* non blocking */ }
-        return Response.json({
-          status: 'trialing',
-          trial: true,
-          trialRemaining: TRIAL_DAYS,
-          trialEnd: new Date(trialEnd).getTime(),
-        });
-      } catch (e) {
-        console.error('trial start failed', e);
-      }
-    }
 
     // Active 30-day trial in progress.
     if (hasFreeUntil && neverSubscribed) {
