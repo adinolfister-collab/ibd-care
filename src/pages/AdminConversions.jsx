@@ -18,6 +18,7 @@ import PageHeader from '@/components/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import ReportTable from '@/components/admin/ReportTable';
 import TrialUsersTable from '@/components/admin/TrialUsersTable';
+import AdminCrashes from '@/components/admin/AdminCrashes';
 import { cn } from '@/lib/utils';
 
 const RANGES = [
@@ -377,6 +378,9 @@ export default function AdminConversions() {
       <div className="mt-6">
         <TrialUsersTable />
       </div>
+
+      {/* Crash monitor */}
+      <AdminCrashes />
     </AppLayout>
   );
 }

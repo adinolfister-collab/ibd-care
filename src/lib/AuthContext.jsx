@@ -4,6 +4,7 @@ import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 import { resetGuestSaveCount } from '@/lib/guestSaveCount';
 import { useGuestPreview } from '@/lib/GuestPreviewContext';
+import { setCrashUser } from '@/lib/crashReporter';
 
 const AuthContext = createContext();
 
@@ -19,6 +20,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     checkAppState();
   }, []);
+
+  // Tieni aggiornato l'utente corrente per il crash reporter (vive fuori
+  // dal context): serve ad allegare user_id ai report e a escludere l'admin.
+  useEffect(() => {
+    setCrashUser(user);
+  }, [user]);
 
   const checkAppState = async () => {
     try {
