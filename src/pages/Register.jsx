@@ -142,6 +142,7 @@ export default function Register() {
 
   return (
     <AuthLayout
+      icon={Mail}
       title={t('register.value_prop')}
       subtitle={t('register.value_sub')}
       footer={
