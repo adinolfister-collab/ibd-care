@@ -10,6 +10,7 @@ import ScrollToTop from './components/ScrollToTop';
 import { BiometricLockProvider } from '@/lib/biometric';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { LanguageProvider } from '@/lib/i18n';
+import { GuestPreviewProvider } from '@/lib/GuestPreviewContext';
 import { ThemeProvider } from 'next-themes';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
@@ -145,6 +146,7 @@ function App() {
     <AuthProvider>
       <BiometricLockProvider>
         <LanguageProvider>
+          <GuestPreviewProvider>
           <QueryClientProvider client={queryClientInstance}>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
               <Router>
@@ -155,6 +157,7 @@ function App() {
             </ThemeProvider>
             <Toaster />
           </QueryClientProvider>
+          </GuestPreviewProvider>
         </LanguageProvider>
       </BiometricLockProvider>
     </AuthProvider>

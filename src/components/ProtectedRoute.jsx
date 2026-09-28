@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
+import { useGuestPreview } from '@/lib/GuestPreviewContext';
 import { useI18n } from '@/lib/i18n';
 import { toast } from '@/components/ui/use-toast';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -13,6 +14,7 @@ const DefaultFallback = () => (
 
 export default function ProtectedRoute({ fallback = <DefaultFallback />, unauthenticatedElement, requireRole }) {
   const { isAuthenticated, isLoadingAuth, authChecked, authError, user, checkUserAuth } = useAuth();
+  const { isGuestPreview } = useGuestPreview();
   const { t } = useI18n();
   const deniedRef = useRef(false);
 
@@ -31,6 +33,13 @@ export default function ProtectedRoute({ fallback = <DefaultFallback />, unauthe
       return <UserNotRegisteredError />;
     }
     return unauthenticatedElement;
+  }
+
+  // Anteprima ospite admin: le route protette (account, impostazioni, admin)
+  // sono inaccessibili durante l'anteprima. Reindirizza alla home pubblica
+  // anziché al login, dato che la sessione admin è ancora attiva.
+  if (isGuestPreview) {
+    return <Navigate to="/" replace />;
   }
 
   if (!isAuthenticated) {

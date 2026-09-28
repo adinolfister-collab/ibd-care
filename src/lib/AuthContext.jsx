@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 import { resetGuestSaveCount } from '@/lib/guestSaveCount';
+import { useGuestPreview } from '@/lib/GuestPreviewContext';
 
 const AuthContext = createContext();
 
@@ -157,6 +158,13 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
+  }
+  // Anteprima ospite admin: quando attiva, l'app vede l'utente come non
+  // autenticato (dati demo, route admin nascoste) pur mantenendo la sessione
+  // reale intatta, così l'admin può uscire dall'anteprima senza rifare il login.
+  const { isGuestPreview } = useGuestPreview();
+  if (isGuestPreview) {
+    return { ...context, isAuthenticated: false, user: null };
   }
   return context;
 };
