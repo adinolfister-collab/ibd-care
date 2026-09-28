@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Loader2, Send, Sparkles, Volume2, VolumeX } from 'lucide-react';
+import { Loader2, Send, Sparkles, Volume2, VolumeX, Eye } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
@@ -7,11 +7,11 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import CaryAvatar from '@/components/CaryAvatar';
 import MicToggle from '@/components/MicToggle';
-import GuestSignupCard from '@/components/GuestSignupCard';
 import PremiumPaywall from '@/components/PremiumPaywall';
 import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { trackTrialFeature } from '@/lib/trialTracking';
+import { demoAssistantReply, demoAssistantGreeting } from '@/lib/demoResponses';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
@@ -92,7 +92,20 @@ export default function Assistant() {
 
   const send = useCallback(async (content) => {
     const value = (content ?? text).trim();
-    if (!value || !conversationId || sending) return;
+    if (!value || sending) return;
+    // Demo mode (ospite): risposta simulata, nessuna chiamata backend
+    if (!isAuthenticated) {
+      setMessages((prev) => [...prev, { role: 'user', content: value }]);
+      setText('');
+      setSending(true);
+      setTimeout(() => {
+        const reply = lang === 'it' ? demoAssistantReply.it : demoAssistantReply.en;
+        setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
+        setSending(false);
+      }, 900);
+      return;
+    }
+    if (!conversationId) return;
     // Scaduto: paywall immediato al primo messaggio (niente teaser gratuito)
     if (!isSubscribed) {
       trackTrialFeature('assistant_msg', 'blocked');
@@ -107,7 +120,7 @@ export default function Assistant() {
     } catch (e) {
       setSending(false);
     }
-  }, [text, conversationId, sending, isSubscribed]);
+  }, [text, conversationId, sending, isSubscribed, isAuthenticated, lang]);
 
   useEffect(() => { sendRef.current = send; }, [send]);
 
@@ -118,16 +131,7 @@ export default function Assistant() {
 
   const busy = sending && messages[messages.length - 1]?.role !== 'assistant';
 
-  // Ospite: card morbida di invito alla registrazione (niente lucchetto)
-  if (!isAuthenticated) {
-    return (
-      <div className="flex flex-col min-h-[calc(100vh-7.5rem)]">
-        <PageHeader title={t('assistant.title')} subtitle={t('assistant.subtitle')} />
-        <PageEditorial pageKey="assistant" compact />
-        <GuestSignupCard feature="assistant_msg" className="mt-2" />
-      </div>
-    );
-  }
+  const greeting = isAuthenticated ? t('assistant.greeting') : (lang === 'it' ? demoAssistantGreeting.it : demoAssistantGreeting.en);
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-7.5rem)] md:min-h-[calc(100vh-7.5rem)]">
@@ -136,6 +140,13 @@ export default function Assistant() {
         subtitle={t('assistant.subtitle')}
       />
       <PageEditorial pageKey="assistant" compact />
+
+      {!isAuthenticated && (
+        <div className="mb-3 rounded-xl border border-terracotta/30 bg-terracotta/[0.06] px-4 py-2.5 flex items-center gap-2">
+          <Eye className="w-4 h-4 text-terracotta shrink-0" />
+          <p className="text-xs text-muted-foreground leading-snug">{t('demo.assistant_notice')}</p>
+        </div>
+      )}
 
       <Card className="flex-1 flex flex-col overflow-hidden rounded-2xl min-h-[420px]">
         {/* Messages */}
@@ -146,7 +157,7 @@ export default function Assistant() {
           {messages.length === 0 && !error && (
             <div className="text-center py-8 px-4">
               <CaryAvatar className="w-14 h-14 mx-auto mb-3" />
-              <p className="font-heading text-lg font-semibold text-primary">{t('assistant.greeting')}</p>
+              <p className="font-heading text-lg font-semibold text-primary">{greeting}</p>
               <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">{t('assistant.hint')}</p>
             </div>
           )}

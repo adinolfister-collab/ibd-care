@@ -44,7 +44,7 @@ export default function Esami() {
     <AppLayout>
       <PageHeader title={t('exams.title')} subtitle={t('exams.subtitle')} />
       <PageEditorial pageKey="esami" />
-      {!isAuthenticated && ['timeline', 'compare', 'calendar'].includes(tab) && <DemoBanner />}
+      {!isAuthenticated && <DemoBanner onReset={() => setRefreshKey((k) => k + 1)} />}
 
       <Tabs value={tab} onValueChange={setTab} className="mt-2">
         <TabsList className="flex flex-wrap h-auto p-1 bg-accent rounded-xl gap-1">

@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import DemoBanner from '@/components/DemoBanner';
 import { demoSymptoms } from '@/lib/demoData';
+import { guestSymptoms } from '@/lib/guestEntries';
 import { useWriteGuard } from '@/hooks/useWriteGuard';
 import ReadonlyBanner from '@/components/ReadonlyBanner';
 import PremiumPaywall from '@/components/PremiumPaywall';
@@ -57,7 +58,8 @@ export default function Symptoms() {
   const load = async () => {
     setLoading(true);
     if (!isAuthenticated) {
-      setItems(demoSymptoms);
+      const local = guestSymptoms.list();
+      setItems(local.length ? local : demoSymptoms);
       setLoading(false);
       return;
     }
@@ -72,7 +74,8 @@ export default function Symptoms() {
   };
   const refresh = async () => {
     if (!isAuthenticated) {
-      setItems(demoSymptoms);
+      const local = guestSymptoms.list();
+      setItems(local.length ? local : demoSymptoms);
       return;
     }
     const data = await base44.entities.SymptomEntry.list('-entry_date', 1000);
@@ -97,6 +100,20 @@ export default function Symptoms() {
     if (!guard('symptom_write')) return;
     setOpen(false);
     const payload = { ...data, pain_level: data.pain_level ?? 0, fatigue_level: data.fatigue_level ?? 0 };
+    if (!isAuthenticated) {
+      if (editing?.id && !String(editing.id).startsWith('demo-')) {
+        guestSymptoms.update(editing.id, payload);
+        setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
+      } else {
+        const entry = guestSymptoms.add(payload);
+        setItems((prev) =>
+          [entry, ...prev.filter((it) => !String(it.id).startsWith('demo-'))].sort(
+            (a, b) => (b.entry_date || '').localeCompare(a.entry_date || '')
+          )
+        );
+      }
+      return;
+    }
     if (editing?.id) {
       const previous = items.find((it) => it.id === editing.id) || editing;
       setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
@@ -120,6 +137,14 @@ export default function Symptoms() {
 
   const handleDelete = async (id) => {
     if (!guard('symptom_write')) return;
+    if (!isAuthenticated) {
+      guestSymptoms.remove(id);
+      setItems((prev) => {
+        const remaining = prev.filter((it) => it.id !== id);
+        return remaining.length ? remaining : demoSymptoms;
+      });
+      return;
+    }
     await base44.entities.SymptomEntry.delete(id);
     load();
   };
@@ -149,7 +174,7 @@ export default function Symptoms() {
       <ReadonlyBanner />
       <PageEditorial pageKey="symptoms" />
       <MagazineEssay theme="sintomi" number="01" eyebrow={t('symptoms.magazine_eyebrow')} title={t('symptoms.magazine_title')}>
-      {authChecked && !isAuthenticated && <DemoBanner />}
+      {authChecked && !isAuthenticated && <DemoBanner onReset={load} />}
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
@@ -165,10 +190,14 @@ export default function Symptoms() {
                     <p className="font-semibold text-lg">{formatDate(it.entry_date, lang)}</p>
                     {it.blood && <span className="inline-block mt-1 text-xs bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full font-medium">{t('symptoms.blood_present')}</span>}
                   </div>
-                  <div className="flex gap-1">
-                    <button onClick={() => openEdit(it)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
-                    <button onClick={() => handleDelete(it.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
-                  </div>
+                  {(!isAuthenticated && String(it.id).startsWith('demo-')) ? (
+                    <span className="text-[10px] uppercase tracking-wide text-muted-foreground/60">{t('demo.example_label')}</span>
+                  ) : (
+                    <div className="flex gap-1">
+                      <button onClick={() => openEdit(it)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
+                      <button onClick={() => handleDelete(it.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  )}
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
                   <Mini label={t('symptoms.pain')} value={`${it.pain_level ?? 0}/10`} tone={tone(it.pain_level)} />

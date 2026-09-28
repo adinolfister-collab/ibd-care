@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Loader2, Plus, Save, Trash2, X, ScanLine, AlertCircle } from 'lucide-react';
+import { Loader2, Plus, Save, Trash2, X, ScanLine, AlertCircle, Eye } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
-import { useGuestSaveGate } from '@/hooks/useGuestSaveGate';
 import { trackTrialFeature } from '@/lib/trialTracking';
-import SavePaywall from '@/components/SavePaywall';
+import { demoExtractedRecord } from '@/lib/demoResponses';
+import { guestRecords } from '@/lib/guestEntries';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
@@ -19,7 +19,6 @@ const flagColor = { high: 'text-rose-500', low: 'text-amber-500', normal: 'text-
 export default function ExamScanner({ onSaved, initialData }) {
   const { t } = useI18n();
   const { isAuthenticated } = useAuth();
-  const { attemptSave, showPaywall, setShowPaywall } = useGuestSaveGate();
   const [scanning, setScanning] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -31,12 +30,19 @@ export default function ExamScanner({ onSaved, initialData }) {
   const handleFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!isAuthenticated && !attemptSave('cloud')) return;
-    trackTrialFeature('exam_scan', 'used');
     setError(null);
     setDuplicate(null);
     setScanning(true);
     setData(null);
+    // Demo mode (ospite): scansione simulata con risposta di esempio
+    if (!isAuthenticated) {
+      setTimeout(() => {
+        setData(demoExtractedRecord(file.name));
+        setScanning(false);
+      }, 900);
+      return;
+    }
+    trackTrialFeature('exam_scan', 'used');
     try {
       const up = await base44.integrations.Core.UploadFile({ file });
       const url = up.file_url;
@@ -86,7 +92,6 @@ export default function ExamScanner({ onSaved, initialData }) {
   };
 
   const save = async () => {
-    if (!isAuthenticated && !attemptSave('cloud')) return;
     setSaving(true);
     setError(null);
     try {
@@ -102,7 +107,11 @@ export default function ExamScanner({ onSaved, initialData }) {
       };
       if (data.type === 'esame_sangue') payload.exam_category = data.exam_category || 'esame_sangue';
       if (data.next_appointment) payload.next_appointment = data.next_appointment;
-      await base44.entities.MedicalRecord.create(payload);
+      if (!isAuthenticated) {
+        guestRecords.add(payload);
+      } else {
+        await base44.entities.MedicalRecord.create(payload);
+      }
       reset();
       onSaved && onSaved();
     } catch (err) {
@@ -116,7 +125,12 @@ export default function ExamScanner({ onSaved, initialData }) {
 
   return (
     <div className="space-y-4">
-      <SavePaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
+      {!isAuthenticated && (
+        <div className="rounded-xl border border-terracotta/30 bg-terracotta/[0.06] px-4 py-2.5 flex items-center gap-2">
+          <Eye className="w-4 h-4 text-terracotta shrink-0" />
+          <p className="text-xs text-muted-foreground leading-snug">{t('demo.scanner_notice')}</p>
+        </div>
+      )}
       <Card className="border-0 shadow-sm">
         <CardContent className="p-5 space-y-4">
           <label className="block">

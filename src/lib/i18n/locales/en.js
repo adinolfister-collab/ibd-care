@@ -1241,6 +1241,20 @@ const en = {
   'premium.play_billing_note': 'Payment handled by Google Play. Cancel anytime.',
   'premium.web_checkout_note': 'Secure web checkout. Cancel anytime.',
   'premium.subtitle': '30-day free trial with all features, then Premium from $0.99/mo. Cancel anytime.',
+  'demo.mode_title': 'Demo mode',
+  'demo.mode_desc': "You're trying the app: data stays on this device and is not real. Sign up to take it with you.",
+  'demo.mode_hint': 'Demo entries stay on this device until you reset them.',
+  'demo.reset': 'Reset demo',
+  'demo.cta_trial': 'Try 30 days',
+  'demo.example_label': 'example',
+  'demo.assistant_notice': "AI assistant demo: we'll reply with an example. Sign up to have Cary analyze your real data.",
+  'demo.scanner_notice': "Scanner demo: upload a file to see an example extraction. Sign up to scan your real reports.",
+  'guide.demo_cta': 'Try the demo',
+  'guide.trial_cta': 'Start 30-day trial',
+  'guide.share_title': 'Share this demo',
+  'guide.demo_notice_desc': "This is the interactive IBD Care demo: you can use every feature as if you had Premium. The data you enter stays only on this device and is not real. Sign up for the 30-day free trial and transfer it to your account.",
+  'guide.final_title': 'Ready to start your trial?',
+  'guide.final_desc': "Create your free account: 30 days of Premium with all features, then choose whether to subscribe. Your demo data is automatically transferred to your account.",
 };
 
 export default en;

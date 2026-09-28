@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Plus, FileText, Trash2, Pencil, ExternalLink, Stethoscope, FlaskConical, CalendarClock, Search, X, ScanLine, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { demoRecords } from '@/lib/demoData';
+import { guestRecords } from '@/lib/guestEntries';
+import { demoExtractedRecord } from '@/lib/demoResponses';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
@@ -66,10 +68,17 @@ export default function Records() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [locFilter, setLocFilter] = useState('');
+  const [guestScanning, setGuestScanning] = useState(false);
+  const scanningNow = scanning || guestScanning;
 
   const load = async () => {
     setLoading(true);
-    if (!isAuthenticated) { setItems(demoRecords); setLoading(false); return; }
+    if (!isAuthenticated) {
+      const local = guestRecords.list();
+      setItems(local.length ? local : demoRecords);
+      setLoading(false);
+      return;
+    }
     try {
       const data = await base44.entities.MedicalRecord.list('-record_date', 200);
       setItems(data);
@@ -83,6 +92,15 @@ export default function Records() {
     e.target.value = '';
     if (!file) return;
     if (!guard('record_write')) return;
+    if (!isAuthenticated) {
+      setGuestScanning(true);
+      setTimeout(() => {
+        setGuestScanning(false);
+        setEditing(demoExtractedRecord(file.name));
+        setOpen(true);
+      }, 900);
+      return;
+    }
     const res = await scan(file);
     if (!res) return;
     if (res.kind === 'medication') {
@@ -122,11 +140,34 @@ export default function Records() {
 
   const handleSubmit = async (data) => {
     if (!guard('record_write')) return;
+    if (!isAuthenticated) {
+      if (editing?.id && !String(editing.id).startsWith('demo-')) {
+        guestRecords.update(editing.id, data);
+        setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...data } : it)));
+      } else {
+        const entry = guestRecords.add(data);
+        setItems((prev) => [entry, ...prev.filter((it) => !String(it.id).startsWith('demo-'))]);
+      }
+      setOpen(false);
+      return;
+    }
     if (editing?.id) await base44.entities.MedicalRecord.update(editing.id, data);
     else await base44.entities.MedicalRecord.create(data);
     setOpen(false); load();
   };
-  const handleDelete = async (id) => { if (!guard('record_write')) return; await base44.entities.MedicalRecord.delete(id); load(); };
+  const handleDelete = async (id) => {
+    if (!guard('record_write')) return;
+    if (!isAuthenticated) {
+      guestRecords.remove(id);
+      setItems((prev) => {
+        const remaining = prev.filter((it) => it.id !== id);
+        return remaining.length ? remaining : demoRecords;
+      });
+      return;
+    }
+    await base44.entities.MedicalRecord.delete(id);
+    load();
+  };
 
   return (
     <AppLayout>
@@ -136,17 +177,17 @@ export default function Records() {
         action={
           <div className="flex gap-2 flex-wrap">
             <input ref={fileRef} type="file" accept="image/*,application/pdf" onChange={onScanFile} className="hidden" />
-            <Button variant="outline" className="rounded-xl" onClick={() => fileRef.current?.click()} disabled={scanning}>
-              {scanning ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <ScanLine className="w-4 h-4 mr-1.5" />}{t('exams.scan_new_record')}
+            <Button variant="outline" className="rounded-xl" onClick={() => fileRef.current?.click()} disabled={scanningNow}>
+              {scanningNow ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <ScanLine className="w-4 h-4 mr-1.5" />}{t('exams.scan_new_record')}
             </Button>
-            <Button onClick={openNew} className="rounded-xl" disabled={scanning}><Plus className="w-4 h-4 mr-1.5" />{t('records.add')}</Button>
+            <Button onClick={openNew} className="rounded-xl" disabled={scanningNow}><Plus className="w-4 h-4 mr-1.5" />{t('records.add')}</Button>
           </div>
         }
       />
       <ReadonlyBanner />
       <PageEditorial pageKey="records" />
 
-      {authChecked && !isAuthenticated && <DemoBanner />}
+      {authChecked && !isAuthenticated && <DemoBanner onReset={load} />}
 
       {/* Search & advanced filters */}
       <Card className="border-0 shadow-sm mb-4">
@@ -218,10 +259,14 @@ export default function Records() {
                         <p className="text-sm text-muted-foreground">{recordTypeLabel(t, r.type)} · {formatDate(r.record_date, lang)}</p>
                       </div>
                     </div>
-                    <div className="flex gap-1">
-                      <button onClick={() => openEdit(r)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
-                      <button onClick={() => handleDelete(r.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
-                    </div>
+                    {(!isAuthenticated && String(r.id).startsWith('demo-')) ? (
+                      <span className="text-[10px] uppercase tracking-wide text-muted-foreground/60">{t('demo.example_label')}</span>
+                    ) : (
+                      <div className="flex gap-1">
+                        <button onClick={() => openEdit(r)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete(r.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    )}
                   </div>
                   {(r.provider || r.location) && <p className="text-sm text-muted-foreground mt-3">{[r.provider, r.location].filter(Boolean).join(' · ')}</p>}
                   {r.result_summary && <p className="text-base mt-2 whitespace-pre-wrap">{r.result_summary}</p>}

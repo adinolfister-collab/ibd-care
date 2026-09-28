@@ -19,6 +19,8 @@ import MonthlyReport from '@/components/MonthlyReport';
 import PremiumExportButton from '@/components/PremiumExportButton';
 import PremiumLockBadge from '@/components/PremiumLockBadge';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useAuth } from '@/lib/AuthContext';
+import { getGuestSymptoms, getGuestFoods, getGuestMeds, getGuestRecords } from '@/lib/guestData';
 
 function defaultFrom() {
   const d = new Date();
@@ -30,6 +32,7 @@ function todayStr() { return new Date().toISOString().slice(0, 10); }
 export default function Summary() {
   const { t } = useI18n();
   const { isExpired } = useSubscription();
+  const { isAuthenticated } = useAuth();
   const [from, setFrom] = useState(defaultFrom());
   const [to, setTo] = useState(todayStr());
   const [inc, setInc] = useState({ symptoms: true, food: true, meds: true, records: true });
@@ -42,10 +45,17 @@ export default function Summary() {
     setBusy(true);
     let symptoms = [], food = [], meds = [], records = [];
     try {
-      if (inc.symptoms) symptoms = (await base44.entities.SymptomEntry.list('-entry_date', 500)).filter(inRange);
-      if (inc.food) food = (await base44.entities.FoodEntry.list('-entry_date', 500)).filter(inRange);
-      if (inc.meds) meds = await base44.entities.Medication.list('-created_date', 500);
-      if (inc.records) records = (await base44.entities.MedicalRecord.list('-record_date', 500)).filter(r => inRange(r, 'record_date'));
+      if (!isAuthenticated) {
+        if (inc.symptoms) symptoms = getGuestSymptoms().filter(inRange);
+        if (inc.food) food = getGuestFoods().filter(inRange);
+        if (inc.meds) meds = getGuestMeds();
+        if (inc.records) records = getGuestRecords().filter((r) => inRange(r, 'record_date'));
+      } else {
+        if (inc.symptoms) symptoms = (await base44.entities.SymptomEntry.list('-entry_date', 500)).filter(inRange);
+        if (inc.food) food = (await base44.entities.FoodEntry.list('-entry_date', 500)).filter(inRange);
+        if (inc.meds) meds = await base44.entities.Medication.list('-created_date', 500);
+        if (inc.records) records = (await base44.entities.MedicalRecord.list('-record_date', 500)).filter((r) => inRange(r, 'record_date'));
+      }
     } catch (e) {
       setBusy(false);
       return;

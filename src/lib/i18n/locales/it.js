@@ -1238,6 +1238,20 @@ const it = {
   'premium.play_billing_note': 'Pagamento gestito da Google Play. Cancella in qualsiasi momento.',
   'premium.web_checkout_note': 'Pagamento sicuro via web. Cancella in qualsiasi momento.',
   'premium.subtitle': '30 giorni di prova gratuita con tutte le funzioni, poi Premium da €0,99/mese. Disdici quando vuoi.',
+  'demo.mode_title': 'Modalità demo',
+  'demo.mode_desc': "Stai provando l'app: i dati restano su questo dispositivo e non sono reali. Registrati per portarli con te.",
+  'demo.mode_hint': 'Le registrazioni demo restano sul dispositivo finché non le azzzeri.',
+  'demo.reset': 'Azzera demo',
+  'demo.cta_trial': 'Prova 30 giorni',
+  'demo.example_label': 'esempio',
+  'demo.assistant_notice': "Demo dell'assistente AI: ti risponderemo con un esempio. Registrati per far analizzare a Cary i tuoi dati veri.",
+  'demo.scanner_notice': "Demo dello scanner: carica un file per vedere un'estrazione di esempio. Registrati per scansionare i tuoi referti veri.",
+  'guide.demo_cta': 'Prova la demo',
+  'guide.trial_cta': 'Inizia la prova 30 giorni',
+  'guide.share_title': 'Condividi questa demo',
+  'guide.demo_notice_desc': "Questa è la demo interattiva di IBD Care: puoi usare tutte le funzioni come se avessi Premium. I dati che registri restano solo su questo dispositivo e non sono reali. Registrati per la prova gratuita di 30 giorni e trasferirli nel tuo account.",
+  'guide.final_title': 'Pronto a iniziare la tua prova?',
+  'guide.final_desc': "Crea il tuo account gratis: 30 giorni di Premium con tutte le funzioni, poi scegli se abbonarti. I dati della demo vengono trasferiti automaticamente nel tuo account.",
 };
 
 export default it;

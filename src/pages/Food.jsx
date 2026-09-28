@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
 import DemoBanner from '@/components/DemoBanner';
 import { demoFoods } from '@/lib/demoData';
+import { guestFoods } from '@/lib/guestEntries';
 import { useWriteGuard } from '@/hooks/useWriteGuard';
 import ReadonlyBanner from '@/components/ReadonlyBanner';
 import PremiumPaywall from '@/components/PremiumPaywall';
@@ -53,7 +54,8 @@ export default function Food() {
   const load = async () => {
     setLoading(true);
     if (!isAuthenticated) {
-      setItems(demoFoods);
+      const local = guestFoods.list();
+      setItems(local.length ? local : demoFoods);
       setLoading(false);
       return;
     }
@@ -68,7 +70,8 @@ export default function Food() {
   };
   const refresh = async () => {
     if (!isAuthenticated) {
-      setItems(demoFoods);
+      const local = guestFoods.list();
+      setItems(local.length ? local : demoFoods);
       return;
     }
     const data = await base44.entities.FoodEntry.list('-entry_date', 200);
@@ -111,6 +114,19 @@ export default function Food() {
     setOpen(false);
     const sel = Array.isArray(data.items) ? data.items : [];
     const payload = { ...data, items: sel, foods: serializeItems(sel) || data.foods || '' };
+    if (!isAuthenticated) {
+      if (editing?.id && !String(editing.id).startsWith('demo-')) {
+        guestFoods.update(editing.id, payload);
+        setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
+      } else {
+        const entry = guestFoods.add(payload);
+        setItems((prev) => {
+          const rest = prev.filter((it) => !String(it.id).startsWith('demo-'));
+          return [entry, ...rest];
+        });
+      }
+      return;
+    }
     if (editing?.id) {
       const previous = items.find((it) => it.id === editing.id) || editing;
       setItems((prev) => prev.map((it) => (it.id === editing.id ? { ...it, ...payload } : it)));
@@ -131,6 +147,14 @@ export default function Food() {
   };
   const handleDelete = async (id) => {
     if (!guard('food_write')) return;
+    if (!isAuthenticated) {
+      guestFoods.remove(id);
+      setItems((prev) => {
+        const remaining = prev.filter((it) => it.id !== id);
+        return remaining.length ? remaining : demoFoods;
+      });
+      return;
+    }
     await base44.entities.FoodEntry.delete(id);
     load();
   };
@@ -172,7 +196,7 @@ export default function Food() {
       <div className="mb-6">
         <DailyNutrition entries={items} groups={catalogGroups} />
       </div>
-      {authChecked && !isAuthenticated && <DemoBanner />}
+      {authChecked && !isAuthenticated && <DemoBanner onReset={load} />}
       {isAuthenticated && templates.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
           {templates.map((tpl) => (
@@ -203,10 +227,14 @@ export default function Food() {
                           <span className="text-xs font-medium bg-accent text-accent-foreground px-2.5 py-1 rounded-full">{it.meal_type ? t(MEAL_TYPE_KEYS[it.meal_type]) : '—'}</span>
                           {it.reaction && <span className={cn('text-xs font-medium', reactionTone[it.reaction])}>· {reactionLabel(t, it.reaction)}</span>}
                         </div>
-                        <div className="flex gap-1">
-                          <button onClick={() => openEdit(it)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete(it.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
-                        </div>
+                        {(!isAuthenticated && String(it.id).startsWith('demo-')) ? (
+                          <span className="text-[10px] uppercase tracking-wide text-muted-foreground/60">{t('demo.example_label')}</span>
+                        ) : (
+                          <div className="flex gap-1">
+                            <button onClick={() => openEdit(it)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
+                            <button onClick={() => handleDelete(it.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
+                          </div>
+                        )}
                       </div>
                       {Array.isArray(it.items) && it.items.length > 0 ? (
                         <div className="mt-3 flex flex-wrap gap-1.5">

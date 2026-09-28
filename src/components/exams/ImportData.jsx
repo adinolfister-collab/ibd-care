@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
-import { useGuestSaveGate } from '@/hooks/useGuestSaveGate';
 import { trackTrialFeature } from '@/lib/trialTracking';
-import SavePaywall from '@/components/SavePaywall';
+import { demoExtractedRecord, demoExtractedMedication } from '@/lib/demoResponses';
+import { guestRecords, guestMeds } from '@/lib/guestEntries';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -34,7 +34,6 @@ export default function ImportData({ onSaved }) {
   const { t, lang } = useI18n();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const { attemptSave, showPaywall, setShowPaywall } = useGuestSaveGate();
   const inputRef = useRef(null);
   const [jobs, setJobs] = useState([]); // { id, file, status, error, record, type }
   const [busy, setBusy] = useState(false);
@@ -42,12 +41,31 @@ export default function ImportData({ onSaved }) {
   const addFiles = async (fileList) => {
     const files = Array.from(fileList || []);
     if (!files.length) return;
-    if (!isAuthenticated && !attemptSave('cloud')) return;
-    trackTrialFeature('exam_import', 'used');
     setBusy(true);
     const start = files.map((f) => ({ id: Math.random().toString(36).slice(2), file: f, status: 'scanning' }));
     setJobs((cur) => [...start, ...cur]);
 
+    // Demo mode (ospite): import simulato con record di esempio salvati in locale
+    if (!isAuthenticated) {
+      for (const job of start) {
+        await new Promise((r) => setTimeout(r, 800));
+        const isMed = Math.random() < 0.3;
+        if (isMed) {
+          const saved = guestMeds.add(demoExtractedMedication(job.file.name));
+          updateJob(job.id, { status: 'saved', record: saved, type: 'terapia' });
+        } else {
+          const rec = demoExtractedRecord(job.file.name);
+          const saved = guestRecords.add(rec);
+          updateJob(job.id, { status: 'saved', record: saved, type: rec.type });
+        }
+        try { base44.analytics.track({ eventName: 'medical_document_imported', properties: { section: 'demo' } }); } catch (_) {}
+        onSaved && onSaved();
+      }
+      setBusy(false);
+      return;
+    }
+
+    trackTrialFeature('exam_import', 'used');
     for (const job of start) {
       try {
         const up = await base44.integrations.Core.UploadFile({ file: job.file });
@@ -114,7 +132,6 @@ export default function ImportData({ onSaved }) {
 
   return (
     <div className="space-y-4">
-      <SavePaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
       <Card className="border-0 shadow-sm">
         <CardContent className="p-5 space-y-4">
           <div>
