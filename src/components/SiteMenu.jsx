@@ -4,7 +4,7 @@ import {
   Newspaper, Users, Activity, Utensils, Info, Mail,
   Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin,
   FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag, Crown, CreditCard, BookOpen,
-  TrendingUp, Megaphone, Eye,
+  TrendingUp, Megaphone, Eye, PieChart,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -25,6 +25,7 @@ const DIARIO = [
 ];
 
 const ANALISI = [
+  { to: '/analisi', key: 'nav.analisi', icon: PieChart },
   { to: '/trends', key: 'nav.trends', icon: LineChart },
   { to: '/symptom-charts', key: 'nav.symptom_charts', icon: BarChart3 },
   { to: '/correlazioni', key: 'nav.correlazioni', icon: GitCompare },

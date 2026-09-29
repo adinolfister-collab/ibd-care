@@ -3,7 +3,7 @@
 // l'enum dell'entita' PageView.
 const DIARY_PATHS = [
   '/symptoms', '/food', '/meds', '/records', '/esami',
-  '/trends', '/symptom-charts', '/correlazioni',
+  '/analisi', '/trends', '/symptom-charts', '/correlazioni',
 ];
 
 // Pagine di acquisizione/autenticazione: funnel di conversione -> Abbonamento
