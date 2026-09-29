@@ -3,6 +3,7 @@ import { Loader2, Plus, Save, Trash2, X, ScanLine, AlertCircle, Eye } from 'luci
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 import { trackTrialFeature } from '@/lib/trialTracking';
 import { demoExtractedRecord } from '@/lib/demoResponses';
 import { guestRecords } from '@/lib/guestEntries';
@@ -10,6 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import PremiumPaywall from '@/components/PremiumPaywall';
 
 const TYPES = ['visita', 'esame', 'esame_sangue', 'referto', 'controllo'];
 const BLOOD_CATS = ['esame_sangue', 'calprotectina'];
@@ -19,7 +21,9 @@ const flagColor = { high: 'text-rose-500', low: 'text-amber-500', normal: 'text-
 export default function ExamScanner({ onSaved, initialData }) {
   const { t } = useI18n();
   const { isAuthenticated } = useAuth();
+  const { isSubscribed } = useSubscription();
   const [scanning, setScanning] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [duplicate, setDuplicate] = useState(null);
@@ -40,6 +44,13 @@ export default function ExamScanner({ onSaved, initialData }) {
         setData(demoExtractedRecord(file.name));
         setScanning(false);
       }, 900);
+      return;
+    }
+    // Premium required: utenti autenticati con trial scaduta → paywall
+    if (!isSubscribed) {
+      trackTrialFeature('exam_scan', 'blocked');
+      setShowPaywall(true);
+      setScanning(false);
       return;
     }
     trackTrialFeature('exam_scan', 'used');
@@ -265,6 +276,7 @@ export default function ExamScanner({ onSaved, initialData }) {
           </div>
         </CardContent></Card>
       )}
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </div>
   );
 }

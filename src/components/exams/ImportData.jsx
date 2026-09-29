@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 import { trackTrialFeature } from '@/lib/trialTracking';
 import { demoExtractedRecord, demoExtractedMedication } from '@/lib/demoResponses';
 import { guestRecords, guestMeds } from '@/lib/guestEntries';
@@ -11,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { localeForLang } from '@/lib/enumLabels';
+import PremiumPaywall from '@/components/PremiumPaywall';
 
 const TYPE_ICON = {
   visita: Stethoscope, esame: FileText, esame_sangue: FlaskConical,
@@ -34,8 +36,10 @@ export default function ImportData({ onSaved }) {
   const { t, lang } = useI18n();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { isSubscribed } = useSubscription();
   const inputRef = useRef(null);
-  const [jobs, setJobs] = useState([]); // { id, file, status, error, record, type }
+  const [jobs, setJobs] = useState([]);
+  const [showPaywall, setShowPaywall] = useState(false); // { id, file, status, error, record, type }
   const [busy, setBusy] = useState(false);
 
   const addFiles = async (fileList) => {
@@ -65,6 +69,13 @@ export default function ImportData({ onSaved }) {
       return;
     }
 
+    // Premium required: utenti autenticati con trial scaduta → paywall
+    if (!isSubscribed) {
+      trackTrialFeature('exam_import', 'blocked');
+      setShowPaywall(true);
+      setBusy(false);
+      return;
+    }
     trackTrialFeature('exam_import', 'used');
     for (const job of start) {
       try {
@@ -242,6 +253,7 @@ export default function ImportData({ onSaved }) {
           </CardContent>
         </Card>
       )}
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </div>
   );
 }
