@@ -104,6 +104,8 @@ const AuthenticatedApp = () => {
         <Route path="/founders" element={<PageTransition><Founders /></PageTransition>} />
         <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />
         <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
+        {/* Deprecated /guida -> /demo redirect (SEO/link legacy) */}
+        <Route path="/guida" element={<Navigate to="/demo" replace />} />
         <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
         <Route path="/supporto" element={<PageTransition><Supporto /></PageTransition>} />
         <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />

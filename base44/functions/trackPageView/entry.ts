@@ -63,7 +63,7 @@ async function lookupCountry(ip: string): Promise<string> {
 }
 
 const VALID_SECTIONS = new Set([
-  'Home', 'Diario', 'Negozio', 'Community', 'Abbonamento', 'Account', 'Altro',
+  'Home', 'Diario', 'Negozio', 'Community', 'Abbonamento', 'Strumenti', 'Account', 'Altro',
 ]);
 
 export default async function(req: Request): Promise<Response> {

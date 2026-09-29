@@ -6,6 +6,16 @@ const DIARY_PATHS = [
   '/trends', '/symptom-charts', '/correlazioni',
 ];
 
+// Pagine di acquisizione/autenticazione: funnel di conversione -> Abbonamento
+const ACQUISITION_PATHS = [
+  '/login', '/register', '/demo', '/forgot-password', '/reset-password',
+];
+
+// Feature di valore premium/utility -> Strumenti
+const TOOLS_PATHS = [
+  '/assistant', '/summary', '/map',
+];
+
 export function mapPathToSection(pathname) {
   const p = pathname || '/';
   if (
@@ -17,6 +27,8 @@ export function mapPathToSection(pathname) {
   ) {
     return 'Home';
   }
+  if (ACQUISITION_PATHS.some((s) => p === s || p.startsWith(s + '/'))) return 'Abbonamento';
+  if (TOOLS_PATHS.some((s) => p === s || p.startsWith(s + '/'))) return 'Strumenti';
   if (DIARY_PATHS.some((s) => p === s || p.startsWith(s + '/'))) return 'Diario';
   if (p.startsWith('/shop')) return 'Negozio';
   if (p.startsWith('/community') || p.startsWith('/supporto')) return 'Community';
@@ -26,5 +38,5 @@ export function mapPathToSection(pathname) {
 }
 
 export const PAGE_SECTIONS = [
-  'Home', 'Diario', 'Negozio', 'Community', 'Abbonamento', 'Account', 'Altro',
+  'Home', 'Diario', 'Negozio', 'Community', 'Abbonamento', 'Strumenti', 'Account', 'Altro',
 ];
