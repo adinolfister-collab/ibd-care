@@ -77,7 +77,7 @@ export const LANGS = [
 
 // Base URL usata per comporre i deep link nei post social.
 // Personalizzabile: dominio custom se connesso, fallback sul dominio base44.
-export const APP_BASE_URL = 'https://ibd-care.base44.app';
+export const APP_BASE_URL = 'https://ibd-care.it';
 
 // Pagine dell'app selezionabili come deep link da includere nei post.
 // Il primo elemento (path vuoto) equivale a "nessun link".

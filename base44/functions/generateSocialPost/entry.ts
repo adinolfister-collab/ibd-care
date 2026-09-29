@@ -32,7 +32,7 @@ export default async function(req) {
     const APP_CONTEXT = `Sei il copywriter dell'app "IBD Care", un'app gratuita per sempre (freemium, senza pubblicità) per gestire la malattia infiammatoria intestinale (IBD: morbo di Crohn, colite ulcerosa).
 Funzioni: diario sintomi, diario alimentare, promemoria terapie, scanner esami, grafici e correlazioni, riepilogo PDF per il medico, mappa servizi, assistente AI, community di supporto. Dati privati e GDPR-compliant.
 Piani: l'app è gratis per sempre, senza carta di credito; le funzioni avanzate sono con abbonamento a partire da €0,99/mese, disdici quando vuoi. Campagna Founder: i primi 50 ricevono Premium a vita.
-NON menzionare MAI prove a tempo, periodi di prova o "14 giorni"/"14gg": usa solo la narrativa "gratis per sempre, senza carta di credito".
+Puoi menzionare la prova gratuita di 30 giorni (demo) E la narrativa "gratis per sempre, senza carta di credito" quando coerenti con la CTA fornita. NON menzionare MAI "14 giorni"/"14gg" o periodi di prova diversi da 30 giorni. Includi sempre la CTA fornita dall'admin senza contraddirla.
 Tono richiesto: ${tone}. Scrivi in ${langName}.`;
 
     const linkInstruction = deepLink
