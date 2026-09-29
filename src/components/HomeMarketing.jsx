@@ -47,16 +47,15 @@ export default function HomeMarketing() {
               {t('landing.hero_subtitle')}
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Link to="/register">
+              <Link to="/demo">
                 <button className="inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-terracotta text-terracotta-foreground font-medium text-sm hover:bg-terracotta/90 transition-colors shadow-md">
-                  <HeartPulse className="w-4 h-4" />
-                  {t('landing.hero_cta_register')}
+                  <Play className="w-4 h-4" />
+                  {t('landing.hero_cta_demo')}
                 </button>
               </Link>
-              <Link to="/login">
+              <Link to="/register">
                 <button className="inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-primary-foreground/15 text-primary-foreground font-medium text-sm border border-primary-foreground/30 hover:bg-primary-foreground/25 transition-colors">
-                  {t('landing.hero_cta_login')}
-                  <ArrowRight className="w-4 h-4" />
+                  {t('landing.hero_cta_register')}
                 </button>
               </Link>
             </div>
