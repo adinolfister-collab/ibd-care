@@ -14,6 +14,7 @@ const fr = {
   'nav.group_analisi': 'Analyses',
   'nav.group_community': 'Communauté',
   'nav.group_risorse': 'Ressources',
+  'nav.explore_risorse': 'Explorer les ressources',
   'nav.group_account': 'Compte',
   'nav.group_admin': 'Administration',
   'nav.desktop_view': 'Vue ordinateur',

@@ -14,6 +14,7 @@ const sq = {
   'nav.group_analisi': 'Analiza',
   'nav.group_community': 'Komuniteti',
   'nav.group_risorse': 'Burimet',
+  'nav.explore_risorse': 'Eksploro burimet',
   'nav.group_account': 'Llogaria',
   'nav.group_admin': 'Administrimi',
   'nav.desktop_view': 'Pamje desktop',

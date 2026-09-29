@@ -14,6 +14,7 @@ const zh = {
   'nav.group_analisi': '分析',
   'nav.group_community': '社区',
   'nav.group_risorse': '资源',
+  'nav.explore_risorse': '探索资源',
   'nav.group_account': '账户',
   'nav.group_admin': '管理',
   'nav.desktop_view': '桌面视图',

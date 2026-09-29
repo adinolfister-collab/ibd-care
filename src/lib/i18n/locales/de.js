@@ -14,6 +14,7 @@ const de = {
   'nav.group_analisi': 'Auswertung',
   'nav.group_community': 'Community',
   'nav.group_risorse': 'Ressourcen',
+  'nav.explore_risorse': 'Ressourcen entdecken',
   'nav.group_account': 'Konto',
   'nav.group_admin': 'Verwaltung',
   'nav.desktop_view': 'Desktop-Ansicht',

@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import MobileTopNav from '@/components/MobileTopNav';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import SiteMenu from '@/components/SiteMenu';
+import ExploreLabel from '@/components/ExploreLabel';
 import DemoExpiredGate from '@/components/DemoExpiredGate';
 import { guestSymptoms, guestFoods, guestRecords, syncGuestEntriesToCloud } from '@/lib/guestEntries';
 import { getDemoTrialState, ensureDemoTrialStarted, isDemoEnabledPath } from '@/lib/demoTrial';
@@ -81,6 +82,7 @@ export default function AppLayout({ children }) {
           <DemoExpiredGate />
         ) : (
           <>
+            <ExploreLabel />
             {children}
             <SiteMenu />
           </>

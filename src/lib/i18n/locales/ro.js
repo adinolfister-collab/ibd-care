@@ -14,6 +14,7 @@ const ro = {
   'nav.group_analisi': 'Analiză',
   'nav.group_community': 'Comunitate',
   'nav.group_risorse': 'Resurse',
+  'nav.explore_risorse': 'Explorează resursele',
   'nav.group_account': 'Cont',
   'nav.group_admin': 'Administrare',
   'nav.desktop_view': 'Vizualizare desktop',

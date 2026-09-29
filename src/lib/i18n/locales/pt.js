@@ -14,6 +14,7 @@ const pt = {
   'nav.group_analisi': 'Análises',
   'nav.group_community': 'Comunidade',
   'nav.group_risorse': 'Recursos',
+  'nav.explore_risorse': 'Explorar recursos',
   'nav.group_account': 'Conta',
   'nav.group_admin': 'Administração',
   'nav.desktop_view': 'Vista de desktop',

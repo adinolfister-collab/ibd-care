@@ -14,6 +14,7 @@ const ru = {
   'nav.group_analisi': 'Аналитика',
   'nav.group_community': 'Сообщество',
   'nav.group_risorse': 'Ресурсы',
+  'nav.explore_risorse': 'Исследуйте ресурсы',
   'nav.group_account': 'Аккаунт',
   'nav.group_admin': 'Администрирование',
   'nav.desktop_view': 'Версия для ПК',
