@@ -7,6 +7,7 @@ import MagazineEssay from '@/components/MagazineEssay';
 import PublicFooter from '@/components/PublicFooter';
 import CopyLinkBox from '@/components/CopyLinkBox';
 import ShareApp from '@/components/ShareApp';
+import DemoPromoBanner from '@/components/DemoPromoBanner';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
 
@@ -44,6 +45,8 @@ export default function Demo() {
     <AppLayout>
       <div className="w-full max-w-2xl mx-auto">
         <PageHeader title={t('guide.title')} subtitle={t('guide.subtitle')} />
+
+        <DemoPromoBanner />
 
         {/* Hero: cos'è IBD Care + prova la demo + trial + condividi */}
         <MagazineEssay theme="serena" number="00" eyebrow={t('guide.intro_eyebrow')} title={t('guide.intro_title')}>

@@ -6,9 +6,9 @@ export const SITE_BASE = 'https://ibd-care.it';
 export const DEFAULT_OG_IMAGE =
   'https://media.base44.com/images/public/6a80de4be246a7b03417c238/3cbe11905_generated_image.png';
 
-// Foto hero della demo (tema "serena") usata come og:image dedicato per /demo.
-import { THEME_IMAGES } from '@/lib/themeImages';
-export const DEMO_OG_IMAGE = THEME_IMAGES.serena;
+// Immagine social dedicata 1200×630 per la demo (generata ad hoc, stile brand).
+export const DEMO_OG_IMAGE =
+  'https://media.base44.com/images/public/6a80de4be246a7b03417c238/41e1365ec_generated_image.png';
 
 // Title/description di default (Home) — keyword-rich, usati anche come fallback SSR.
 export const DEFAULT_TITLE =
