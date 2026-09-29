@@ -46,7 +46,7 @@ export default function AbbonamentoFeatures() {
         {/* Header */}
         <div className="grid grid-cols-[1fr_72px_72px] sm:grid-cols-[1fr_96px_96px]">
           <div className="px-4 py-3 bg-accent/30 border-b border-border">
-            <span className="font-heading text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-wide">Funzionalità</span>
+            <span className="font-heading text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-wide">{t('abb.col_feature')}</span>
           </div>
           <div className="px-2 sm:px-4 py-3 bg-accent/40 border-b border-l border-border flex items-center justify-center gap-1.5">
             <Check className="w-4 h-4 text-primary" />
