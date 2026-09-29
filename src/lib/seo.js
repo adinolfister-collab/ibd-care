@@ -6,6 +6,10 @@ export const SITE_BASE = 'https://ibd-care.it';
 export const DEFAULT_OG_IMAGE =
   'https://media.base44.com/images/public/6a80de4be246a7b03417c238/3cbe11905_generated_image.png';
 
+// Foto hero della demo (tema "serena") usata come og:image dedicato per /demo.
+import { THEME_IMAGES } from '@/lib/themeImages';
+export const DEMO_OG_IMAGE = THEME_IMAGES.serena;
+
 // Title/description di default (Home) — keyword-rich, usati anche come fallback SSR.
 export const DEFAULT_TITLE =
   'IBD Care – Diario sintomi IBD, alimentazione e terapie';
@@ -18,7 +22,7 @@ const STATIC_ROUTES = [
   { path: '/', titleKey: null, descKey: null },
   { path: '/about', titleKey: 'about.title', descKey: 'about.subtitle' },
   { path: '/privacy', titleKey: 'privacy.title', descKey: 'privacy.subtitle', noindex: true },
-  { path: '/demo', titleKey: 'guide.title', descKey: 'guide.subtitle' },
+  { path: '/demo', titleKey: 'guide.title', descKey: 'share.demo_desc', image: DEMO_OG_IMAGE },
   { path: '/contact', titleKey: 'nav.contact', descKey: 'app.tagline' },
   { path: '/founders', titleKey: 'nav.founders', descKey: 'app.tagline' },
   { path: '/news', titleKey: 'news.title', descKey: 'news.page_subtitle' },
@@ -74,6 +78,7 @@ export function resolveRouteMeta(pathname, t) {
     noindex: !!found.noindex,
     type: 'website',
     path: pathname,
+    image: found.image || null,
   };
 }
 

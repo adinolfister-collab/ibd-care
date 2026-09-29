@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Share2, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
+import { SITE_BASE } from '@/lib/seo';
 
 export default function ShareApp({ variant = 'icon' }) {
   const { t } = useI18n();
+  const location = useLocation();
   const [copied, setCopied] = useState(false);
 
+  // URL canonico sul dominio pubblico (ibd-care.it) invece dell'host di preview.
   const shareData = {
     title: 'IBD Care',
     text: t('share.text'),
-    url: typeof window !== 'undefined' ? window.location.origin : 'https://ibd-care.base44.app',
+    url: SITE_BASE + location.pathname,
   };
 
   const handleShare = async () => {

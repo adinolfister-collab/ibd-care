@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Share2, Copy, Check } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
+import { SITE_BASE } from '@/lib/seo';
 
 // Social platforms with brand-colored initials (lucide has no brand icons).
 const PLATFORMS = [
@@ -14,6 +16,7 @@ const PLATFORMS = [
 
 export default function SocialShare() {
   const { t } = useI18n();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const ref = useRef(null);
@@ -25,7 +28,8 @@ export default function SocialShare() {
     return () => document.removeEventListener('mousedown', onClick);
   }, [open]);
 
-  const url = typeof window !== 'undefined' ? window.location.href : 'https://ibd-care.base44.app';
+  // URL canonico sul dominio pubblico (ibd-care.it) invece dell'host di preview.
+  const url = SITE_BASE + location.pathname;
   const shareText = t('share.text');
   const shareTitle = 'IBD Care';
 

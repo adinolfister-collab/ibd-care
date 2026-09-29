@@ -208,6 +208,7 @@ const en = {
   'share.copied': 'Link copied!',
   'share.text': 'IBD Care: a health diary to manage IBD, with symptoms, food, therapy and community.',
   'share.page': 'Share this page',
+  'share.demo_desc': "Try IBD Care free for 30 days: symptom diary, food tracking, therapy management and community for people living with Crohn's disease and ulcerative colitis. No account required.",
   'news.title': 'IBD News',
   'news.refresh': 'Refresh news',
   'news.loading': 'Loading news…',

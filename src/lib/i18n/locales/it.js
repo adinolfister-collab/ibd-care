@@ -208,6 +208,7 @@ const it = {
   'share.copied': 'Link copiato!',
   'share.text': 'IBD Care: il diario di salute per gestire l\u2019IBD, con sintomi, alimentazione, terapie e community.',
   'share.page': 'Condividi questa pagina',
+  'share.demo_desc': 'Prova IBD Care gratis per 30 giorni: diario sintomi, alimentazione, terapie e community per chi vive con il morbo di Crohn e la colite ulcerosa. Nessun account richiesto.',
   'news.title': 'Notizie IBD',
   'news.refresh': 'Aggiorna notizie',
   'news.loading': 'Caricamento notizie\u2026',
