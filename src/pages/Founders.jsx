@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Crown, Trophy, Users, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
+import { Crown, Trophy, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -9,7 +9,6 @@ import { useToast } from '@/components/ui/use-toast';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 export default function Founders() {
   const { t } = useI18n();
@@ -33,8 +32,7 @@ export default function Founders() {
         clearFoundersCache();
         await reload();
         if (res.data?.confirmed) {
-          const isLife = res.data?.slot_type === 'lifetime';
-          toast({ title: (isLife ? t('founders.confirm_toast') : t('founders.confirm_toast_three')).replace('{n}', res.data.rank || '') });
+          toast({ title: t('founders.confirm_toast').replace('{n}', res.data.rank || '') });
         } else {
           toast({ title: t('founders.status_pending') });
         }
@@ -58,11 +56,10 @@ export default function Founders() {
         </div>
       );
     }
-    const isLife = mySignup.slot_type === 'lifetime';
     return (
-      <div className={cn('rounded-2xl border px-4 py-3 text-sm flex items-start gap-2', isLife ? 'border-terracotta/40 bg-terracotta/10 text-terracotta' : 'border-emerald-200 bg-emerald-50 text-emerald-700')}>
+      <div className="rounded-2xl border border-terracotta/40 bg-terracotta/10 text-terracotta px-4 py-3 text-sm flex items-start gap-2">
         <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-        <span>{(isLife ? t('founders.status_lifetime') : t('founders.status_three_months')).replace('{n}', mySignup.rank || '')}</span>
+        <span>{t('founders.status_lifetime').replace('{n}', mySignup.rank || '')}</span>
       </div>
     );
   };
@@ -80,21 +77,14 @@ export default function Founders() {
           }
         />
 
-        {/* Counters */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="rounded-2xl border-2 border-terracotta/60 bg-gradient-to-br from-terracotta/10 to-accent/30 p-5 text-center">
-            <Crown className="w-6 h-6 text-terracotta mx-auto mb-1.5" />
-            <p className="font-heading text-3xl font-semibold text-foreground">
+        {/* Lifetime counter */}
+        <div className="mb-6">
+          <div className="rounded-2xl border-2 border-terracotta/60 bg-gradient-to-br from-terracotta/10 to-accent/30 p-6 text-center">
+            <Crown className="w-7 h-7 text-terracotta mx-auto mb-2" />
+            <p className="font-heading text-4xl font-semibold text-foreground">
               {loading ? '–' : `${counts?.lifetime || 0}/${counts?.lifetimeTotal || 10}`}
             </p>
-            <p className="text-xs text-muted-foreground mt-0.5">{t('founders.counter_lifetime')}</p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-5 text-center">
-            <Users className="w-6 h-6 text-primary mx-auto mb-1.5" />
-            <p className="font-heading text-3xl font-semibold text-foreground">
-              {loading ? '–' : `${counts?.confirmed || 0}/${counts?.total || 50}`}
-            </p>
-            <p className="text-xs text-muted-foreground mt-0.5">{t('founders.counter_total')}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('founders.counter_lifetime')}</p>
           </div>
         </div>
 
@@ -142,7 +132,7 @@ export default function Founders() {
             <p className="font-heading font-semibold text-foreground text-sm">{t('founders.ranking_title')}</p>
             {!loading && counts && (
               <span className="ml-auto text-xs text-muted-foreground">
-                {counts.lifetimeLeft > 0 ? `${counts.lifetimeLeft} ${t('founders.spots_left_lifetime')}` : `${counts.totalLeft} ${t('founders.spots_left_total')}`}
+                {counts.lifetimeLeft > 0 ? `${counts.lifetimeLeft} ${t('founders.spots_left_lifetime')}` : t('founders.full_total')}
               </span>
             )}
           </div>
@@ -160,8 +150,8 @@ export default function Founders() {
                   <span className="font-medium text-foreground text-sm flex-1 truncate">
                     {r.display_name}
                   </span>
-                  <span className={cn('text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0', r.slot_type === 'lifetime' ? 'bg-terracotta/15 text-terracotta' : 'bg-accent text-accent-foreground')}>
-                    {r.slot_type === 'lifetime' ? t('founders.badge_lifetime') : t('founders.badge_three_months')}
+                  <span className="text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 bg-terracotta/15 text-terracotta">
+                    {t('founders.badge_lifetime')}
                   </span>
                 </li>
               ))}

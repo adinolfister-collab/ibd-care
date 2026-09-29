@@ -125,8 +125,7 @@ export default function CommunityBoard({ me, isAdmin, onDmUser }) {
         const res = await base44.functions.invoke('confirmFoundersSignup', {});
         if (res.data?.confirmed && !res.data?.already) {
           clearFoundersCache();
-          const isLife = res.data.slot_type === 'lifetime';
-          toast({ title: (isLife ? t('founders.confirm_toast') : t('founders.confirm_toast_three')).replace('{n}', res.data.rank || '') });
+          toast({ title: t('founders.confirm_toast').replace('{n}', res.data.rank || '') });
         }
       } catch (e) {}
     } catch (e) {

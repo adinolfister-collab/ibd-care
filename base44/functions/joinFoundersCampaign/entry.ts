@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import {
-  CAMPAIGN, TOTAL_SLOTS, assignRanks, grantFieldsForRank,
+  CAMPAIGN, LIFETIME_SLOTS, isCampaignFull, assignRanks, grantFieldsForRank,
 } from '../../shared/foundersCampaign.ts';
 
 // A logged-in user joins the Founder campaign. The spot is CONFIRMED
@@ -31,7 +31,7 @@ export default async function(req: Request): Promise<Response> {
     }
 
     const confirmedCount = all.filter((s) => s.campaign === CAMPAIGN && s.confirmed).length;
-    if (confirmedCount >= TOTAL_SLOTS) {
+    if (isCampaignFull(confirmedCount)) {
       return Response.json({ joined: false, full: true });
     }
 

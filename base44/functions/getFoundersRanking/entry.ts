@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import {
-  CAMPAIGN, LIFETIME_SLOTS, TOTAL_SLOTS, isCampaignFull,
+  CAMPAIGN, LIFETIME_SLOTS, isCampaignFull,
 } from '../../shared/foundersCampaign.ts';
 
 // Public ranking for the Founder campaign. No login required: visitors can
@@ -48,10 +48,10 @@ export default async function(req: Request): Promise<Response> {
       counts: {
         confirmed: confirmed.length,
         lifetime: lifetimeCount,
-        total: TOTAL_SLOTS,
+        total: LIFETIME_SLOTS,
         lifetimeTotal: LIFETIME_SLOTS,
         lifetimeLeft: Math.max(0, LIFETIME_SLOTS - lifetimeCount),
-        totalLeft: Math.max(0, TOTAL_SLOTS - confirmed.length),
+        totalLeft: Math.max(0, LIFETIME_SLOTS - confirmed.length),
         full: isCampaignFull(confirmed.length),
         pending: pending.length,
       },

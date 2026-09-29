@@ -32,8 +32,8 @@ export default function CommunityFoundersRanking() {
             <span className="font-medium text-foreground truncate flex-1">
               {r.display_name}{r.is_me && <span className="text-muted-foreground"> ({t('founders.you')})</span>}
             </span>
-            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 ${r.slot_type === 'lifetime' ? 'bg-terracotta/15 text-terracotta' : 'bg-accent text-accent-foreground'}`}>
-              {r.slot_type === 'lifetime' ? t('founders.slot_lifetime') : t('founders.slot_three_months')}
+            <span className="text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 bg-terracotta/15 text-terracotta">
+              {t('founders.slot_lifetime')}
             </span>
           </li>
         ))}
