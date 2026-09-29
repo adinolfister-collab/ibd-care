@@ -26,7 +26,7 @@ export default function MarketingAdmin() {
   const [tone, setTone] = useState(TONES[0]);
   const [lang, setLang] = useState('it');
   const [platform, setPlatform] = useState('all');
-  const [cta, setCta] = useState('Prova gratuita 14 giorni');
+  const [cta, setCta] = useState('Prova gratuita 30 giorni');
   const [deepLink, setDeepLink] = useState('');
   const [generating, setGenerating] = useState(false);
   const [result, setResult] = useState(null);
@@ -215,7 +215,7 @@ export default function MarketingAdmin() {
                     id="cta"
                     value={cta}
                     onChange={(e) => setCta(e.target.value)}
-                    placeholder="Es. Prova gratuita 14 giorni"
+                    placeholder="Es. Prova gratuita 30 giorni"
                     className="mt-1"
                   />
                 </div>
