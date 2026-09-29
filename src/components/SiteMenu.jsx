@@ -4,7 +4,7 @@ import {
   Newspaper, Users, Activity, Utensils, Info, Mail,
   Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin,
   FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag, Crown, CreditCard, BookOpen,
-  TrendingUp, Megaphone, Eye, PieChart,
+  TrendingUp, Megaphone, Eye, PieChart, CalendarRange,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -39,6 +39,7 @@ const COMMUNITY = [
 
 const RISORSE = [
   { to: '/assistant', key: 'nav.assistant', icon: Bot },
+  { to: '/trend-mensili', key: 'nav.trend_mensili', icon: CalendarRange },
   { to: '/map', key: 'nav.map', icon: MapPin },
   { to: '/demo', key: 'nav.guide', icon: BookOpen },
   { to: '/about', key: 'nav.about', icon: Info },

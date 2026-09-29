@@ -42,6 +42,7 @@ const IBDNews = lazy(() => import('@/pages/IBDNews'));
 const Esami = lazy(() => import('@/pages/Esami'));
 const Correlazioni = lazy(() => import('@/pages/Correlazioni'));
 const Analisi = lazy(() => import('@/pages/Analisi'));
+const TrendMensili = lazy(() => import('@/pages/TrendMensili'));
 const AdminConversions = lazy(() => import('@/pages/AdminConversions'));
 const AdminGuestPreview = lazy(() => import('@/pages/AdminGuestPreview'));
 const Shop = lazy(() => import('@/pages/Shop'));
@@ -119,6 +120,7 @@ const AuthenticatedApp = () => {
         <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
         <Route path="/correlazioni" element={<PageTransition><Correlazioni /></PageTransition>} />
         <Route path="/analisi" element={<PageTransition><Analisi /></PageTransition>} />
+        <Route path="/trend-mensili" element={<PageTransition><TrendMensili /></PageTransition>} />
         <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
         <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
         <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />

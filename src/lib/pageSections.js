@@ -13,7 +13,7 @@ const ACQUISITION_PATHS = [
 
 // Feature di valore premium/utility -> Strumenti
 const TOOLS_PATHS = [
-  '/assistant', '/summary', '/map',
+  '/assistant', '/summary', '/map', '/trend-mensili',
 ];
 
 export function mapPathToSection(pathname) {
