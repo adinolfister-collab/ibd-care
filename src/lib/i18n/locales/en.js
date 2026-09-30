@@ -1295,6 +1295,7 @@ const en = {
   'home.demo_title': 'Try the 30-day demo',
   'home.demo_desc': 'Explore the app with sample data, then decide whether to go Premium. 30 days free, no account needed.',
   'home.demo_cta': 'Start the demo',
+  'common.back_to_top': 'Back to top',
 };
 
 

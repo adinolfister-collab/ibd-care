@@ -1292,6 +1292,7 @@ const it = {
   'home.demo_title': 'Prova la demo 30gg',
   'home.demo_desc': "Esplora l'app con dati di esempio, poi decidi se passare a Premium. 30 giorni di prova gratuiti, senza account.",
   'home.demo_cta': 'Inizia la demo',
+  'common.back_to_top': 'Torna su',
 };
 
 

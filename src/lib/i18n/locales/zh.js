@@ -1029,6 +1029,7 @@ const zh = {
   'premium.play_billing_note': '\u7531 Google Play \u5904\u7406\u4ed8\u6b3e\u3002',
   'premium.web_checkout_note': '\u5b89\u5168\u7684\u7f51\u9875\u4ed8\u6b3e\u3002',
   'premium.subtitle': 'Premium 每月 0,99 € 起。免费试用为设备上的 30 天演示。随时取消。',
+  'common.back_to_top': '回到顶部',
 };
 
 export default zh;

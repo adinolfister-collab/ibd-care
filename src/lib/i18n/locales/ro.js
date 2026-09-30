@@ -1029,6 +1029,7 @@ const ro = {
   'premium.play_billing_note': 'Plat\u0103 gestionat\u0103 de Google Play.',
   'premium.web_checkout_note': 'Plat\u0103 securizat\u0103 pe web.',
   'premium.subtitle': 'Premium de la 0,99 €/lună. Perioada gratuită de probă este demo 30 zile pe dispozitiv. Anulează oricând.',
+  'common.back_to_top': 'Sus',
 };
 
 export default ro;

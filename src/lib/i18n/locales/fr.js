@@ -1101,6 +1101,7 @@ const fr = {
   'premium.play_billing_note': 'Paiement g\u00e9r\u00e9 par Google Play. Annulez \u00e0 tout moment.',
   'premium.web_checkout_note': 'Paiement s\u00e9curis\u00e9 sur le web. Annulez \u00e0 tout moment.',
   'premium.subtitle': "Premium dès 0,99 €/mois. L'essai gratuit est la démo 30 jours sur l'appareil. Annulez quand vous voulez.",
+  'common.back_to_top': 'Haut de page',
 };
 
 export default fr;

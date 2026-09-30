@@ -7,6 +7,7 @@ import MobileBottomNav from '@/components/MobileBottomNav';
 import SiteMenu from '@/components/SiteMenu';
 import ExploreLabel from '@/components/ExploreLabel';
 import DemoExpiredGate from '@/components/DemoExpiredGate';
+import ScrollToTopButton from '@/components/ScrollToTopButton';
 import { guestSymptoms, guestFoods, guestRecords, syncGuestEntriesToCloud } from '@/lib/guestEntries';
 import { getDemoTrialState, ensureDemoTrialStarted, isDemoEnabledPath } from '@/lib/demoTrial';
 import { useToast } from '@/components/ui/use-toast';
@@ -77,6 +78,7 @@ export default function AppLayout({ children }) {
     <div className="min-h-screen bg-background text-foreground">
       <MobileTopNav user={user} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
       <MobileBottomNav isAuthenticated={isAuthenticated} />
+      <ScrollToTopButton />
       <main className="min-h-screen pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] md:px-10 pt-5 md:py-10 pb-28 md:pb-12 max-w-4xl mx-auto">
         {demoExpired ? (
           <DemoExpiredGate />

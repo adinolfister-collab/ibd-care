@@ -1101,6 +1101,7 @@ const de = {
   'premium.play_billing_note': 'Zahlung \u00fcber Google Play. Jederzeit k\u00fcndbar.',
   'premium.web_checkout_note': 'Sichere Web-Zahlung. Jederzeit k\u00fcndbar.',
   'premium.subtitle': 'Premium ab 0,99 €/Monat. Die kostenlose Testversion ist die 30-Tage-Demo auf dem Gerät. Jederzeit kündbar.',
+  'common.back_to_top': 'Nach oben',
 };
 
 export default de;

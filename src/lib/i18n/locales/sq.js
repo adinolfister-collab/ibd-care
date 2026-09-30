@@ -1029,6 +1029,7 @@ const sq = {
   'premium.play_billing_note': 'Pagesa menaxhuar nga Google Play.',
   'premium.web_checkout_note': 'Pages\u00eb e sigurt n\u00eb web.',
   'premium.subtitle': 'Premium nga 0,99 €/muaj. Prova falas është demo 30 ditë në pajisjen. Anulo kur të duash.',
+  'common.back_to_top': 'Lart',
 };
 
 export default sq;

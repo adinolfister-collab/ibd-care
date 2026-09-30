@@ -1101,6 +1101,7 @@ const pt = {
   'premium.play_billing_note': 'Pagamento gerido pelo Google Play. Cancele quando quiser.',
   'premium.web_checkout_note': 'Pagamento seguro na web. Cancele quando quiser.',
   'premium.subtitle': 'Premium desde 0,99 €/mês. A prova gratuita é a demo 30 dias no dispositivo. Cancele quando quiser.',
+  'common.back_to_top': 'Voltar ao topo',
 };
 
 export default pt;
