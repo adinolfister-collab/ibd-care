@@ -203,6 +203,50 @@ export default async function(req: Request): Promise<Response> {
         : (rawFunnel[i - 1].value > 0 ? Math.round((s.value / rawFunnel[i - 1].value) * 100) : 0),
     }));
 
+    // --- Attivita' ospiti (demo mode) ---
+    // Aggrega i ConversionEvent con is_guest=true: eventi totali, visitatori
+    // e sessioni distinti, breakdown per feature e source, e tasso
+    // demo->registrazione (visitor_id ospiti che poi compaiono come user_id
+    // loggato nelle page-view dello stesso periodo).
+    const guestEvents = events.filter((ev) => ev.is_guest === true);
+    const guestVisitors = new Set<string>();
+    const guestSessions = new Set<string>();
+    const byFeature: Record<string, number> = {};
+    const bySource: Record<string, number> = {};
+    for (const ev of guestEvents) {
+      const vid = ev.visitor_id ? String(ev.visitor_id) : '';
+      const sid = ev.session_id ? String(ev.session_id) : '';
+      if (vid) guestVisitors.add(vid);
+      if (sid) guestSessions.add(sid);
+      const f = String(ev.feature || 'unknown');
+      byFeature[f] = (byFeature[f] || 0) + 1;
+      const s = String(ev.source || 'used');
+      bySource[s] = (bySource[s] || 0) + 1;
+    }
+    // visitor_id che, nello stesso periodo, hanno una page-view con user_id
+    // valorizzato: segno che l'ospite si e' poi registrato/loggato.
+    const convertedVisitors = new Set<string>();
+    for (const pv of pageviews) {
+      const uid = pv.user_id ? String(pv.user_id) : '';
+      const vid = pv.visitor_id ? String(pv.visitor_id) : '';
+      if (uid && vid && guestVisitors.has(vid)) convertedVisitors.add(vid);
+    }
+    const guestStats = {
+      total: guestEvents.length,
+      distinctVisitors: guestVisitors.size,
+      distinctSessions: guestSessions.size,
+      byFeature: Object.entries(byFeature)
+        .map(([feature, count]) => ({ feature, count }))
+        .sort((a, b) => b.count - a.count),
+      bySource: Object.entries(bySource)
+        .map(([source, count]) => ({ source, count }))
+        .sort((a, b) => b.count - a.count),
+      demoToRegistration: convertedVisitors.size,
+      demoToRegistrationRate: guestVisitors.size > 0
+        ? Math.round((convertedVisitors.size / guestVisitors.size) * 100)
+        : 0,
+    };
+
     return Response.json({
       range,
       visite,
@@ -216,6 +260,7 @@ export default async function(req: Request): Promise<Response> {
       devices,
       sectionDuration,
       funnel,
+      guestStats,
     });
   } catch (error) {
     return Response.json(

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/lib/AuthContext';
+import { trackGuestActivity } from '@/lib/guestTracking';
 
 /**
  * Gate for premium (subscription-gated) actions. After the 30-day trial
@@ -14,11 +15,14 @@ export function usePremiumGate() {
   const isGuest = !isAuthenticated;
   const [showPaywall, setShowPaywall] = useState(false);
 
-  const requirePremium = useCallback(() => {
+  // Apre il paywall per chi non e' abbonato. `feature` opzionale: per gli
+  // ospiti registra il tentativo bloccato (source='blocked').
+  const requirePremium = useCallback((feature) => {
     if (isSubscribed) return true;
+    if (isGuest && feature) trackGuestActivity(feature, 'blocked');
     setShowPaywall(true);
     return false;
-  }, [isSubscribed]);
+  }, [isSubscribed, isGuest]);
 
   return { isSubscribed, loading, status, isExpired, isTrialing, isGuest, requirePremium, showPaywall, setShowPaywall };
 }

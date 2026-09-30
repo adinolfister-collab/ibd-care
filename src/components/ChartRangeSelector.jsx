@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import PremiumLockBadge from '@/components/PremiumLockBadge';
 import PremiumPaywall from '@/components/PremiumPaywall';
 import { trackTrialFeature } from '@/lib/trialTracking';
+import { trackGuestActivity } from '@/lib/guestTracking';
 import { CHART_RANGES } from '@/lib/chartRanges';
 
 // Selettore di range temporale standardizzato per le pagine grafici.
@@ -29,7 +30,7 @@ export default function ChartRangeSelector({
       onChange(r.key);
       return;
     }
-    if (isGuest) { navigate('/login'); return; }
+    if (isGuest) { trackGuestActivity(feature, 'blocked'); navigate('/login'); return; }
     trackTrialFeature(feature, 'blocked');
     requirePremium();
   };

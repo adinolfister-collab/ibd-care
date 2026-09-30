@@ -39,6 +39,28 @@ const FUNNEL_COLORS = [
 
 const DEVICE_LABELS = { desktop: 'Desktop', mobile: 'Mobile', tablet: 'Tablet' };
 
+// Etichette leggibili per le feature tracciate negli eventi ospiti
+const GUEST_FEATURE_LABELS = {
+  symptom_write: 'Sintomi',
+  food_write: 'Diario alimentare',
+  med_write: 'Terapie',
+  dose_write: 'Dose terapia',
+  record_write: 'Referti',
+  community_post: 'Community',
+  assistant_msg: 'Assistente Cary',
+  exam_scan: 'Scanner esami',
+  pdf_export: 'Export PDF',
+  food_report: 'Report gastro',
+  chart_range: 'Range grafico',
+  diary_save: 'Salvataggio diario',
+};
+
+const GUEST_SOURCE_LABELS = {
+  used: 'Usato (demo)',
+  demo: 'Interazione demo',
+  blocked: 'Bloccato (paywall)',
+};
+
 // Etichette leggibili per i percorsi (path nudi -> nomi in italiano)
 const PAGE_LABELS = {
   '/': 'Home',
@@ -194,6 +216,7 @@ export default function AdminConversions() {
     sessions: d.sessions,
   }));
   const sectionDuration = data?.sectionDuration || [];
+  const guestStats = data?.guestStats || null;
   const maxFunnel = Math.max(1, ...funnel.map((f) => f.value));
   const premiumRate =
     visite > 0 && funnel.length
@@ -274,6 +297,62 @@ export default function AdminConversions() {
                 );
               })}
             </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Sezione Ospiti (attivita' demo) */}
+      <Card className="mb-6">
+        <CardContent className="pt-5">
+          <h2 className="font-heading text-lg font-semibold mb-1 flex items-center gap-2">
+            <Users className="w-4 h-4 text-terracotta" />
+            Ospiti — attivita' in demo mode
+          </h2>
+          <p className="text-xs text-muted-foreground mb-4">
+            Salvataggi del diario, interazioni demo (assistente/scanner/PDF) e tentativi bloccati sui premium da visitatori anonimi.
+          </p>
+          {loading || !guestStats ? (
+            <Loading />
+          ) : guestStats.total === 0 ? (
+            <div className="h-32 flex items-center justify-center text-sm text-muted-foreground">
+              Nessuna attivita' ospite registrata nel periodo.
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+                <StatCard icon={MousePointerClick} label="Eventi totali" value={guestStats.total} sub="azione ospiti" />
+                <StatCard icon={Users} label="Visitatori distinti" value={guestStats.distinctVisitors} sub="ospiti unici" />
+                <StatCard icon={Clock} label="Sessioni distinte" value={guestStats.distinctSessions} sub="sessioni demo" />
+                <StatCard icon={TrendingDown} label="Demo → registrazione" value={`${guestStats.demoToRegistrationRate}%`} sub={`${guestStats.demoToRegistration} convertiti`} />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="font-heading text-sm font-semibold mb-2 text-muted-foreground uppercase tracking-wide">Per funzione</h3>
+                  <ReportTable
+                    rows={guestStats.byFeature.map((f) => ({
+                      key: GUEST_FEATURE_LABELS[f.feature] || f.feature,
+                      views: f.count,
+                      sessions: f.count,
+                    }))}
+                    total={guestStats.total}
+                    emptyText="Nessun evento."
+                  />
+                </div>
+                <div>
+                  <h3 className="font-heading text-sm font-semibold mb-2 text-muted-foreground uppercase tracking-wide">Per tipo azione</h3>
+                  <ReportTable
+                    rows={guestStats.bySource.map((s) => ({
+                      key: GUEST_SOURCE_LABELS[s.source] || s.source,
+                      views: s.count,
+                      sessions: s.count,
+                    }))}
+                    total={guestStats.total}
+                    emptyText="Nessun evento."
+                    barColor="bg-chart-2"
+                  />
+                </div>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

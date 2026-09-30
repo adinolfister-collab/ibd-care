@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Lock, Loader2, FileDown } from 'lucide-react';
 import { usePremiumGate } from '@/hooks/usePremiumGate';
 import { trackTrialFeature } from '@/lib/trialTracking';
+import { trackGuestActivity } from '@/lib/guestTracking';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import GuestSignupCard from '@/components/GuestSignupCard';
@@ -33,6 +34,7 @@ export default function PremiumExportButton({ onExport, label, lockedLabel, feat
   }
 
   if (isGuest) {
+    trackGuestActivity(feature, 'blocked');
     return <GuestSignupCard feature={feature} />;
   }
 

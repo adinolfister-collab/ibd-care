@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { FREE_SAVES, readGuestSaveCount, writeGuestSaveCount } from '@/lib/guestSaveCount';
+import { trackGuestActivity } from '@/lib/guestTracking';
 
 /**
  * Gate for guest (unauthenticated) data-saving actions.
@@ -21,11 +22,13 @@ export function useGuestSaveGate() {
   const attemptSave = useCallback((kind = 'diary') => {
     if (!isGuest) return true;
     if (kind === 'cloud') {
+      trackGuestActivity('diary_save', 'blocked');
       setShowPaywall(true);
       return false;
     }
     const c = readGuestSaveCount();
     if (c >= FREE_SAVES) {
+      trackGuestActivity('diary_save', 'blocked');
       setShowPaywall(true);
       return false;
     }

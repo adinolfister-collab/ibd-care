@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { trackTrialFeature } from '@/lib/trialTracking';
 import { demoExtractedRecord } from '@/lib/demoResponses';
+import { trackGuestActivity } from '@/lib/guestTracking';
 import { guestRecords } from '@/lib/guestEntries';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -40,6 +41,7 @@ export default function ExamScanner({ onSaved, initialData }) {
     setData(null);
     // Demo mode (ospite): scansione simulata con risposta di esempio
     if (!isAuthenticated) {
+      trackGuestActivity('exam_scan', 'demo');
       setTimeout(() => {
         setData(demoExtractedRecord(file.name));
         setScanning(false);

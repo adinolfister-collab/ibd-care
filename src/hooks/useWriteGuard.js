@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useRegisterGate } from '@/hooks/useRegisterGate';
 import { usePremiumGate } from '@/hooks/usePremiumGate';
 import { trackTrialFeature } from '@/lib/trialTracking';
+import { trackGuestActivity } from '@/lib/guestTracking';
 
 // Combined write gate for diary pages. In demo mode (unauthenticated guest)
 // writes are allowed and persisted to localStorage. An authenticated user
@@ -14,7 +15,10 @@ export function useWriteGuard() {
   const registerGate = useRegisterGate();
   const { requirePremium, showPaywall, setShowPaywall, isSubscribed, isDemo } = usePremiumGate();
   const guard = useCallback((feature) => {
-    if (isDemo) return true; // demo mode: persist to localStorage
+    if (isDemo) { // demo mode (ospite): persist to localStorage + traccia uso
+      if (feature) trackGuestActivity(feature, 'used');
+      return true;
+    }
     if (!registerGate()) return false;
     if (isSubscribed) {
       if (feature) trackTrialFeature(feature, 'used');

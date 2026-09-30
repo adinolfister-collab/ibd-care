@@ -14,7 +14,7 @@ export default function FoodReportButton({ foods }) {
   const [busy, setBusy] = useState(false);
 
   const handle = async () => {
-    if (!requirePremium()) return;
+    if (!requirePremium('food_report')) return;
     setBusy(true);
     try {
       const today = new Date();

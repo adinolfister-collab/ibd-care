@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { trackTrialFeature } from '@/lib/trialTracking';
 import { demoAssistantReply, demoAssistantGreeting } from '@/lib/demoResponses';
+import { trackGuestActivity } from '@/lib/guestTracking';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
@@ -98,6 +99,7 @@ export default function Assistant() {
       setMessages((prev) => [...prev, { role: 'user', content: value }]);
       setText('');
       setSending(true);
+      trackGuestActivity('assistant_msg', 'demo');
       setTimeout(() => {
         const reply = lang === 'it' ? demoAssistantReply.it : demoAssistantReply.en;
         setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
