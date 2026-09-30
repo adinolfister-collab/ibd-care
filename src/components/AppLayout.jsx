@@ -9,6 +9,7 @@ import ExploreLabel from '@/components/ExploreLabel';
 import DemoExpiredGate from '@/components/DemoExpiredGate';
 import ScrollToTopButton from '@/components/ScrollToTopButton';
 import ShareMenu from '@/components/ShareMenu';
+import PageRatingWidget from '@/components/PageRatingWidget';
 import { guestSymptoms, guestFoods, guestRecords, syncGuestEntriesToCloud } from '@/lib/guestEntries';
 import { getDemoTrialState, ensureDemoTrialStarted, isDemoEnabledPath } from '@/lib/demoTrial';
 import { useToast } from '@/components/ui/use-toast';
@@ -94,6 +95,9 @@ export default function AppLayout({ children }) {
               <ShareMenu variant="inline" />
             </div>
             <SiteMenu />
+            <div className="mt-8 md:mt-10 flex justify-center">
+              <PageRatingWidget />
+            </div>
           </>
         )}
       </main>

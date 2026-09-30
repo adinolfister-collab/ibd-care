@@ -1102,6 +1102,8 @@ const pt = {
   'premium.web_checkout_note': 'Pagamento seguro na web. Cancele quando quiser.',
   'premium.subtitle': 'Premium desde 0,99 €/mês. A prova gratuita é a demo 30 dias no dispositivo. Cancele quando quiser.',
   'common.back_to_top': 'Voltar ao topo',
+  'feedback.rate_label': 'Avalie esta página',
+  'feedback.thanks': 'Obrigado pelo seu voto!',
 };
 
 export default pt;

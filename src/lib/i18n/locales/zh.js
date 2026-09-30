@@ -1030,6 +1030,8 @@ const zh = {
   'premium.web_checkout_note': '\u5b89\u5168\u7684\u7f51\u9875\u4ed8\u6b3e\u3002',
   'premium.subtitle': 'Premium 每月 0,99 € 起。免费试用为设备上的 30 天演示。随时取消。',
   'common.back_to_top': '回到顶部',
+  'feedback.rate_label': '评价此页面',
+  'feedback.thanks': '感谢您的投票！',
 };
 
 export default zh;

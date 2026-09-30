@@ -1102,6 +1102,8 @@ const de = {
   'premium.web_checkout_note': 'Sichere Web-Zahlung. Jederzeit k\u00fcndbar.',
   'premium.subtitle': 'Premium ab 0,99 €/Monat. Die kostenlose Testversion ist die 30-Tage-Demo auf dem Gerät. Jederzeit kündbar.',
   'common.back_to_top': 'Nach oben',
+  'feedback.rate_label': 'Diese Seite bewerten',
+  'feedback.thanks': 'Danke für deine Stimme!',
 };
 
 export default de;

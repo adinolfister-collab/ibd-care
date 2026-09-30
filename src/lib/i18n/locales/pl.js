@@ -1283,6 +1283,8 @@ const pl = {
   'premium.web_checkout_note': 'Bezpieczna p\u0142atno\u015b\u0107 przez web.',
   'premium.subtitle': 'Premium od 0,99 €/mies. Bezpłatna wersja próbna to demo 30 dni na urządzeniu. Anuluj, kiedy chcesz.',
   'common.back_to_top': 'Do góry',
+  'feedback.rate_label': 'Oceń tę stronę',
+  'feedback.thanks': 'Dziękujemy za Twój głos!',
 };
 
 export default pl;

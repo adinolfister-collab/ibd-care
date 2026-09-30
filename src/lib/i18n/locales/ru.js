@@ -1030,6 +1030,8 @@ const ru = {
   'premium.web_checkout_note': '\u0411\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u0430\u044f \u043e\u043f\u043b\u0430\u0442\u0430 \u0447\u0435\u0440\u0435\u0437 \u0432\u0435\u0431.',
   'premium.subtitle': 'Premium от 0,99 €/мес. Бесплатная пробная версия — это демо 30 дней на устройстве. Отмена в любое время.',
   'common.back_to_top': 'Наверх',
+  'feedback.rate_label': 'Оцените эту страницу',
+  'feedback.thanks': 'Спасибо за ваш голос!',
 };
 
 export default ru;

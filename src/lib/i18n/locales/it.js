@@ -1293,6 +1293,8 @@ const it = {
   'home.demo_desc': "Esplora l'app con dati di esempio, poi decidi se passare a Premium. 30 giorni di prova gratuiti, senza account.",
   'home.demo_cta': 'Inizia la demo',
   'common.back_to_top': 'Torna su',
+  'feedback.rate_label': 'Valuta questa pagina',
+  'feedback.thanks': 'Grazie per il tuo voto!',
 };
 
 

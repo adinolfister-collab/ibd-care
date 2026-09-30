@@ -1030,6 +1030,8 @@ const sq = {
   'premium.web_checkout_note': 'Pages\u00eb e sigurt n\u00eb web.',
   'premium.subtitle': 'Premium nga 0,99 €/muaj. Prova falas është demo 30 ditë në pajisjen. Anulo kur të duash.',
   'common.back_to_top': 'Lart',
+  'feedback.rate_label': 'Vlerëso këtë faqe',
+  'feedback.thanks': 'Faleminderit për votën tuaj!',
 };
 
 export default sq;
