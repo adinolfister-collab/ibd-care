@@ -6,7 +6,7 @@ import PageHeader from '@/components/PageHeader';
 import MagazineEssay from '@/components/MagazineEssay';
 import PublicFooter from '@/components/PublicFooter';
 import CopyLinkBox from '@/components/CopyLinkBox';
-import ShareApp from '@/components/ShareApp';
+import ShareMenu from '@/components/ShareMenu';
 import DemoPromoBanner from '@/components/DemoPromoBanner';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
@@ -71,7 +71,7 @@ export default function Demo() {
             <div>
               <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{t('guide.share_title')}</p>
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                <ShareApp />
+                <ShareMenu variant="labeled" />
                 <CopyLinkBox url={demoUrl} />
               </div>
             </div>

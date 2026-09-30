@@ -6,6 +6,7 @@ import LanguageChips from '@/components/LanguageChips';
 import NativeAppButton from '@/components/NativeAppButton';
 import TopRightActions from '@/components/TopRightActions';
 import ExploreMenu from '@/components/ExploreMenu';
+import ShareMenu from '@/components/ShareMenu';
 import TrialBadge from '@/components/TrialBadge';
 
 // Header universale (visibile su tutti i breakpoint): logo/back a sinistra,
@@ -49,6 +50,7 @@ export default function MobileTopNav({ isAuthenticated, onLogout }) {
         </div>
         <div className="flex items-center gap-1">
           <ExploreMenu />
+          <ShareMenu variant="icon" />
           <NativeAppButton />
           <TopRightActions />
           {isAuthenticated ? (

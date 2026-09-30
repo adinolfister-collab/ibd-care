@@ -11,6 +11,7 @@ import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 import { Button } from '@/components/ui/button';
 import InstallAppButton from '@/components/InstallAppButton';
+import ShareMenu from '@/components/ShareMenu';
 import HomeCompanionReport from '@/components/HomeCompanionReport';
 
 const STEPS = [
@@ -63,6 +64,12 @@ export default function HomeMarketing() {
               <ShieldCheck className="w-3.5 h-3.5" />
               {t('landing.hero_no_card')}
             </p>
+            <div className="mt-3 flex items-center gap-2">
+              <span className="text-xs text-primary-foreground/70">{t('share.page')}</span>
+              <span className="rounded-full bg-primary-foreground/10 inline-flex">
+                <ShareMenu variant="icon" />
+              </span>
+            </div>
           </div>
         </section>
 

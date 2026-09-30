@@ -9,7 +9,7 @@ import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
 import CommunityFoundersRanking from '@/components/CommunityFoundersRanking';
-import PageShareButtons from '@/components/PageShareButtons';
+import ShareMenu from '@/components/ShareMenu';
 import AppLayout from '@/components/AppLayout';
 import GuestSignupCard from '@/components/GuestSignupCard';
 import { cn } from '@/lib/utils';
@@ -59,7 +59,8 @@ export default function Community() {
         action={
           <div className="flex items-center gap-2">
             <NotificationsBell />
-            <PageShareButtons
+            <ShareMenu
+              variant="inline"
               title={t('community.title')}
               summary={t('community.subtitle')}
               path="/community"

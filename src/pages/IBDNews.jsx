@@ -9,8 +9,7 @@ import EditorialBlock from '@/components/EditorialBlock';
 import EmptyState from '@/components/EmptyState';
 import PullToRefresh from '@/components/PullToRefresh';
 import EntityFormDialog from '@/components/EntityFormDialog';
-import NewsShareButtons from '@/components/NewsShareButtons';
-import PageShareButtons from '@/components/PageShareButtons';
+import ShareMenu from '@/components/ShareMenu';
 import CopyLinkBox from '@/components/CopyLinkBox';
 import AppLayout from '@/components/AppLayout';
 import PublicFooter from '@/components/PublicFooter';
@@ -100,7 +99,7 @@ export default function IBDNews() {
                   <Plus className="w-4 h-4 mr-1.5" />{t('news.add')}
                 </Button>
               )}
-              <PageShareButtons title={t('news.title')} summary={t('news.page_subtitle')} path="/news" label={t('share.page')} />
+              <ShareMenu variant="inline" title={t('news.title')} summary={t('news.page_subtitle')} path="/news" label={t('share.page')} />
             </div>
           )}
         />
@@ -153,7 +152,7 @@ export default function IBDNews() {
                     <span className="uppercase">{a.lang}</span>
                   </div>
                   <div onClick={(e) => e.preventDefault()}>
-                    <NewsShareButtons title={a.title} summary={a.summary} shareUrl={`https://ibd-care.it/news/${a.id}`} />
+                    <ShareMenu variant="inline" title={a.title} summary={a.summary} shareUrl={`https://ibd-care.it/news/${a.id}`} />
                   </div>
                 </CardContent>
               </Card>

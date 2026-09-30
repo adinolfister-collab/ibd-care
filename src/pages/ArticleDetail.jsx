@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, Loader2, Newspaper, Home as HomeIcon } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
-import NewsShareButtons from '@/components/NewsShareButtons';
+import ShareMenu from '@/components/ShareMenu';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
@@ -137,7 +137,7 @@ export default function ArticleDetail() {
 
               <div className="mt-6 pt-5 border-t border-border">
                 <p className="text-xs font-medium text-muted-foreground mb-2">{t('news.share')}</p>
-                <NewsShareButtons title={article.title} summary={article.summary} shareUrl={deepLink} />
+                <ShareMenu variant="inline" title={article.title} summary={article.summary} shareUrl={deepLink} />
               </div>
 
               <div className="mt-6">

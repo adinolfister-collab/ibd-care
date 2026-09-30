@@ -12,7 +12,7 @@ import EditorialBlock from '@/components/EditorialBlock';
 import EditorialSlider from '@/components/EditorialSlider';
 import HomeCompanionReport from '@/components/HomeCompanionReport';
 import MagazineEssay from '@/components/MagazineEssay';
-import ShareApp from '@/components/ShareApp';
+import ShareMenu from '@/components/ShareMenu';
 import DownloadApp from '@/components/DownloadApp';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
@@ -88,7 +88,7 @@ export default function Home() {
         action={
           <div className="flex items-center gap-2">
             <DownloadApp variant="icon" />
-            <ShareApp variant="icon" />
+            <ShareMenu variant="icon" />
           </div>
         }
       />
