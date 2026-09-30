@@ -8,6 +8,7 @@ import SiteMenu from '@/components/SiteMenu';
 import ExploreLabel from '@/components/ExploreLabel';
 import DemoExpiredGate from '@/components/DemoExpiredGate';
 import ScrollToTopButton from '@/components/ScrollToTopButton';
+import ShareMenu from '@/components/ShareMenu';
 import { guestSymptoms, guestFoods, guestRecords, syncGuestEntriesToCloud } from '@/lib/guestEntries';
 import { getDemoTrialState, ensureDemoTrialStarted, isDemoEnabledPath } from '@/lib/demoTrial';
 import { useToast } from '@/components/ui/use-toast';
@@ -86,6 +87,12 @@ export default function AppLayout({ children }) {
           <>
             <ExploreLabel />
             {children}
+            <div className="mt-8 md:mt-10 flex items-center gap-3 py-4 border-y border-border">
+              <span className="font-heading text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                {t('share.page')}
+              </span>
+              <ShareMenu variant="inline" />
+            </div>
             <SiteMenu />
           </>
         )}
