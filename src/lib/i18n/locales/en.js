@@ -1314,6 +1314,15 @@ const en = {
   'common.back_to_top': 'Back to top',
   'feedback.rate_label': 'Rate this page',
   'feedback.thanks': 'Thanks for your vote!',
+  'food.day_prev': 'Previous day',
+  'food.day_next': 'Next day',
+  'food.pick_date': 'Pick a date',
+  'food.today': 'Today',
+  'food.meal_one': 'meal',
+  'food.meal_many': 'meals',
+  'food.no_meals_day_short': 'no meals',
+  'food.no_meals_day': 'No meals on this day',
+  'food.no_meals_day_desc': 'Browse another day with the arrows or the calendar, or log a new meal.',
 };
 
 

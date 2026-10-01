@@ -1311,6 +1311,15 @@ const it = {
   'common.back_to_top': 'Torna su',
   'feedback.rate_label': 'Valuta questa pagina',
   'feedback.thanks': 'Grazie per il tuo voto!',
+  'food.day_prev': 'Giorno precedente',
+  'food.day_next': 'Giorno successivo',
+  'food.pick_date': 'Scegli la data',
+  'food.today': 'Oggi',
+  'food.meal_one': 'pasto',
+  'food.meal_many': 'pasti',
+  'food.no_meals_day_short': 'nessun pasto',
+  'food.no_meals_day': 'Nessun pasto per questo giorno',
+  'food.no_meals_day_desc': 'Sfoglia un altro giorno con le frecce o il calendario, oppure registra un nuovo pasto.',
 };
 
 

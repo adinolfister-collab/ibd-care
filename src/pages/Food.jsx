@@ -25,8 +25,9 @@ import EmptyState from '@/components/EmptyState';
 import FoodFormDialog from '@/components/FoodFormDialog';
 import FoodCatalogManager from '@/components/FoodCatalogManager';
 import DailyNutrition from '@/components/DailyNutrition';
+import FoodDateNavigator from '@/components/food/FoodDateNavigator';
 import { catalogToGroups, parseLegacyFoods, serializeItems } from '@/lib/foodCatalog';
-import { MEAL_TYPE_KEYS, REACTION_KEYS, reactionLabel, unitLabel, localeForLang } from '@/lib/enumLabels';
+import { MEAL_TYPE_KEYS, REACTION_KEYS, reactionLabel, unitLabel } from '@/lib/enumLabels';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -38,7 +39,7 @@ function todayStr() { return new Date().toISOString().slice(0, 10); }
 const reactionTone = { nessuna: 'text-emerald-600', lieve: 'text-amber-600', moderata: 'text-orange-600', severa: 'text-rose-500' };
 
 export default function Food() {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated, authChecked } = useAuth();
   const { guard, showPaywall, setShowPaywall, showNudge, setShowNudge } = useWriteGuard();
@@ -51,6 +52,7 @@ export default function Food() {
   const [tplMgrOpen, setTplMgrOpen] = useState(false);
   const [catalogGroups, setCatalogGroups] = useState([]);
   const [catalogMgrOpen, setCatalogMgrOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(todayStr());
 
   const load = async () => {
     setLoading(true);
@@ -167,11 +169,7 @@ export default function Food() {
   const updateTemplate = async (id, data) => { await base44.entities.MealTemplate.update(id, data); loadTemplates(); };
   const deleteTemplate = async (id) => { await base44.entities.MealTemplate.delete(id); loadTemplates(); };
 
-  const grouped = items.reduce((acc, it) => {
-    (acc[it.entry_date] = acc[it.entry_date] || []).push(it);
-    return acc;
-  }, {});
-  const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+  const dayItems = items.filter((it) => it.entry_date === selectedDate);
 
   return (
     <AppLayout>
@@ -192,11 +190,6 @@ export default function Food() {
         }
       />
       <ReadonlyBanner />
-      <PageEditorial pageKey="food" />
-      <MagazineEssay theme="alimentazione" number="01" eyebrow={t('food.magazine_eyebrow')} title={t('food.magazine_title')}>
-      <div className="mb-6">
-        <DailyNutrition entries={items} groups={catalogGroups} />
-      </div>
       {authChecked && !isAuthenticated && <DemoBanner onReset={load} />}
       {isAuthenticated && templates.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
@@ -208,62 +201,61 @@ export default function Food() {
           ))}
         </div>
       )}
-      <ToleranceOverview foods={items} />
+      <FoodDateNavigator value={selectedDate} onChange={setSelectedDate} mealCount={dayItems.length} />
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
-      ) : items.length === 0 ? (
-        <EmptyState icon={Utensils} title={t('common.empty')} description={t('food.subtitle')} />
+      ) : dayItems.length === 0 ? (
+        <EmptyState icon={Utensils} title={t('food.no_meals_day')} description={t('food.no_meals_day_desc')} />
       ) : (
-        <div className="space-y-6">
-          {dates.map((d) => (
-            <div key={d}>
-              <p className="text-sm font-semibold text-muted-foreground mb-2 sticky top-0">{formatDate(d, lang)}</p>
-              <div className="space-y-3">
-                {grouped[d].map((it) => (
-                  <Card key={it.id} className="border-0 shadow-sm">
-                    <CardContent className="p-5">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-medium bg-accent text-accent-foreground px-2.5 py-1 rounded-full">{it.meal_type ? t(MEAL_TYPE_KEYS[it.meal_type]) : '—'}</span>
-                          {it.reaction && <span className={cn('text-xs font-medium', reactionTone[it.reaction])}>· {reactionLabel(t, it.reaction)}</span>}
-                        </div>
-                        {(!isAuthenticated && String(it.id).startsWith('demo-')) ? (
-                          <span className="text-[10px] uppercase tracking-wide text-muted-foreground/60">{t('demo.example_label')}</span>
-                        ) : (
-                          <div className="flex gap-1">
-                            <button onClick={() => openEdit(it)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
-                            <button onClick={() => handleDelete(it.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
-                          </div>
-                        )}
-                      </div>
-                      {Array.isArray(it.items) && it.items.length > 0 ? (
-                        <div className="mt-3 flex flex-wrap gap-1.5">
-                          {it.items.map((f, i) => (
-                            <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-terracotta/10 text-accent-foreground text-xs">
-                              <span className="font-medium">{f.name}</span>
-                              {f.qty ? (
-                                <span className="text-muted-foreground">{f.qty}{f.unit && f.unit !== 'porzione' ? ' ' + unitLabel(t, f.unit) : ''}</span>
-                              ) : (f.unit && f.unit !== 'porzione' ? (
-                                <span className="text-muted-foreground">{unitLabel(t, f.unit)}</span>
-                              ) : null)}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="mt-3 text-base whitespace-pre-wrap">{it.foods}</p>
-                      )}
-                      {it.notes && <p className="text-sm text-muted-foreground mt-2">{it.notes}</p>}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
+        <div className="space-y-3">
+          {dayItems.map((it) => (
+            <Card key={it.id} className="border-0 shadow-sm">
+              <CardContent className="p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium bg-accent text-accent-foreground px-2.5 py-1 rounded-full">{it.meal_type ? t(MEAL_TYPE_KEYS[it.meal_type]) : '—'}</span>
+                    {it.reaction && <span className={cn('text-xs font-medium', reactionTone[it.reaction])}>· {reactionLabel(t, it.reaction)}</span>}
+                  </div>
+                  {(!isAuthenticated && String(it.id).startsWith('demo-')) ? (
+                    <span className="text-[10px] uppercase tracking-wide text-muted-foreground/60">{t('demo.example_label')}</span>
+                  ) : (
+                    <div className="flex gap-1">
+                      <button onClick={() => openEdit(it)} className="p-2 rounded-lg hover:bg-accent text-muted-foreground"><Pencil className="w-4 h-4" /></button>
+                      <button onClick={() => handleDelete(it.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  )}
+                </div>
+                {Array.isArray(it.items) && it.items.length > 0 ? (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {it.items.map((f, i) => (
+                      <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-terracotta/10 text-accent-foreground text-xs">
+                        <span className="font-medium">{f.name}</span>
+                        {f.qty ? (
+                          <span className="text-muted-foreground">{f.qty}{f.unit && f.unit !== 'porzione' ? ' ' + unitLabel(t, f.unit) : ''}</span>
+                        ) : (f.unit && f.unit !== 'porzione' ? (
+                          <span className="text-muted-foreground">{unitLabel(t, f.unit)}</span>
+                        ) : null)}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-3 text-base whitespace-pre-wrap">{it.foods}</p>
+                )}
+                {it.notes && <p className="text-sm text-muted-foreground mt-2">{it.notes}</p>}
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}
       </PullToRefresh>
 
+      <PageEditorial pageKey="food" />
+      <MagazineEssay theme="alimentazione" number="01" eyebrow={t('food.magazine_eyebrow')} title={t('food.magazine_title')}>
+      <div className="mb-6">
+        <DailyNutrition entries={items} groups={catalogGroups} />
+      </div>
+      <ToleranceOverview foods={items} />
       {isAuthenticated && (
         <div className="mt-6">
           <DietaryTips />
@@ -308,8 +300,4 @@ export default function Food() {
       <RegisterNudge open={showNudge} onClose={() => setShowNudge(false)} />
     </AppLayout>
   );
-}
-
-function formatDate(d, lang) {
-  try { return new Date(d).toLocaleDateString(localeForLang(lang), { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return d; }
 }
