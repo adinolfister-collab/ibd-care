@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, ChevronDown, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { AlertTriangle, ChevronDown, ChevronRight, CheckCircle2, Sparkles } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -59,6 +59,8 @@ export default function AdminCrashes() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(null);
+  const [diagnoses, setDiagnoses] = useState({}); // { [id]: { cause, file, suggestion } | 'loading' | { error } }
+  const [analyzing, setAnalyzing] = useState(false);
 
   const load = () => {
     setLoading(true);
@@ -82,6 +84,36 @@ export default function AdminCrashes() {
 
   const unresolved = items.filter((c) => !c.resolved).length;
 
+  const analyzeAll = async () => {
+    const targets = items.filter((c) => !c.resolved && !diagnoses[c.id]);
+    if (targets.length === 0) return;
+    setAnalyzing(true);
+    const loadingMap = {};
+    targets.forEach((c) => { loadingMap[c.id] = 'loading'; });
+    setDiagnoses((prev) => ({ ...prev, ...loadingMap }));
+    try {
+      const res = await base44.functions.invoke('analyzeAppCrashes', {
+        crashes: targets.map((c) => ({
+          id: c.id, path: c.path, severity: c.severity, message: c.message, stack: c.stack,
+        })),
+      });
+      const list = res.data?.diagnoses || [];
+      const next = {};
+      list.forEach((d) => { next[d.id] = d; });
+      // segnala quelli senza diagnosi
+      targets.forEach((c) => { if (!next[c.id]) next[c.id] = { error: 'nessuna diagnosi' }; });
+      setDiagnoses((prev) => ({ ...prev, ...next }));
+    } catch (e) {
+      const errMap = {};
+      targets.forEach((c) => { errMap[c.id] = { error: 'errore analisi' }; });
+      setDiagnoses((prev) => ({ ...prev, ...errMap }));
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const unresolvedToAnalyze = unresolved - Object.keys(diagnoses).length;
+
   return (
     <Card className="mt-6">
       <CardContent className="pt-5">
@@ -95,7 +127,7 @@ export default function AdminCrashes() {
               </span>
             )}
           </h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             {FILTERS.map((f) => (
               <button
                 key={f.value}
@@ -110,6 +142,19 @@ export default function AdminCrashes() {
                 {f.label}
               </button>
             ))}
+            {unresolvedToAnalyze > 0 && (
+              <button
+                onClick={analyzeAll}
+                disabled={analyzing}
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-colors',
+                  'bg-terracotta text-white border-terracotta hover:bg-terracotta/90 disabled:opacity-60'
+                )}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                {analyzing ? 'Analisi…' : `Analizza con AI (${unresolvedToAnalyze})`}
+              </button>
+            )}
           </div>
         </div>
 
@@ -184,6 +229,38 @@ export default function AdminCrashes() {
                         <pre className="text-[0.7rem] bg-muted rounded-md p-2 overflow-x-auto max-h-48 text-muted-foreground whitespace-pre-wrap break-words">
                           {c.stack}
                         </pre>
+                      )}
+                      {diagnoses[c.id] === 'loading' && (
+                        <div className="flex items-center gap-2 text-xs text-terracotta">
+                          <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+                          Analisi AI in corso…
+                        </div>
+                      )}
+                      {diagnoses[c.id] && diagnoses[c.id] !== 'loading' && (
+                        <div className="rounded-lg border border-terracotta/30 bg-terracotta/5 p-3 space-y-1.5">
+                          <div className="flex items-center gap-1.5 text-xs font-semibold text-terracotta">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            Diagnosi AI
+                          </div>
+                          {diagnoses[c.id].error ? (
+                            <p className="text-xs text-muted-foreground">{diagnoses[c.id].error}</p>
+                          ) : (
+                            <>
+                              <p className="text-xs text-foreground">
+                                <span className="font-medium text-muted-foreground">Causa probabile: </span>
+                                {diagnoses[c.id].cause}
+                              </p>
+                              <p className="text-xs text-foreground">
+                                <span className="font-medium text-muted-foreground">File: </span>
+                                <code className="bg-muted px-1 rounded">{diagnoses[c.id].file}</code>
+                              </p>
+                              <p className="text-xs text-foreground">
+                                <span className="font-medium text-muted-foreground">Correzione: </span>
+                                {diagnoses[c.id].suggestion}
+                              </p>
+                            </>
+                          )}
+                        </div>
                       )}
                       {!c.resolved && (
                         <button
