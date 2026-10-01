@@ -10,6 +10,7 @@ import {
   Compass,
   Monitor,
   Layers,
+  Eye,
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
@@ -53,6 +54,9 @@ const GUEST_FEATURE_LABELS = {
   food_report: 'Report gastro',
   chart_range: 'Range grafico',
   diary_save: 'Salvataggio diario',
+  register_nudge_shown: 'Nudge registrazione',
+  demo_gate_shown: 'Gate demo (viste)',
+  demo_gate_registered: 'Gate demo (registrati)',
 };
 
 const GUEST_SOURCE_LABELS = {
@@ -325,6 +329,13 @@ export default function AdminConversions() {
                 <StatCard icon={Clock} label="Sessioni distinte" value={guestStats.distinctSessions} sub="sessioni demo" />
                 <StatCard icon={TrendingDown} label="Demo → registrazione" value={`${guestStats.demoToRegistrationRate}%`} sub={`${guestStats.demoToRegistration} convertiti`} />
               </div>
+              {guestStats.gateShown > 0 && (
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
+                  <StatCard icon={Eye} label="Gate demo mostrato" value={guestStats.gateShown} sub="viste gate scaduto" />
+                  <StatCard icon={Users} label="Registrazioni da gate" value={guestStats.gateRegistered} sub="click Registrati" />
+                  <StatCard icon={TrendingDown} label="Conversione gate" value={`${guestStats.gateConversionRate}%`} sub="registrati / viste" />
+                </div>
+              )}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-heading text-sm font-semibold mb-2 text-muted-foreground uppercase tracking-wide">Per funzione</h3>

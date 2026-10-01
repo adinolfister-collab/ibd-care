@@ -5,38 +5,39 @@ import { trackGuestActivity } from '@/lib/guestTracking';
 
 /**
  * Gate for guest (unauthenticated) data-saving actions.
- *  - kind === 'diary': guests get FREE_SAVES saves (local) then the paywall.
- *  - kind === 'cloud': guests can never persist without an account, so any
- *    attempt opens the paywall immediately without consuming the free quota.
- * Authenticated users always pass through.
+ *  - kind === 'diary': il salvataggio NON blocca mai l'ospite (demo libera).
+ *    Ogni multiplo di FREE_SAVES (3, 6, 9...) mostra un nudge positivo non
+ *    bloccante che invita a registrarsi per rendere i dati permanenti.
+ *  - kind === 'cloud': azioni che richiedono un account (export/sync) restano
+ *    bloccate per gli ospiti.
+ * Gli utenti autenticati passano sempre.
  */
 export function useGuestSaveGate() {
   const { isAuthenticated, authChecked } = useAuth();
   const isGuest = authChecked && !isAuthenticated;
   const [count, setCount] = useState(() => readGuestSaveCount());
-  const [showPaywall, setShowPaywall] = useState(false);
+  const [showNudge, setShowNudge] = useState(false);
 
   const remaining = Math.max(0, FREE_SAVES - count);
-  const canSave = !isGuest || count < FREE_SAVES;
+  const canSave = true;
 
   const attemptSave = useCallback((kind = 'diary') => {
     if (!isGuest) return true;
     if (kind === 'cloud') {
       trackGuestActivity('diary_save', 'blocked');
-      setShowPaywall(true);
       return false;
     }
-    const c = readGuestSaveCount();
-    if (c >= FREE_SAVES) {
-      trackGuestActivity('diary_save', 'blocked');
-      setShowPaywall(true);
-      return false;
-    }
-    const next = c + 1;
+    // diary: conta il salvataggio e mostra il nudge ogni FREE_SAVES salvataggi.
+    const next = readGuestSaveCount() + 1;
     writeGuestSaveCount(next);
     setCount(next);
+    trackGuestActivity('diary_save', 'used');
+    if (next % FREE_SAVES === 0) {
+      trackGuestActivity('register_nudge_shown', 'used');
+      setShowNudge(true);
+    }
     return true;
   }, [isGuest]);
 
-  return { isGuest, count, remaining, canSave, attemptSave, showPaywall, setShowPaywall };
+  return { isGuest, count, remaining, canSave, attemptSave, showNudge, setShowNudge };
 }

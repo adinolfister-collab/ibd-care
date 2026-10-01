@@ -16,6 +16,7 @@ import { guestFoods } from '@/lib/guestEntries';
 import { useWriteGuard } from '@/hooks/useWriteGuard';
 import ReadonlyBanner from '@/components/ReadonlyBanner';
 import PremiumPaywall from '@/components/PremiumPaywall';
+import RegisterNudge from '@/components/RegisterNudge';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
@@ -40,7 +41,7 @@ export default function Food() {
   const { t, lang } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated, authChecked } = useAuth();
-  const { guard, showPaywall, setShowPaywall } = useWriteGuard();
+  const { guard, showPaywall, setShowPaywall, showNudge, setShowNudge } = useWriteGuard();
   const isAdmin = user?.role === 'admin';
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -304,6 +305,7 @@ export default function Food() {
       )}
       <EditorialBlock sectionKey="food_reactions" align="right" />
       <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
+      <RegisterNudge open={showNudge} onClose={() => setShowNudge(false)} />
     </AppLayout>
   );
 }

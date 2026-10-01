@@ -21,6 +21,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useWriteGuard } from '@/hooks/useWriteGuard';
 import ReadonlyBanner from '@/components/ReadonlyBanner';
 import PremiumPaywall from '@/components/PremiumPaywall';
+import RegisterNudge from '@/components/RegisterNudge';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { RECORD_TYPE_KEYS, recordTypeLabel, localeForLang } from '@/lib/enumLabels';
 import { cn } from '@/lib/utils';
@@ -56,7 +57,7 @@ export default function Records() {
   const { toast } = useToast();
   const { scanning, scan } = useRecordScanner();
   const { isAuthenticated, authChecked } = useAuth();
-  const { guard, showPaywall, setShowPaywall } = useWriteGuard();
+  const { guard, showPaywall, setShowPaywall, showNudge, setShowNudge } = useWriteGuard();
   const fileRef = useRef(null);
   const types = Object.entries(RECORD_TYPE_KEYS).map(([value, key]) => ({ value, label: t(key) }));
   const [items, setItems] = useState([]);
@@ -301,6 +302,7 @@ export default function Records() {
       />
       <EditorialBlock sectionKey="records_archive" align="right" />
       <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
+      <RegisterNudge open={showNudge} onClose={() => setShowNudge(false)} />
     </AppLayout>
   );
 }

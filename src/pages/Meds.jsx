@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useWriteGuard } from '@/hooks/useWriteGuard';
 import ReadonlyBanner from '@/components/ReadonlyBanner';
 import PremiumPaywall from '@/components/PremiumPaywall';
+import RegisterNudge from '@/components/RegisterNudge';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
@@ -48,7 +49,7 @@ export default function Meds() {
   const { t } = useI18n();
   const { isAuthenticated, authChecked } = useAuth();
   const navigate = useNavigate();
-  const { guard, showPaywall, setShowPaywall } = useWriteGuard();
+  const { guard, showPaywall, setShowPaywall, showNudge, setShowNudge } = useWriteGuard();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -178,6 +179,7 @@ export default function Meds() {
       />
       <EditorialBlock sectionKey="meds_adherence" align="left" />
       <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
+      <RegisterNudge open={showNudge} onClose={() => setShowNudge(false)} />
     </AppLayout>
   );
 }

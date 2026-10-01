@@ -1,14 +1,37 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Lock, UserPlus, Crown, ArrowRight } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
+import { base44 } from '@/api/base44Client';
+import { trackGuestActivity } from '@/lib/guestTracking';
 import { Button } from '@/components/ui/button';
 
 // Schermata di blocco totale mostrata agli ospiti con trial demo scaduta su
 // rotte demo-enabled (gestita in AppLayout). L'ospite deve registrarsi per
 // continuare: la demo era l'unica trial gratuita.
+// Strumentazione: al mount emette 'demo_gate_shown' (analytics + ConversionEvent,
+// best-effort) e al click su 'Registrati' emette 'demo_gate_registered' prima
+// della navigazione, per misurare la vera conversione del gate.
 export default function DemoExpiredGate() {
   const { t } = useI18n();
+  const firedRef = useRef(false);
+
+  useEffect(() => {
+    if (firedRef.current) return;
+    firedRef.current = true;
+    try {
+      base44.analytics.track({ eventName: 'demo_gate_shown' });
+    } catch { /* best-effort */ }
+    trackGuestActivity('demo_gate_shown', 'used');
+  }, []);
+
+  const handleRegister = () => {
+    try {
+      base44.analytics.track({ eventName: 'demo_gate_registered' });
+    } catch { /* best-effort */ }
+    trackGuestActivity('demo_gate_registered', 'used');
+  };
+
   return (
     <div className="flex flex-col items-center justify-center text-center py-16 px-4">
       <div className="w-16 h-16 rounded-2xl bg-terracotta/15 border border-terracotta/40 flex items-center justify-center mb-5">
@@ -21,7 +44,7 @@ export default function DemoExpiredGate() {
         {t('demo.expired_desc')}
       </p>
       <div className="mt-6 flex flex-col sm:flex-row gap-2.5 w-full max-w-sm">
-        <Link to="/register" className="w-full">
+        <Link to="/register" onClick={handleRegister} className="w-full">
           <Button className="w-full rounded-xl bg-terracotta text-terracotta-foreground hover:bg-terracotta/90 h-12">
             <UserPlus className="w-4 h-4 mr-1.5" /> {t('demo.expired_cta_register')}
           </Button>

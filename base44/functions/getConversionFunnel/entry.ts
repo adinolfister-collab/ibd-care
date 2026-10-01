@@ -231,10 +231,18 @@ export default async function(req: Request): Promise<Response> {
       const vid = pv.visitor_id ? String(pv.visitor_id) : '';
       if (uid && vid && guestVisitors.has(vid)) convertedVisitors.add(vid);
     }
+    // Conversione del gate demo scaduta: demo_gate_shown vs demo_gate_registered
+    const gateShown = byFeature['demo_gate_shown'] || 0;
+    const gateRegistered = byFeature['demo_gate_registered'] || 0;
     const guestStats = {
       total: guestEvents.length,
       distinctVisitors: guestVisitors.size,
       distinctSessions: guestSessions.size,
+      gateShown,
+      gateRegistered,
+      gateConversionRate: gateShown > 0
+        ? Math.round((gateRegistered / gateShown) * 100)
+        : 0,
       byFeature: Object.entries(byFeature)
         .map(([feature, count]) => ({ feature, count }))
         .sort((a, b) => b.count - a.count),
