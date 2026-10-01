@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
+import ReasonSelector from '@/components/ReasonSelector';
+import { DEFAULT_REASON, getReasonTemplate, REASON_BADGE_CLASSES } from '@/lib/supportTemplates';
 
 export default function MyTickets() {
   const { t } = useI18n();
@@ -16,7 +18,7 @@ export default function MyTickets() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [form, setForm] = useState({ subject: '', message: '' });
+  const [form, setForm] = useState({ subject: '', message: '', reason: DEFAULT_REASON });
   const [sending, setSending] = useState(false);
 
   const load = useCallback(async () => {
@@ -43,13 +45,14 @@ export default function MyTickets() {
         email: '',
         message: form.message.trim(),
         subject: form.subject.trim(),
+        reason: form.reason,
       });
       if (res?.data?.error) throw new Error(res.data.error);
       toast({
         title: t('my_tickets.new_success'),
         description: t('my_tickets.new_success_desc'),
       });
-      setForm({ subject: '', message: '' });
+      setForm({ subject: '', message: '', reason: DEFAULT_REASON });
       setDialogOpen(false);
       await load();
     } catch (e) {
@@ -69,7 +72,7 @@ export default function MyTickets() {
           <p className="font-heading text-lg font-semibold text-foreground">{t('my_tickets.title')}</p>
           <p className="text-xs text-muted-foreground">{t('my_tickets.subtitle')}</p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) setForm({ subject: '', message: '' }); }}>
+        <Dialog open={dialogOpen}           onOpenChange={(o) => { setDialogOpen(o); if (!o) setForm({ subject: '', message: '', reason: DEFAULT_REASON }); }}>
           <DialogTrigger asChild>
             <Button size="sm" className="rounded-xl">
               <Plus className="w-4 h-4 mr-1" /> {t('my_tickets.new')}
@@ -80,6 +83,10 @@ export default function MyTickets() {
               <DialogTitle>{t('my_tickets.new')}</DialogTitle>
             </DialogHeader>
             <div className="space-y-3">
+              <div>
+                <p className="text-sm font-medium text-foreground mb-1.5">{t('support_reason.label')}</p>
+                <ReasonSelector value={form.reason} onChange={(reason) => setForm({ ...form, reason })} />
+              </div>
               <div>
                 <Input
                   value={form.subject}
@@ -126,6 +133,14 @@ export default function MyTickets() {
               <CardContent className="p-4 space-y-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
+                    {tk.reason && (() => {
+                      const tmpl = getReasonTemplate(tk.reason);
+                      return tmpl ? (
+                        <span className={cn('inline-flex items-center text-xs font-medium border rounded-full px-2 py-0.5 mb-1', REASON_BADGE_CLASSES[tmpl.color])}>
+                          {t(tmpl.labelKey)}
+                        </span>
+                      ) : null;
+                    })()}
                     {tk.subject && <p className="font-medium text-foreground truncate">{tk.subject}</p>}
                     <p className="text-xs text-muted-foreground">{new Date(tk.created_date).toLocaleDateString('it-IT')}</p>
                   </div>

@@ -175,6 +175,23 @@
 .dark .border-amber-300 { border-color: rgb(245 158 11 / 0.35); }
 .dark .border-rose-200 { border-color: rgb(244 63 94 / 0.35); }
 
+/* Badge motivi ticket (blu, viola, teal, slate) — override dark mode */
+.dark .bg-blue-50 { background-color: rgb(59 130 246 / 0.12); }
+.dark .text-blue-700 { color: rgb(147 197 253); }
+.dark .border-blue-200 { border-color: rgb(59 130 246 / 0.35); }
+
+.dark .bg-violet-50 { background-color: rgb(139 92 246 / 0.12); }
+.dark .text-violet-700 { color: rgb(196 181 253); }
+.dark .border-violet-200 { border-color: rgb(139 92 246 / 0.35); }
+
+.dark .bg-teal-50 { background-color: rgb(20 184 166 / 0.12); }
+.dark .text-teal-700 { color: rgb(153 246 228); }
+.dark .border-teal-200 { border-color: rgb(20 184 166 / 0.35); }
+
+.dark .bg-slate-50 { background-color: rgb(148 163 184 / 0.12); }
+.dark .text-slate-600 { color: rgb(203 213 225); }
+.dark .border-slate-200 { border-color: rgb(148 163 184 / 0.35); }
+
 /* === Safe-area helper utilities (env-based, mobile WebView) === */
 .safe-pt { padding-top: env(safe-area-inset-top); }
 .safe-pb { padding-bottom: env(safe-area-inset-bottom); }

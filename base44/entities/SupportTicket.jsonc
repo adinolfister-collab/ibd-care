@@ -18,6 +18,19 @@
       "type": "string",
       "description": "Nome del mittente"
     },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "tecnico",
+        "account",
+        "domanda",
+        "feedback",
+        "abbonamento",
+        "altro"
+      ],
+      "default": "altro",
+      "description": "Motivo del ticket selezionato dall'utente tramite template"
+    },
     "status": {
       "type": "string",
       "enum": [

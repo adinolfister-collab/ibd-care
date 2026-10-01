@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
+import { SUPPORT_REASONS, getReasonTemplate, REASON_BADGE_CLASSES } from '@/lib/supportTemplates';
 
 const STATUSES = ['open', 'closed', 'all'];
 
@@ -19,6 +20,7 @@ export default function AdminSupport() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('open');
+  const [reasonFilter, setReasonFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState(null);
   const [replyText, setReplyText] = useState('');
@@ -40,13 +42,16 @@ export default function AdminSupport() {
 
   const filtered = tickets.filter((tk) => {
     if (filter !== 'all' && tk.status !== filter) return false;
+    if (reasonFilter !== 'all' && (tk.reason || 'altro') !== reasonFilter) return false;
     if (search.trim()) {
       const q = search.toLowerCase();
+      const reasonLabel = tk.reason ? t(getReasonTemplate(tk.reason)?.labelKey || '') : '';
       return (
         (tk.name || '').toLowerCase().includes(q) ||
         (tk.email || '').toLowerCase().includes(q) ||
         (tk.message || '').toLowerCase().includes(q) ||
-        (tk.subject || '').toLowerCase().includes(q)
+        (tk.subject || '').toLowerCase().includes(q) ||
+        reasonLabel.toLowerCase().includes(q)
       );
     }
     return true;
@@ -118,6 +123,34 @@ export default function AdminSupport() {
         </div>
       </div>
 
+      <div className="flex flex-wrap gap-2 mb-5">
+        <button
+          onClick={() => setReasonFilter('all')}
+          className={cn(
+            'px-3 py-1.5 rounded-full text-xs font-medium transition-colors border',
+            reasonFilter === 'all'
+              ? 'bg-primary text-primary-foreground border-primary'
+              : 'bg-card text-muted-foreground border-border hover:border-terracotta/40'
+          )}
+        >
+          {t('support_inbox.reason_filter_all')}
+        </button>
+        {SUPPORT_REASONS.map((r) => (
+          <button
+            key={r.value}
+            onClick={() => setReasonFilter(r.value)}
+            className={cn(
+              'px-3 py-1.5 rounded-full text-xs font-medium transition-colors border',
+              reasonFilter === r.value
+                ? 'bg-primary text-primary-foreground border-primary'
+                : cn('border', REASON_BADGE_CLASSES[r.color], 'hover:opacity-80')
+            )}
+          >
+            {t(r.labelKey)}
+          </button>
+        ))}
+      </div>
+
       {loading ? (
         <div className="flex items-center justify-center py-16">
           <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
@@ -159,6 +192,14 @@ export default function AdminSupport() {
                     </span>
                   )}
                 </div>
+                {tk.reason && (() => {
+                  const tmpl = getReasonTemplate(tk.reason);
+                  return tmpl ? (
+                    <span className={cn('inline-flex items-center text-xs font-medium border rounded-full px-2 py-0.5 mb-1.5', REASON_BADGE_CLASSES[tmpl.color])}>
+                      {t(tmpl.labelKey)}
+                    </span>
+                  ) : null;
+                })()}
                 {tk.subject && (
                   <p className="text-sm font-medium text-foreground truncate mb-0.5">{tk.subject}</p>
                 )}
@@ -180,6 +221,14 @@ export default function AdminSupport() {
                   </div>
 
                   <div className="rounded-xl bg-accent/50 p-4">
+                    {selected.reason && (() => {
+                      const tmpl = getReasonTemplate(selected.reason);
+                      return tmpl ? (
+                        <span className={cn('inline-flex items-center text-xs font-medium border rounded-full px-2 py-0.5 mb-2', REASON_BADGE_CLASSES[tmpl.color])}>
+                          {t('support_inbox.reason_label')}: {t(tmpl.labelKey)}
+                        </span>
+                      ) : null;
+                    })()}
                     {selected.subject && (
                       <p className="font-medium text-foreground mb-2">{selected.subject}</p>
                     )}

@@ -12,6 +12,8 @@ export default async function(req: Request): Promise<Response> {
     const email = (body?.email ?? '').toString().trim();
     const message = (body?.message ?? '').toString().trim();
     const subject = (body?.subject ?? '').toString().trim();
+    const ALLOWED_REASONS = ['tecnico', 'account', 'domanda', 'feedback', 'abbonamento', 'altro'];
+    const reason = ALLOWED_REASONS.includes(body?.reason) ? body.reason : 'altro';
 
     if (!name || !email || !message) {
       return Response.json({ error: 'Campi obbligatori mancanti' }, { status: 400 });
@@ -31,6 +33,7 @@ export default async function(req: Request): Promise<Response> {
       email,
       message,
       subject: subject || message.slice(0, 80),
+      reason,
       status: 'open' as const,
       source: 'contact' as const,
     };

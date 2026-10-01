@@ -14,13 +14,15 @@ import LanguageMenu from '@/components/LanguageMenu';
 import { useToast } from '@/components/ui/use-toast';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
+import ReasonSelector from '@/components/ReasonSelector';
+import { DEFAULT_REASON } from '@/lib/supportTemplates';
 
 const CONTACT_EMAIL = 'supporto@ibdcare.app';
 
 export default function Contact() {
   const { t } = useI18n();
   const { toast } = useToast();
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', message: '', reason: DEFAULT_REASON });
   const [sending, setSending] = useState(false);
 
   const onSubmit = async (e) => {
@@ -32,13 +34,14 @@ export default function Contact() {
         name: form.name,
         email: form.email,
         message: form.message,
+        reason: form.reason,
       });
       if (res?.data?.error) throw new Error(res.data.error);
       toast({
         title: t('contact.success_title'),
         description: t('contact.success_desc'),
       });
-      setForm({ name: '', email: '', message: '' });
+      setForm({ name: '', email: '', message: '', reason: DEFAULT_REASON });
     } catch (err) {
       toast({
         title: t('contact.error_title'),
@@ -84,6 +87,10 @@ export default function Contact() {
             <div>
               <Label htmlFor="email" className="mb-1.5">{t('contact.email_label')}</Label>
               <Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder={t('contact.email_placeholder')} />
+            </div>
+            <div>
+              <Label className="mb-2">{t('support_reason.label')}</Label>
+              <ReasonSelector value={form.reason} onChange={(reason) => setForm({ ...form, reason })} />
             </div>
             <div>
               <Label htmlFor="message" className="mb-1.5">{t('contact.message')}</Label>
