@@ -48,6 +48,8 @@ export default function MobileBottomNav({ isAuthenticated }) {
 
   // Per-tab path stacks (mutable, no re-render needed).
   const stacksRef = useRef({});
+  // Per-tab scroll positions, restored when switching back to a tab.
+  const scrollRef = useRef({});
   // The tab currently "owning" navigation (last selected / initial match).
   const [currentTab, setCurrentTab] = useState(() => tabForPath(location.pathname).to);
 
@@ -74,21 +76,25 @@ export default function MobileBottomNav({ isAuthenticated }) {
     if (currentTab === target) {
       // Re-tap on the active tab: reset to root and clear its stack.
       stacksRef.current[target] = [];
+      scrollRef.current[target] = 0;
       if (location.pathname !== target) navigate(target);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      // Switch tab: restore the top of its stack, or its root.
+      // Save the current tab's scroll, then switch and restore the target's.
+      scrollRef.current[currentTab] = window.scrollY;
       setCurrentTab(target);
       const stack = stacksRef.current[target] || [];
       const dest = stack.length > 0 ? stack[stack.length - 1] : target;
       navigate(dest);
+      const saved = scrollRef.current[target] || 0;
+      // Defer past the route change + lazy mount so the page is tall enough.
+      window.setTimeout(() => window.scrollTo({ top: saved, left: 0, behavior: 'instant' }), 140);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur border-t border-border"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur border-t border-border safe-pb"
     >
       <div className="flex items-stretch justify-around">
         {tabs.map((item) => {

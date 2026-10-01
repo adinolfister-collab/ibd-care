@@ -24,8 +24,7 @@ export default function MobileTopNav({ isAuthenticated, onLogout }) {
 
   return (
     <header
-      className="sticky top-0 z-40 bg-card/95 backdrop-blur border-b border-terracotta/50"
-      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      className="sticky top-0 z-40 bg-card/95 backdrop-blur border-b border-terracotta/50 safe-pt"
     >
       <div className="flex items-center justify-between h-12 px-3">
         <div className="flex items-center gap-2 min-w-0">
