@@ -17,6 +17,13 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 export default function MarketingAdmin() {
@@ -187,25 +194,29 @@ export default function MarketingAdmin() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Label htmlFor="tone">Tono</Label>
-                    <select
-                      id="tone"
-                      value={tone}
-                      onChange={(e) => setTone(e.target.value)}
-                      className="mt-1 w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm"
-                    >
-                      {TONES.map((t) => <option key={t} value={t}>{t}</option>)}
-                    </select>
+                    <Select value={tone} onValueChange={setTone}>
+                      <SelectTrigger id="tone" className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TONES.map((tn) => (
+                          <SelectItem key={tn} value={tn}>{tn}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label htmlFor="lang">Lingua del copy</Label>
-                    <select
-                      id="lang"
-                      value={lang}
-                      onChange={(e) => setLang(e.target.value)}
-                      className="mt-1 w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm"
-                    >
-                      {LANGS.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
-                    </select>
+                    <Select value={lang} onValueChange={setLang}>
+                      <SelectTrigger id="lang" className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {LANGS.map((l) => (
+                          <SelectItem key={l.code} value={l.code}>{l.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -222,14 +233,16 @@ export default function MarketingAdmin() {
 
                 <div>
                   <Label htmlFor="deeplink" className="flex items-center gap-1.5"><Link2 className="w-3.5 h-3.5" /> Link dell'app da includere</Label>
-                  <select
-                    id="deeplink"
-                    value={deepLink}
-                    onChange={(e) => setDeepLink(e.target.value)}
-                    className="mt-1 w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm"
-                  >
-                    {APP_PAGES.map((p) => <option key={p.path} value={p.path}>{p.label}</option>)}
-                  </select>
+                  <Select value={deepLink || '__none__'} onValueChange={(v) => setDeepLink(v === '__none__' ? '' : v)}>
+                    <SelectTrigger id="deeplink" className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {APP_PAGES.map((p) => (
+                        <SelectItem key={p.path || '__none__'} value={p.path || '__none__'}>{p.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>

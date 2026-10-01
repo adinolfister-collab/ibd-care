@@ -16,6 +16,8 @@ import { AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
 import PageViewBeacon from '@/components/PageViewBeacon';
 import SeoMetaManager from '@/components/SeoMetaManager';
+import PersistentTabs from '@/components/PersistentTabs';
+import { useAndroidBack } from '@/hooks/useAndroidBack';
 
 // Route-based code-splitting: each page is loaded on demand to keep the
 // initial WebView bundle small and speed up first paint.
@@ -67,6 +69,7 @@ const PageLoader = () => (
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
   const location = useLocation();
+  useAndroidBack();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -89,6 +92,7 @@ const AuthenticatedApp = () => {
     <>
     <SeoMetaManager />
     <Suspense fallback={<PageLoader />}>
+    <PersistentTabs />
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {/* Auth routes (public) */}
@@ -108,13 +112,13 @@ const AuthenticatedApp = () => {
         <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
         {/* Deprecated /guida -> /demo redirect (SEO/link legacy) */}
         <Route path="/guida" element={<Navigate to="/demo" replace />} />
-        <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
+        <Route path="/community" element={null} />
         <Route path="/supporto" element={<PageTransition><Supporto /></PageTransition>} />
-        <Route path="/symptoms" element={<PageTransition><Symptoms /></PageTransition>} />
+        <Route path="/symptoms" element={null} />
         <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
         <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
         <Route path="/meds/calendar" element={<PageTransition><MedicationCalendarPage /></PageTransition>} />
-        <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
+        <Route path="/records" element={null} />
         <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
         <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
         <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />

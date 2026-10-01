@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -13,6 +13,7 @@ import PageRatingWidget from '@/components/PageRatingWidget';
 import { guestSymptoms, guestFoods, guestRecords, syncGuestEntriesToCloud } from '@/lib/guestEntries';
 import { getDemoTrialState, ensureDemoTrialStarted, isDemoEnabledPath } from '@/lib/demoTrial';
 import { useToast } from '@/components/ui/use-toast';
+import { PersistentTabContext } from '@/components/PersistentTabs';
 
 // Layout mobile-first unico per tutti i breakpoint: header universale in alto,
 // bottom tab bar su mobile, contenuto centrato a piena larghezza (nessuna
@@ -26,6 +27,7 @@ export default function AppLayout({ children }) {
   const { t } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
+  const { isActive: isTabActive = true } = useContext(PersistentTabContext);
   const [syncingGuest, setSyncingGuest] = useState(false);
 
   const path = typeof window !== 'undefined' ? window.location.pathname : '';
@@ -42,6 +44,7 @@ export default function AppLayout({ children }) {
   // Al primo mount autenticato, migra le registrazioni guest dal dispositivo
   // alle entità cloud dell'utente, poi svuota la cache locale.
   useEffect(() => {
+    if (!isTabActive) return;
     if (!isAuthenticated) return;
     if (!guestSymptoms.has() && !guestFoods.has() && !guestRecords.has()) return;
     let cancelled = false;
@@ -77,7 +80,10 @@ export default function AppLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div
+      className="min-h-screen bg-background text-foreground"
+      style={{ display: isTabActive ? undefined : 'none' }}
+    >
       <MobileTopNav user={user} isAuthenticated={isAuthenticated} onLogout={handleLogout} />
       <MobileBottomNav isAuthenticated={isAuthenticated} />
       <ScrollToTopButton />
