@@ -9,6 +9,9 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 
 const VALID_SOURCES = new Set(['used', 'demo', 'blocked']);
 
+// Defense-in-depth: esclude le attivita' dell'account admin dal tracciamento.
+const EXCLUDED_ADMIN_ID = '6a80de4be246a7b03417c239';
+
 export default async function(req: Request): Promise<Response> {
   try {
     let p: any = {};
@@ -22,6 +25,10 @@ export default async function(req: Request): Promise<Response> {
     const sessionId = String(p.session_id || '').slice(0, 64);
     const visitorId = String(p.visitor_id || '').slice(0, 64);
     const path = p.path ? String(p.path).slice(0, 200) : '';
+    const userId = p.user_id ? String(p.user_id) : '';
+    if (userId === EXCLUDED_ADMIN_ID) {
+      return Response.json({ ok: true, excluded: true });
+    }
 
     const base44 = createClientFromRequest(req);
     await base44.asServiceRole.entities.ConversionEvent.create({

@@ -66,6 +66,11 @@ const VALID_SECTIONS = new Set([
   'Home', 'Diario', 'Negozio', 'Community', 'Abbonamento', 'Strumenti', 'Account', 'Altro',
 ]);
 
+// Defense-in-depth: esclude le visite dell'account admin dal tracciamento.
+// Il filtro client (PageViewBeacon) resta la prima linea di difesa; questo
+// evita comunque la creazione del record se il beacon viene bypassato.
+const EXCLUDED_ADMIN_ID = '6a80de4be246a7b03417c239';
+
 export default async function(req: Request): Promise<Response> {
   try {
     let p: any = {};
@@ -77,6 +82,9 @@ export default async function(req: Request): Promise<Response> {
     let section = String(p.section || 'Altro');
     if (!VALID_SECTIONS.has(section)) section = 'Altro';
     const userId = p.user_id ? String(p.user_id) : '';
+    if (userId === EXCLUDED_ADMIN_ID) {
+      return Response.json({ ok: true, excluded: true });
+    }
     const enteredAt = p.entered_at ? String(p.entered_at) : new Date().toISOString();
     const path = p.path ? String(p.path).slice(0, 200) : '';
     const visitorId = p.visitor_id ? String(p.visitor_id).slice(0, 64) : '';
