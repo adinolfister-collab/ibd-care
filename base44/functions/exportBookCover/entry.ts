@@ -15,11 +15,22 @@ export default async function(req) {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
 
     const body = await req.json().catch(() => ({}));
     const imageUrl = body.image_url;
     if (!imageUrl || typeof imageUrl !== 'string') {
       return Response.json({ error: 'image_url obbligatorio' }, { status: 400 });
+    }
+
+    // Validazione anti-SSRF: solo https, host nell'allowlist, lunghezza limitata.
+    const ALLOWED_HOSTS = new Set(['media.base44.com', 'static.wixstatic.com']);
+    let parsedUrl;
+    try { parsedUrl = new URL(imageUrl); } catch (e) {
+      return Response.json({ error: 'image_url non valido' }, { status: 400 });
+    }
+    if (parsedUrl.protocol !== 'https:' || !ALLOWED_HOSTS.has(parsedUrl.hostname) || imageUrl.length > 2048) {
+      return Response.json({ error: 'image_url non valido' }, { status: 400 });
     }
 
     // 1. Scarica l'immagine sorgente
