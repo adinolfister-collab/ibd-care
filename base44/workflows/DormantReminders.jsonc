@@ -1,0 +1,44 @@
+{
+  "name": "Promemoria inserimenti 48h",
+  "description": "Ogni giorno alle 10:00 (Europe/Rome) invia una mail di guida pratica ai nuovi utenti che a 48h dalla registrazione non hanno ancora effettuato nessun inserimento nel diario",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 10 * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Rome",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "dormant_reminders",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "remind": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "sendDormantReminders"
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Invia promemoria inserimenti",
+            "description": "Mail guida pratica agli utenti inattivi a 48h"
+          }
+        }
+      }
+    ]
+  }
+}
