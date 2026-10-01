@@ -11,6 +11,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { isPremiumRoute } from '@/lib/premiumRoutes';
 import PremiumLockBadge from '@/components/PremiumLockBadge';
+import { useOpenTicketCount } from '@/hooks/useOpenTicketCount';
 import { cn } from '@/lib/utils';
 
 // Sezione "Esplora la rivista": voci raggruppate in 6 sezioni tematiche,
@@ -65,7 +66,8 @@ const ADMIN_ITEMS = [
   { to: '/shop/admin', key: 'shop.admin_nav', icon: ShoppingBag },
 ];
 
-function MenuCard({ item, t, isExpired }) {
+function MenuCard({ item, t, isExpired, openTicketCount }) {
+  const showSupportDot = item.to === '/admin/supporto' && openTicketCount > 0;
   return (
     <Link
       to={item.to}
@@ -85,13 +87,18 @@ function MenuCard({ item, t, isExpired }) {
         {t(item.key)}
       </span>
       {isExpired && isPremiumRoute(item.to) && <PremiumLockBadge size="nav" className="ml-1" />}
+      {showSupportDot && (
+        <span className="inline-flex items-center justify-center min-w-[1.4rem] h-5 px-1.5 text-[0.65rem] font-semibold rounded-full bg-red-500 text-white animate-pulse shrink-0">
+          {openTicketCount}
+        </span>
+      )}
       {item.founder && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-terracotta text-terracotta-foreground px-1.5 py-0.5 rounded-full shrink-0">Founder</span>}
       {item.admin && <span className="text-[0.6rem] font-semibold uppercase tracking-wide bg-primary/15 text-primary px-1.5 py-0.5 rounded-full shrink-0">Admin</span>}
     </Link>
   );
 }
 
-function Group({ titleKey, items, t, isExpired }) {
+function Group({ titleKey, items, t, isExpired, openTicketCount }) {
   if (!items.length) return null;
   return (
     <div>
@@ -103,7 +110,7 @@ function Group({ titleKey, items, t, isExpired }) {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {items.map((item) => (
-          <MenuCard key={item.to} item={item} t={t} isExpired={isExpired} />
+          <MenuCard key={item.to} item={item} t={t} isExpired={isExpired} openTicketCount={openTicketCount} />
         ))}
       </div>
     </div>
@@ -115,6 +122,7 @@ export default function SiteMenu() {
   const { isAuthenticated, user } = useAuth();
   const { isExpired } = useSubscription();
   const isAdmin = user?.role === 'admin';
+  const openTicketCount = useOpenTicketCount(isAdmin);
 
   const accountItems = isAuthenticated
     ? [...ACCOUNT_AUTH, ...ACCOUNT_BASE]
@@ -142,7 +150,7 @@ export default function SiteMenu() {
         <Group titleKey="nav.group_risorse" items={RISORSE} t={t} isExpired={isExpired} />
         <Group titleKey="nav.group_account" items={accountItems} t={t} isExpired={isExpired} />
         {adminItems.length > 0 && (
-          <Group titleKey="nav.group_admin" items={adminItems} t={t} isExpired={isExpired} />
+          <Group titleKey="nav.group_admin" items={adminItems} t={t} isExpired={isExpired} openTicketCount={openTicketCount} />
         )}
       </div>
     </section>

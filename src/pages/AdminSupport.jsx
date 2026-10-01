@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { SUPPORT_REASONS, getReasonTemplate, REASON_BADGE_CLASSES } from '@/lib/supportTemplates';
+import { sortedTemplatesForReason } from '@/lib/replyTemplates';
 
 const STATUSES = ['open', 'closed', 'all'];
 
@@ -246,6 +247,22 @@ export default function AdminSupport() {
 
                   {selected.status === 'open' ? (
                     <div className="space-y-3">
+                      <div>
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
+                          {t('support_inbox.template_label')}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {sortedTemplatesForReason(selected.reason || 'altro').map((tpl) => (
+                            <button
+                              key={tpl.id}
+                              onClick={() => setReplyText(t(tpl.bodyKey).replace(/\{name\}/g, selected.name || ''))}
+                              className="px-2.5 py-1 rounded-full text-xs font-medium border border-border bg-card text-foreground hover:border-terracotta/50 hover:bg-terracotta/5 transition-colors"
+                            >
+                              {t(tpl.labelKey)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                       <Textarea
                         value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}

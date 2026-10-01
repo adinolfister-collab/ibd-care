@@ -1372,6 +1372,22 @@ const en = {
   'my_tickets.status_open': 'Awaiting reply',
   'my_tickets.status_closed': 'Replied',
   'my_tickets.reply_from': 'Reply from support',
+  'support_inbox.template_label': 'Reply template',
+  'reply_tpl.welcome.label': 'Welcome new user',
+  'reply_tpl.welcome.body': 'Hi {name},\n\nWelcome to IBD Care! We\u2019re glad to have you with us. If you have questions about using the app, we\u2019re here to help: sign up to sync your data and explore every feature, from the symptom diary to the community.\n\nTalk soon,\nThe IBD Care team',
+  'reply_tpl.tech_ack.label': 'Technical issue acknowledgement',
+  'reply_tpl.tech_ack.body': 'Hi {name},\n\nThank you for reporting the issue. We\u2019re looking into it and will update you as soon as possible. If you have more details or a screenshot of the error, reply to this email: they\u2019ll help us fix it faster.\n\nThe IBD Care team',
+  'reply_tpl.account_help.label': 'Account help',
+  'reply_tpl.account_help.body': 'Hi {name},\n\nThank you for writing to us. To protect your account, please verify that your email and password are correct and that you confirmed your account with the code you received. If the problem persists, send us more details about the error you see on screen.\n\nThe IBD Care team',
+  'reply_tpl.feedback_thanks.label': 'Feedback thanks',
+  'reply_tpl.feedback_thanks.body': 'Hi {name},\n\nThank you for your feedback! Suggestions from people who use the app every day help us improve. We\u2019ll keep your idea in mind for upcoming updates.\n\nThe IBD Care team',
+  'reply_tpl.subscription_help.label': 'Subscription help',
+  'reply_tpl.subscription_help.body': 'Hi {name},\n\nThank you for writing. You can manage your subscription from the Account > Subscription area, including cancelling anytime. For refunds or specific billing issues, send us the details and we\u2019ll reply as soon as possible.\n\nThe IBD Care team',
+  'reply_tpl.generic_ack.label': 'Generic acknowledgement',
+  'reply_tpl.generic_ack.body': 'Hi {name},\n\nThank you for writing: we received your message. We\u2019ll reply with all the details as soon as possible.\n\nThe IBD Care team',
+  'reply_tpl.close_resolved.label': 'Close resolved ticket',
+  'reply_tpl.close_resolved.body': 'Hi {name},\n\nWe hope the solution was helpful. We\u2019re closing this ticket, but feel free to write again if you need anything: open a new request from the \u201cMy requests\u201d area.\n\nThe IBD Care team',
+  'support_inbox.new_tickets_badge': '{n} new',
 };
 
 

@@ -1369,6 +1369,22 @@ const it = {
   'my_tickets.status_open': 'In attesa di risposta',
   'my_tickets.status_closed': 'Risposto',
   'my_tickets.reply_from': 'Risposta dal supporto',
+  'support_inbox.template_label': 'Template di risposta',
+  'reply_tpl.welcome.label': 'Benvenuto nuovo utente',
+  'reply_tpl.welcome.body': 'Ciao {name},\n\nBenvenuto in IBD Care! Siamo felici di averti con noi. Se hai domande su come usare l\u2019app, siamo qui per aiutarti: registrati per sincronizzare i tuoi dati e scopri tutte le funzioni dal diario sintomi alla community.\n\nA presto,\nIl team IBD Care',
+  'reply_tpl.tech_ack.label': 'Conferma problema tecnico',
+  'reply_tpl.tech_ack.body': 'Ciao {name},\n\nGrazie per averci segnalato il problema. Lo stiamo verificando e ti aggiorneremo appena possibile. Se nel frattempo hai altri dettagli o uno screenshot dell\u2019errore, rispondi a questa email: ci aiuteranno a risolvere prima.\n\nIl team IBD Care',
+  'reply_tpl.account_help.label': 'Aiuto account',
+  'reply_tpl.account_help.body': 'Ciao {name},\n\nGrazie per averci scritto. Per proteggere il tuo account, ti invitiamo a verificare che email e password siano corretti e di aver confermato l\u2019account tramite il codice ricevuto. Se il problema persiste, inviaci maggiori dettagli sull\u2019errore che vedi a schermo.\n\nIl team IBD Care',
+  'reply_tpl.feedback_thanks.label': 'Ringraziamento feedback',
+  'reply_tpl.feedback_thanks.body': 'Ciao {name},\n\nGrazie per il tuo feedback! I suggerimenti di chi usa l\u2019app ogni giorno ci aiutano a migliorare. Terremo conto della tua idea nei prossimi aggiornamenti.\n\nIl team IBD Care',
+  'reply_tpl.subscription_help.label': 'Aiuto abbonamento',
+  'reply_tpl.subscription_help.body': 'Ciao {name},\n\nGrazie per averci scritto. Puoi gestire il tuo abbonamento direttamente dall\u2019area Account > Abbonamento, anche per disdire quando vuoi. Per rimborsi o problemi specifici di fatturazione, inviaci i dettagli e ti risponderemo al pi\u00f9 presto.\n\nIl team IBD Care',
+  'reply_tpl.generic_ack.label': 'Conferma generica',
+  'reply_tpl.generic_ack.body': 'Ciao {name},\n\nGrazie per averci scritto: abbiamo ricevuto il tuo messaggio. Ti risponderemo con tutti i dettagli il prima possibile.\n\nIl team IBD Care',
+  'reply_tpl.close_resolved.label': 'Chiusura ticket risolto',
+  'reply_tpl.close_resolved.body': 'Ciao {name},\n\nSperiamo che la soluzione ti sia utile. Chiudiamo questo ticket, ma scrivici pure di nuovo se hai bisogno: apri una nuova richiesta dall\u2019area \u00abLe mie richieste\u00bb.\n\nIl team IBD Care',
+  'support_inbox.new_tickets_badge': '{n} nuovi',
 };
 
 
