@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Settings as SettingsIcon, LogOut, Mail, Trash2, AlertTriangle } from 'lucide-react';
+import { User, Settings as SettingsIcon, LogOut, Mail, Trash2, AlertTriangle, MessageSquare } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import MyTickets from '@/components/MyTickets';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { cn } from '@/lib/utils';
 import { deleteAccountAndData } from '@/lib/accountDeletion';
@@ -68,9 +69,10 @@ export default function Account() {
       <PageHeader title={t('settings.account')} subtitle={t('account.subtitle')} />
 
       <Tabs defaultValue="profilo" className="w-full">
-        <TabsList className="grid grid-cols-2 w-full mb-5">
+        <TabsList className="grid grid-cols-3 w-full mb-5">
           <TabsTrigger value="profilo">{t('account.tab_profile')}</TabsTrigger>
           <TabsTrigger value="impostazioni">{t('account.tab_settings')}</TabsTrigger>
+          <TabsTrigger value="richieste">{t('account.tab_tickets')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profilo" className="mt-0 space-y-4">
@@ -180,6 +182,10 @@ export default function Account() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+        </TabsContent>
+
+        <TabsContent value="richieste" className="mt-0">
+          <MyTickets />
         </TabsContent>
       </Tabs>
     </AppLayout>
