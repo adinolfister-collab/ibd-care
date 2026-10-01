@@ -21,6 +21,7 @@ import ReportTable from '@/components/admin/ReportTable';
 import TrialUsersTable from '@/components/admin/TrialUsersTable';
 import AdminCrashes from '@/components/admin/AdminCrashes';
 import DormantRemindersPanel from '@/components/admin/DormantRemindersPanel';
+import FoundersRevocationPanel from '@/components/admin/FoundersRevocationPanel';
 import { cn } from '@/lib/utils';
 
 const RANGES = [
@@ -469,6 +470,9 @@ export default function AdminConversions() {
       <div className="mt-6">
         <TrialUsersTable />
       </div>
+
+      {/* Founder — revoca slot inattivi */}
+      <FoundersRevocationPanel />
 
       {/* Promemoria inserimenti 48h */}
       <DormantRemindersPanel />
