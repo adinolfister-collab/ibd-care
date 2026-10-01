@@ -6,6 +6,7 @@ import EditorialBlock from '@/components/EditorialBlock';
 import AppLayout from '@/components/AppLayout';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
+import MedicalDisclaimer from '@/components/MedicalDisclaimer';
 import { useI18n } from '@/lib/i18n';
 
 export default function About() {
@@ -24,6 +25,8 @@ export default function About() {
         </div>
 
         <EditorialBlock sectionKey="about_privacy" align="right" />
+
+        <MedicalDisclaimer className="mt-6" />
 
         <PublicFooter />
       </div>
