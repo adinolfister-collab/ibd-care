@@ -23,7 +23,7 @@ import {
 const USER_LIMIT = 500;
 const EVENT_LIMIT = 500;
 const CARY_FEATURE = 'assistant_msg';
-const WINDOW_DAYS = 30;
+const DEFAULT_WINDOW_DAYS = 30;
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -47,11 +47,12 @@ export default async function(req: Request): Promise<Response> {
       integrationCredits: typeof body.integrationCreditsIncluded === 'number' ? body.integrationCreditsIncluded : basePlan.integrationCredits,
     };
     const premiumPrice: number = typeof body.premiumPrice === 'number' ? body.premiumPrice : DEFAULT_PREMIUM_PRICE;
+    const windowDays: number = typeof body.windowDays === 'number' && body.windowDays > 0 ? Math.min(Math.round(body.windowDays), 365) : DEFAULT_WINDOW_DAYS;
 
-    // Carica utenti ed eventi conversione (ultimi 30 gg). Servono sia gli
+    // Carica utenti ed eventi conversione (ultimi N gg). Servono sia gli
     // eventi Cary (per l'adozione) sia tutti gli eventi ospiti (per la base
     // totale dei visitatori demo), quindi si caricano senza filtro feature.
-    const since = Date.now() - WINDOW_DAYS * 86400000;
+    const since = Date.now() - windowDays * 86400000;
     const [users, allEvents] = await Promise.all([
       base44.asServiceRole.entities.User.filter({}, '-created_date', USER_LIMIT).catch(() => []),
       base44.asServiceRole.entities.ConversionEvent.filter({}, '-created_date', EVENT_LIMIT).catch(() => []),
@@ -68,6 +69,12 @@ export default async function(req: Request): Promise<Response> {
     let trialUsers = 0;
     const userTierMap: Record<string, string> = {};
     for (const u of userList) {
+      // Esclude gli admin dal conteggio (il proprietario è premium ma non
+      // rappresenta un utente reale ai fini business/adozione Cary).
+      if (u.role === 'admin') {
+        userTierMap[String(u.id)] = 'none';
+        continue;
+      }
       const tier = classifyUser(u);
       userTierMap[String(u.id)] = tier;
       if (tier === 'premium') premiumUsers++;
@@ -140,6 +147,7 @@ export default async function(req: Request): Promise<Response> {
     const snapshotDate = new Date().toISOString().slice(0, 10);
     const metrics = {
       snapshot_date: snapshotDate,
+      window_days: windowDays,
       premium_users: premiumUsers,
       trial_users: trialUsers,
       demo_users: demoUsers,

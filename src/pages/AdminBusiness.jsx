@@ -14,6 +14,7 @@ import BusinessVerdictCard from '@/components/admin/BusinessVerdictCard';
 import BusinessPlanSelector from '@/components/admin/BusinessPlanSelector';
 import BusinessTrendCharts from '@/components/admin/BusinessTrendCharts';
 import BusinessSnapshotArchive from '@/components/admin/BusinessSnapshotArchive';
+import BusinessCaryAdoption from '@/components/admin/BusinessCaryAdoption';
 
 const PRICE_PRESETS = [0.99, 1.99, 4.99, 9.99];
 
@@ -31,18 +32,20 @@ export default function AdminBusiness() {
   const [premiumPrice, setPremiumPrice] = useState(DEFAULT_PREMIUM_PRICE);
   const [simPremiumUsers, setSimPremiumUsers] = useState(null);
   const [avgMsgsOverride, setAvgMsgsOverride] = useState(null);
+  const [windowDays, setWindowDays] = useState(30);
+  const [simCary, setSimCary] = useState({ premium: null, trial: null, demo: null });
 
   const loadLive = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await base44.functions.invoke('snapshotBusinessMetrics', { mode: 'preview' });
+      const res = await base44.functions.invoke('snapshotBusinessMetrics', { mode: 'preview', windowDays });
       setLive(res.data);
     } catch (e) {
       setLive(null);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [windowDays]);
 
   const loadSnapshots = useCallback(async () => {
     try {
@@ -66,6 +69,11 @@ export default function AdminBusiness() {
     trial: live?.cary_usage_trial_pct || 0,
     demo: live?.cary_usage_demo_pct || 0,
   };
+  const effectiveCary = {
+    premium: simCary.premium ?? liveCary.premium,
+    trial: simCary.trial ?? liveCary.trial,
+    demo: simCary.demo ?? liveCary.demo,
+  };
   const avgMsgs = avgMsgsOverride ?? live?.avg_msgs_per_cary_user ?? DEFAULT_AVG_MSGS_PER_CARY_USER;
   const premiumUsers = simPremiumUsers ?? livePremium;
 
@@ -79,19 +87,19 @@ export default function AdminBusiness() {
     premiumUsers,
     trialUsers: liveTrial,
     demoUsers: liveDemo,
-    caryAdoption: liveCary,
+    caryAdoption: effectiveCary,
     avgMsgsPerCaryUser: avgMsgs,
     premiumPrice,
-  }), [effectivePlan, premiumUsers, liveTrial, liveDemo, avgMsgs, premiumPrice, liveCary.premium, liveCary.trial, liveCary.demo]);
+  }), [effectivePlan, premiumUsers, liveTrial, liveDemo, avgMsgs, premiumPrice, effectiveCary.premium, effectiveCary.trial, effectiveCary.demo]);
 
   const comparison = useMemo(() => BASE44_PLANS.map((p) => {
     const plan = p.id === 'elite_custom' ? { ...p, ...customPlan } : p;
     const r = computeProjection({
       plan, premiumUsers, trialUsers: liveTrial, demoUsers: liveDemo,
-      caryAdoption: liveCary, avgMsgsPerCaryUser: avgMsgs, premiumPrice,
+      caryAdoption: effectiveCary, avgMsgsPerCaryUser: avgMsgs, premiumPrice,
     });
     return { plan, result: r };
-  }), [premiumUsers, liveTrial, liveDemo, avgMsgs, premiumPrice, customPlan]);
+  }), [premiumUsers, liveTrial, liveDemo, avgMsgs, premiumPrice, customPlan, effectiveCary.premium, effectiveCary.trial, effectiveCary.demo]);
 
   if (user && user.role !== 'admin') return <Navigate to="/" replace />;
   if (!user) return null;
@@ -107,6 +115,7 @@ export default function AdminBusiness() {
         integrationCreditsIncluded: effectivePlan.integrationCredits,
         premiumPrice,
         avgMsgsPerCaryUser: avgMsgs,
+        windowDays,
       });
       await loadSnapshots();
     } catch (e) {
@@ -129,10 +138,26 @@ export default function AdminBusiness() {
         title="Business Dashboard"
         subtitle="Costi-benefici di IBD Care: utenti, adozione Cary per modalità, crediti Base44 e margini a confronto."
         action={
-          <button onClick={loadLive} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
-            Aggiorna
-          </button>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 bg-card border border-border rounded-full p-0.5">
+              {[{ d: 7, l: '7gg' }, { d: 30, l: '30gg' }, { d: 90, l: '90gg' }].map((opt) => (
+                <button
+                  key={opt.d}
+                  onClick={() => setWindowDays(opt.d)}
+                  className={cn(
+                    'px-2.5 py-1 rounded-full text-xs font-medium transition-colors',
+                    windowDays === opt.d ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  {opt.l}
+                </button>
+              ))}
+            </div>
+            <button onClick={loadLive} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
+              Aggiorna
+            </button>
+          </div>
         }
       />
 
@@ -140,8 +165,19 @@ export default function AdminBusiness() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <StatCard icon={Users} label="Utenti Premium" value={loading ? '—' : livePremium} sub="abbonamento attivo" />
         <StatCard icon={Users} label="Utenti Trial" value={loading ? '—' : liveTrial} sub="prova gratuita in corso" />
-        <StatCard icon={Sparkles} label="Adozione Cary" value={loading ? '—' : `${live?.cary_adoption_pct || 0}%`} sub={`${live?.premium_cary_users || 0}+${live?.trial_cary_users || 0}+${live?.demo_cary_users || 0} utenti`} />
+        <StatCard icon={Sparkles} label="Adozione Cary" value={loading ? '—' : `${live?.cary_adoption_pct || 0}%`} sub={`${(live?.premium_cary_users || 0) + (live?.trial_cary_users || 0) + (live?.demo_cary_users || 0)} utenti Cary`} />
         <StatCard icon={DollarSign} label="Prezzo Premium" value={`$${premiumPrice.toFixed(2)}`} sub="simulato" />
+      </div>
+
+      {/* Cary adoption: numeri assoluti + slider simulazione */}
+      <div className="mb-6">
+        <BusinessCaryAdoption
+          live={live}
+          sim={simCary}
+          onSimChange={(key, val) => setSimCary((prev) => ({ ...prev, [key]: val }))}
+          onReset={(key) => setSimCary((prev) => ({ ...prev, [key]: null }))}
+          windowDays={windowDays}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
