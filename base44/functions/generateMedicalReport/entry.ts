@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
+import { langOf, DICT } from '../../shared/backendI18n.ts';
 
 // Genera un report di sintesi dall'archivio referti (MedicalRecord) dell'utente
 // in un range di date. Restituisce un report Markdown + dati strutturati.
@@ -9,6 +10,9 @@ export default async function(req) {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+    const lang = langOf(user);
+    const M = DICT.medical[lang];
+
     const body = await req.json().catch(() => ({}));
     const today = new Date();
     const to = body.to || today.toISOString().slice(0, 10);
@@ -18,10 +22,7 @@ export default async function(req) {
     const records = await base44.entities.MedicalRecord.list('-record_date', 500);
     const inRange = records.filter((r) => r.record_date && r.record_date >= from && r.record_date <= to);
 
-    const TYPE_LABEL = {
-      visita: 'Visite', esame: 'Esami', esame_sangue: 'Esami del sangue',
-      referto: 'Referti', controllo: 'Controlli'
-    };
+    const TYPE_LABEL = M.typeLabel;
 
     // Conteggi per sezione
     const counts = {};
@@ -65,39 +66,39 @@ export default async function(req) {
 
     // ---- Report Markdown ----
     const lines = [];
-    lines.push(`# Report referti · ${from} → ${to}`);
+    lines.push(`# ${M.reportTitle} · ${from} → ${to}`);
     lines.push('');
-    lines.push(`**Documenti nel periodo:** ${inRange.length}`);
+    lines.push(`**${M.docsInPeriod}:** ${inRange.length}`);
     const countParts = Object.entries(counts).map(([k, v]) => `${TYPE_LABEL[k] || k}: ${v}`);
-    if (countParts.length) lines.push(`**Per sezione:** ${countParts.join(' · ')}`);
+    if (countParts.length) lines.push(`**${M.bySection}:** ${countParts.join(' · ')}`);
     lines.push('');
 
     if (outOfRange.length) {
-      lines.push('## Valori fuori range (ultimo rilevamento)');
+      lines.push(`## ${M.outOfRangeTitle}`);
       outOfRange.forEach((m) => {
-        const arrow = m.flag === 'high' ? '↑ alto' : '↓ basso';
+        const arrow = m.flag === 'high' ? M.arrowHigh : M.arrowLow;
         const ref = [m.ref_low, m.ref_high].filter(Boolean).join('–');
-        lines.push(`- **${m.name}** ${m.value}${m.unit ? ' ' + m.unit : ''} ${arrow}${ref ? ' (range ' + ref + ')' : ''} · ${m.date}`);
+        lines.push(`- **${m.name}** ${m.value}${m.unit ? ' ' + m.unit : ''} ${arrow}${ref ? ' (${M.range} ' + ref + ')' : ''} · ${m.date}`);
       });
       lines.push('');
     }
 
     const trendKeys = Object.keys(trend);
     if (trendKeys.length && (focus === 'all' || focus === 'andamento' || focus === 'marker')) {
-      lines.push('## Andamento marker infiammatori');
+      lines.push(`## ${M.trendTitle}`);
       trendKeys.forEach((k) => {
         const series = trend[k];
         if (!series.length) return;
         const first = series[0];
         const last = series[series.length - 1];
-        const dir = last.value === first.value ? 'stabile' : '';
+        const dir = last.value === first.value ? M.stable : '';
         lines.push(`- **${k}**: ${first.value}${first.unit ? ' ' + first.unit : ''} (${first.date}) → ${last.value}${last.unit ? ' ' + last.unit : ''} (${last.date}) ${dir}`);
       });
       lines.push('');
     }
 
     if (nextAppts.length && (focus === 'all' || focus === 'andamento')) {
-      lines.push('## Prossimi appuntamenti');
+      lines.push(`## ${M.nextApptsTitle}`);
       nextAppts.slice(0, 6).forEach((a) => {
         lines.push(`- ${a.next_appointment} · ${a.title}${a.provider ? ' — ' + a.provider : ''}`);
       });
@@ -107,7 +108,7 @@ export default async function(req) {
     if (focus === 'esami' || focus === 'all') {
       const byDate = inRange.slice().sort((a, b) => (b.record_date || '').localeCompare(a.record_date || ''));
       if (byDate.length) {
-        lines.push('## Documenti nel periodo (cronologico)');
+        lines.push(`## ${M.docsChronoTitle}`);
         byDate.forEach((r) => {
           lines.push(`### ${r.record_date} — ${r.title}`);
           const meta = [TYPE_LABEL[r.type] || r.type, r.provider, r.location].filter(Boolean).join(' · ');
@@ -116,7 +117,7 @@ export default async function(req) {
           if (r.findings) lines.push(r.findings);
           const mk = (r.markers || []).filter((m) => m && m.name);
           if (mk.length) {
-            lines.push('Marker: ' + mk.map((m) => `${m.name} ${m.value}${m.unit ? ' ' + m.unit : ''}${m.flag === 'high' ? ' ↑' : m.flag === 'low' ? ' ↓' : ''}`).join(', '));
+            lines.push(`${M.marker}: ` + mk.map((m) => `${m.name} ${m.value}${m.unit ? ' ' + m.unit : ''}${m.flag === 'high' ? ' ↑' : m.flag === 'low' ? ' ↓' : ''}`).join(', '));
           }
           lines.push('');
         });
@@ -124,7 +125,7 @@ export default async function(req) {
     }
 
     lines.push('---');
-    lines.push('_Report generato da IBD Care dall\'archivio referti dell\'utente._');
+    lines.push(`_${M.footer}_`);
 
     return Response.json({
       period: { from, to },

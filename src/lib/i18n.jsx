@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { dictionaries } from '@/lib/i18n/locales';
 import { foundersDict } from '@/lib/foundersI18n';
 import { communityDict } from '@/lib/communityI18n';
+import { base44 } from '@/api/base44Client';
 
 const LanguageContext = createContext({ lang: 'it', t: (k) => k, setLang: () => {} });
 
@@ -38,6 +39,10 @@ export function LanguageProvider({ children }) {
     setLangState(l);
     localStorage.setItem('ibd_lang', l);
     syncUrlLang(l);
+    // Persist to the user profile so backend functions can localize
+    // notifications, emails and reports. Fire-and-forget: unauthenticated
+    // users (guest/demo) only save locally and the call silently no-ops.
+    base44.auth.updateMe({ lang: l }).catch(() => {});
   }, []);
 
   const t = useCallback((key) => {

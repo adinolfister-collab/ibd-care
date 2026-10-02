@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
+import { getLang, DICT } from '../../shared/backendI18n.ts';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const WINDOW = 5; // minuti (allineato al cron */5)
@@ -69,12 +70,14 @@ export default async function(req) {
         if (owner && owner.notifications_enabled === false) consent = false;
       } catch (_) { /* assume consent if unreadable */ }
       if (!consent) { skipped++; continue; }
+      const lang = await getLang(base44, m.created_by_id);
+      const T = DICT.therapy[lang];
       try {
         await base44.asServiceRole.integrations.Core.SendPushNotification({
           user_id: m.created_by_id,
-          title: 'Promemoria terapia',
+          title: T.title,
           content: `${m.name}${m.dosage ? ' · ' + m.dosage : ''}`,
-          action_label: 'Apri IBD Care',
+          action_label: T.openApp,
           action_url: '/meds',
         });
         sent++;

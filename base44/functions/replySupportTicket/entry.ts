@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { getLangByEmail, DICT } from '../../shared/backendI18n.ts';
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -30,24 +31,29 @@ export default async function(req: Request): Promise<Response> {
       replied_at: now,
     });
 
-    // Invia email branded all'utente
-    const subject = `Risposta dal supporto IBD Care`;
+    // Lingua dell'autore del ticket (User per email, fallback 'it')
+    const lang = await getLangByEmail(base44, ticket.email);
+    const S = DICT.support[lang];
+    const name = ticket.name || (lang === 'en' ? 'User' : 'Utente');
+
+    // Invia email branded all'utente nella sua lingua
+    const subject = S.subject;
     const textBody =
-      `Ciao ${ticket.name || 'Utente'},\n\n` +
-      `Hai ricevuto una risposta dal team di IBD Care al tuo messaggio:\n\n` +
+      `${S.greeting} ${name},\n\n` +
+      `${S.intro}\n\n` +
       `---\n${reply}\n---\n\n` +
-      `Puoi consultare la conversazione anche nell'app, nella sezione "Le mie richieste" del tuo account.\n\n` +
-      `Con affetto,\nIl team di IBD Care\n`;
+      `${S.myRequests}\n\n` +
+      `${S.footer}\n`;
 
     const htmlBody =
       `<div style="font-family:Inter,Arial,sans-serif;line-height:1.6;color:#1a2e2e">` +
-      `<h2 style="color:#2f5d62">Risposta dal supporto IBD Care</h2>` +
-      `<p>Ciao ${escapeHtml(ticket.name || 'Utente')},</p>` +
-      `<p>Hai ricevuto una risposta al tuo messaggio:</p>` +
+      `<h2 style="color:#2f5d62">${escapeHtml(S.subject)}</h2>` +
+      `<p>${escapeHtml(S.greeting)} ${escapeHtml(name)},</p>` +
+      `<p>${escapeHtml(S.intro)}</p>` +
       `<div style="white-space:pre-wrap;border-left:3px solid #c9745b;padding-left:12px;background:#faf7f0;padding:12px 15px;border-radius:8px">${escapeHtml(reply)}</div>` +
-      `<p style="font-size:13px;color:#666;margin-top:18px">Puoi consultare la conversazione anche nell'app, nella sezione &laquo;Le mie richieste&raquo; del tuo account.</p>` +
+      `<p style="font-size:13px;color:#666;margin-top:18px">${escapeHtml(S.myRequests)}</p>` +
       `<hr style="border:none;border-top:1px solid #e5e0d6;margin:20px 0"/>` +
-      `<p style="font-size:12px;color:#888">Con affetto,<br/>Il team di IBD Care</p>` +
+      `<p style="font-size:12px;color:#888;white-space:pre-line">${escapeHtml(S.footer)}</p>` +
       `</div>`;
 
     await base44.asServiceRole.integrations.Core.SendEmail({
@@ -55,13 +61,14 @@ export default async function(req: Request): Promise<Response> {
       subject,
       text: textBody,
       html: htmlBody,
-      from_name: 'IBD Care Supporto',
+      from_name: S.fromName,
     });
 
     return Response.json({ success: true });
   } catch (error) {
     console.error('replySupportTicket error', error?.message || error);
-    return Response.json({ error: error?.message || 'Errore invio risposta' }, { status: 500 });
+    const langErr = DICT.support.it;
+    return Response.json({ error: error?.message || langErr.errSend }, { status: 500 });
   }
 }
 

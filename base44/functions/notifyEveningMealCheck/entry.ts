@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.49';
+import { getLang, DICT } from '../../shared/backendI18n.ts';
 
 // Promemoria serale (21:00 Europe/Rome) per registrare le reazioni ai pasti
 // della giornata. Invia a utenti con notifications_enabled !== false.
@@ -20,20 +21,22 @@ export default async function(req) {
 
     for (const u of users) {
       if (u.notifications_enabled === false) { skipped++; continue; }
+      const lang = await getLang(base44, u.id);
+      const T = DICT.mealCheck[lang];
       try {
         await base44.asServiceRole.entities.Notification.create({
           user_id: u.id,
           type: 'meal_check',
-          title: 'Come sei stato dopo i pasti di oggi?',
-          body: 'Hai registrato le reazioni? Un minuto adesso ti aiuta a vedere i pattern.',
+          title: T.title,
+          body: T.body,
           link: '/food',
         });
         try {
           await base44.asServiceRole.integrations.Core.SendPushNotification({
             user_id: u.id,
-            title: 'Come sei stato dopo i pasti di oggi?',
-            content: 'Hai registrato le reazioni? Un minuto adesso ti aiuta a vedere i pattern.',
-            action_label: 'Registra i pasti',
+            title: T.title,
+            content: T.body,
+            action_label: T.actionLabel,
             action_url: '/food',
           });
         } catch (e) {

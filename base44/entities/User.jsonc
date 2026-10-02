@@ -59,6 +59,15 @@
       "type": "boolean",
       "default": true,
       "description": "Consenso dell'utente a ricevere notifiche push native (promemoria terapie, aggiornamenti community)"
+    },
+    "lang": {
+      "type": "string",
+      "enum": [
+        "it",
+        "en"
+      ],
+      "default": "it",
+      "description": "Lingua preferita dall'utente, usata dai backend per localizzare notifiche, email e report (fallback 'it')"
     }
   },
   "required": [
