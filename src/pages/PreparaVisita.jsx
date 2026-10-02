@@ -18,6 +18,9 @@ import ClinicalIndexHistory from '@/components/clinical/ClinicalIndexHistory';
 import ClinicalReportButton from '@/components/clinical/ClinicalReportButton';
 import { calcHBI, calcPartialMayo, severityLabelKey } from '@/lib/clinicalIndices';
 import { useToast } from '@/components/ui/use-toast';
+import { useWriteGuard } from '@/hooks/useWriteGuard';
+import PremiumPaywall from '@/components/PremiumPaywall';
+import RegisterNudge from '@/components/RegisterNudge';
 import EmptyState from '@/components/EmptyState';
 
 // Nuova sezione clinica "Prepara la tua Visita": calcolo standardizzato degli
@@ -28,6 +31,7 @@ export default function PreparaVisita() {
   const { t, lang } = useI18n();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
+  const { guard, showPaywall, setShowPaywall, showNudge, setShowNudge, isDemo } = useWriteGuard();
   const [disease, setDisease] = useState('hbi');
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,10 +53,8 @@ export default function PreparaVisita() {
   useEffect(() => { load(); }, [isAuthenticated]);
 
   const handleSave = async (payload) => {
-    if (!isAuthenticated) {
-      toast({ title: t('common.error'), description: t('clinical.login_required'), variant: 'destructive' });
-      return;
-    }
+    if (!guard('clinical_index_write')) return;
+    if (isDemo) return; // demo: punteggio visibile live, storico richiede registrazione
     setSaving(true);
     try {
       const calc = payload.index_type === 'hbi'
@@ -154,6 +156,8 @@ export default function PreparaVisita() {
         </div>
       </MagazineEssay>
       <EditorialBlock sectionKey="visita_clinical" align="left" />
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
+      <RegisterNudge open={showNudge} onClose={() => setShowNudge(false)} />
     </AppLayout>
   );
 }

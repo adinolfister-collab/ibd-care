@@ -3,13 +3,14 @@ import { useI18n } from '@/lib/i18n';
 import { Card, CardContent } from '@/components/ui/card';
 import { computeTherapyCorrelation } from '@/lib/triggerCorrelation';
 import EmptyState from '@/components/EmptyState';
-import { Pill, TrendingDown, TrendingUp, Minus } from 'lucide-react';
+import { Pill, TrendingDown, TrendingUp, Minus, Lock } from 'lucide-react';
 import { localeForLang } from '@/lib/enumLabels';
 import { cn } from '@/lib/utils';
 
 // Vista di correlazione longitudinale terapia-sintomi: per ogni terapia con
 // start_date mostra l'andamento del dolore medio 30 giorni prima vs dopo.
-export default function TherapyCorrelation({ meds, symptoms, lang }) {
+// Gated Premium (come la correlazione trigger nel diario alimentare).
+export default function TherapyCorrelation({ meds, symptoms, lang, premiumBlocked, onRequirePremium }) {
   const { t } = useI18n();
   const rows = computeTherapyCorrelation(meds, symptoms);
   const fmtDate = (d) => {
@@ -18,6 +19,23 @@ export default function TherapyCorrelation({ meds, symptoms, lang }) {
 
   if (!rows.length) {
     return <EmptyState icon={Pill} title={t('therapy_corr.empty')} description={t('therapy_corr.empty_desc')} />;
+  }
+
+  if (premiumBlocked) {
+    return (
+      <Card className="border-0 shadow-sm">
+        <CardContent className="p-5 text-center">
+          <div className="w-12 h-12 rounded-full bg-terracotta/10 flex items-center justify-center mx-auto mb-3">
+            <Lock className="w-5 h-5 text-terracotta" />
+          </div>
+          <p className="font-heading text-lg font-semibold mb-1">{t('therapy_corr.title')}</p>
+          <p className="text-sm text-muted-foreground mb-4">{t('therapy_corr.subtitle')}</p>
+          <button onClick={onRequirePremium} className="text-sm text-primary font-medium hover:underline">
+            {t('trigger.premium_unlock')}
+          </button>
+        </CardContent>
+      </Card>
+    );
   }
   return (
     <div className="space-y-3">

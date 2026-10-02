@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import { useWriteGuard } from '@/hooks/useWriteGuard';
+import { usePremiumGate } from '@/hooks/usePremiumGate';
 import ReadonlyBanner from '@/components/ReadonlyBanner';
 import PremiumPaywall from '@/components/PremiumPaywall';
 import RegisterNudge from '@/components/RegisterNudge';
@@ -51,6 +52,7 @@ export default function Meds() {
   const { isAuthenticated, authChecked } = useAuth();
   const navigate = useNavigate();
   const { guard, showPaywall, setShowPaywall, showNudge, setShowNudge } = useWriteGuard();
+  const { requirePremium, isSubscribed, showPaywall: premiumPaywallOpen, setShowPaywall: setPremiumPaywallOpen } = usePremiumGate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -182,7 +184,13 @@ export default function Meds() {
           <p className="font-heading text-lg font-semibold">{t('therapy_corr.title')}</p>
         </div>
         <p className="text-sm text-muted-foreground mb-4">{t('therapy_corr.subtitle')}</p>
-        <TherapyCorrelation meds={items} symptoms={symptoms} lang={lang} />
+        <TherapyCorrelation
+          meds={items}
+          symptoms={symptoms}
+          lang={lang}
+          premiumBlocked={!isSubscribed}
+          onRequirePremium={() => requirePremium('therapy_correlation')}
+        />
       </div>
 
       <EntityFormDialog
@@ -196,6 +204,7 @@ export default function Meds() {
       />
       <EditorialBlock sectionKey="meds_adherence" align="left" />
       <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
+      <PremiumPaywall open={premiumPaywallOpen} onClose={() => setPremiumPaywallOpen(false)} />
       <RegisterNudge open={showNudge} onClose={() => setShowNudge(false)} />
     </AppLayout>
   );

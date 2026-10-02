@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 // Gestione dei tag trigger personalizzati dell'utente + vista correlazione
 // mensile (gated Premium dal chiamante). Affianca il catalogo cibi esistente.
-export default function TriggerTagManager({ tags, foods, symptoms, onTagsChanged, premiumBlocked, onRequirePremium }) {
+export default function TriggerTagManager({ tags, foods, symptoms, onTagsChanged, premiumBlocked, onRequirePremium, guard }) {
   const { t } = useI18n();
   const { toast } = useToast();
   const [name, setName] = useState('');
@@ -21,6 +21,7 @@ export default function TriggerTagManager({ tags, foods, symptoms, onTagsChanged
 
   const addTag = async (e) => {
     e.preventDefault();
+    if (guard && !guard('trigger_tag_write')) return;
     const trimmed = name.trim();
     if (!trimmed) return;
     setCreating(true);
@@ -35,6 +36,7 @@ export default function TriggerTagManager({ tags, foods, symptoms, onTagsChanged
     }
   };
   const removeTag = async (id) => {
+    if (guard && !guard('trigger_tag_write')) return;
     try {
       await base44.entities.FoodTriggerTag.delete(id);
       onTagsChanged(tags.filter((tg) => tg.id !== id));

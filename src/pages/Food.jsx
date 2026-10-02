@@ -301,6 +301,7 @@ export default function Food() {
             onTagsChanged={setTriggerTags}
             premiumBlocked={!isSubscribed}
             onRequirePremium={() => requirePremium('trigger_correlation')}
+            guard={guard}
           />
         </div>
       )}
