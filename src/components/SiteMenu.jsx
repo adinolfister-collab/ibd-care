@@ -64,6 +64,7 @@ const ADMIN_ITEMS = [
   { to: '/admin/marketing', key: 'nav.marketing', icon: Megaphone },
   { to: '/admin/guest-preview', key: 'nav.guest_preview', icon: Eye },
   { to: '/admin/supporto', key: 'nav.admin_support', icon: Inbox },
+  { to: '/admin/business', key: 'nav.business', icon: LineChart },
   { to: '/admin/access-report', key: 'nav.access_report', icon: FileText },
   { to: '/shop/admin', key: 'shop.admin_nav', icon: ShoppingBag },
 ];

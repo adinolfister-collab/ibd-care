@@ -49,6 +49,7 @@ const AdminConversions = lazy(() => import('@/pages/AdminConversions'));
 const AdminGuestPreview = lazy(() => import('@/pages/AdminGuestPreview'));
 const AdminSupport = lazy(() => import('@/pages/AdminSupport'));
 const AdminAccessReport = lazy(() => import('@/pages/AdminAccessReport'));
+const AdminBusiness = lazy(() => import('@/pages/AdminBusiness'));
 const Shop = lazy(() => import('@/pages/Shop'));
 const ShopAdmin = lazy(() => import('@/pages/ShopAdmin'));
 const MarketingAdmin = lazy(() => import('@/pages/MarketingAdmin'));
@@ -147,6 +148,7 @@ const AuthenticatedApp = () => {
             <Route path="/admin/guest-preview" element={<PageTransition><AdminGuestPreview /></PageTransition>} />
             <Route path="/admin/supporto" element={<PageTransition><AdminSupport /></PageTransition>} />
             <Route path="/admin/access-report" element={<PageTransition><AdminAccessReport /></PageTransition>} />
+            <Route path="/admin/business" element={<PageTransition><AdminBusiness /></PageTransition>} />
             <Route path="/admin/marketing" element={<PageTransition><MarketingAdmin /></PageTransition>} />
             <Route path="/shop/admin" element={<PageTransition><ShopAdmin /></PageTransition>} />
           </Route>

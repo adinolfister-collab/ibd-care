@@ -1,0 +1,48 @@
+{
+  "name": "Snapshot business giornaliero",
+  "description": "Ogni giorno alle 06:00 (Europe/Rome) salva uno snapshot dei metrici business di IBD Care (utenti premium/trial/demo, adozione Cary per modalita', crediti stimati, ricavi/costi/margine) nell'archivio BusinessSnapshot per l'analisi temporale della dashboard business admin.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * *",
+      "one_time_date": null,
+      "timezone": "Europe/Rome",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "business_snapshot_daily",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "snapshot": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "snapshotBusinessMetrics",
+            "args": {
+              "mode": "save",
+              "source": "daily"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Salva snapshot business",
+            "description": "Archivia metrici business giornalieri"
+          }
+        }
+      }
+    ]
+  }
+}
