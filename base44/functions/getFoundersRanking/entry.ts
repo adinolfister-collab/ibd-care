@@ -43,6 +43,7 @@ export default async function(req: Request): Promise<Response> {
         rank: s.rank,
         display_name: s.display_name || 'Utente',
         slot_type: s.slot_type,
+        referral_count: s.referral_count || 0,
         is_me: !!(mySignup && mySignup.id === s.id),
       })),
       counts: {
@@ -60,6 +61,7 @@ export default async function(req: Request): Promise<Response> {
         rank: mySignup.rank,
         confirmed: mySignup.confirmed,
         slot_type: mySignup.slot_type,
+        referral_count: mySignup.referral_count || 0,
       } : null,
     });
   } catch (error) {

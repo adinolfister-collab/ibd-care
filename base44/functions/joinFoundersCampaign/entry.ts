@@ -16,6 +16,13 @@ export default async function(req: Request): Promise<Response> {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+    // Optional referral: a ?ref=USER_ID from the /founders invite link.
+    let ref: string | null = null;
+    try {
+      const body = await req.json();
+      if (body && typeof body.ref === 'string' && body.ref.trim()) ref = body.ref.trim();
+    } catch { /* no body — standard join */ }
+
     const all = await base44.asServiceRole.entities.CampaignSignup.list('-rank', 500) as any[];
     const mine = all.filter((s) => s.campaign === CAMPAIGN && s.created_by_id === user.id);
 
@@ -59,6 +66,19 @@ export default async function(req: Request): Promise<Response> {
     const rank = mineRanked?.rank || 1;
     const slotType = mineRanked?.slot_type || 'lifetime';
     await base44.asServiceRole.entities.User.update(user.id, grantFieldsForRank(rank) as any);
+
+    // Attribute a referral: increment referral_count on the referrer's signup
+    // when the ref param matches an existing confirmed founder (and isn't self).
+    if (ref && ref !== user.id) {
+      const referrer = (all as any[]).find(
+        (s) => s.campaign === CAMPAIGN && s.confirmed && s.created_by_id === ref
+      );
+      if (referrer) {
+        await base44.asServiceRole.entities.CampaignSignup.update(referrer.id, {
+          referral_count: (referrer.referral_count || 0) + 1,
+        } as any);
+      }
+    }
 
     return Response.json({ joined: true, confirmed: true, rank, slot_type: slotType });
   } catch (error) {

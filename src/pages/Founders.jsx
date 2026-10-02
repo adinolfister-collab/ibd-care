@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Crown, Trophy, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Crown, Trophy, Sparkles, Loader2, CheckCircle2, Users } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -8,14 +8,17 @@ import { useFoundersRanking, clearFoundersCache } from '@/hooks/useFoundersRanki
 import { useToast } from '@/components/ui/use-toast';
 import AppLayout from '@/components/AppLayout';
 import PageHeader from '@/components/PageHeader';
+import FoundersShareCard from '@/components/FoundersShareCard';
 import { Button } from '@/components/ui/button';
 
 export default function Founders() {
   const { t } = useI18n();
   const { toast } = useToast();
-  const { isAuthenticated, authChecked } = useAuth();
+  const { isAuthenticated, authChecked, user } = useAuth();
   const { data, loading, reload } = useFoundersRanking();
   const [joining, setJoining] = useState(false);
+  const [searchParams] = useSearchParams();
+  const ref = searchParams.get('ref');
 
   const counts = data?.counts;
   const mySignup = data?.mySignup;
@@ -25,7 +28,7 @@ export default function Founders() {
     if (joining) return;
     setJoining(true);
     try {
-      const res = await base44.functions.invoke('joinFoundersCampaign', {});
+      const res = await base44.functions.invoke('joinFoundersCampaign', { ref: ref || undefined });
       if (res.data?.full) {
         toast({ title: t('founders.full_total') });
       } else if (res.data?.joined) {
@@ -91,6 +94,7 @@ export default function Founders() {
         {/* My status / CTA */}
         <div className="mb-6 space-y-3">
           {myStatus()}
+          {mySignup && user?.id && <FoundersShareCard userId={user.id} />}
           {authChecked && isAuthenticated && !mySignup && !counts?.full && (
             <Button onClick={join} disabled={joining} size="lg" className="w-full rounded-xl bg-terracotta text-terracotta-foreground hover:bg-terracotta/90 text-base h-12">
               {joining ? <Loader2 className="w-5 h-5 animate-spin" /> : <Crown className="w-5 h-5" />}
@@ -150,6 +154,12 @@ export default function Founders() {
                   <span className="font-medium text-foreground text-sm flex-1 truncate">
                     {r.display_name}
                   </span>
+                  {!!r.referral_count && (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 bg-emerald-50 text-emerald-700">
+                      <Users className="w-3 h-3" />
+                      {r.referral_count}
+                    </span>
+                  )}
                   <span className="text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 bg-terracotta/15 text-terracotta">
                     {t('founders.badge_lifetime')}
                   </span>

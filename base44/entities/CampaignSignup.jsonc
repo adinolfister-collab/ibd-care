@@ -34,6 +34,11 @@
     "first_message_date": {
       "type": "string",
       "format": "date-time"
+    },
+    "referral_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Numero di iscritti giunti tramite il link di referral personale di questo founder"
     }
   },
   "required": [
