@@ -28,14 +28,13 @@ import PullToRefresh from '@/components/PullToRefresh';
 const fields = (t) => {
   const painLocations = Object.entries(PAIN_LOCATION_KEYS).map(([value, key]) => ({ value, label: t(key) }));
   const moods = Object.entries(MOOD_KEYS).map(([value, key]) => ({ value, label: t(key) }));
-  const bristol = [1, 2, 3, 4, 5, 6, 7].map((n) => ({ value: n, label: t(BRISTOL_KEYS[n]) }));
   return [
     { name: 'entry_date', label: t('common.date'), type: 'date' },
     { name: 'pain_level', label: t('symptoms.pain') + ' (0–10)', type: 'slider', min: 0, max: 10 },
     { name: 'pain_location', label: t('symptoms.pain_location'), type: 'select', options: painLocations },
     { name: 'fatigue_level', label: t('symptoms.fatigue') + ' (0–10)', type: 'slider', min: 0, max: 10 },
     { name: 'bowel_movements_count', label: t('symptoms.bowel'), type: 'number', min: 0 },
-    { name: 'stool_consistency', label: t('symptoms.stool') + ' (scala Bristol)', type: 'select', options: bristol },
+    { name: 'stool_consistency', label: t('symptoms.stool') + ' (scala Bristol)', type: 'bristol' },
     { name: 'blood', label: t('symptoms.blood'), type: 'checkbox' },
     { name: 'mood', label: t('symptoms.mood'), type: 'select', options: moods },
     { name: 'notes', label: t('common.notes'), type: 'textarea' },

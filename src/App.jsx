@@ -53,6 +53,7 @@ const ShopAdmin = lazy(() => import('@/pages/ShopAdmin'));
 const MarketingAdmin = lazy(() => import('@/pages/MarketingAdmin'));
 const ProductDetail = lazy(() => import('@/pages/ProductDetail'));
 const Founders = lazy(() => import('@/pages/Founders'));
+const PreparaVisita = lazy(() => import('@/pages/PreparaVisita'));
 const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
 const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
@@ -121,6 +122,7 @@ const AuthenticatedApp = () => {
         <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
         <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
         <Route path="/meds/calendar" element={<PageTransition><MedicationCalendarPage /></PageTransition>} />
+        <Route path="/visita" element={<PageTransition><PreparaVisita /></PageTransition>} />
         <Route path="/records" element={null} />
         <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
         <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />

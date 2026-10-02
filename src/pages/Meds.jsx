@@ -18,6 +18,7 @@ import DemoBanner from '@/components/DemoBanner';
 import { demoMeds } from '@/lib/demoData';
 import { guestMeds } from '@/lib/guestEntries';
 import EntityFormDialog from '@/components/EntityFormDialog';
+import TherapyCorrelation from '@/components/TherapyCorrelation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MED_TYPE_KEYS, MED_FREQUENCY_KEYS, medTypeLabel, medFrequencyLabel } from '@/lib/enumLabels';
@@ -46,7 +47,7 @@ const typeColors = {
 };
 
 export default function Meds() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { isAuthenticated, authChecked } = useAuth();
   const navigate = useNavigate();
   const { guard, showPaywall, setShowPaywall, showNudge, setShowNudge } = useWriteGuard();
@@ -54,6 +55,7 @@ export default function Meds() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [symptoms, setSymptoms] = useState([]);
 
   const load = async () => {
     setLoading(true);
@@ -69,7 +71,14 @@ export default function Meds() {
     } catch { setItems([]); }
     setLoading(false);
   };
-  useEffect(() => { load(); }, [isAuthenticated, authChecked]);
+  const loadSymptoms = async () => {
+    if (!isAuthenticated) { setSymptoms([]); return; }
+    try {
+      const data = await base44.entities.SymptomEntry.list('-entry_date', 1000);
+      setSymptoms(data);
+    } catch { setSymptoms([]); }
+  };
+  useEffect(() => { load(); loadSymptoms(); }, [isAuthenticated, authChecked]);
 
   const openNew = () => { if (!guard('med_write')) return; setEditing({ active: true }); setOpen(true); };
   const openEdit = (item) => { if (!guard('med_write')) return; setEditing(item); setOpen(true); };
@@ -167,6 +176,14 @@ export default function Meds() {
         </div>
       )}
       </MagazineEssay>
+
+      <div className="mt-8">
+        <div className="flex items-center gap-2 mb-3">
+          <p className="font-heading text-lg font-semibold">{t('therapy_corr.title')}</p>
+        </div>
+        <p className="text-sm text-muted-foreground mb-4">{t('therapy_corr.subtitle')}</p>
+        <TherapyCorrelation meds={items} symptoms={symptoms} lang={lang} />
+      </div>
 
       <EntityFormDialog
         open={open}

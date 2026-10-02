@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Newspaper, Users, Activity, Utensils, Info, Mail,
-  Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin,
+  Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin, Stethoscope,
   FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag, Crown, CreditCard, BookOpen,
   TrendingUp, Megaphone, Eye, PieChart, CalendarRange, Inbox,
 } from 'lucide-react';
@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 // account/settings nascoste ai guest; le voci admin solo per role=admin.
 const DIARIO = [
   { to: '/symptoms', key: 'nav.symptoms', icon: Activity },
+  { to: '/visita', key: 'nav.visita', icon: Stethoscope },
   { to: '/food', key: 'nav.food', icon: Utensils },
   { to: '/meds', key: 'nav.meds', icon: Pill },
   { to: '/records', key: 'nav.records', icon: FileText },

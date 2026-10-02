@@ -79,6 +79,13 @@
         ]
       }
     },
+    "trigger_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tag trigger personalizzati spuntati dall'utente per questo pasto (nomi dei FoodTriggerTag)"
+    },
     "reaction": {
       "type": "string",
       "enum": [

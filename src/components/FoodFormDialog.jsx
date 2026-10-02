@@ -71,7 +71,7 @@ function MobileSelect({ value, options, onChange, placeholder }) {
 // Dialog dedicato per i pasti: usa la checklist strutturata al posto del testo
 // libero per i cibi. Mantiene data / tipo / reazione / tolleranza / note come
 // nel dialog generico (EntityFormDialog), con la stessa UX mobile.
-export default function FoodFormDialog({ open, onOpenChange, title, submitLabel, groups, initialData, onSubmit }) {
+export default function FoodFormDialog({ open, onOpenChange, title, submitLabel, groups, initialData, onSubmit, triggerTags }) {
   const { t } = useI18n();
   const [data, setData] = useState(initialData || {});
   const [isMobile, setIsMobile] = useState(false);
@@ -151,6 +151,37 @@ export default function FoodFormDialog({ open, onOpenChange, title, submitLabel,
                 <FoodChecklist groups={groups} value={items} onChange={(v) => set('items', v)} />
               </div>
             </div>
+
+            {triggerTags && triggerTags.length > 0 && (
+              <div>
+                <Label className="text-sm font-medium text-muted-foreground">{t('trigger.pick_label')}</Label>
+                <p className="text-xs text-muted-foreground mb-2">{t('trigger.pick_hint')}</p>
+                <div className="flex flex-wrap gap-2">
+                  {(data.trigger_tags || []).length === 0 && (
+                    <span className="text-xs text-muted-foreground/70">{t('trigger.none_picked')}</span>
+                  )}
+                  {triggerTags.map((tg) => {
+                    const active = (data.trigger_tags || []).includes(tg.name);
+                    return (
+                      <button
+                        key={tg.id}
+                        type="button"
+                        onClick={() => {
+                          const cur = data.trigger_tags || [];
+                          set('trigger_tags', active ? cur.filter((x) => x !== tg.name) : [...cur, tg.name]);
+                        }}
+                        className={cn(
+                          'px-3 py-1.5 rounded-full text-sm border transition-colors',
+                          active ? 'border-terracotta bg-terracotta/15 text-accent-foreground' : 'border-border bg-card text-muted-foreground hover:border-terracotta/40'
+                        )}
+                      >
+                        {active ? '✓ ' : ''}{tg.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             <div>
               <Label className="text-sm font-medium text-muted-foreground">{t('food.reaction')}</Label>

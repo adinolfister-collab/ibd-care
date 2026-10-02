@@ -7,6 +7,8 @@ import ToleranceOverview from '@/components/ToleranceOverview';
 import CookingCorrelation from '@/components/CookingCorrelation';
 import FoodLessons from '@/components/FoodLessons';
 import FoodReportButton from '@/components/FoodReportButton';
+import TriggerTagManager from '@/components/TriggerTagManager';
+import { usePremiumGate } from '@/hooks/usePremiumGate';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
 import AppLayout from '@/components/AppLayout';
@@ -53,6 +55,9 @@ export default function Food() {
   const [catalogGroups, setCatalogGroups] = useState([]);
   const [catalogMgrOpen, setCatalogMgrOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todayStr());
+  const [triggerTags, setTriggerTags] = useState([]);
+  const [symptomEntries, setSymptomEntries] = useState([]);
+  const { requirePremium, isSubscribed, showPaywall: premiumPaywallOpen, setShowPaywall: setPremiumPaywallOpen } = usePremiumGate();
 
   const load = async () => {
     setLoading(true);
@@ -98,10 +103,30 @@ export default function Food() {
       setCatalogGroups(catalogToGroups([]));
     }
   };
+  const loadTriggerTags = async () => {
+    if (!isAuthenticated) return;
+    try {
+      const data = await base44.entities.FoodTriggerTag.list('-created_date', 200);
+      setTriggerTags(data);
+    } catch {
+      setTriggerTags([]);
+    }
+  };
+  const loadSymptoms = async () => {
+    if (!isAuthenticated) return;
+    try {
+      const data = await base44.entities.SymptomEntry.list('-entry_date', 1000);
+      setSymptomEntries(data);
+    } catch {
+      setSymptomEntries([]);
+    }
+  };
   useEffect(() => {
     load();
     loadTemplates();
     loadCatalog();
+    loadTriggerTags();
+    loadSymptoms();
   }, [isAuthenticated, authChecked]);
 
   const openNew = () => { if (!guard('food_write')) return; setEditing({ entry_date: todayStr(), tolerated: true, items: [] }); setOpen(true); };
@@ -267,6 +292,18 @@ export default function Food() {
       <div className="mt-6">
         <FoodLessons />
       </div>
+      {isAuthenticated && (
+        <div className="mt-6">
+          <TriggerTagManager
+            tags={triggerTags}
+            foods={items}
+            symptoms={symptomEntries}
+            onTagsChanged={setTriggerTags}
+            premiumBlocked={!isSubscribed}
+            onRequirePremium={() => requirePremium('trigger_correlation')}
+          />
+        </div>
+      )}
       </MagazineEssay>
 
       <FoodFormDialog
@@ -277,6 +314,7 @@ export default function Food() {
         groups={catalogGroups}
         initialData={editing}
         onSubmit={handleSubmit}
+        triggerTags={triggerTags}
       />
       {isAuthenticated && (
         <MealTemplateManager
@@ -297,6 +335,7 @@ export default function Food() {
       )}
       <EditorialBlock sectionKey="food_reactions" align="right" />
       <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
+      <PremiumPaywall open={premiumPaywallOpen} onClose={() => setPremiumPaywallOpen(false)} />
       <RegisterNudge open={showNudge} onClose={() => setShowNudge(false)} />
     </AppLayout>
   );

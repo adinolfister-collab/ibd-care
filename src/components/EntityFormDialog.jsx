@@ -9,6 +9,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/u
 import { Check, ChevronDown } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import VoiceButton from '@/components/VoiceButton';
+import BristolScalePicker from '@/components/BristolScalePicker';
 import { cn } from '@/lib/utils';
 
 const fieldClass =
@@ -167,6 +168,9 @@ export default function EntityFormDialog({ open, onOpenChange, title, submitLabe
                 )}
                 {(f.type === 'text' || f.type === 'date') && (
                   <Input type={f.type} value={val} onChange={(e) => set(f.name, e.target.value)} className={fieldClass} />
+                )}
+                {f.type === 'bristol' && (
+                  <BristolScalePicker value={val} onChange={(v) => set(f.name, v)} className="mt-1.5" />
                 )}
                 {f.type === 'file' && (
                   <div className="mt-1.5">

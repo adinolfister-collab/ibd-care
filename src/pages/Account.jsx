@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Settings as SettingsIcon, LogOut, Mail, Trash2, AlertTriangle, MessageSquare } from 'lucide-react';
+import { User, Settings as SettingsIcon, LogOut, Mail, Trash2, AlertTriangle, MessageSquare, Download } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import AppLayout from '@/components/AppLayout';
@@ -11,6 +11,7 @@ import MyTickets from '@/components/MyTickets';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { cn } from '@/lib/utils';
 import { deleteAccountAndData } from '@/lib/accountDeletion';
+import { exportUserDataAsJson } from '@/lib/exportUserData';
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -39,6 +40,18 @@ export default function Account() {
   const [deleteStep, setDeleteStep] = useState(1);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [exporting, setExporting] = useState(false);
+
+  const handleExportData = async () => {
+    setExporting(true);
+    try {
+      await exportUserDataAsJson();
+    } catch {
+      // silent
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const closeDelete = () => {
     if (deleting) return;
@@ -114,6 +127,15 @@ export default function Account() {
               </CardContent>
             </Card>
           </Link>
+
+          <button
+            onClick={handleExportData}
+            disabled={exporting}
+            className={cn('w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium border border-input bg-transparent text-foreground hover:bg-accent transition-colors')}
+          >
+            <Download className="w-4 h-4" />
+            {exporting ? t('account.exporting') : t('account.export_data')}
+          </button>
 
           <button
             onClick={logout}

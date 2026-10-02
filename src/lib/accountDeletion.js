@@ -11,6 +11,9 @@ export async function deleteAccountAndData(userId) {
     base44.entities.Medication.deleteMany({}),
     base44.entities.MedicalRecord.deleteMany({}),
     base44.entities.MealTemplate.deleteMany({}),
+    base44.entities.ClinicalIndexEntry.deleteMany({}),
+    base44.entities.FoodTriggerTag.deleteMany({}),
+    base44.entities.MedicationDose.deleteMany({}),
   ]);
   if (userId) {
     await base44.entities.User.delete(userId);
