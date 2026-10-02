@@ -48,6 +48,7 @@ const TrendMensili = lazy(() => import('@/pages/TrendMensili'));
 const AdminConversions = lazy(() => import('@/pages/AdminConversions'));
 const AdminGuestPreview = lazy(() => import('@/pages/AdminGuestPreview'));
 const AdminSupport = lazy(() => import('@/pages/AdminSupport'));
+const AdminAccessReport = lazy(() => import('@/pages/AdminAccessReport'));
 const Shop = lazy(() => import('@/pages/Shop'));
 const ShopAdmin = lazy(() => import('@/pages/ShopAdmin'));
 const MarketingAdmin = lazy(() => import('@/pages/MarketingAdmin'));
@@ -145,6 +146,7 @@ const AuthenticatedApp = () => {
             <Route path="/admin/conversioni" element={<PageTransition><AdminConversions /></PageTransition>} />
             <Route path="/admin/guest-preview" element={<PageTransition><AdminGuestPreview /></PageTransition>} />
             <Route path="/admin/supporto" element={<PageTransition><AdminSupport /></PageTransition>} />
+            <Route path="/admin/access-report" element={<PageTransition><AdminAccessReport /></PageTransition>} />
             <Route path="/admin/marketing" element={<PageTransition><MarketingAdmin /></PageTransition>} />
             <Route path="/shop/admin" element={<PageTransition><ShopAdmin /></PageTransition>} />
           </Route>

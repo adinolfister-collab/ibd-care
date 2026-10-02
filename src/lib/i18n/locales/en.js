@@ -1325,6 +1325,7 @@ const en = {
   'food.no_meals_day': 'No meals on this day',
   'food.no_meals_day_desc': 'Browse another day with the arrows or the calendar, or log a new meal.',
   'nav.admin_support': 'Support inbox',
+  'nav.access_report': 'Access report',
   'support_inbox.title': 'Support inbox',
   'support_inbox.subtitle': 'Read and reply to user messages',
   'support_inbox.filter_all': 'All',

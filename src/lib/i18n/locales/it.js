@@ -1322,6 +1322,7 @@ const it = {
   'food.no_meals_day': 'Nessun pasto per questo giorno',
   'food.no_meals_day_desc': 'Sfoglia un altro giorno con le frecce o il calendario, oppure registra un nuovo pasto.',
   'nav.admin_support': 'Casella supporto',
+  'nav.access_report': 'Report accessi',
   'support_inbox.title': 'Casella di supporto',
   'support_inbox.subtitle': 'Leggi e rispondi ai messaggi degli utenti',
   'support_inbox.filter_all': 'Tutti',
