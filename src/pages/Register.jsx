@@ -8,6 +8,7 @@ import { Mail, Lock, Loader2, Sparkles, ShieldCheck, CheckCircle2 } from "lucide
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
+import ReferralStep from "@/components/ReferralStep";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/use-toast";
 import { safeReturnTo } from "@/lib/authReturnTo";
@@ -23,6 +24,7 @@ export default function Register() {
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [consent, setConsent] = useState(false);
+  const [showReferral, setShowReferral] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,7 +63,7 @@ export default function Register() {
           privacy_consent_date: new Date().toISOString(),
         });
       } catch (e) { /* non blocking */ }
-      window.location.href = safeReturnTo();
+      setShowReferral(true);
     } catch (err) {
       setError(err.message || t('common.error'));
     } finally {
@@ -85,6 +87,14 @@ export default function Register() {
   const handleGoogle = () => {
     base44.auth.loginWithProvider("google", safeReturnTo());
   };
+
+  const finishRegistration = () => {
+    window.location.href = safeReturnTo();
+  };
+
+  if (showReferral) {
+    return <ReferralStep onDone={finishRegistration} />;
+  }
 
   if (showOtp) {
     return (
