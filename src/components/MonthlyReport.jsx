@@ -7,6 +7,7 @@ import { useI18n } from '@/lib/i18n';
 import { localeForLang, moodLabel, mealTypeLabel, reactionLabel } from '@/lib/enumLabels';
 import PremiumLockBadge from '@/components/PremiumLockBadge';
 import PremiumExportButton from '@/components/PremiumExportButton';
+import ShareReportButton from '@/components/reports/ShareReportButton';
 import { useSubscription } from '@/hooks/useSubscription';
 
 function curMonth() { return new Date().toISOString().slice(0, 7); }
@@ -176,6 +177,23 @@ export default function MonthlyReport() {
           feature="monthly_pdf"
           icon={Download}
           className="w-full h-12 text-base"
+        />
+        <ShareReportButton
+          reportType="monthly"
+          buildReportData={async () => {
+            const [symptoms, food] = await Promise.all([
+              base44.entities.SymptomEntry.list('-entry_date', 1000),
+              base44.entities.FoodEntry.list('-entry_date', 1000),
+            ]);
+            return {
+              month,
+              lang,
+              symptoms: symptoms.filter((x) => (x.entry_date || '').startsWith(month)),
+              foods: food.filter((x) => (x.entry_date || '').startsWith(month)),
+            };
+          }}
+          variant="outline"
+          className="w-full h-11"
         />
         {error && <p className="text-sm text-rose-500">{error}</p>}
       </CardContent>

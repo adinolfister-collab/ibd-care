@@ -58,6 +58,7 @@ const Register = lazy(() => import('@/pages/Register'));
 const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
 const Demo = lazy(() => import('@/pages/Demo'));
+const SharedReport = lazy(() => import('@/pages/SharedReport'));
 const ScaricaApp = lazy(() => import('@/pages/ScaricaApp'));
 const Supporto = lazy(() => import('@/pages/Supporto'));
 
@@ -106,6 +107,7 @@ const AuthenticatedApp = () => {
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
         <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
+        <Route path="/report/:shareId" element={<SharedReport />} />
         <Route path="/scarica" element={<PageTransition><ScaricaApp /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/founders" element={<PageTransition><Founders /></PageTransition>} />
