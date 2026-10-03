@@ -21,6 +21,7 @@ import ReportTable from '@/components/admin/ReportTable';
 import TrialUsersTable from '@/components/admin/TrialUsersTable';
 import AdminCrashes from '@/components/admin/AdminCrashes';
 import DormantRemindersPanel from '@/components/admin/DormantRemindersPanel';
+import ReengagementCampaignButton from '@/components/admin/ReengagementCampaignButton';
 import FoundersRevocationPanel from '@/components/admin/FoundersRevocationPanel';
 import { cn } from '@/lib/utils';
 
@@ -473,6 +474,9 @@ export default function AdminConversions() {
 
       {/* Founder — revoca slot inattivi */}
       <FoundersRevocationPanel />
+
+      {/* Campagna re-engagement one-shot (dormienti storici) */}
+      <ReengagementCampaignButton />
 
       {/* Promemoria inserimenti 48h */}
       <DormantRemindersPanel />

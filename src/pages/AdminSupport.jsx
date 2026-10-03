@@ -12,6 +12,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { SUPPORT_REASONS, getReasonTemplate, REASON_BADGE_CLASSES } from '@/lib/supportTemplates';
 import { sortedTemplatesForReason } from '@/lib/replyTemplates';
+import DormantRemindersPanel from '@/components/admin/DormantRemindersPanel';
+import ReengagementCampaignButton from '@/components/admin/ReengagementCampaignButton';
 
 const STATUSES = ['open', 'closed', 'all'];
 
@@ -290,6 +292,12 @@ export default function AdminSupport() {
           )}
         </div>
       )}
+
+      {/* Campagna re-engagement one-shot (dormienti storici) */}
+      <ReengagementCampaignButton />
+
+      {/* Promemoria inserimenti 48h */}
+      <DormantRemindersPanel />
     </AppLayout>
   );
 }
