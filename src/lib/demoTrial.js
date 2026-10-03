@@ -43,6 +43,14 @@ let expiredTracked = false;
 // Avvia la trial device di 30gg se non già attiva. Idempotente. Traccia
 // 'demo_trial_started' al primo avvio e 'demo_trial_expired' alla prima
 // scadenza rilevata (best-effort, errori silenziosi).
+// Rimuove il flag demo device dal localStorage. Chiamata dopo che la trial
+// device è stata trasferita nel cloud (registrazione): i dati guest restano
+// e vengono migrati separatamente da AppLayout.
+export function clearDemoTrialFlag() {
+  if (typeof window === 'undefined') return;
+  try { localStorage.removeItem(STORAGE_KEY); } catch (_) { /* noop */ }
+}
+
 export function ensureDemoTrialStarted() {
   if (typeof window === 'undefined') return;
   const existing = localStorage.getItem(STORAGE_KEY);

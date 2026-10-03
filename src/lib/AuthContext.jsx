@@ -5,6 +5,12 @@ import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 import { resetGuestSaveCount } from '@/lib/guestSaveCount';
 import { useGuestPreview } from '@/lib/GuestPreviewContext';
 import { setCrashUser } from '@/lib/crashReporter';
+import { activateCloudTrial } from '@/lib/activateCloudTrial';
+import { clearSubscriptionCache } from '@/hooks/useSubscription';
+
+// Una sola attivazione trial per sessione: evita loop di retry se la
+// chiamata fallisce o se checkUserAuth viene rieseguito.
+let trialActivationAttempted = false;
 
 const AuthContext = createContext();
 
@@ -106,6 +112,24 @@ export const AuthProvider = ({ children }) => {
       setUser(currentUser);
       setIsAuthenticated(true);
       resetGuestSaveCount();
+      // Attiva la trial cloud per utenti senza abbonamento e senza free_until
+      // (Google OAuth dopo redirect, o retroattivo per utenti esistenti 'none'
+      // registrati prima del deploy). Idempotente: una sola trial per account.
+      if (
+        ['none', undefined, null].includes(currentUser.subscription_status) &&
+        !currentUser.free_until &&
+        !trialActivationAttempted
+      ) {
+        trialActivationAttempted = true;
+        activateCloudTrial(currentUser)
+          .then((res) => {
+            if (res.activated) {
+              clearSubscriptionCache();
+              base44.auth.me().then((u) => setUser(u)).catch(() => {});
+            }
+          })
+          .catch(() => { trialActivationAttempted = false; });
+      }
       setIsLoadingAuth(false);
       setAuthChecked(true);
     } catch (error) {

@@ -13,6 +13,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/use-toast";
 import { safeReturnTo } from "@/lib/authReturnTo";
 import { useI18n } from "@/lib/i18n";
+import { computeCloudTrialDays } from "@/lib/activateCloudTrial";
+import { clearDemoTrialFlag } from "@/lib/demoTrial";
 
 export default function Register() {
   const { t } = useI18n();
@@ -57,11 +59,26 @@ export default function Register() {
       if (result?.access_token) {
         base44.auth.setToken(result.access_token);
       }
+      // Attiva la trial cloud di 30gg (o giorni residui demo / 7gg grace).
+      // Account appena creato: free_until è sicuramente vuoto, nessun
+      // controllo idempotenza necessario — calcolo puro + updateMe unificato.
+      const { days: trialDays, source: trialSource } = computeCloudTrialDays();
+      const freeUntil = new Date(Date.now() + trialDays * 86400000).toISOString();
       try {
         await base44.auth.updateMe({
           privacy_consent_accepted: true,
           privacy_consent_date: new Date().toISOString(),
+          free_until: freeUntil,
         });
+        clearDemoTrialFlag();
+        try { base44.analytics.track({ eventName: 'trial_activated', properties: { source: trialSource, days: trialDays } }); } catch (_) { /* noop */ }
+        const key = trialSource === 'fresh' ? 'trial.welcome_fresh'
+          : trialSource === 'grace' ? 'trial.welcome_grace'
+          : 'trial.welcome_transfer';
+        const desc = trialSource === 'demo_transfer'
+          ? t(key).replace('{n}', trialDays)
+          : t(key);
+        toast({ title: t('trial.welcome_title'), description: desc });
       } catch (e) { /* non blocking */ }
       setShowReferral(true);
     } catch (err) {
