@@ -13,6 +13,7 @@ export const BASE44_PLANS = [
 
 export const DEFAULT_PLAN_ID = 'elite_custom';
 export const DEFAULT_PREMIUM_PRICE = 4.99;
+export const DEFAULT_PREMIUM_PRICE_ANNUAL = 49.99;
 export const DEFAULT_AVG_MSGS_PER_CARY_USER = 12;
 export const MSG_CREDITS_PER_CARY_MSG = 1;
 export const INTEGRATION_CREDITS_PER_CARY_MSG = 3;

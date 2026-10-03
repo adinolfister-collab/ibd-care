@@ -13,7 +13,7 @@ const BENEFIT_KEYS = [
 
 // Informational subscription panel shown on the Abbonamento page for visitors
 // who are not logged in yet. Freemium model: the diary is free forever, Premium
-// unlocks AI assistant and PDF reports from €0.99/month.
+// unlocks AI assistant and PDF reports from €4.99/month.
 export default function LoginSubscriptionPromo({ returnTo = '/' }) {
   const { t } = useI18n();
   const registerTo = '/register' + (returnTo && returnTo !== '/' ? '?returnTo=' + encodeURIComponent(returnTo) : '');

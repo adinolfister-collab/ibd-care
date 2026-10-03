@@ -18,8 +18,8 @@ export default async function(req: Request): Promise<Response> {
 
     const secretKey = secrets.get('STRIPE_SECRET_KEY');
     const priceId = plan === 'yearly'
-      ? secrets.get('STRIPE_ANNUAL_PRICE_ID')
-      : secrets.get('STRIPE_PRICE_ID_MONTHLY_EUR');
+      ? (secrets.get('STRIPE_PREMIUM_ANNUAL_PRICE_ID') || secrets.get('STRIPE_ANNUAL_PRICE_ID'))
+      : (secrets.get('STRIPE_PREMIUM_MONTHLY_PRICE_ID') || secrets.get('STRIPE_PRICE_ID_MONTHLY_EUR'));
     const appId = Deno.env.get('BASE44_APP_ID');
     if (!secretKey) return Response.json({ error: 'Stripe non configurato' }, { status: 500 });
     if (!priceId) return Response.json({ error: 'Piano non ancora configurato' }, { status: 503 });

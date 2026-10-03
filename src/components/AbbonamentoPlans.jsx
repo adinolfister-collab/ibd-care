@@ -94,8 +94,8 @@ export default function AbbonamentoPlans() {
   };
 
   const plans = [
-    { id: 'monthly', price: '€0,99', period: t('premium.per_month'), badge: null, compareAt: null, featured: false },
-    { id: 'yearly', price: '€9,90', period: t('premium.per_year'), badge: t('premium.save_badge'), compareAt: '€11,88', featured: true },
+    { id: 'monthly', price: '€4,99', period: t('premium.per_month'), badge: null, compareAt: null, featured: false },
+    { id: 'yearly', price: '€49,99', period: t('premium.per_year'), badge: t('premium.save_badge'), compareAt: '€59,88', featured: true },
   ];
 
   const features = [
