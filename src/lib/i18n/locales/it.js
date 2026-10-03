@@ -1498,6 +1498,19 @@ const it = {
   'clinical_pdf.empty_desc': 'Non ci sono indici o sintomi da esportare.',
   'account.export_data': 'Esporta i miei dati (JSON)',
   'account.exporting': 'Esportazione…',
+  'news.copy_link': 'Copia link',
+  'landing.install_app': 'Installa l\u2019app',
+  'header.online_users': 'Utenti online',
+  'report.share_toast_title': 'Link copiato',
+  'report.share_toast_desc': 'Condividi questo link con il tuo medico o i tuoi cari. Scade in 30 giorni.',
+  'report.share_error': 'Impossibile creare il link di condivisione',
+  'report.share_btn': 'Condividi report',
+  'common.saving': 'Salvataggio…',
+  'food.carb_field': 'Carboidrati (g per 100 g)',
+  'food.portion_grams_field': 'Peso porzione (g)',
+  'food.portion_grams_hint': 'Peso in grammi di una singola porzione (usato per il calcolo nutrizionale quando l\u2019unità è porzione/fetta/cucchiaio/tazza).',
+  'common.download_pdf': 'Scarica PDF',
+  'nav.back': 'Indietro',
 };
 
 

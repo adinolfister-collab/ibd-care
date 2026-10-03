@@ -24,7 +24,7 @@ export default function AdminAccessReport() {
         subtitle={R.subtitle}
         action={
           <Button onClick={exportAccessReportPdf} className="rounded-xl">
-            <Download className="w-4 h-4 mr-1.5" /> {t('common.download_pdf') || 'Scarica PDF'}
+            <Download className="w-4 h-4 mr-1.5" /> {t('common.download_pdf')}
           </Button>
         }
       />
@@ -128,7 +128,7 @@ export default function AdminAccessReport() {
 
       <div className="flex justify-end">
         <Button onClick={exportAccessReportPdf} variant="outline" className="rounded-xl">
-          <FileText className="w-4 h-4 mr-1.5" /> {t('common.download_pdf') || 'Scarica PDF'}
+          <FileText className="w-4 h-4 mr-1.5" /> {t('common.download_pdf')}
         </Button>
       </div>
     </AppLayout>

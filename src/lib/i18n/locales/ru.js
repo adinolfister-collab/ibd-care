@@ -1048,6 +1048,19 @@ const ru = {
   'common.back_to_top': 'Наверх',
   'feedback.rate_label': 'Оцените эту страницу',
   'feedback.thanks': 'Спасибо за ваш голос!',
+  'news.copy_link': 'Копировать ссылку',
+  'landing.install_app': 'Установить приложение',
+  'header.online_users': 'Пользователи онлайн',
+  'report.share_toast_title': 'Ссылка скопирована',
+  'report.share_toast_desc': 'Поделитесь этой ссылкой с врачом или близкими. Она действует 30 дней.',
+  'report.share_error': 'Не удалось создать ссылку для обмена',
+  'report.share_btn': 'Поделиться отчётом',
+  'common.saving': 'Сохранение…',
+  'food.carb_field': 'Углеводы (г на 100 г)',
+  'food.portion_grams_field': 'Вес порции (г)',
+  'food.portion_grams_hint': 'Вес одной порции в граммах (используется для расчёта нутриентов, если единица — порция/кусок/ложка/чашка).',
+  'common.download_pdf': 'Скачать PDF',
+  'nav.back': 'Назад',
 };
 
 export default ru;

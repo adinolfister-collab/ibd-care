@@ -1120,6 +1120,19 @@ const fr = {
   'common.back_to_top': 'Haut de page',
   'feedback.rate_label': 'Évaluez cette page',
   'feedback.thanks': 'Merci pour votre vote !',
+  'news.copy_link': 'Copier le lien',
+  'landing.install_app': 'Installer l\u2019app',
+  'header.online_users': 'Utilisateurs en ligne',
+  'report.share_toast_title': 'Lien copié',
+  'report.share_toast_desc': 'Partagez ce lien avec votre médecin ou vos proches. Il expire dans 30 jours.',
+  'report.share_error': 'Impossible de créer le lien de partage',
+  'report.share_btn': 'Partager le rapport',
+  'common.saving': 'Enregistrement…',
+  'food.carb_field': 'Glucides (g pour 100 g)',
+  'food.portion_grams_field': 'Poids de la portion (g)',
+  'food.portion_grams_hint': 'Poids en grammes d\u2019une portion (utilisé pour le calcul nutritionnel quand l\u2019unité est portion/tranche/cuillère/tasse).',
+  'common.download_pdf': 'Télécharger PDF',
+  'nav.back': 'Retour',
 };
 
 export default fr;

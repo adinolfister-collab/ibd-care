@@ -1048,6 +1048,19 @@ const zh = {
   'common.back_to_top': '回到顶部',
   'feedback.rate_label': '评价此页面',
   'feedback.thanks': '感谢您的投票！',
+  'news.copy_link': '复制链接',
+  'landing.install_app': '安装应用',
+  'header.online_users': '在线用户',
+  'report.share_toast_title': '链接已复制',
+  'report.share_toast_desc': '与您的医生或亲友分享此链接。30 天后失效。',
+  'report.share_error': '无法创建分享链接',
+  'report.share_btn': '分享报告',
+  'common.saving': '保存中…',
+  'food.carb_field': '碳水化合物（每 100 g）',
+  'food.portion_grams_field': '份量重量（g）',
+  'food.portion_grams_hint': '单份重量（克），当单位为份/片/汤匙/杯时用于营养计算。',
+  'common.download_pdf': '下载 PDF',
+  'nav.back': '返回',
 };
 
 export default zh;

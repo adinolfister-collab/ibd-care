@@ -47,7 +47,7 @@ export default function InstallAppButton({ className = '' }) {
 
   if (installed) return null;
 
-  const label = t('landing.install_app') || 'Installa l\u2019app';
+  const label = t('landing.install_app');
 
   // Browser che supporta l'installazione nativa (Chrome/Android, Edge desktop)
   if (deferred) {

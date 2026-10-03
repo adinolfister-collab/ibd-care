@@ -32,7 +32,7 @@ export default function AdminGuestPreview() {
           className="mb-4 -ml-2 text-muted-foreground"
         >
           <ArrowLeft className="w-4 h-4" />
-          {t('nav.back') || 'Indietro'}
+          {t('nav.back')}
         </Button>
 
         <div className="flex items-center gap-3 mb-6">

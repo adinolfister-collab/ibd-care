@@ -19,10 +19,10 @@ export default function FoundersShareCard({ userId }) {
         </span>
         <div>
           <p className="font-heading font-semibold text-foreground text-sm">
-            {t('founders.share_title') || 'Share to climb the ranking'}
+            {t('founders.share_title')}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-            {t('founders.share_desc') || 'Invite friends with Crohn\'s or Colitis. Each signup via your link boosts your referrals.'}
+            {t('founders.share_desc')}
           </p>
         </div>
       </div>
@@ -33,12 +33,12 @@ export default function FoundersShareCard({ userId }) {
         <ShareMenu
           variant="labeled"
           shareUrl={refUrl}
-          title={t('founders.share_title') || 'IBD Care Founders'}
-          summary={t('founders.share_summary') || 'Join me on IBD Care — free for Crohn\'s and colitis patients.'}
+          title={t('founders.share_title')}
+          summary={t('founders.share_summary')}
           label={
             <span className="inline-flex items-center gap-1.5">
               <Share2 className="w-4 h-4" />
-              {t('founders.share_btn') || 'Share'}
+              {t('founders.share_btn')}
             </span>
           }
         />

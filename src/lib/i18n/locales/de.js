@@ -1120,6 +1120,19 @@ const de = {
   'common.back_to_top': 'Nach oben',
   'feedback.rate_label': 'Diese Seite bewerten',
   'feedback.thanks': 'Danke für deine Stimme!',
+  'news.copy_link': 'Link kopieren',
+  'landing.install_app': 'App installieren',
+  'header.online_users': 'Nutzer online',
+  'report.share_toast_title': 'Link kopiert',
+  'report.share_toast_desc': 'Teile diesen Link mit deinem Arzt oder deinen Liebsten. Er läuft in 30 Tagen ab.',
+  'report.share_error': 'Freigabelink konnte nicht erstellt werden',
+  'report.share_btn': 'Bericht teilen',
+  'common.saving': 'Speichern…',
+  'food.carb_field': 'Kohlenhydrate (g pro 100 g)',
+  'food.portion_grams_field': 'Portionsgewicht (g)',
+  'food.portion_grams_hint': 'Gewicht in Gramm einer einzelnen Portion (für die Nährwertberechnung, wenn die Einheit Portion/Scheibe/Löffel/Tasse ist).',
+  'common.download_pdf': 'PDF herunterladen',
+  'nav.back': 'Zurück',
 };
 
 export default de;

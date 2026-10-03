@@ -1501,6 +1501,19 @@ const en = {
   'clinical_pdf.empty_desc': 'There are no indices or symptoms to export.',
   'account.export_data': 'Export my data (JSON)',
   'account.exporting': 'Exporting…',
+  'news.copy_link': 'Copy link',
+  'landing.install_app': 'Install app',
+  'header.online_users': 'Users online',
+  'report.share_toast_title': 'Link copied',
+  'report.share_toast_desc': 'Share this link with your doctor or loved ones. It expires in 30 days.',
+  'report.share_error': 'Unable to create share link',
+  'report.share_btn': 'Share Report',
+  'common.saving': 'Saving…',
+  'food.carb_field': 'Carbs (g per 100 g)',
+  'food.portion_grams_field': 'Portion weight (g)',
+  'food.portion_grams_hint': 'Weight in grams of a single portion (used for nutrition calculation when the unit is portion/slice/tablespoon/cup).',
+  'common.download_pdf': 'Download PDF',
+  'nav.back': 'Back',
 };
 
 

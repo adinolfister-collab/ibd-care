@@ -27,7 +27,7 @@ export default function CopyLinkBox({ url }) {
           type="text"
           readOnly
           value={url}
-          aria-label={t('news.copy_link') || 'Copia link'}
+          aria-label={t('news.copy_link')}
           className="flex-1 min-w-0 bg-transparent font-heading text-sm text-foreground tracking-tight outline-none truncate"
         />
         <button
@@ -37,7 +37,7 @@ export default function CopyLinkBox({ url }) {
         >
           {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
           <span className={copied ? 'text-emerald-600' : ''}>
-            {copied ? (t('news.copied') || 'Copiato') : (t('news.copy_link') || 'Copia link')}
+            {copied ? t('news.copied') : t('news.copy_link')}
           </span>
         </button>
       </div>

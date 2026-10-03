@@ -1048,6 +1048,19 @@ const sq = {
   'common.back_to_top': 'Lart',
   'feedback.rate_label': 'Vlerëso këtë faqe',
   'feedback.thanks': 'Faleminderit për votën tuaj!',
+  'news.copy_link': 'Kopjo linkun',
+  'landing.install_app': 'Instalo aplikacionin',
+  'header.online_users': 'Përdorues online',
+  'report.share_toast_title': 'Linku u kopjua',
+  'report.share_toast_desc': 'Ndaj këtë link me mjekun ose të dashurit. Skadon pas 30 ditësh.',
+  'report.share_error': 'Nuk u krijua linku i ndarjes',
+  'report.share_btn': 'Ndaj raportin',
+  'common.saving': 'Po ruhet…',
+  'food.carb_field': 'Karbohidrate (g për 100 g)',
+  'food.portion_grams_field': 'Pesha e porcionit (g)',
+  'food.portion_grams_hint': 'Pesha në gramë e një porcioni (përdoret për llogaritjen ushqyese kur njësia është porcion/fetë/lugë/filxhan).',
+  'common.download_pdf': 'Shkarko PDF',
+  'nav.back': 'Mbrapsht',
 };
 
 export default sq;

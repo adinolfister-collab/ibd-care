@@ -1048,6 +1048,19 @@ const ro = {
   'common.back_to_top': 'Sus',
   'feedback.rate_label': 'Evaluează această pagină',
   'feedback.thanks': 'Mulțumim pentru votul tău!',
+  'news.copy_link': 'Copiază linkul',
+  'landing.install_app': 'Instalează aplicația',
+  'header.online_users': 'Utilizatori online',
+  'report.share_toast_title': 'Link copiat',
+  'report.share_toast_desc': 'Distribuie acest link medicului sau celor dragi. Expiră în 30 de zile.',
+  'report.share_error': 'Nu s-a putut crea linkul de distribuire',
+  'report.share_btn': 'Distribuie raportul',
+  'common.saving': 'Se salvează…',
+  'food.carb_field': 'Carbohidrați (g la 100 g)',
+  'food.portion_grams_field': 'Greutatea porției (g)',
+  'food.portion_grams_hint': 'Greutatea în grame a unei porții (folosită la calcule nutriționale când unitatea este porție/felie/lingură/ceașcă).',
+  'common.download_pdf': 'Descarcă PDF',
+  'nav.back': 'Înapoi',
 };
 
 export default ro;

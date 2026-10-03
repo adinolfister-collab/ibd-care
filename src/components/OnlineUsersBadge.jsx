@@ -34,14 +34,14 @@ export default function OnlineUsersBadge({ className = '' }) {
   return (
     <div
       className={`inline-flex items-center gap-1.5 h-9 px-3 rounded-full border border-border bg-card text-foreground text-xs font-medium shrink-0 ${className}`}
-      title={t('header.online_users') || 'Utenti online'}
+      title={t('header.online_users')}
     >
       <span className="relative flex h-2 w-2">
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
       </span>
       <span>{display}</span>
-      <span className="hidden sm:inline text-muted-foreground">{t('header.online_users') || 'online'}</span>
+      <span className="hidden sm:inline text-muted-foreground">{t('header.online_users')}</span>
     </div>
   );
 }

@@ -1120,6 +1120,19 @@ const es = {
   'common.back_to_top': 'Volver arriba',
   'feedback.rate_label': 'Valora esta página',
   'feedback.thanks': '¡Gracias por tu voto!',
+  'news.copy_link': 'Copiar enlace',
+  'landing.install_app': 'Instalar la app',
+  'header.online_users': 'Usuarios en línea',
+  'report.share_toast_title': 'Enlace copiado',
+  'report.share_toast_desc': 'Comparte este enlace con tu médico o tus seres queridos. Caduca en 30 días.',
+  'report.share_error': 'No se pudo crear el enlace para compartir',
+  'report.share_btn': 'Compartir informe',
+  'common.saving': 'Guardando…',
+  'food.carb_field': 'Carbohidratos (g por 100 g)',
+  'food.portion_grams_field': 'Peso de la porción (g)',
+  'food.portion_grams_hint': 'Peso en gramos de una porción (usado para el cálculo nutricional cuando la unidad es porción/rebanada/cucharada/taza).',
+  'common.download_pdf': 'Descargar PDF',
+  'nav.back': 'Atrás',
 };
 
 export default es;

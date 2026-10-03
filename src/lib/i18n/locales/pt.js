@@ -1120,6 +1120,19 @@ const pt = {
   'common.back_to_top': 'Voltar ao topo',
   'feedback.rate_label': 'Avalie esta página',
   'feedback.thanks': 'Obrigado pelo seu voto!',
+  'news.copy_link': 'Copiar link',
+  'landing.install_app': 'Instalar a app',
+  'header.online_users': 'Utilizadores online',
+  'report.share_toast_title': 'Link copiado',
+  'report.share_toast_desc': 'Partilha este link com o teu médico ou entes queridos. Expira em 30 dias.',
+  'report.share_error': 'Não foi possível criar o link de partilha',
+  'report.share_btn': 'Partilhar relatório',
+  'common.saving': 'A guardar…',
+  'food.carb_field': 'Carboidratos (g por 100 g)',
+  'food.portion_grams_field': 'Peso da porção (g)',
+  'food.portion_grams_hint': 'Peso em gramas de uma porção (usado no cálculo nutricional quando a unidade é porção/fatia/colher/chávena).',
+  'common.download_pdf': 'Descarregar PDF',
+  'nav.back': 'Voltar',
 };
 
 export default pt;

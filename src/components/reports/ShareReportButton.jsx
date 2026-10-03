@@ -30,12 +30,12 @@ export default function ShareReportButton({ reportType, buildReportData, ...prop
       try { await navigator.clipboard.writeText(url); } catch (e) { /* clipboard may be blocked */ }
       setDone(true);
       toast({
-        title: t('report.share_toast_title') || 'Link copied',
-        description: t('report.share_toast_desc') || 'Share this link with your doctor or loved ones. It expires in 30 days.',
+        title: t('report.share_toast_title'),
+        description: t('report.share_toast_desc'),
       });
       setTimeout(() => setDone(false), 3000);
     } catch (e) {
-      toast({ title: t('report.share_error') || 'Unable to create share link', variant: 'destructive' });
+      toast({ title: t('report.share_error'), variant: 'destructive' });
     } finally {
       setBusy(false);
     }
@@ -44,7 +44,7 @@ export default function ShareReportButton({ reportType, buildReportData, ...prop
   return (
     <Button onClick={share} disabled={busy} {...props}>
       {busy ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : done ? <Check className="w-4 h-4 mr-1.5" /> : <Share2 className="w-4 h-4 mr-1.5" />}
-      {t('report.share_btn') || 'Share Report'}
+      {t('report.share_btn')}
     </Button>
   );
 }

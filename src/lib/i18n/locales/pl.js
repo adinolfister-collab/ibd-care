@@ -1301,6 +1301,19 @@ const pl = {
   'common.back_to_top': 'Do góry',
   'feedback.rate_label': 'Oceń tę stronę',
   'feedback.thanks': 'Dziękujemy za Twój głos!',
+  'news.copy_link': 'Kopiuj link',
+  'landing.install_app': 'Zainstaluj aplikację',
+  'header.online_users': 'Użytkownicy online',
+  'report.share_toast_title': 'Link skopiowany',
+  'report.share_toast_desc': 'Udostępnij ten link lekarzowi lub bliskim. Wygasa po 30 dniach.',
+  'report.share_error': 'Nie udało się utworzyć linku udostępniania',
+  'report.share_btn': 'Udostępnij raport',
+  'common.saving': 'Zapisywanie…',
+  'food.carb_field': 'Węglowodany (g na 100 g)',
+  'food.portion_grams_field': 'Waga porcji (g)',
+  'food.portion_grams_hint': 'Waga jednej porcji w gramach (do obliczeń wartości odżywczych, gdy jednostką jest porcja/kawałek/łyżka/szklanka).',
+  'common.download_pdf': 'Pobierz PDF',
+  'nav.back': 'Wstecz',
 };
 
 export default pl;
