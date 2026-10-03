@@ -10,8 +10,10 @@ import MapFrame from '@/components/screenshots/MapFrame';
 import AssistantFrame from '@/components/screenshots/AssistantFrame';
 import FeatureGraphicFrame from '@/components/screenshots/FeatureGraphicFrame';
 import { Button } from '@/components/ui/button';
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2, Sparkles } from 'lucide-react';
 import { CAPTIONS } from '@/lib/screenshotSampleData';
+import { base44 } from '@/api/base44Client';
+import { useToast } from '@/components/ui/use-toast';
 
 // Pagina nascosta admin: genera i frame 9:16 per gli screenshot del Play Store
 // e un frame 1024×500 (feature graphic) esportabile come PNG.
@@ -26,9 +28,36 @@ const FRAMES = [
   AssistantFrame,
 ];
 
+const LOGO_REFERENCE = 'https://media.base44.com/files/public/6a80de4be246a7b03417c238/db435078d_pnglogoibdcare';
+
 export default function ScreenshotGenerator() {
   const fgRef = useRef(null);
   const [exporting, setExporting] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [generatingLogo, setGeneratingLogo] = useState(false);
+  const { toast } = useToast();
+
+  const generateLogo = async () => {
+    if (generatingLogo) return;
+    setGeneratingLogo(true);
+    try {
+      const res = await base44.functions.invoke('generateAppLogo', { referenceUrl: LOGO_REFERENCE });
+      setLogoUrl(res.data.url);
+    } catch (e) {
+      toast({ title: 'Errore generazione logo', description: e.message, variant: 'destructive' });
+    } finally {
+      setGeneratingLogo(false);
+    }
+  };
+
+  const downloadLogo = () => {
+    if (!logoUrl) return;
+    const link = document.createElement('a');
+    link.download = 'ibd-care-logo-512x512.png';
+    link.href = logoUrl;
+    link.target = '_blank';
+    link.click();
+  };
 
   const downloadFeatureGraphic = async () => {
     if (!fgRef.current || exporting) return;
@@ -91,6 +120,44 @@ export default function ScreenshotGenerator() {
             >
               <FeatureGraphicFrame ref={fgRef} />
             </div>
+          </div>
+        </section>
+
+        {/* Logo 512×512 generato */}
+        <section className="mb-10">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-heading text-lg font-semibold text-slate-800 dark:text-slate-100">
+              Logo 512×512
+            </h2>
+            <div className="flex gap-2">
+              <Button
+                onClick={generateLogo}
+                disabled={generatingLogo}
+                className="rounded-xl h-9 px-4 text-sm"
+              >
+                {generatingLogo ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                {generatingLogo ? 'Genero…' : 'Genera logo 512×512'}
+              </Button>
+              {logoUrl && (
+                <Button
+                  onClick={downloadLogo}
+                  variant="outline"
+                  className="rounded-xl h-9 px-4 text-sm"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Scarica PNG
+                </Button>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-center rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-200 dark:bg-slate-800 p-6" style={{ height: 300 }}>
+            {generatingLogo ? (
+              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+            ) : logoUrl ? (
+              <img src={logoUrl} alt="Logo generato" className="w-48 h-48 rounded-2xl object-cover" />
+            ) : (
+              <p className="text-sm text-slate-400">Clicca "Genera logo 512×512" per creare l'icona.</p>
+            )}
           </div>
         </section>
 
