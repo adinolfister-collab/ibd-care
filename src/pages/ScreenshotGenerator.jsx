@@ -29,11 +29,12 @@ const FRAMES = [
 ];
 
 const LOGO_REFERENCE = 'https://media.base44.com/files/public/6a80de4be246a7b03417c238/db435078d_pnglogoibdcare';
+const DEFAULT_LOGO_URL = 'https://media.base44.com/images/public/6a80de4be246a7b03417c238/6f80a9d6b_generated_image.png';
 
 export default function ScreenshotGenerator() {
   const fgRef = useRef(null);
   const [exporting, setExporting] = useState(false);
-  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO_URL);
   const [generatingLogo, setGeneratingLogo] = useState(false);
   const { toast } = useToast();
 
