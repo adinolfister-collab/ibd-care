@@ -53,6 +53,7 @@ const AdminBusiness = lazy(() => import('@/pages/AdminBusiness'));
 const Shop = lazy(() => import('@/pages/Shop'));
 const ShopAdmin = lazy(() => import('@/pages/ShopAdmin'));
 const MarketingAdmin = lazy(() => import('@/pages/MarketingAdmin'));
+const ScreenshotGenerator = lazy(() => import('@/pages/ScreenshotGenerator'));
 const ProductDetail = lazy(() => import('@/pages/ProductDetail'));
 const Founders = lazy(() => import('@/pages/Founders'));
 const Invita = lazy(() => import('@/pages/Invita'));
@@ -153,6 +154,7 @@ const AuthenticatedApp = () => {
             <Route path="/admin/business" element={<PageTransition><AdminBusiness /></PageTransition>} />
             <Route path="/admin/marketing" element={<PageTransition><MarketingAdmin /></PageTransition>} />
             <Route path="/shop/admin" element={<PageTransition><ShopAdmin /></PageTransition>} />
+            <Route path="/admin/screenshots" element={<PageTransition><ScreenshotGenerator /></PageTransition>} />
           </Route>
         </Route>
         <Route path="*" element={<PageTransition><PageNotFound /></PageTransition>} />
