@@ -16,7 +16,7 @@ import BusinessTrendCharts from '@/components/admin/BusinessTrendCharts';
 import BusinessSnapshotArchive from '@/components/admin/BusinessSnapshotArchive';
 import BusinessCaryAdoption from '@/components/admin/BusinessCaryAdoption';
 
-const PRICE_PRESETS = [0.99, 1.99, 4.99, 9.99];
+const PRICE_PRESETS = [1.99, 2.99, 4.99, 9.99];
 
 export default function AdminBusiness() {
   const { user } = useAuth();
