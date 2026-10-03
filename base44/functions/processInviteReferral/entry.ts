@@ -19,8 +19,10 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 
 const CAMPAIGN = 'invite_a_friend';
 const INVITEE_TRIAL_DAYS = 45;
-const REFERRER_BONUS_DAYS = 7;
-const MAX_REFERRALS = 3;
+// Opzione "milestone": +7 per i primi due amici, +30 (mese omaggio) al terzo.
+// Totale massimo referrer: +44 giorni.
+const BONUS_SCHEDULE = [7, 7, 30];
+const MAX_REFERRALS = BONUS_SCHEDULE.length;
 const DAY_MS = 86400000;
 const PREMIUM_STATUSES = ['active', 'lifetime', 'three_months', 'past_due'];
 
@@ -86,21 +88,22 @@ export default async function(req: Request): Promise<Response> {
       }
       const currentCount = referrerSignup.referral_count || 0;
       if (currentCount < MAX_REFERRALS) {
-        // Calcola il nuovo free_until: se futuro somma 7gg, altrimenti now+7gg.
+        const bonusDays = BONUS_SCHEDULE[currentCount]; // 7, 7, 30
+        // Calcola il nuovo free_until: se futuro somma i giorni premio, altrimenti now+giorni.
         let newFreeUntil: string;
         const existing = referrer.free_until ? new Date(referrer.free_until).getTime() : 0;
         const now = Date.now();
         if (existing && existing > now) {
-          newFreeUntil = new Date(existing + REFERRER_BONUS_DAYS * DAY_MS).toISOString();
+          newFreeUntil = new Date(existing + bonusDays * DAY_MS).toISOString();
         } else {
-          newFreeUntil = new Date(now + REFERRER_BONUS_DAYS * DAY_MS).toISOString();
+          newFreeUntil = new Date(now + bonusDays * DAY_MS).toISOString();
         }
         await base44.asServiceRole.entities.User.update(referrerId, { free_until: newFreeUntil } as any);
         await base44.asServiceRole.entities.CampaignSignup.update(referrerSignup.id, {
           referral_count: currentCount + 1,
         } as any);
         referrerExtended = true;
-        referrerBonusDays = REFERRER_BONUS_DAYS;
+        referrerBonusDays = bonusDays;
       }
     }
 

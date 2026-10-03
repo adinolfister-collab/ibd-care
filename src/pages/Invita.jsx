@@ -11,9 +11,11 @@ import { Gift, Users, CalendarPlus, Check, Loader2, Link2, Sparkles } from 'luci
 import { Link } from 'react-router-dom';
 import { SITE_BASE } from '@/lib/seo';
 
-const MAX_REFERRALS = 3;
-const BONUS_DAYS = 7;
+// Milestone: +7 / +7 / +30 (mese omaggio al terzo amico). Totale max +44.
+const BONUS_SCHEDULE = [7, 7, 30];
+const MAX_REFERRALS = BONUS_SCHEDULE.length;
 const INVITEE_DAYS = 45;
+const sumSchedule = (arr) => arr.reduce((a, b) => a + b, 0);
 
 export default function Invita() {
   const { t } = useI18n();
@@ -41,8 +43,9 @@ export default function Invita() {
     return () => { cancelled = true; };
   }, [authChecked, isAuthenticated]);
 
-  const referralCount = signup?.referral_count || 0;
-  const daysEarned = Math.min(referralCount, MAX_REFERRALS) * BONUS_DAYS;
+  const referralCount = Math.min(signup?.referral_count || 0, MAX_REFERRALS);
+  const daysEarned = sumSchedule(BONUS_SCHEDULE.slice(0, referralCount));
+  const daysLeft = sumSchedule(BONUS_SCHEDULE.slice(referralCount));
   const maxReached = referralCount >= MAX_REFERRALS;
 
   const refUrl = user ? `${SITE_BASE}/?ref=${user.id}` : '';
@@ -133,7 +136,7 @@ export default function Invita() {
               <div className="grid grid-cols-3 gap-3 mb-5">
                 <Stat value={`${referralCount}/${MAX_REFERRALS}`} label={t('invite.friends_invited')} />
                 <Stat value={`+${daysEarned}`} label={t('invite.days_earned')} />
-                <Stat value={maxReached ? t('invite.maxed') : `+${(MAX_REFERRALS - referralCount) * BONUS_DAYS}`} label={t('invite.days_left')} />
+                <Stat value={maxReached ? t('invite.maxed') : `+${daysLeft}`} label={t('invite.days_left')} />
               </div>
               {/* Barra progresso */}
               <div className="w-full h-2.5 rounded-full bg-muted overflow-hidden">
@@ -155,7 +158,7 @@ export default function Invita() {
               <ol className="space-y-4">
                 <Step n="1" icon={Link2} title={t('invite.step1_title')} desc={t('invite.step1_desc')} />
                 <Step n="2" icon={Users} title={t('invite.step2_title')} desc={t('invite.step2_desc').replace('{days}', INVITEE_DAYS)} />
-                <Step n="3" icon={CalendarPlus} title={t('invite.step3_title')} desc={t('invite.step3_desc').replace('{bonus}', BONUS_DAYS).replace('{max}', MAX_REFERRALS * BONUS_DAYS)} />
+                <Step n="3" icon={CalendarPlus} title={t('invite.step3_title').replace('{max}', sumSchedule(BONUS_SCHEDULE))} desc={t('invite.step3_desc').replace('{bonus1}', BONUS_SCHEDULE[0]).replace('{milestone}', BONUS_SCHEDULE[2]).replace('{max}', sumSchedule(BONUS_SCHEDULE))} />
               </ol>
             </CardContent>
           </Card>
