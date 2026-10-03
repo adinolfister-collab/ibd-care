@@ -47,12 +47,22 @@ export default async function(req: Request): Promise<Response> {
       integrationCredits: typeof body.integrationCreditsIncluded === 'number' ? body.integrationCreditsIncluded : basePlan.integrationCredits,
     };
     const premiumPrice: number = typeof body.premiumPrice === 'number' ? body.premiumPrice : DEFAULT_PREMIUM_PRICE;
-    const windowDays: number = typeof body.windowDays === 'number' && body.windowDays > 0 ? Math.min(Math.round(body.windowDays), 365) : DEFAULT_WINDOW_DAYS;
+    // windowDays: 0 = "Oggi" (dal midnight del giorno corrente), >0 = ultimi N gg.
+    const rawWindow = typeof body.windowDays === 'number' ? Math.round(body.windowDays) : DEFAULT_WINDOW_DAYS;
+    const windowDays: number = rawWindow < 0 ? DEFAULT_WINDOW_DAYS : Math.min(rawWindow, 365);
 
     // Carica utenti ed eventi conversione (ultimi N gg). Servono sia gli
     // eventi Cary (per l'adozione) sia tutti gli eventi ospiti (per la base
     // totale dei visitatori demo), quindi si caricano senza filtro feature.
-    const since = Date.now() - windowDays * 86400000;
+    const now = new Date();
+    let since: number;
+    if (windowDays === 0) {
+      // "Oggi": dal midnight locale del giorno corrente
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+      since = start.getTime();
+    } else {
+      since = now.getTime() - windowDays * 86400000;
+    }
     const [users, allEvents] = await Promise.all([
       base44.asServiceRole.entities.User.filter({}, '-created_date', USER_LIMIT).catch(() => []),
       base44.asServiceRole.entities.ConversionEvent.filter({}, '-created_date', EVENT_LIMIT).catch(() => []),

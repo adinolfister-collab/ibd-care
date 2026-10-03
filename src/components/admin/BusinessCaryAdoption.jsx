@@ -21,7 +21,7 @@ export default function BusinessCaryAdoption({ live, sim, onSimChange, onReset, 
           Adozione Cary
         </h2>
         <p className="text-xs text-muted-foreground mb-4">
-          Utenti che hanno usato Cary negli ultimi {windowDays} giorni. Gli admin sono esclusi dal conteggio.
+          Utenti che hanno usato Cary {windowDays === 0 ? 'oggi' : `negli ultimi ${windowDays} giorni`}. Gli admin sono esclusi dal conteggio.
         </p>
 
         <div className="space-y-5">

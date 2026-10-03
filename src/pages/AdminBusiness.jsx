@@ -31,6 +31,7 @@ export default function AdminBusiness() {
   const [customPlan, setCustomPlan] = useState({ cost: 160, msgCredits: 1628, integrationCredits: 72678 });
   const [premiumPrice, setPremiumPrice] = useState(DEFAULT_PREMIUM_PRICE);
   const [simPremiumUsers, setSimPremiumUsers] = useState(null);
+  const [simTrialUsers, setSimTrialUsers] = useState(null);
   const [avgMsgsOverride, setAvgMsgsOverride] = useState(null);
   const [windowDays, setWindowDays] = useState(30);
   const [simCary, setSimCary] = useState({ premium: null, trial: null, demo: null });
@@ -76,6 +77,7 @@ export default function AdminBusiness() {
   };
   const avgMsgs = avgMsgsOverride ?? live?.avg_msgs_per_cary_user ?? DEFAULT_AVG_MSGS_PER_CARY_USER;
   const premiumUsers = simPremiumUsers ?? livePremium;
+  const trialUsers = simTrialUsers ?? liveTrial;
 
   const selectedBase = getPlan(planId);
   const effectivePlan = planId === 'elite_custom'
@@ -85,21 +87,21 @@ export default function AdminBusiness() {
   const proj = useMemo(() => computeProjection({
     plan: effectivePlan,
     premiumUsers,
-    trialUsers: liveTrial,
+    trialUsers,
     demoUsers: liveDemo,
     caryAdoption: effectiveCary,
     avgMsgsPerCaryUser: avgMsgs,
     premiumPrice,
-  }), [effectivePlan, premiumUsers, liveTrial, liveDemo, avgMsgs, premiumPrice, effectiveCary.premium, effectiveCary.trial, effectiveCary.demo]);
+  }), [effectivePlan, premiumUsers, trialUsers, liveDemo, avgMsgs, premiumPrice, effectiveCary.premium, effectiveCary.trial, effectiveCary.demo]);
 
   const comparison = useMemo(() => BASE44_PLANS.map((p) => {
     const plan = p.id === 'elite_custom' ? { ...p, ...customPlan } : p;
     const r = computeProjection({
-      plan, premiumUsers, trialUsers: liveTrial, demoUsers: liveDemo,
+      plan, premiumUsers, trialUsers, demoUsers: liveDemo,
       caryAdoption: effectiveCary, avgMsgsPerCaryUser: avgMsgs, premiumPrice,
     });
     return { plan, result: r };
-  }), [premiumUsers, liveTrial, liveDemo, avgMsgs, premiumPrice, customPlan, effectiveCary.premium, effectiveCary.trial, effectiveCary.demo]);
+  }), [premiumUsers, trialUsers, liveDemo, avgMsgs, premiumPrice, customPlan, effectiveCary.premium, effectiveCary.trial, effectiveCary.demo]);
 
   if (user && user.role !== 'admin') return <Navigate to="/" replace />;
   if (!user) return null;
@@ -140,7 +142,7 @@ export default function AdminBusiness() {
         action={
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1 bg-card border border-border rounded-full p-0.5">
-              {[{ d: 7, l: '7gg' }, { d: 30, l: '30gg' }, { d: 90, l: '90gg' }].map((opt) => (
+              {[{ d: 0, l: 'Oggi' }, { d: 7, l: '7gg' }, { d: 30, l: '30gg' }, { d: 90, l: '90gg' }].map((opt) => (
                 <button
                   key={opt.d}
                   onClick={() => setWindowDays(opt.d)}
@@ -213,22 +215,41 @@ export default function AdminBusiness() {
               />
             </div>
 
-            <Label className="text-xs">Utenti Premium simulati (per proiezione crescita)</Label>
+            <Label className="text-xs">Utenti Premium simulati</Label>
             <div className="flex items-center gap-3 mt-1.5 mb-4">
               <input
-                type="range" min="0" max={Math.max(500, livePremium * 3)} step="1"
+                type="range" min="0" max="10000" step="1"
                 value={premiumUsers}
                 onChange={(e) => setSimPremiumUsers(Number(e.target.value))}
                 className="flex-1 accent-terracotta"
               />
               <Input
-                type="number" min="0" step="1"
+                type="number" min="0" max="10000" step="1"
                 value={premiumUsers}
                 onChange={(e) => setSimPremiumUsers(Number(e.target.value) || 0)}
                 className="w-20 h-8"
               />
               {simPremiumUsers !== null && (
                 <button onClick={() => setSimPremiumUsers(null)} className="text-xs text-terracotta underline">reset</button>
+              )}
+            </div>
+
+            <Label className="text-xs">Utenti Trial simulati</Label>
+            <div className="flex items-center gap-3 mt-1.5 mb-4">
+              <input
+                type="range" min="0" max="10000" step="1"
+                value={trialUsers}
+                onChange={(e) => setSimTrialUsers(Number(e.target.value))}
+                className="flex-1 accent-terracotta"
+              />
+              <Input
+                type="number" min="0" max="10000" step="1"
+                value={trialUsers}
+                onChange={(e) => setSimTrialUsers(Number(e.target.value) || 0)}
+                className="w-20 h-8"
+              />
+              {simTrialUsers !== null && (
+                <button onClick={() => setSimTrialUsers(null)} className="text-xs text-terracotta underline">reset</button>
               )}
             </div>
 
@@ -304,7 +325,7 @@ export default function AdminBusiness() {
             </table>
           </div>
           <p className="text-[0.65rem] text-muted-foreground mt-3">
-            Calcoli su {premiumUsers} premium · {liveTrial} trial · {liveDemo} demo · {avgMsgs} msg Cary/utente · ${premiumPrice.toFixed(2)}/premium.
+            Calcoli su {premiumUsers} premium · {trialUsers} trial · {liveDemo} demo · {avgMsgs} msg Cary/utente · ${premiumPrice.toFixed(2)}/premium.
           </p>
         </CardContent>
       </Card>
