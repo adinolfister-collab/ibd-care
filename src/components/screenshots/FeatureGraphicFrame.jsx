@@ -19,12 +19,9 @@ const FeatureGraphicFrame = forwardRef(function FeatureGraphicFrame(_, ref) {
           crossOrigin="anonymous"
           className="h-[220px] w-[220px] object-contain shrink-0"
         />
-        <div className="flex flex-col">
-          <h1 className="font-heading font-semibold text-primary-foreground leading-none" style={{ fontSize: 96, letterSpacing: '-0.02em' }}>
-            IBD Care
-          </h1>
-          <span className="block mt-4 h-1.5 w-40 rounded-full bg-terracotta" />
-        </div>
+        <h1 className="font-heading font-semibold text-primary-foreground leading-none" style={{ fontSize: 96, letterSpacing: '-0.02em' }}>
+          IBD Care
+        </h1>
       </div>
     </div>
   );
