@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Crown, Trophy, Sparkles, Loader2, CheckCircle2, Users } from 'lucide-react';
+import { Crown, Trophy, Sparkles, Loader2, CheckCircle2, Users, AlertTriangle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -60,10 +60,16 @@ export default function Founders() {
       );
     }
     return (
+      <>
       <div className="rounded-2xl border border-terracotta/40 bg-terracotta/10 text-terracotta px-4 py-3 text-sm flex items-start gap-2">
         <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
         <span>{t('founders.status_lifetime').replace('{n}', mySignup.rank || '')}</span>
       </div>
+      <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800 text-sm flex items-start gap-2">
+        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+        <span>{t('founders.activity_warning')}</span>
+      </div>
+      </>
     );
   };
 

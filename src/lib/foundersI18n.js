@@ -46,6 +46,7 @@ export const foundersDict = {
     'founders.login_required': 'Accedi o registrati per aderire alla campagna.',
     'founders.loading': 'Caricamento classifica…',
     'founders.you': 'tu',
+    'founders.activity_warning': "Usa l'app entro 7 giorni dall'adesione per confermare il tuo posto. Senza attività, la posizione in graduatoria e il posto di Founder vengono rilasciati.",
   },
   en: {
     'founders.eyebrow': 'Founders campaign',
@@ -84,6 +85,7 @@ export const foundersDict = {
     'founders.login_required': 'Log in or sign up to join the campaign.',
     'founders.loading': 'Loading ranking…',
     'founders.you': 'you',
+    'founders.activity_warning': 'Use the app within 7 days of joining to confirm your spot. Without activity, your ranking position and Founder spot will be released.',
   },
   es: {
     'founders.eyebrow': 'Campaña Founder',
@@ -122,6 +124,7 @@ export const foundersDict = {
     'founders.login_required': 'Inicia sesión o regístrate para unirte a la campaña.',
     'founders.loading': 'Cargando clasificación…',
     'founders.you': 'tú',
+    'founders.activity_warning': 'Usa la app en los 7 días siguientes a tu adhesión para confirmar tu plaza. Sin actividad, tu posición en la clasificación y tu plaza de Founder se liberan.',
   },
   fr: {
     'founders.eyebrow': 'Campagne Founder',
@@ -160,6 +163,7 @@ export const foundersDict = {
     'founders.login_required': 'Connectez-vous ou inscrivez-vous pour rejoindre la campagne.',
     'founders.loading': 'Chargement du classement…',
     'founders.you': 'vous',
+    'founders.activity_warning': "Utilisez l'application dans les 7 jours suivant votre inscription pour confirmer votre place. Sans activité, votre position au classement et votre place de Founder sont libérées.",
   },
   de: {
     'founders.eyebrow': 'Founder-Kampagne',
@@ -198,6 +202,7 @@ export const foundersDict = {
     'founders.login_required': 'Melde dich an oder registriere dich, um der Kampagne beizutreten.',
     'founders.loading': 'Rangliste wird geladen…',
     'founders.you': 'du',
+    'founders.activity_warning': 'Nutze die App innerhalb von 7 Tagen nach dem Beitritt, um deinen Platz zu bestätigen. Ohne Aktivität werden deine Position in der Rangliste und dein Founder-Platz freigegeben.',
   },
   pt: {
     'founders.eyebrow': 'Campanha Founder',
@@ -236,6 +241,7 @@ export const foundersDict = {
     'founders.login_required': 'Entra ou regista-te para aderir à campanha.',
     'founders.loading': 'A carregar classificação…',
     'founders.you': 'tu',
+    'founders.activity_warning': 'Usa a app nos 7 dias seguintes à tua adesão para confirmar o teu lugar. Sem atividade, a tua posição na classificação e o teu lugar de Founder são libertados.',
   },
   ru: {
     'founders.eyebrow': 'Кампания Founder',
@@ -274,6 +280,7 @@ export const foundersDict = {
     'founders.login_required': 'Войдите или зарегистрируйтесь, чтобы присоединиться к кампании.',
     'founders.loading': 'Загрузка рейтинга…',
     'founders.you': 'вы',
+    'founders.activity_warning': 'Используйте приложение в течение 7 дней после присоединения, чтобы подтвердить место. Без активности ваше место в рейтинге и место Founder будут освобождены.',
   },
   pl: {
     'founders.eyebrow': 'Kampania Founder',
@@ -312,6 +319,7 @@ export const foundersDict = {
     'founders.login_required': 'Zaloguj się lub zarejestruj, aby dołączyć do kampanii.',
     'founders.loading': 'Ładowanie rankingu…',
     'founders.you': 'ty',
+    'founders.activity_warning': 'Użyj aplikacji w ciągu 7 dni od dołączenia, aby potwierdzić swoje miejsce. Bez aktywności Twoja pozycja w rankingu i miejsce Founder zostaną zwolnione.',
   },
   ro: {
     'founders.eyebrow': 'Campania Founder',
@@ -350,6 +358,7 @@ export const foundersDict = {
     'founders.login_required': 'Conectează-te sau înregistrează-te pentru a te alătura campaniei.',
     'founders.loading': 'Se încarcă clasamentul…',
     'founders.you': 'tu',
+    'founders.activity_warning': 'Folosește aplicația în primele 7 zile de la aderare pentru a-ți confirma locul. Fără activitate, poziția ta în clasament și locul de Founder sunt eliberate.',
   },
   sq: {
     'founders.eyebrow': 'Fushata Founder',
@@ -388,6 +397,7 @@ export const foundersDict = {
     'founders.login_required': 'Hyr ose regjistrohu për t’u bashkuar në fushatë.',
     'founders.loading': 'Po ngarkohet renditja…',
     'founders.you': 'ti',
+    'founders.activity_warning': 'Përdor aplikacionin brenda 7 ditësh nga bashkimi për të konfirmuar vendin tënd. Pa aktivitet, pozicioni yt në renditje dhe vendi i Founder lirohen.',
   },
   zh: {
     'founders.eyebrow': 'Founder 活动',
@@ -426,5 +436,6 @@ export const foundersDict = {
     'founders.login_required': '登录或注册以加入活动。',
     'founders.loading': '正在加载排行榜…',
     'founders.you': '你',
+    'founders.activity_warning': '加入后 7 天内使用应用以确认你的名额。若无活动,你在排行榜中的位置和 Founder 名额将被释放。',
   },
 };
