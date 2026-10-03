@@ -10,10 +10,8 @@ import MapFrame from '@/components/screenshots/MapFrame';
 import AssistantFrame from '@/components/screenshots/AssistantFrame';
 import FeatureGraphicFrame from '@/components/screenshots/FeatureGraphicFrame';
 import { Button } from '@/components/ui/button';
-import { Download, Loader2, Sparkles } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 import { CAPTIONS } from '@/lib/screenshotSampleData';
-import { base44 } from '@/api/base44Client';
-import { useToast } from '@/components/ui/use-toast';
 
 // Pagina nascosta admin: genera i frame 9:16 per gli screenshot del Play Store
 // e un frame 1024×500 (feature graphic) esportabile come PNG.
@@ -28,37 +26,13 @@ const FRAMES = [
   AssistantFrame,
 ];
 
-const LOGO_REFERENCE = 'https://media.base44.com/files/public/6a80de4be246a7b03417c238/db435078d_pnglogoibdcare';
-const DEFAULT_LOGO_URL = 'https://media.base44.com/images/public/6a80de4be246a7b03417c238/6f80a9d6b_generated_image.png';
+const LOGO_URL = 'https://media.base44.com/files/public/6a80de4be246a7b03417c238/db435078d_pnglogoibdcare';
 
 export default function ScreenshotGenerator() {
   const fgRef = useRef(null);
+  const logoRef = useRef(null);
   const [exporting, setExporting] = useState(false);
-  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO_URL);
-  const [generatingLogo, setGeneratingLogo] = useState(false);
-  const { toast } = useToast();
-
-  const generateLogo = async () => {
-    if (generatingLogo) return;
-    setGeneratingLogo(true);
-    try {
-      const res = await base44.functions.invoke('generateAppLogo', { referenceUrl: LOGO_REFERENCE });
-      setLogoUrl(res.data.url);
-    } catch (e) {
-      toast({ title: 'Errore generazione logo', description: e.message, variant: 'destructive' });
-    } finally {
-      setGeneratingLogo(false);
-    }
-  };
-
-  const downloadLogo = () => {
-    if (!logoUrl) return;
-    const link = document.createElement('a');
-    link.download = 'ibd-care-logo-512x512.png';
-    link.href = logoUrl;
-    link.target = '_blank';
-    link.click();
-  };
+  const [exportingLogo, setExportingLogo] = useState(false);
 
   const downloadFeatureGraphic = async () => {
     if (!fgRef.current || exporting) return;
@@ -80,6 +54,29 @@ export default function ScreenshotGenerator() {
       console.error('Export feature graphic failed', e);
     } finally {
       setExporting(false);
+    }
+  };
+
+  const downloadLogo = async () => {
+    if (!logoRef.current || exportingLogo) return;
+    setExportingLogo(true);
+    try {
+      const { default: html2canvas } = await import('html2canvas');
+      const canvas = await html2canvas(logoRef.current, {
+        width: 512,
+        height: 512,
+        scale: 1,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      const link = document.createElement('a');
+      link.download = 'ibd-care-logo-512x512.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (e) {
+      console.error('Export logo failed', e);
+    } finally {
+      setExportingLogo(false);
     }
   };
 
@@ -124,41 +121,40 @@ export default function ScreenshotGenerator() {
           </div>
         </section>
 
-        {/* Logo 512×512 generato */}
+        {/* Logo 512×512 esportabile */}
         <section className="mb-10">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-heading text-lg font-semibold text-slate-800 dark:text-slate-100">
               Logo 512×512
             </h2>
-            <div className="flex gap-2">
-              <Button
-                onClick={generateLogo}
-                disabled={generatingLogo}
-                className="rounded-xl h-9 px-4 text-sm"
-              >
-                {generatingLogo ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
-                {generatingLogo ? 'Genero…' : 'Genera logo 512×512'}
-              </Button>
-              {logoUrl && (
-                <Button
-                  onClick={downloadLogo}
-                  variant="outline"
-                  className="rounded-xl h-9 px-4 text-sm"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Scarica PNG
-                </Button>
-              )}
-            </div>
+            <Button
+              onClick={downloadLogo}
+              disabled={exportingLogo}
+              className="rounded-xl h-9 px-4 text-sm"
+            >
+              {exportingLogo ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              {exportingLogo ? 'Esporto…' : 'Scarica PNG'}
+            </Button>
           </div>
           <div className="flex items-center justify-center rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-200 dark:bg-slate-800 p-6" style={{ height: 300 }}>
-            {generatingLogo ? (
-              <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
-            ) : logoUrl ? (
-              <img src={logoUrl} alt="Logo generato" className="w-48 h-48 rounded-2xl object-cover" />
-            ) : (
-              <p className="text-sm text-slate-400">Clicca "Genera logo 512×512" per creare l'icona.</p>
-            )}
+            <div
+              className="origin-top-left overflow-hidden rounded-3xl"
+              style={{ transform: 'scale(0.47)', width: 512, height: 512 }}
+            >
+              <div
+                ref={logoRef}
+                className="flex items-center justify-center"
+                style={{ width: 512, height: 512, background: '#1f4e57' }}
+              >
+                <img
+                  src={LOGO_URL}
+                  alt="IBD Care logo"
+                  crossOrigin="anonymous"
+                  className="object-contain"
+                  style={{ width: 420, height: 420 }}
+                />
+              </div>
+            </div>
           </div>
         </section>
 
