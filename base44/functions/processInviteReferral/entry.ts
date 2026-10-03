@@ -73,13 +73,17 @@ export default async function(req: Request): Promise<Response> {
     let referrerBonusDays = 0;
     if (!referrerIsPremium) {
       // Trova o crea il CampaignSignup del referrer per la campagna invite_a_friend.
-      const all = await base44.asServiceRole.entities.CampaignSignup.list('-created_date', 500) as any[];
-      let referrerSignup = all.find(
-        (s) => s.campaign === CAMPAIGN && s.created_by_id === referrerId
-      );
+      // Lookup by referrer_id (non created_by_id: il record e' creato
+      // server-side con asServiceRole, quindi created_by_id e' il service
+      // role, non il referrer). Usando filter si evita di listare tutto.
+      const found = await base44.asServiceRole.entities.CampaignSignup.filter(
+        { campaign: CAMPAIGN, referrer_id: referrerId } as any, '-created_date', 1
+      ) as any[];
+      let referrerSignup = found[0];
       if (!referrerSignup) {
-        referrerSignup = await base44.entities.CampaignSignup.create({
+        referrerSignup = await base44.asServiceRole.entities.CampaignSignup.create({
           campaign: CAMPAIGN,
+          referrer_id: referrerId,
           confirmed: true,
           first_message_date: new Date().toISOString(),
           display_name: referrer.full_name || 'Ambassador',

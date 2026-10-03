@@ -1066,8 +1066,8 @@ const ro = {
   'common.download_pdf': 'Descarcă PDF',
   'nav.back': 'Înapoi',
   'invite.page_title': 'Invită un prieten',
-  'invite.page_subtitle': 'Dăruiește-i 45 de zile de probă și câștigă +7 zile pentru fiecare prieten care se înregistrează',
-  'invite.guest_desc': 'Înregistrează-te pentru a obține linkul tău personal și a invita prieteni: fiecare înregistrare îți oferă 7 zile extra de probă (maxim 3 prieteni).',
+  'invite.page_subtitle': 'Dăruiește-i 45 de zile de probă și câștigă până la +44 de zile pentru tine: +7 pentru primii doi prieteni, +30 pentru al treilea.',
+  'invite.guest_desc': 'Înregistrează-te pentru a obține linkul tău personal și a invita prieteni: +7 zile pentru primii doi, +30 pentru al treilea (până la +44 de zile în total).',
   'invite.cta_register': 'Înregistrează-te gratuit',
   'invite.cta_login': 'Conectează-te',
   'invite.your_link': 'Linkul tău',
@@ -1093,7 +1093,7 @@ const ro = {
   'invite.terms': 'Campania este pe termen nedeterminat. O recomandare este validă doar după confirmarea înregistrării (email+OTP sau Google). Auto-recomandarea nu este posibilă. Prelungirile de probă se aplică doar conturilor fără abonament Premium activ.',
   'invite.cta': 'Invită un prieten',
   'invite.card_title': 'Invită un prieten, dăruiește-i 45 de zile',
-  'invite.card_desc': 'Câștigi +7 zile de probă pentru fiecare prieten înregistrat (max. 3).',
+  'invite.card_desc': 'Câștigi +7 zile pentru primii doi prieteni și +30 pentru al treilea (până la +44 de zile în total).',
 };
 
 export default ro;

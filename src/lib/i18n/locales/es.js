@@ -1138,8 +1138,8 @@ const es = {
   'common.download_pdf': 'Descargar PDF',
   'nav.back': 'Atrás',
   'invite.page_title': 'Invita a un amigo',
-  'invite.page_subtitle': 'Regálale 45 días de prueba y gana +7 días por cada amigo que se registre',
-  'invite.guest_desc': 'Regístrate para obtener tu enlace personal e invitar amigos: cada registro te da 7 días extra de prueba (máximo 3 amigos).',
+  'invite.page_subtitle': 'Regálale 45 días de prueba y gana hasta +44 días para ti: +7 por los dos primeros amigos, +30 por el tercero.',
+  'invite.guest_desc': 'Regístrate para obtener tu enlace personal e invitar amigos: +7 días por los dos primeros, +30 por el tercero (hasta +44 días en total).',
   'invite.cta_register': 'Regístrate gratis',
   'invite.cta_login': 'Iniciar sesión',
   'invite.your_link': 'Tu enlace',
@@ -1165,7 +1165,7 @@ const es = {
   'invite.terms': 'La campaña es por tiempo indeterminado. Un referido solo es válido tras confirmar el registro (email+OTP o Google). No es posible auto-referirse. Las extensiones de prueba solo se aplican a cuentas sin suscripción Premium activa.',
   'invite.cta': 'Invita a un amigo',
   'invite.card_title': 'Invita a un amigo, regálale 45 días',
-  'invite.card_desc': 'Ganas +7 días de prueba por cada amigo que se registre (máx. 3).',
+  'invite.card_desc': 'Ganas +7 días por tus dos primeros amigos y +30 por el tercero (hasta +44 días en total).',
 };
 
 export default es;

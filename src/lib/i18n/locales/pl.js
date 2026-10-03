@@ -1319,8 +1319,8 @@ const pl = {
   'common.download_pdf': 'Pobierz PDF',
   'nav.back': 'Wstecz',
   'invite.page_title': 'Zaproś znajomego',
-  'invite.page_subtitle': 'Podaruj mu 45 dni próbnych i zdobywaj +7 dni za każdego znajomego, który się zarejestruje',
-  'invite.guest_desc': 'Zarejestruj się, aby uzyskać osobisty link i zapraszać znajomych: każda rejestracja daje Ci 7 dodatkowych dni próbnych (maksimum 3 znajomych).',
+  'invite.page_subtitle': 'Podaruj mu 45 dni próbnych i zdobywaj do +44 dni dla siebie: +7 za pierwszych dwóch znajomych, +30 za trzeciego.',
+  'invite.guest_desc': 'Zarejestruj się, aby uzyskać osobisty link i zapraszać znajomych: +7 dni za pierwszych dwóch, +30 za trzeciego (do +44 dni łącznie).',
   'invite.cta_register': 'Zarejestruj się za darmo',
   'invite.cta_login': 'Zaloguj się',
   'invite.your_link': 'Twój link',
@@ -1346,7 +1346,7 @@ const pl = {
   'invite.terms': 'Kampania jest bezterminowa. Polecenie jest ważne dopiero po potwierdzeniu rejestracji (email+OTP lub Google). Samopolecenie nie jest możliwe. Przedłużenia próbne obowiązują tylko dla kont bez aktywnej subskrypcji Premium.',
   'invite.cta': 'Zaproś znajomego',
   'invite.card_title': 'Zaproś znajomego, podaruj mu 45 dni',
-  'invite.card_desc': 'Zdobywasz +7 dni próbnych za każdego zarejestrowanego znajomego (maks. 3).',
+  'invite.card_desc': 'Zdobywasz +7 dni za pierwszych dwóch znajomych i +30 za trzeciego (do +44 dni łącznie).',
 };
 
 export default pl;

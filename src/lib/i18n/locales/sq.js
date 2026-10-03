@@ -1066,8 +1066,8 @@ const sq = {
   'common.download_pdf': 'Shkarko PDF',
   'nav.back': 'Mbrapsht',
   'invite.page_title': 'Fto një mik',
-  'invite.page_subtitle': 'Dhuroji 45 ditë provë dhe fito +7 ditë për çdo mik që regjistrohet',
-  'invite.guest_desc': 'Regjistrohu për të marrë linkun tënd personal dhe për të ftuar miq: çdo regjistrim të dhuron 7 ditë extra provë (maksimumi 3 miq).',
+  'invite.page_subtitle': 'Dhuroji 45 ditë provë dhe fito deri në +44 ditë për vete: +7 për dy miqtë e parë, +30 për të tretin.',
+  'invite.guest_desc': 'Regjistrohu për të marrë linkun tënd personal dhe për të ftuar miq: +7 ditë për dy të parët, +30 për të tretin (deri në +44 ditë gjithsej).',
   'invite.cta_register': 'Regjistrohu falas',
   'invite.cta_login': 'Hyr',
   'invite.your_link': 'Linku yt',
@@ -1093,7 +1093,7 @@ const sq = {
   'invite.terms': 'Fushata është me kohë të pacaktuar. Një referencë është e vlefshme vetëm pas konfirmimit të regjistrimit (email+OTP ose Google). Vetë-referimi nuk është i mundur. Zgjatjet e provës zbatohen vetëm për llogari pa abonim Premium aktiv.',
   'invite.cta': 'Fto një mik',
   'invite.card_title': 'Fto një mik, dhuroji 45 ditë',
-  'invite.card_desc': 'Fiton +7 ditë provë për çdo mik të regjistruar (max. 3).',
+  'invite.card_desc': 'Fiton +7 ditë për dy miqtë e parë dhe +30 për të tretin (deri në +44 ditë gjithsej).',
 };
 
 export default sq;

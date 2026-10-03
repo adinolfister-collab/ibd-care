@@ -1138,8 +1138,8 @@ const pt = {
   'common.download_pdf': 'Descarregar PDF',
   'nav.back': 'Voltar',
   'invite.page_title': 'Convida um amigo',
-  'invite.page_subtitle': 'Oferece-lhe 45 dias de prova e ganha +7 dias por cada amigo que se inscrever',
-  'invite.guest_desc': 'Regista-te para obter o teu link pessoal e convidar amigos: cada inscrição oferece-te 7 dias extra de prova (máximo 3 amigos).',
+  'invite.page_subtitle': 'Oferece-lhe 45 dias de prova e ganha até +44 dias para ti: +7 pelos dois primeiros amigos, +30 pelo terceiro.',
+  'invite.guest_desc': 'Regista-te para obter o teu link pessoal e convidar amigos: +7 dias pelos dois primeiros, +30 pelo terceiro (até +44 dias no total).',
   'invite.cta_register': 'Registar grátis',
   'invite.cta_login': 'Entrar',
   'invite.your_link': 'O teu link',
@@ -1165,7 +1165,7 @@ const pt = {
   'invite.terms': 'A campanha é por tempo indeterminado. Uma referência só é válida após confirmação do registo (email+OTP ou Google). Não é possível auto-referenciar-se. As extensões de prova aplicam-se apenas a contas sem subscrição Premium ativa.',
   'invite.cta': 'Convida um amigo',
   'invite.card_title': 'Convida um amigo, oferece-lhe 45 dias',
-  'invite.card_desc': 'Ganhas +7 dias de prova por cada amigo inscrito (máx. 3).',
+  'invite.card_desc': 'Ganhas +7 dias pelos teus dois primeiros amigos e +30 pelo terceiro (até +44 dias no total).',
 };
 
 export default pt;

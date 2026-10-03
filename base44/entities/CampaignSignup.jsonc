@@ -11,6 +11,10 @@
       "default": "founders",
       "description": "Campagna di riferimento: 'founders' (10 slot lifetime, chiusa al raggiungimento) o 'invite_a_friend' (referral virale senza limiti)"
     },
+    "referrer_id": {
+      "type": "string",
+      "description": "Per la campagna invite_a_friend: id dell'utente che ha condiviso il link di referral (il referrer). Permette al referrer di ritrovare il proprio record di progresso, creato server-side dal backend processInviteReferral."
+    },
     "slot_type": {
       "type": "string",
       "enum": [

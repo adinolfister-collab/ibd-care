@@ -1138,8 +1138,8 @@ const de = {
   'common.download_pdf': 'PDF herunterladen',
   'nav.back': 'Zurück',
   'invite.page_title': 'Lade einen Freund ein',
-  'invite.page_subtitle': 'Schenke ihm 45 Tage Testversion und verdiene +7 Tage für jeden Freund, der sich anmeldet',
-  'invite.guest_desc': 'Registriere dich, um deinen persönlichen Link zu erhalten und Freunde einzuladen: jede Anmeldung schenkt dir 7 Tage Extra-Testversion (maximal 3 Freunde).',
+  'invite.page_subtitle': 'Schenke ihm 45 Tage Testversion und verdiene bis zu +44 Tage für dich: +7 für die ersten zwei Freunde, +30 für den dritten.',
+  'invite.guest_desc': 'Registriere dich, um deinen persönlichen Link zu erhalten und Freunde einzuladen: +7 Tage für die ersten zwei, +30 für den dritten (bis zu +44 Tage gesamt).',
   'invite.cta_register': 'Kostenlos registrieren',
   'invite.cta_login': 'Anmelden',
   'invite.your_link': 'Dein Link',
@@ -1165,7 +1165,7 @@ const de = {
   'invite.terms': 'Die Kampagne ist unbefristet. Eine Empfehlung ist erst nach Bestätigung der Anmeldung gültig (E-Mail+OTP oder Google). Selbst-Empfehlung ist nicht möglich. Testverlängerungen gelten nur für Konten ohne aktives Premium-Abo.',
   'invite.cta': 'Freund einladen',
   'invite.card_title': 'Lade einen Freund ein, schenke ihm 45 Tage',
-  'invite.card_desc': 'Du verdienst +7 Tage Testversion pro angemeldetem Freund (max. 3).',
+  'invite.card_desc': 'Du verdienst +7 Tage für deine ersten zwei Freunde und +30 für den dritten (bis zu +44 Tage gesamt).',
 };
 
 export default de;

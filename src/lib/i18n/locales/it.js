@@ -1516,8 +1516,8 @@ const it = {
   'common.download_pdf': 'Scarica PDF',
   'nav.back': 'Indietro',
   'invite.page_title': 'Invita un amico',
-  'invite.page_subtitle': 'Regalagli 45 giorni di prova e guadagna +7 giorni per ogni amico che si iscrive',
-  'invite.guest_desc': 'Registrati per ottenere il tuo link personale e invitare amici: ogni iscrizione ti regala 7 giorni extra di prova (massimo 3 amici).',
+  'invite.page_subtitle': 'Regalagli 45 giorni di prova e guadagna fino a +44 giorni per te: +7 per i primi due amici, +30 al terzo.',
+  'invite.guest_desc': 'Registrati per ottenere il tuo link personale e invitare amici: +7 giorni per i primi due, +30 al terzo (fino a +44 giorni totali).',
   'invite.cta_register': 'Registrati gratis',
   'invite.cta_login': 'Accedi',
   'invite.your_link': 'Il tuo link',
@@ -1543,7 +1543,7 @@ const it = {
   'invite.terms': 'La campagna \u00e8 a tempo indeterminato. Un referral \u00e8 valido solo dopo la conferma della registrazione (email+OTP o Google). Non \u00e8 possibile auto-invinarsi. Le estensioni di prova si applicano solo agli account senza abbonamento Premium attivo.',
   'invite.cta': 'Invita un amico',
   'invite.card_title': 'Invita un amico, regalagli 45 giorni',
-  'invite.card_desc': 'Tu guadagni +7 giorni di prova per ogni amico che si iscrive (max 3).',
+  'invite.card_desc': 'Tu guadagni +7 giorni per i primi due amici e +30 al terzo (fino a +44 giorni totali).',
 };
 
 

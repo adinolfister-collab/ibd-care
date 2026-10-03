@@ -1519,8 +1519,8 @@ const en = {
   'common.download_pdf': 'Download PDF',
   'nav.back': 'Back',
   'invite.page_title': 'Invite a friend',
-  'invite.page_subtitle': 'Gift them 45 days of trial and earn +7 days for every friend who signs up',
-  'invite.guest_desc': 'Register to get your personal link and invite friends: each sign-up gives you 7 extra trial days (up to 3 friends).',
+  'invite.page_subtitle': 'Gift them 45 days of trial and earn up to +44 days for you: +7 for your first two friends, +30 for the third.',
+  'invite.guest_desc': 'Register to get your personal link and invite friends: +7 days for your first two, +30 for the third (up to +44 days total).',
   'invite.cta_register': 'Register free',
   'invite.cta_login': 'Log in',
   'invite.your_link': 'Your link',
@@ -1546,7 +1546,7 @@ const en = {
   'invite.terms': 'The campaign runs indefinitely. A referral is valid only after sign-up is confirmed (email+OTP or Google). Self-referrals are not allowed. Trial extensions apply only to accounts without an active Premium subscription.',
   'invite.cta': 'Invite a friend',
   'invite.card_title': 'Invite a friend, gift them 45 days',
-  'invite.card_desc': 'You earn +7 trial days for every friend who signs up (max 3).',
+  'invite.card_desc': 'You earn +7 days for your first two friends and +30 for the third (up to +44 days total).',
 };
 
 

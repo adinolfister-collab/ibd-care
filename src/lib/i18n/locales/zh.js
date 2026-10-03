@@ -1066,8 +1066,8 @@ const zh = {
   'common.download_pdf': '下载 PDF',
   'nav.back': '返回',
   'invite.page_title': '邀请好友',
-  'invite.page_subtitle': '送好友 45 天试用，每成功邀请一位好友再获 +7 天',
-  'invite.guest_desc': '注册即可获取你的专属链接并邀请好友：每注册一位即送 7 天额外试用（最多 3 位好友）。',
+  'invite.page_subtitle': '送好友 45 天试用，你最多可获 +44 天：前两位好友各 +7 天，第三位 +30 天。',
+  'invite.guest_desc': '注册即可获取专属链接并邀请好友：前两位各 +7 天，第三位 +30 天（最多 +44 天）。',
   'invite.cta_register': '免费注册',
   'invite.cta_login': '登录',
   'invite.your_link': '你的链接',
@@ -1093,7 +1093,7 @@ const zh = {
   'invite.terms': '本活动长期有效。推荐仅在注册确认后（邮箱+OTP 或 Google）有效。不可自荐。试用延长仅适用于无活跃 Premium 订阅的账户。',
   'invite.cta': '邀请好友',
   'invite.card_title': '邀请好友，送 45 天',
-  'invite.card_desc': '每注册一位好友即获 +7 天试用（最多 3 位）。',
+  'invite.card_desc': '前两位好友各获 +7 天，第三位 +30 天（最多 +44 天）。',
 };
 
 export default zh;

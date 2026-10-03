@@ -1138,8 +1138,8 @@ const fr = {
   'common.download_pdf': 'Télécharger PDF',
   'nav.back': 'Retour',
   'invite.page_title': 'Invite un ami',
-  'invite.page_subtitle': 'Offre-lui 45 jours d\u2019essai et gagne +7 jours pour chaque ami qui s\u2019inscrit',
-  'invite.guest_desc': 'Inscris-toi pour obtenir ton lien personnel et inviter des amis : chaque inscription t\u2019offre 7 jours d\u2019essai supplémentaires (maximum 3 amis).',
+  'invite.page_subtitle': 'Offre-lui 45 jours d\u2019essai et gagne jusqu\u2019à +44 jours pour toi : +7 pour les deux premiers amis, +30 pour le troisième.',
+  'invite.guest_desc': 'Inscris-toi pour obtenir ton lien personnel et inviter des amis : +7 jours pour les deux premiers, +30 pour le troisième (jusqu\u2019à +44 jours au total).',
   'invite.cta_register': 'S\u2019inscrire gratuitement',
   'invite.cta_login': 'Se connecter',
   'invite.your_link': 'Ton lien',
@@ -1165,7 +1165,7 @@ const fr = {
   'invite.terms': 'La campagne est à durée indéterminée. Un filleul n\u2019est valide qu\u2019après confirmation de l\u2019inscription (email+OTP ou Google). L\u2019auto-parrainage est impossible. Les extensions d\u2019essai ne s\u2019appliquent qu\u2019aux comptes sans abonnement Premium actif.',
   'invite.cta': 'Invite un ami',
   'invite.card_title': 'Invite un ami, offre-lui 45 jours',
-  'invite.card_desc': 'Tu gagnes +7 jours d\u2019essai pour chaque ami inscrit (max. 3).',
+  'invite.card_desc': 'Tu gagnes +7 jours pour tes deux premiers amis et +30 pour le troisième (jusqu\u2019à +44 jours au total).',
 };
 
 export default fr;

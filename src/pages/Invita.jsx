@@ -36,7 +36,7 @@ export default function Invita() {
         setUser(me);
         const all = await base44.entities.CampaignSignup.filter({ campaign: 'invite_a_friend' }, '-created_date', 50);
         if (cancelled) return;
-        setSignup(all.find((s) => s.created_by_id === me.id) || null);
+        setSignup(all.find((s) => s.referrer_id === me.id) || null);
       } catch (e) { /* ignore */ }
       finally { if (!cancelled) setLoading(false); }
     })();
@@ -188,7 +188,7 @@ function Step({ n, icon: Icon, title, desc }) {
   return (
     <li className="flex items-start gap-3">
       <div className="w-9 h-9 rounded-xl bg-terracotta/15 flex items-center justify-center shrink-0">
-        <Icon className="w-4.5 h-4.5 text-terracotta" />
+        <Icon className="w-4 h-4 text-terracotta" />
       </div>
       <div>
         <p className="font-medium leading-snug">{title}</p>
