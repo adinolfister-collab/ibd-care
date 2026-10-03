@@ -1331,6 +1331,7 @@ const en = {
   'nav.admin_support': 'Support inbox',
   'nav.access_report': 'Access report',
   'nav.business': 'Business',
+  'nav.screenshots': 'Screenshots',
   'support_inbox.title': 'Support inbox',
   'support_inbox.subtitle': 'Read and reply to user messages',
   'support_inbox.filter_all': 'All',

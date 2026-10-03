@@ -4,7 +4,7 @@ import {
   Newspaper, Users, Activity, Utensils, Info, Mail,
   Pill, FileText, ScanLine, LineChart, BarChart3, Bot, MapPin, Stethoscope,
   FileBarChart, Settings as SettingsIcon, User, GitCompare, ShoppingBag, Crown, CreditCard, BookOpen,
-  TrendingUp, Megaphone, Eye, PieChart, CalendarRange, Inbox,
+  TrendingUp, Megaphone, Eye, PieChart, CalendarRange, Inbox, Smartphone,
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { useAuth } from '@/lib/AuthContext';
@@ -67,6 +67,7 @@ const ADMIN_ITEMS = [
   { to: '/admin/business', key: 'nav.business', icon: LineChart },
   { to: '/admin/access-report', key: 'nav.access_report', icon: FileText },
   { to: '/shop/admin', key: 'shop.admin_nav', icon: ShoppingBag },
+  { to: '/admin/screenshots', key: 'nav.screenshots', icon: Smartphone },
 ];
 
 function MenuCard({ item, t, isExpired, openTicketCount }) {

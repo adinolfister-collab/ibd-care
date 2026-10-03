@@ -1328,6 +1328,7 @@ const it = {
   'nav.admin_support': 'Casella supporto',
   'nav.access_report': 'Report accessi',
   'nav.business': 'Business',
+  'nav.screenshots': 'Screenshot',
   'support_inbox.title': 'Casella di supporto',
   'support_inbox.subtitle': 'Leggi e rispondi ai messaggi degli utenti',
   'support_inbox.filter_all': 'Tutti',
