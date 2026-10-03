@@ -15,6 +15,7 @@ import BusinessPlanSelector from '@/components/admin/BusinessPlanSelector';
 import BusinessTrendCharts from '@/components/admin/BusinessTrendCharts';
 import BusinessSnapshotArchive from '@/components/admin/BusinessSnapshotArchive';
 import BusinessCaryAdoption from '@/components/admin/BusinessCaryAdoption';
+import GrowthDashboard from '@/components/admin/GrowthDashboard';
 
 const PRICE_PRESETS = [1.99, 2.99, 4.99, 9.99];
 
@@ -162,6 +163,9 @@ export default function AdminBusiness() {
           </div>
         }
       />
+
+      {/* Cruscotto crescita: KPI vs target, retention, driver, consigliere AI */}
+      <GrowthDashboard />
 
       {/* KPI live */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
