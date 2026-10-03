@@ -65,7 +65,7 @@ export default async function(req: Request): Promise<Response> {
       `<p><strong>Nome:</strong> ${escapeHtml(name)}<br/>` +
       `<strong>Email:</strong> ${escapeHtml(email)}</p>` +
       `<p style="white-space:pre-wrap;border-left:3px solid #c9745b;padding-left:12px">${escapeHtml(message)}</p>` +
-      `<p style="font-size:13px;color:#666">Rispondi dalla <a href="https://ibd-care.base44.app/admin/supporto" style="color:#2f5d62">schermata admin</a>.</p>` +
+      `<p style="font-size:13px;color:#666">Rispondi dalla <a href="https://ibd-care.it/admin/supporto" style="color:#2f5d62">schermata admin</a>.</p>` +
       `</div>`;
 
     try {

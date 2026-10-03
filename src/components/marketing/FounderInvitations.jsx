@@ -16,7 +16,7 @@ Come Founder riceverà l'abbonamento Premium gratuito a vita — niente canone m
 
 Per aderire apra l'app, visiti la pagina «Founder» e confermi la propria adesione: il riconoscimento verrà applicato automaticamente al suo account.
 
-👉 Apri IBD Care — Founder: https://ibd-care.base44.app/founders
+👉 Apri IBD Care — Founder: https://ibd-care.it/founders
 
 Un piccolo favore in cambio: ci aiuti a far crescere IBD Care lasciando una recensione positiva e condividendo il suo feedback. Ogni voce conta per chi vive ogni giorno con la malattia.
 

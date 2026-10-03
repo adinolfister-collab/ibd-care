@@ -10,6 +10,7 @@ import ShareMenu from '@/components/ShareMenu';
 import DemoPromoBanner from '@/components/DemoPromoBanner';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
+import { SITE_BASE } from '@/lib/seo';
 
 function Step({ n, title, desc }) {
   return (
@@ -39,7 +40,7 @@ const SECTIONS = [
 
 export default function Demo() {
   const { t } = useI18n();
-  const demoUrl = typeof window !== 'undefined' ? `${window.location.origin}/demo` : 'https://ibd-care.it/demo';
+  const demoUrl = `${SITE_BASE}/demo`;
 
   return (
     <AppLayout>
