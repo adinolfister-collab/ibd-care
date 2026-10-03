@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import Frame from '@/components/screenshots/Frame';
 import HomeFrame from '@/components/screenshots/HomeFrame';
 import SymptomsFrame from '@/components/screenshots/SymptomsFrame';
@@ -8,11 +8,13 @@ import MedsFrame from '@/components/screenshots/MedsFrame';
 import ReportFrame from '@/components/screenshots/ReportFrame';
 import MapFrame from '@/components/screenshots/MapFrame';
 import AssistantFrame from '@/components/screenshots/AssistantFrame';
+import FeatureGraphicFrame from '@/components/screenshots/FeatureGraphicFrame';
+import { Button } from '@/components/ui/button';
+import { Download, Loader2 } from 'lucide-react';
 import { CAPTIONS } from '@/lib/screenshotSampleData';
 
-// Pagina nascosta admin: genera i frame 9:16 per gli screenshot del Play Store.
-// Nessun AppLayout, nessun tracking, nessuna scrittura su DB. L'admin scorre
-// e cattura uno screenshot per ogni frame.
+// Pagina nascosta admin: genera i frame 9:16 per gli screenshot del Play Store
+// e un frame 1024×500 (feature graphic) esportabile come PNG.
 const FRAMES = [
   HomeFrame,
   SymptomsFrame,
@@ -25,6 +27,32 @@ const FRAMES = [
 ];
 
 export default function ScreenshotGenerator() {
+  const fgRef = useRef(null);
+  const [exporting, setExporting] = useState(false);
+
+  const downloadFeatureGraphic = async () => {
+    if (!fgRef.current || exporting) return;
+    setExporting(true);
+    try {
+      const { default: html2canvas } = await import('html2canvas');
+      const canvas = await html2canvas(fgRef.current, {
+        width: 1024,
+        height: 500,
+        scale: 1,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      const link = document.createElement('a');
+      link.download = 'ibd-care-feature-graphic-1024x500.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (e) {
+      console.error('Export feature graphic failed', e);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-900 py-8">
       <div className="max-w-2xl mx-auto px-4">
@@ -37,6 +65,35 @@ export default function ScreenshotGenerator() {
             Le didascalie sono già pronte per la scheda Google Play.
           </p>
         </header>
+
+        {/* Feature graphic 1024×500 esportabile */}
+        <section className="mb-10">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-heading text-lg font-semibold text-slate-800 dark:text-slate-100">
+              Feature Graphic 1024×500
+            </h2>
+            <Button
+              onClick={downloadFeatureGraphic}
+              disabled={exporting}
+              className="rounded-xl h-9 px-4 text-sm"
+            >
+              {exporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              {exporting ? 'Esporto…' : 'Scarica PNG'}
+            </Button>
+          </div>
+          <div
+            className="overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-200 dark:bg-slate-800"
+            style={{ height: 300 }}
+          >
+            <div
+              className="origin-top-left"
+              style={{ transform: 'scale(0.585)', width: 1024, height: 500 }}
+            >
+              <FeatureGraphicFrame ref={fgRef} />
+            </div>
+          </div>
+        </section>
+
         <div className="space-y-10">
           {FRAMES.map((FrameContent, i) => (
             <Frame key={i} caption={CAPTIONS[i]} index={i}>
