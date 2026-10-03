@@ -55,6 +55,7 @@ const ShopAdmin = lazy(() => import('@/pages/ShopAdmin'));
 const MarketingAdmin = lazy(() => import('@/pages/MarketingAdmin'));
 const ProductDetail = lazy(() => import('@/pages/ProductDetail'));
 const Founders = lazy(() => import('@/pages/Founders'));
+const Invita = lazy(() => import('@/pages/Invita'));
 const PreparaVisita = lazy(() => import('@/pages/PreparaVisita'));
 const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
@@ -114,6 +115,7 @@ const AuthenticatedApp = () => {
         <Route path="/scarica" element={<PageTransition><ScaricaApp /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/founders" element={<PageTransition><Founders /></PageTransition>} />
+        <Route path="/invita" element={<PageTransition><Invita /></PageTransition>} />
         <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />
         <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
         {/* Deprecated /guida -> /demo redirect (SEO/link legacy) */}

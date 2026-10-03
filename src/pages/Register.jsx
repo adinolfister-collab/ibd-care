@@ -16,8 +16,26 @@ import { useI18n } from "@/lib/i18n";
 import { computeCloudTrialDays } from "@/lib/activateCloudTrial";
 import { clearDemoTrialFlag } from "@/lib/demoTrial";
 
+// Memorizza un referral pending (?ref=USER_ID) dalla URL di registrazione in
+// localStorage, così sopravvive al redirect post-OTP e alla callback Google.
+// AuthContext lo legge dopo l'autenticazione e chiama processInviteReferral.
+const REF_KEY = 'inviteReferrerId';
+let referralCaptured = false;
+function captureReferral() {
+  if (referralCaptured) return;
+  referralCaptured = true;
+  try {
+    const ref = new URLSearchParams(window.location.search).get('ref');
+    if (ref && ref.trim()) {
+      localStorage.setItem(REF_KEY, ref.trim());
+      try { base44.analytics.track({ eventName: 'referral_signup_started' }); } catch (e) { /* noop */ }
+    }
+  } catch (e) { /* ignore */ }
+}
+
 export default function Register() {
   const { t } = useI18n();
+  captureReferral();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

@@ -12,6 +12,26 @@ import { clearSubscriptionCache } from '@/hooks/useSubscription';
 // chiamata fallisce o se checkUserAuth viene rieseguito.
 let trialActivationAttempted = false;
 
+// Processa un referral pending salvato in localStorage da Register (?ref=USER_ID).
+// Chiama il backend function processInviteReferral che attribuisce referrer_id,
+// attiva la trial estesa di 45gg per l'invitee ed estende la trial del referrer
+// (+7gg, max 3). Idempotente: il backend ignora se referrer_id già impostato.
+const REF_KEY = 'inviteReferrerId';
+let referralProcessing = false;
+function processPendingReferral() {
+  if (referralProcessing) return;
+  let referrerId;
+  try { referrerId = localStorage.getItem(REF_KEY); } catch (e) { return; }
+  if (!referrerId) return;
+  referralProcessing = true;
+  base44.functions.invoke('processInviteReferral', { referrer_id: referrerId })
+    .then((res) => {
+      try { localStorage.removeItem(REF_KEY); } catch (e) { /* ignore */ }
+      if (res?.ok) clearSubscriptionCache();
+    })
+    .catch(() => { referralProcessing = false; /* retry al prossimo login */ });
+}
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -127,8 +147,17 @@ export const AuthProvider = ({ children }) => {
               clearSubscriptionCache();
               base44.auth.me().then((u) => setUser(u)).catch(() => {});
             }
+            // Dopo l'attivazione trial, processa un eventuale referral pending
+            // (?ref catturato in Register e salvato in localStorage).
+            processPendingReferral();
           })
           .catch(() => { trialActivationAttempted = false; });
+      } else {
+        // Utente già con trial/abbonamento: processa comunque il referral pending
+        // (l'amico invitato che aveva già un account è un caso raro, ma l'
+        // attribuzione referrer_id + estensione referrer va comunque fatta una
+        // sola volta).
+        processPendingReferral();
       }
       setIsLoadingAuth(false);
       setAuthChecked(true);

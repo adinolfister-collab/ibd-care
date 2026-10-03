@@ -46,6 +46,10 @@
       "type": "number",
       "description": "Posizione in graduatoria della campagna Founder (null se non aderente)"
     },
+    "referrer_id": {
+      "type": "string",
+      "description": "Id dell'utente che ha invitato questo utente tramite il link referral della campagna 'Invita un amico'. Impostato una sola volta alla conferma della registrazione (idempotente)."
+    },
     "ai_messages_count": {
       "type": "number",
       "default": 0,

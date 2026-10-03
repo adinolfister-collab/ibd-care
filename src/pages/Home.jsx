@@ -13,6 +13,7 @@ import EditorialSlider from '@/components/EditorialSlider';
 import HomeCompanionReport from '@/components/HomeCompanionReport';
 import MagazineEssay from '@/components/MagazineEssay';
 import ShareMenu from '@/components/ShareMenu';
+import InviteFriendButton from '@/components/InviteFriendButton';
 import DownloadApp from '@/components/DownloadApp';
 import EmptyState from '@/components/EmptyState';
 import { Card, CardContent } from '@/components/ui/card';
@@ -94,6 +95,7 @@ export default function Home() {
       />
       <PageEditorial pageKey="home" />
       <EditorialSlider />
+      <InviteFriendButton />
       <HomeCompanionReport />
 
       {/* N. 01 — Stato di oggi */}
