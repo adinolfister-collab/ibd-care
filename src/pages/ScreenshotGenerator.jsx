@@ -10,7 +10,7 @@ import MapFrame from '@/components/screenshots/MapFrame';
 import AssistantFrame from '@/components/screenshots/AssistantFrame';
 import FeatureGraphicFrame from '@/components/screenshots/FeatureGraphicFrame';
 import { Button } from '@/components/ui/button';
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2, Upload } from 'lucide-react';
 import { CAPTIONS } from '@/lib/screenshotSampleData';
 
 // Pagina nascosta admin: genera i frame 9:16 per gli screenshot del Play Store
@@ -26,13 +26,21 @@ const FRAMES = [
   AssistantFrame,
 ];
 
-const LOGO_URL = 'https://media.base44.com/files/public/6a80de4be246a7b03417c238/db435078d_pnglogoibdcare';
-
 export default function ScreenshotGenerator() {
   const fgRef = useRef(null);
   const logoRef = useRef(null);
+  const fileInputRef = useRef(null);
   const [exporting, setExporting] = useState(false);
   const [exportingLogo, setExportingLogo] = useState(false);
+  const [logoSrc, setLogoSrc] = useState(null);
+
+  const onPickLogo = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (logoSrc) URL.revokeObjectURL(logoSrc);
+    setLogoSrc(URL.createObjectURL(file));
+    e.target.value = '';
+  };
 
   const downloadFeatureGraphic = async () => {
     if (!fgRef.current || exporting) return;
@@ -127,14 +135,30 @@ export default function ScreenshotGenerator() {
             <h2 className="font-heading text-lg font-semibold text-slate-800 dark:text-slate-100">
               Logo 512×512
             </h2>
-            <Button
-              onClick={downloadLogo}
-              disabled={exportingLogo}
-              className="rounded-xl h-9 px-4 text-sm"
-            >
-              {exportingLogo ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
-              {exportingLogo ? 'Esporto…' : 'Scarica PNG'}
-            </Button>
+            <div className="flex gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg"
+                onChange={onPickLogo}
+                className="hidden"
+              />
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                className="rounded-xl h-9 px-4 text-sm"
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                Carica logo
+              </Button>
+              <Button
+                onClick={downloadLogo}
+                disabled={exportingLogo || !logoSrc}
+                className="rounded-xl h-9 px-4 text-sm"
+              >
+                {exportingLogo ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+                {exportingLogo ? 'Esporto…' : 'Scarica PNG'}
+              </Button>
+            </div>
           </div>
           <div className="flex items-center justify-center rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-200 dark:bg-slate-800 p-6" style={{ height: 300 }}>
             <div
@@ -146,13 +170,18 @@ export default function ScreenshotGenerator() {
                 className="flex items-center justify-center"
                 style={{ width: 512, height: 512, background: '#1f4e57' }}
               >
-                <img
-                  src={LOGO_URL}
-                  alt="IBD Care logo"
-                  crossOrigin="anonymous"
-                  className="object-contain"
-                  style={{ width: 420, height: 420 }}
-                />
+                {logoSrc ? (
+                  <img
+                    src={logoSrc}
+                    alt="IBD Care logo"
+                    className="object-contain"
+                    style={{ width: 420, height: 420 }}
+                  />
+                ) : (
+                  <p className="text-sm text-white/70 text-center px-8">
+                    Carica un PNG/JPG del logo dal dispositivo per generare l'icona 512×512.
+                  </p>
+                )}
               </div>
             </div>
           </div>
