@@ -26,6 +26,17 @@ const FRAMES = [
   AssistantFrame,
 ];
 
+const FRAME_SLUGS = [
+  'home',
+  'sintomi',
+  'diario',
+  'trend',
+  'terapie',
+  'report',
+  'mappa',
+  'cary',
+];
+
 export default function ScreenshotGenerator() {
   const fgRef = useRef(null);
   const logoRef = useRef(null);
@@ -189,7 +200,12 @@ export default function ScreenshotGenerator() {
 
         <div className="space-y-10">
           {FRAMES.map((FrameContent, i) => (
-            <Frame key={i} caption={CAPTIONS[i]} index={i}>
+            <Frame
+              key={i}
+              caption={CAPTIONS[i]}
+              index={i}
+              fileName={`ibd-care-${FRAME_SLUGS[i]}-${String(i + 1).padStart(2, '0')}.png`}
+            >
               <FrameContent />
             </Frame>
           ))}
