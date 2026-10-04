@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import GoogleFitConnectButton from '@/components/googlefit/GoogleFitConnectButton';
 import WeightTracker from '@/components/food/WeightTracker';
 import ManualActivityForm from '@/components/food/ManualActivityForm';
+import ActivityImport from '@/components/import/ActivityImport';
 import { exportCalorieBalancePdf } from '@/lib/calorieBalancePdf';
 import { usePremiumGate } from '@/hooks/usePremiumGate';
 import PremiumPaywall from '@/components/PremiumPaywall';
@@ -190,6 +191,9 @@ export default function CalorieAnalysis() {
 
             <ManualActivityForm onSaved={() => {
               // ricarica le attivita' dopo un inserimento manuale
+              base44.entities.ActivityEntry.list('-entry_date', listLimit).then(setActivities).catch(() => {});
+            }} />
+            <ActivityImport onSaved={() => {
               base44.entities.ActivityEntry.list('-entry_date', listLimit).then(setActivities).catch(() => {});
             }} />
             <GoogleFitConnectButton />

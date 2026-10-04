@@ -7,6 +7,7 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ExamScanner from '@/components/exams/ExamScanner';
+import SmartScanner from '@/components/import/SmartScanner';
 import ExamTimeline from '@/components/exams/ExamTimeline';
 import ExamCompare from '@/components/exams/ExamCompare';
 import ExamCalendar from '@/components/exams/ExamCalendar';
@@ -48,6 +49,7 @@ export default function Esami() {
 
       <Tabs value={tab} onValueChange={setTab} className="mt-2">
         <TabsList className="flex flex-wrap h-auto p-1 bg-accent rounded-xl gap-1">
+          <TabsTrigger value="smart" className="rounded-lg data-[state=active]:bg-background">{t('import.smart_title')}</TabsTrigger>
           <TabsTrigger value="scan" className="rounded-lg data-[state=active]:bg-background">{t('exams.tab_scan')}</TabsTrigger>
           <TabsTrigger value="timeline" className="rounded-lg data-[state=active]:bg-background">{t('exams.tab_timeline')}</TabsTrigger>
           <TabsTrigger value="compare" className="rounded-lg data-[state=active]:bg-background">{t('exams.tab_compare')}</TabsTrigger>
@@ -55,6 +57,15 @@ export default function Esami() {
           <TabsTrigger value="import" className="rounded-lg data-[state=active]:bg-background">{t('exams.tab_import')}</TabsTrigger>
         </TabsList>
 
+        <TabsContent value="smart" className="mt-4">
+          {isSubscribed ? (
+            <SmartScanner onSaved={handleSaved} />
+          ) : isGuest ? (
+            <GuestSignupCard feature="exam_scan" />
+          ) : (
+            <PremiumLockedCard onUnlock={() => { trackTrialFeature('exam_scan', 'blocked'); openPaywall(); }} />
+          )}
+        </TabsContent>
         <TabsContent value="scan" className="mt-4">
           {isSubscribed ? (
             <ExamScanner onSaved={handleSaved} />

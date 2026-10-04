@@ -30,6 +30,7 @@ import DailyNutrition from '@/components/DailyNutrition';
 import FoodDateNavigator from '@/components/food/FoodDateNavigator';
 import CalorieBalanceCard from '@/components/food/CalorieBalanceCard';
 import ManualActivityForm from '@/components/food/ManualActivityForm';
+import ActivityImport from '@/components/import/ActivityImport';
 import { catalogToGroups, parseLegacyFoods, serializeItems } from '@/lib/foodCatalog';
 import { MEAL_TYPE_KEYS, REACTION_KEYS, reactionLabel, unitLabel } from '@/lib/enumLabels';
 import { Button } from '@/components/ui/button';
@@ -233,8 +234,9 @@ export default function Food() {
         <CalorieBalanceCard foods={dayItems} selectedDate={selectedDate} />
       </div>
       {isAuthenticated && (
-        <div className="mb-3">
-          <ManualActivityForm defaultDate={selectedDate} />
+        <div className="mb-3 space-y-3">
+          <ManualActivityForm defaultDate={selectedDate} onSaved={refresh} />
+          <ActivityImport defaultDate={selectedDate} onSaved={refresh} />
         </div>
       )}
       <PullToRefresh onRefresh={refresh}>
