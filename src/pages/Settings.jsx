@@ -15,6 +15,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import HistoryExport from '@/components/HistoryExport';
+import GoogleFitConnectButton from '@/components/googlefit/GoogleFitConnectButton';
+import WeightTracker from '@/components/food/WeightTracker';
 import { deleteAccountAndData } from '@/lib/accountDeletion';
 import { useBiometric } from '@/lib/biometric';
 
@@ -193,6 +195,10 @@ export default function Settings() {
             {!user && <p className="text-xs text-muted-foreground mt-3">{t('settings.notifications_login')}</p>}
           </CardContent>
         </Card>
+
+        {/* Google Fit + Weight */}
+        <GoogleFitConnectButton />
+        <WeightTracker />
 
         {/* Account */}
         <Card className="border-0 shadow-sm">

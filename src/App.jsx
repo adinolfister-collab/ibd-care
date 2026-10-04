@@ -59,6 +59,7 @@ const ProductDetail = lazy(() => import('@/pages/ProductDetail'));
 const Founders = lazy(() => import('@/pages/Founders'));
 const Invita = lazy(() => import('@/pages/Invita'));
 const PreparaVisita = lazy(() => import('@/pages/PreparaVisita'));
+const CalorieAnalysis = lazy(() => import('@/pages/CalorieAnalysis'));
 const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
 const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
@@ -136,6 +137,7 @@ const AuthenticatedApp = () => {
         <Route path="/correlazioni" element={<PageTransition><Correlazioni /></PageTransition>} />
         <Route path="/analisi" element={<PageTransition><Analisi /></PageTransition>} />
         <Route path="/trend-mensili" element={<PageTransition><TrendMensili /></PageTransition>} />
+        <Route path="/calorie-analysis" element={<PageTransition><CalorieAnalysis /></PageTransition>} />
         <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
         <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
         <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
