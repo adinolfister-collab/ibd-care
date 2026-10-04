@@ -1332,6 +1332,7 @@ const en = {
   'nav.access_report': 'Access report',
   'nav.business': 'Business',
   'nav.screenshots': 'Screenshots',
+  'nav.play_store': 'Play Store',
   'support_inbox.title': 'Support inbox',
   'support_inbox.subtitle': 'Read and reply to user messages',
   'support_inbox.filter_all': 'All',

@@ -68,6 +68,7 @@ const ADMIN_ITEMS = [
   { to: '/admin/access-report', key: 'nav.access_report', icon: FileText },
   { to: '/shop/admin', key: 'shop.admin_nav', icon: ShoppingBag },
   { to: '/admin/screenshots', key: 'nav.screenshots', icon: Smartphone },
+  { to: '/admin/play-store', key: 'nav.play_store', icon: FileText },
 ];
 
 function MenuCard({ item, t, isExpired, openTicketCount }) {

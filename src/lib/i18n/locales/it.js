@@ -1329,6 +1329,7 @@ const it = {
   'nav.access_report': 'Report accessi',
   'nav.business': 'Business',
   'nav.screenshots': 'Screenshot',
+  'nav.play_store': 'Play Store',
   'support_inbox.title': 'Casella di supporto',
   'support_inbox.subtitle': 'Leggi e rispondi ai messaggi degli utenti',
   'support_inbox.filter_all': 'Tutti',
