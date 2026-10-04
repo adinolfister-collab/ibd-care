@@ -3,6 +3,20 @@
 
 export const PLAY_STORE_TEXTS = [
   {
+    id: 'name_it',
+    label: 'Nome app (IT)',
+    hint: 'Campo "Nome dell\'app" del Play Console, massimo 30 caratteri.',
+    limit: 30,
+    text: 'IBD Care: Crohn e Colite',
+  },
+  {
+    id: 'name_en',
+    label: 'App name (EN)',
+    hint: 'Play Console "App name" field, 30 characters max.',
+    limit: 30,
+    text: 'IBD Care: Crohn & Colitis',
+  },
+  {
     id: 'short_it',
     label: 'Breve descrizione (IT)',
     hint: 'Campo "Descrizione breve" del Play Console, massimo 80 caratteri.',

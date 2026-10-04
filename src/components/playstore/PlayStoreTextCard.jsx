@@ -53,7 +53,10 @@ export default function PlayStoreTextCard({ item }) {
       </CardHeader>
       <CardContent className="pt-0">
         <div
-          className="h-56 overflow-auto rounded-lg border border-border bg-muted/40 p-4 text-sm leading-relaxed whitespace-pre-wrap text-foreground/90"
+          className={cn(
+            'overflow-auto rounded-lg border border-border bg-muted/40 p-4 text-sm leading-relaxed whitespace-pre-wrap text-foreground/90',
+            count > 120 ? 'h-56' : 'h-auto'
+          )}
           data-selectable
         >
           {item.text}
