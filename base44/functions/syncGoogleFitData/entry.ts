@@ -68,6 +68,12 @@ export default async function(req: Request): Promise<Response> {
 }
 
 async function upsertActivity(base44: any, ownerId: string, day: any) {
+  // Il manuale prevale: salta le date con un record manuale dell'utente.
+  const manual = await base44.asServiceRole.entities.ActivityEntry.filter(
+    { entry_date: day.date, source: 'manual', created_by_id: ownerId }, '-entry_date', 10
+  );
+  if (manual.length > 0) return;
+
   const existing = await base44.asServiceRole.entities.ActivityEntry.filter(
     { entry_date: day.date, created_by_id: ownerId }, '-entry_date', 10
   );

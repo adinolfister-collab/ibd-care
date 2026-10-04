@@ -1,17 +1,22 @@
 import jsPDF from 'jspdf';
 import { severityLabelKey, severityColor } from '@/lib/clinicalIndices';
 import { localeForLang, bristolLabel } from '@/lib/enumLabels';
+import { summarizeCalorieWeight, drawCalorieWeightSection } from '@/lib/calorieBalancePdf';
 
 // Genera il "Riepilogo Clinico per il Gastroenterologo": PDF di 1-2 pagine
 // in stile Clinical Dashboard, pensato per essere stampato e mostrato in visita.
+// Include ora una sezione "Bilancio calorico e peso" se sono presenti dati
+// di attivita' o peso.
 //
 // params:
 //  - indices: array ClinicalIndexEntry (ordinato per data desc)
 //  - symptoms: array SymptomEntry
 //  - foods: array FoodEntry (per trigger_tags)
+//  - activities: array ActivityEntry (opzionale, per sezione calorie)
+//  - weights: array WeightEntry (opzionale, per sezione peso)
 //  - user: { full_name, email } (anagrafica)
 //  - t, lang
-export function exportClinicalReportPdf({ indices, symptoms, foods, user, t, lang }) {
+export function exportClinicalReportPdf({ indices, symptoms, foods, activities, weights, user, t, lang }) {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' });
   const W = doc.internal.pageSize.getWidth();
   const H = doc.internal.pageSize.getHeight();
@@ -103,6 +108,18 @@ export function exportClinicalReportPdf({ indices, symptoms, foods, user, t, lan
   y += 14;
   drawSummaryTable(doc, symptoms, foods, M, y, W - M * 2, t, lang);
   y += 110;
+
+  // === Sezione Bilancio calorico e peso ===
+  const calorieSummary = summarizeCalorieWeight(activities, weights);
+  if (calorieSummary.days > 0 || calorieSummary.weightLast) {
+    ensure(80);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(30, 41, 59);
+    doc.text(t('calorie_pdf.section_title'), M, y);
+    y += 14;
+    y = drawCalorieWeightSection(doc, calorieSummary, M, y, W - M * 2, t);
+  }
 
   // === Footer ===
   const pages = doc.internal.getNumberOfPages();

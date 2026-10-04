@@ -16,14 +16,23 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import GoogleFitConnectButton from '@/components/googlefit/GoogleFitConnectButton';
 import WeightTracker from '@/components/food/WeightTracker';
+import ManualActivityForm from '@/components/food/ManualActivityForm';
+import { exportCalorieBalancePdf } from '@/lib/calorieBalancePdf';
+import { usePremiumGate } from '@/hooks/usePremiumGate';
+import PremiumPaywall from '@/components/PremiumPaywall';
+import { useToast } from '@/components/ui/use-toast';
+import { FileDown, Loader2 } from 'lucide-react';
 
 const RANGES = [
+  { key: 'today', days: 1 },
   { key: '7', days: 7 },
   { key: '30', days: 30 },
   { key: '90', days: 90 },
+  { key: 'full', days: null },
 ];
 
 function cutoffForDays(days) {
+  if (days == null) return null; // storico completo
   const d = new Date();
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() - (days - 1));
@@ -36,16 +45,20 @@ function formatDateShort(iso) {
 }
 
 export default function CalorieAnalysis() {
-  const { t } = useI18n();
-  const { isAuthenticated } = useAuth();
+  const { t, lang } = useI18n();
+  const { toast } = useToast();
+  const { user, isAuthenticated } = useAuth();
+  const { requirePremium, showPaywall, setShowPaywall } = usePremiumGate();
   const [foods, setFoods] = useState([]);
   const [activities, setActivities] = useState([]);
   const [weights, setWeights] = useState([]);
   const [loading, setLoading] = useState(true);
   const [rangeKey, setRangeKey] = useState('7');
+  const [exporting, setExporting] = useState(false);
 
   const range = RANGES.find((r) => r.key === rangeKey);
   const cutoff = useMemo(() => cutoffForDays(range.days), [range]);
+  const listLimit = range.days == null ? 5000 : 1000;
 
   useEffect(() => {
     let cancelled = false;
@@ -54,9 +67,9 @@ export default function CalorieAnalysis() {
       if (!isAuthenticated) { setLoading(false); return; }
       try {
         const [f, a, w] = await Promise.all([
-          base44.entities.FoodEntry.list('-entry_date', 1000),
-          base44.entities.ActivityEntry.list('-entry_date', 1000),
-          base44.entities.WeightEntry.list('-entry_date', 1000),
+          base44.entities.FoodEntry.list('-entry_date', listLimit),
+          base44.entities.ActivityEntry.list('-entry_date', listLimit),
+          base44.entities.WeightEntry.list('-entry_date', listLimit),
         ]);
         if (cancelled) return;
         setFoods(f);
@@ -66,19 +79,19 @@ export default function CalorieAnalysis() {
       finally { if (!cancelled) setLoading(false); }
     })();
     return () => { cancelled = true; };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, listLimit]);
 
   const dailyData = useMemo(() => {
     const map = {};
     for (const meal of foods) {
-      if ((meal.entry_date || '') < cutoff) continue;
+      if (cutoff && (meal.entry_date || '') < cutoff) continue;
       const items = Array.isArray(meal.items) ? meal.items : [];
       const kcal = items.reduce((s, it) => s + (Number(it.kcal) || 0), 0);
       if (!map[meal.entry_date]) map[meal.entry_date] = { date: meal.entry_date, consumed: 0, burned: 0, steps: 0 };
       map[meal.entry_date].consumed += Math.round(kcal);
     }
     for (const a of activities) {
-      if ((a.entry_date || '') < cutoff) continue;
+      if (cutoff && (a.entry_date || '') < cutoff) continue;
       if (!map[a.entry_date]) map[a.entry_date] = { date: a.entry_date, consumed: 0, burned: 0, steps: 0 };
       map[a.entry_date].burned += a.kcal_expended || 0;
       map[a.entry_date].steps += a.steps || 0;
@@ -92,10 +105,29 @@ export default function CalorieAnalysis() {
 
   const weightData = useMemo(() => {
     return weights
-      .filter((w) => (w.entry_date || '') >= cutoff)
+      .filter((w) => !cutoff || (w.entry_date || '') >= cutoff)
       .sort((a, b) => a.entry_date.localeCompare(b.entry_date))
       .map((w) => ({ date: w.entry_date, weight: w.weight_kg, label: formatDateShort(w.entry_date), source: w.source }));
   }, [weights, cutoff]);
+
+  const rangeLabel = t(`calorie.range_${range.key}`);
+
+  const handleExportPdf = async () => {
+    if (!requirePremium('calorie_pdf')) return;
+    if (!dailyData.length && !weightData.length) {
+      toast({ title: t('calorie.no_data'), description: t('calorie.no_data_desc'), variant: 'destructive' });
+      return;
+    }
+    setExporting(true);
+    try {
+      exportCalorieBalancePdf({ dailyData, weightData, rangeLabel, user, t, lang });
+      toast({ title: t('clinical_pdf.done_title'), description: t('clinical_pdf.done_desc') });
+    } catch {
+      toast({ title: t('clinical_pdf.error_title'), description: t('clinical_pdf.error_desc'), variant: 'destructive' });
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const avgConsumed = dailyData.length ? Math.round(dailyData.reduce((s, d) => s + d.consumed, 0) / dailyData.length) : 0;
   const avgBurned = dailyData.length ? Math.round(dailyData.reduce((s, d) => s + d.burned, 0) / dailyData.length) : 0;
@@ -112,7 +144,7 @@ export default function CalorieAnalysis() {
       ) : (
         <>
           <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
-            <div className="flex gap-1.5">
+            <div className="flex gap-1.5 flex-wrap">
               {RANGES.map((r) => (
                 <Button
                   key={r.key}
@@ -125,6 +157,15 @@ export default function CalorieAnalysis() {
                 </Button>
               ))}
             </div>
+            <Button
+              onClick={handleExportPdf}
+              disabled={exporting || (!dailyData.length && !weightData.length)}
+              variant="outline"
+              className="rounded-xl shrink-0"
+            >
+              {exporting ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <FileDown className="w-4 h-4 mr-1.5" />}
+              {t('calorie.export_pdf')}
+            </Button>
           </div>
 
           <div className="space-y-6 md:space-y-8">
@@ -147,6 +188,10 @@ export default function CalorieAnalysis() {
               </div>
             </div>
 
+            <ManualActivityForm onSaved={() => {
+              // ricarica le attivita' dopo un inserimento manuale
+              base44.entities.ActivityEntry.list('-entry_date', listLimit).then(setActivities).catch(() => {});
+            }} />
             <GoogleFitConnectButton />
             <WeightTracker />
 
@@ -218,6 +263,7 @@ export default function CalorieAnalysis() {
           </div>
         </>
       )}
+      <PremiumPaywall open={showPaywall} onClose={() => setShowPaywall(false)} />
     </AppLayout>
   );
 }

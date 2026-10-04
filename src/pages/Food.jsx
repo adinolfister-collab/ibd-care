@@ -29,6 +29,7 @@ import FoodCatalogManager from '@/components/FoodCatalogManager';
 import DailyNutrition from '@/components/DailyNutrition';
 import FoodDateNavigator from '@/components/food/FoodDateNavigator';
 import CalorieBalanceCard from '@/components/food/CalorieBalanceCard';
+import ManualActivityForm from '@/components/food/ManualActivityForm';
 import { catalogToGroups, parseLegacyFoods, serializeItems } from '@/lib/foodCatalog';
 import { MEAL_TYPE_KEYS, REACTION_KEYS, reactionLabel, unitLabel } from '@/lib/enumLabels';
 import { Button } from '@/components/ui/button';
@@ -231,6 +232,11 @@ export default function Food() {
       <div className="mb-3">
         <CalorieBalanceCard foods={dayItems} selectedDate={selectedDate} />
       </div>
+      {isAuthenticated && (
+        <div className="mb-3">
+          <ManualActivityForm defaultDate={selectedDate} />
+        </div>
+      )}
       <PullToRefresh onRefresh={refresh}>
       {loading ? (
         <p className="text-muted-foreground">{t('common.loading')}</p>
