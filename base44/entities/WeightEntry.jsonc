@@ -19,6 +19,11 @@
       ],
       "default": "manual",
       "description": "Origine del dato: manual (inserito dall'utente) o googlefit (sincronizzato)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale della rilevazione",
+      "maxLength": 1000
     }
   },
   "required": [

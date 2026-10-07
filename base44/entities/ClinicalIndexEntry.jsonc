@@ -48,6 +48,11 @@
         ]
       },
       "description": "Complicanze spuntate (solo HBI); ogni elemento vale 1 punto"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale della rilevazione",
+      "maxLength": 1000
     }
   },
   "required": [

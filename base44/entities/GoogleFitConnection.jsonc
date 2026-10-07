@@ -24,6 +24,11 @@
       "type": "string",
       "format": "date-time",
       "description": "Ultima sincronizzazione completata"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale della connessione",
+      "maxLength": 1000
     }
   },
   "required": [

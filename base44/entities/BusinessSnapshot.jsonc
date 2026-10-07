@@ -90,6 +90,11 @@
     "break_even_users": {
       "type": "number",
       "description": "Numero utenti Premium necessari per coprire il costo del piano Base44"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale dello snapshot",
+      "maxLength": 1000
     }
   },
   "required": [

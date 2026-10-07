@@ -54,6 +54,11 @@
     "user_id": {
       "type": "string",
       "description": "User id se il visitatore e' loggato, vuoto per anonimi"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale della visita",
+      "maxLength": 1000
     }
   },
   "required": [

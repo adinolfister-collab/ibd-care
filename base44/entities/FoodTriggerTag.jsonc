@@ -13,6 +13,11 @@
     "order": {
       "type": "number",
       "description": "Ordinamento opzionale del tag"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale del tag",
+      "maxLength": 1000
     }
   },
   "required": [

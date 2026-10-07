@@ -27,6 +27,11 @@
     "error": {
       "type": "string",
       "description": "Messaggio di errore se status = failed"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale del promemoria",
+      "maxLength": 1000
     }
   },
   "required": [

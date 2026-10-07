@@ -19,6 +19,11 @@
     "session_id": {
       "type": "string",
       "description": "Id sessione anonimo (localStorage) per gli ospiti non loggati"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale del feedback",
+      "maxLength": 1000
     }
   },
   "required": [

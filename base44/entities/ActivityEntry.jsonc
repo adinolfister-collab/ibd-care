@@ -27,6 +27,11 @@
       ],
       "default": "googlefit",
       "description": "Origine del dato: googlefit (sincronizzato) o manual"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale dell'attivita'",
+      "maxLength": 1000
     }
   },
   "required": [

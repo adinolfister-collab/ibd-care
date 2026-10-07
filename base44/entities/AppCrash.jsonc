@@ -58,6 +58,11 @@
     "resolved": {
       "type": "boolean",
       "default": false
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale del crash",
+      "maxLength": 1000
     }
   },
   "required": [

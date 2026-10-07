@@ -26,6 +26,11 @@
       "type": "string",
       "format": "date-time",
       "description": "Data di scadenza del link condivisibile"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale del report",
+      "maxLength": 1000
     }
   },
   "required": [

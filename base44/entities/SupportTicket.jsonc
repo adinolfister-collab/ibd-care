@@ -56,6 +56,11 @@
       ],
       "default": "contact",
       "description": "Origine del ticket: contact (form Contatti) o account (sezione Le mie richieste)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrizione opzionale del ticket",
+      "maxLength": 1000
     }
   },
   "required": [
