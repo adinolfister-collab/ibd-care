@@ -171,6 +171,7 @@ const es = {
   'news.refresh_uptodate': 'Las noticias ya están actualizadas.',
   'news.refresh_failed': 'La actualización ha fallado. Inténtalo de nuevo en breve.',
   'news.last_update': 'Última actualización:',
+  'news.refresh_limit': 'Las noticias se actualizaron hace poco. Podrás actualizar de nuevo en unos {minutes} min.',
   'news.refresh': 'Actualizar noticias',
   'news.loading': 'Cargando noticias…',
   'news.error': 'No se pudieron cargar las noticias. Reintenta.',

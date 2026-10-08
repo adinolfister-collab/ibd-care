@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Newspaper, ExternalLink, RefreshCw, Loader2, Plus, Trash2 } from 'lucide-react';
+import { Newspaper, ExternalLink, RefreshCw, Loader2, Plus, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import PageHeader from '@/components/PageHeader';
@@ -81,7 +81,7 @@ export default function IBDNews() {
       const results = res.data?.results || [];
       const total = results.reduce((s, r) => s + (r.count || 0), 0);
       const failed = results.filter((r) => r.error).length;
-      setRefreshResult({ ok: true, skipped: !!res.data?.skipped, total, langs: results.filter((r) => r.count > 0).length, failed });
+      setRefreshResult({ ok: true, skipped: !!res.data?.skipped, minutes: res.data?.minutes || 30, total, langs: results.filter((r) => r.count > 0).length, failed });
       await load();
     } catch (e) {
       setRefreshResult({ ok: false });
@@ -90,7 +90,9 @@ export default function IBDNews() {
     }
   };
 
-  const visible = filter === 'all' ? articles : articles.filter((a) => (a.lang || 'it') === filter);
+  const byDateDesc = (a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0);
+  const visible = (filter === 'all' ? articles : articles.filter((a) => (a.lang || 'it') === filter))
+    .slice().sort(byDateDesc).slice(0, 20);
   const locale = lang === 'it' ? 'it-IT' : undefined;
   const lastTs = articles.reduce((m, a) => Math.max(m, a.created_date ? Date.parse(a.created_date) : 0), 0);
   const lastUpdate = lastTs ? new Date(lastTs) : null;
@@ -105,7 +107,6 @@ export default function IBDNews() {
     try { await base44.entities.NewsArticle.create(payload); } catch (e) {}
   };
 
-  const handleDelete = async (id) => { try { await base44.entities.NewsArticle.delete(id); } catch (e) {} };
 
   return (
     <AppLayout>
@@ -114,7 +115,10 @@ export default function IBDNews() {
           title={t('news.title')}
           subtitle={t('news.page_subtitle')}
           action={(
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full">
+              <Button variant="outline" size="icon" onClick={handleRefresh} disabled={refreshing} aria-label={t('news.refresh')} className="order-last ml-auto shrink-0">
+                <RefreshCw className={cn('w-5 h-5', (loading || refreshing) && 'animate-spin')} />
+              </Button>
               {isAdmin && (
                 <Button onClick={() => setOpen(true)} className="rounded-xl">
                   <Plus className="w-4 h-4 mr-1.5" />{t('news.add')}
@@ -132,9 +136,6 @@ export default function IBDNews() {
           {LANGS.map((l) => (
             <FilterChip key={l.code} active={filter === l.code} onClick={() => setFilter(l.code)} label={l.label} />
           ))}
-          <Button variant="ghost" size="icon" onClick={handleRefresh} disabled={refreshing} aria-label={t('news.refresh')} className="ml-auto shrink-0">
-            <RefreshCw className={cn('w-5 h-5', (loading || refreshing) && 'animate-spin')} />
-          </Button>
         </div>
         {lastUpdate && (
           <p className="text-xs text-muted-foreground mb-4">
@@ -145,11 +146,12 @@ export default function IBDNews() {
           <p className="text-sm text-muted-foreground mb-4 flex items-center"><Loader2 className="w-4 h-4 animate-spin mr-2" />{t('news.refreshing')}</p>
         )}
         {refreshResult && !refreshing && (
-          <p className={cn('text-sm mb-4', refreshResult.ok ? 'text-emerald-700' : 'text-rose-700')}>
+          <p className={cn('text-sm mb-4', refreshResult.skipped ? 'text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-2' : refreshResult.ok ? 'text-emerald-700' : 'text-rose-700')}>
+            {refreshResult.skipped && <Clock className="w-4 h-4 shrink-0" />}
             {!refreshResult.ok
               ? t('news.refresh_failed')
               : refreshResult.skipped
-                ? t('news.refresh_uptodate')
+                ? t('news.refresh_limit').replace('{minutes}', refreshResult.minutes)
                 : t('news.refresh_done').replace('{total}', refreshResult.total).replace('{langs}', refreshResult.langs)
                   + (refreshResult.failed ? t('news.refresh_done_errors').replace('{failed}', refreshResult.failed) : '')}
           </p>
@@ -173,11 +175,6 @@ export default function IBDNews() {
                       <h3 className="text-base font-medium leading-snug group-hover:text-primary transition-colors">{a.title}</h3>
                       <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed line-clamp-3">{a.summary}</p>
                     </Link>
-                    {isAdmin && (
-                      <button onClick={() => handleDelete(a.id)} className="p-2 rounded-lg hover:bg-rose-50 text-rose-400 shrink-0" aria-label={t('news.delete')}>
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    )}
                   </div>
                   <div className="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground">
                     <span className="inline-flex items-center gap-1 font-medium"><ExternalLink className="w-3 h-3" />{a.source}</span>

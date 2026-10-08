@@ -10,8 +10,10 @@ export default async function(req) {
   if (!user || user.role !== 'admin') {
     const latest = await base44.asServiceRole.entities.NewsArticle.list('-created_date', 1);
     const last = latest[0]?.created_date ? Date.parse(latest[0].created_date) : 0;
-    if (Date.now() - last < 30 * 60 * 1000) {
-      return Response.json({ ok: true, skipped: true, results: [] });
+    const elapsed = Date.now() - last;
+    if (elapsed < 30 * 60 * 1000) {
+      const minutes = Math.max(1, Math.ceil((30 * 60 * 1000 - elapsed) / 60000));
+      return Response.json({ ok: true, skipped: true, minutes, results: [] });
     }
   }
 
@@ -23,7 +25,7 @@ export default async function(req) {
         model: 'gemini_3_flash',
         response_json_schema: ARTICLE_JSON_SCHEMA
       });
-      return { lang, articles: filterArticles((result && result.articles) || []) };
+      return { lang, articles: filterArticles((result && result.articles) || []).slice(0, 20) };
     } catch (err) {
       console.error(`refreshIBDNewsCache fetch error for lang ${lang}:`, (err && err.message) || err);
       return { lang, error: (err && err.message) || String(err), articles: [] };

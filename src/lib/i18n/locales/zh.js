@@ -171,6 +171,7 @@ const zh = {
   'news.refresh_uptodate': '新闻已是最新。',
   'news.refresh_failed': '更新失败，请稍后重试。',
   'news.last_update': '最近更新：',
+  'news.refresh_limit': '新闻刚刚更新过。大约 {minutes} 分钟后可再次更新。',
   'news.refresh': '刷新资讯',
   'news.loading': '加载资讯中…',
   'news.error': '无法加载资讯,请重试。',

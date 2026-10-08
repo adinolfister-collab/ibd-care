@@ -171,6 +171,7 @@ const fr = {
   'news.refresh_uptodate': 'Les actualités sont déjà à jour.',
   'news.refresh_failed': 'Échec de la mise à jour. Réessaie dans un instant.',
   'news.last_update': 'Dernière mise à jour :',
+  'news.refresh_limit': "Les actualités viennent d'être mises à jour. Tu pourras actualiser à nouveau dans environ {minutes} min.",
   'news.refresh': 'Actualiser les actualités',
   'news.loading': 'Chargement des actualités…',
   'news.error': 'Impossible de charger les actualités. Réessayez.',

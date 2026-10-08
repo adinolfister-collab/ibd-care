@@ -171,6 +171,7 @@ const ro = {
   'news.refresh_uptodate': 'Știrile sunt deja actualizate.',
   'news.refresh_failed': 'Actualizarea nu a reușit. Încearcă din nou în scurt timp.',
   'news.last_update': 'Ultima actualizare:',
+  'news.refresh_limit': 'Știrile au fost actualizate recent. Poți actualiza din nou peste aproximativ {minutes} min.',
   'news.refresh': 'Reîmprospătează știrile',
   'news.loading': 'Se încarcă știrile…',
   'news.error': 'Nu s-au putut încărca știrile. Reîncearcă.',

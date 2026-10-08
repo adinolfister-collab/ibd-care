@@ -171,6 +171,7 @@ const pl = {
   'news.refresh_uptodate': 'Wiadomości są już aktualne.',
   'news.refresh_failed': 'Aktualizacja nie powiodła się. Spróbuj ponownie za chwilę.',
   'news.last_update': 'Ostatnia aktualizacja:',
+  'news.refresh_limit': 'Wiadomości zostały niedawno zaktualizowane. Możesz odświeżyć ponownie za około {minutes} min.',
   'news.refresh': 'Odśwież wiadomości',
   'news.loading': 'Ładowanie wiadomości…',
   'news.error': 'Nie udało się załadować wiadomości. Spróbuj ponownie.',

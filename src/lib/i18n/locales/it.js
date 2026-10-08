@@ -220,6 +220,7 @@ const it = {
   'news.refresh_uptodate': 'Le notizie sono già aggiornate.',
   'news.refresh_failed': 'Aggiornamento non riuscito. Riprova tra poco.',
   'news.last_update': 'Ultimo aggiornamento:',
+  'news.refresh_limit': 'Le notizie sono già aggiornate. Potrai aggiornare di nuovo tra circa {minutes} min.',
   'news.refresh': 'Aggiorna notizie',
   'news.loading': 'Caricamento notizie\u2026',
   'news.error': 'Impossibile caricare le notizie. Riprova.',

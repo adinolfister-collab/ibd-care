@@ -171,6 +171,7 @@ const pt = {
   'news.refresh_uptodate': 'As notícias já estão atualizadas.',
   'news.refresh_failed': 'Falha na atualização. Tenta novamente daqui a pouco.',
   'news.last_update': 'Última atualização:',
+  'news.refresh_limit': 'As notícias foram atualizadas há pouco. Poderás atualizar novamente daqui a cerca de {minutes} min.',
   'news.refresh': 'Atualizar notícias',
   'news.loading': 'A carregar notícias…',
   'news.error': 'Não foi possível carregar as notícias. Tenta novamente.',

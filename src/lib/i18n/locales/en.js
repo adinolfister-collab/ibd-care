@@ -220,6 +220,7 @@ const en = {
   'news.refresh_uptodate': 'News is already up to date.',
   'news.refresh_failed': 'Update failed. Please try again shortly.',
   'news.last_update': 'Last update:',
+  'news.refresh_limit': 'News was updated recently. You can refresh again in about {minutes} min.',
   'news.refresh': 'Refresh news',
   'news.loading': 'Loading news…',
   'news.error': 'Could not load the news. Please retry.',

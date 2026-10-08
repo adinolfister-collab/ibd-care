@@ -171,6 +171,7 @@ const de = {
   'news.refresh_uptodate': 'Die News sind bereits aktuell.',
   'news.refresh_failed': 'Aktualisierung fehlgeschlagen. Versuche es gleich noch einmal.',
   'news.last_update': 'Letzte Aktualisierung:',
+  'news.refresh_limit': 'Die News wurden gerade aktualisiert. Du kannst in etwa {minutes} Min. erneut aktualisieren.',
   'news.refresh': 'News aktualisieren',
   'news.loading': 'News werden geladen…',
   'news.error': 'News konnten nicht geladen werden. Versuche es erneut.',

@@ -171,6 +171,7 @@ const sq = {
   'news.refresh_uptodate': 'Lajmet janë tashmë të përditësuara.',
   'news.refresh_failed': 'Përditësimi dështoi. Provo përsëri pas pak.',
   'news.last_update': 'Përditësimi i fundit:',
+  'news.refresh_limit': 'Lajmet u përditësuan së fundmi. Mund të përditësosh përsëri pas rreth {minutes} min.',
   'news.refresh': 'Rifresko lajmet',
   'news.loading': 'Po ngarkohen lajmet…',
   'news.error': 'Lajmet nuk u ngarkuan. Riprovo.',
