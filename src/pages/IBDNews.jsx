@@ -49,6 +49,8 @@ export default function IBDNews() {
   const [filter, setFilter] = useState(lang || 'it');
   const [me, setMe] = useState(null);
   const [open, setOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshResult, setRefreshResult] = useState(null);
 
   const isAdmin = me?.role === 'admin';
 
@@ -70,6 +72,24 @@ export default function IBDNews() {
     const unsub = base44.entities.NewsArticle.subscribe(() => { load(); });
     return () => { clearInterval(id); unsub(); };
   }, [load]);
+
+  const handleRefresh = async () => {
+    if (!isAdmin) { load(); return; }
+    setRefreshing(true);
+    setRefreshResult(null);
+    try {
+      const res = await base44.functions.invoke('refreshIBDNewsCache', {});
+      const results = res.data?.results || [];
+      const total = results.reduce((s, r) => s + (r.count || 0), 0);
+      const failed = results.filter((r) => r.error).length;
+      setRefreshResult({ ok: true, total, langs: results.filter((r) => r.count > 0).length, failed });
+      await load();
+    } catch (e) {
+      setRefreshResult({ ok: false });
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const visible = filter === 'all' ? articles : articles.filter((a) => (a.lang || 'it') === filter);
   const locale = lang === 'it' ? 'it-IT' : undefined;
@@ -111,10 +131,20 @@ export default function IBDNews() {
           {LANGS.map((l) => (
             <FilterChip key={l.code} active={filter === l.code} onClick={() => setFilter(l.code)} label={l.label} />
           ))}
-          <Button variant="ghost" size="icon" onClick={load} aria-label={t('news.refresh')} className="ml-auto shrink-0">
-            <RefreshCw className={cn('w-5 h-5', loading && 'animate-spin')} />
+          <Button variant="ghost" size="icon" onClick={handleRefresh} disabled={refreshing} aria-label={t('news.refresh')} className="ml-auto shrink-0">
+            <RefreshCw className={cn('w-5 h-5', (loading || refreshing) && 'animate-spin')} />
           </Button>
         </div>
+        {refreshing && (
+          <p className="text-sm text-muted-foreground mb-4 flex items-center"><Loader2 className="w-4 h-4 animate-spin mr-2" />Aggiornamento notizie in corso, può richiedere circa un minuto…</p>
+        )}
+        {refreshResult && !refreshing && (
+          <p className={cn('text-sm mb-4', refreshResult.ok ? 'text-emerald-700' : 'text-rose-700')}>
+            {refreshResult.ok
+              ? `Aggiornate ${refreshResult.total} notizie pertinenti in ${refreshResult.langs} lingue${refreshResult.failed ? ` (${refreshResult.failed} lingue con errori)` : ''}.`
+              : 'Aggiornamento non riuscito. Riprova tra poco.'}
+          </p>
+        )}
 
         {loading && visible.length === 0 ? (
           <div className="flex items-center justify-center py-16 text-muted-foreground">

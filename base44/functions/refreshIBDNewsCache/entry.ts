@@ -3,10 +3,10 @@ import { SUPPORTED_LANGS, buildNewsPrompt, ARTICLE_JSON_SCHEMA, filterArticles }
 
 export default async function(req) {
   const base44 = createClientFromRequest(req);
-  // Il workflow schedulato gira senza utente; se c'è un utente deve essere admin.
+  // Solo admin (il workflow schedulato gira con permessi admin); blocca anonimi.
   let user = null;
   try { user = await base44.auth.me(); } catch (_e) { user = null; }
-  if (user && user.role !== 'admin') {
+  if (!user || user.role !== 'admin') {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
