@@ -1,13 +1,13 @@
 {
   "name": "IBD News Refresh",
-  "description": "Ogni 2 ore aggiorna la cache delle notizie IBD trovate online per tutte le lingue supportate (it, en, es, fr, de)",
+  "description": "Ogni giorno alle 6:00 aggiorna la cache delle notizie IBD pertinenti e recenti per tutte le lingue supportate",
   "trigger": {
     "condition": null,
     "config": {
       "trigger_type": "scheduled",
       "events": [],
       "schedule_mode": "recurring",
-      "cron_expression": "0 */2 * * *",
+      "cron_expression": "0 6 * * *",
       "one_time_date": null,
       "timezone": "Europe/Rome",
       "interval_value": null,
@@ -35,7 +35,7 @@
           "then": "end",
           "x-base44": {
             "title": "Aggiorna cache notizie IBD",
-            "description": "Ricerca web e refresh per ogni lingua"
+            "description": "Ricerca web, controllo pertinenza IBD e refresh per ogni lingua"
           }
         }
       }

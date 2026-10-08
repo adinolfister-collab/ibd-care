@@ -1,14 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { SUPPORTED_LANGS, buildNewsPrompt, ARTICLE_JSON_SCHEMA } from '../../shared/ibdNews.ts';
+import { SUPPORTED_LANGS, buildNewsPrompt, ARTICLE_JSON_SCHEMA, filterArticles } from '../../shared/ibdNews.ts';
 
 export default async function(req) {
   const base44 = createClientFromRequest(req);
-  const user = await base44.auth.me();
-  if (!user || user.role !== 'admin') {
+  // Il workflow schedulato gira senza utente; se c'è un utente deve essere admin.
+  let user = null;
+  try { user = await base44.auth.me(); } catch (_e) { user = null; }
+  if (user && user.role !== 'admin') {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Esegue tutte le ricerche web in parallelo (una per lingua)
   const fetched = await Promise.all(SUPPORTED_LANGS.map(async (lang) => {
     try {
       const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
@@ -17,20 +18,20 @@ export default async function(req) {
         model: 'gemini_3_flash',
         response_json_schema: ARTICLE_JSON_SCHEMA
       });
-      return { lang, articles: (result && result.articles) || [] };
+      return { lang, articles: filterArticles((result && result.articles) || []) };
     } catch (err) {
       console.error(`refreshIBDNewsCache fetch error for lang ${lang}:`, (err && err.message) || err);
       return { lang, error: (err && err.message) || String(err), articles: [] };
     }
   }));
 
-  // Sostituisce la cache per ogni lingua
   const results = [];
   for (const item of fetched) {
     try {
-      await base44.asServiceRole.entities.NewsArticle.deleteMany({ lang: item.lang });
       const articles = item.articles || [];
+      // Se non ci sono articoli validi, mantiene la cache esistente.
       if (articles.length > 0) {
+        await base44.asServiceRole.entities.NewsArticle.deleteMany({ lang: item.lang });
         const records = articles.map((a) => ({
           title: String(a.title || ''),
           summary: String(a.summary || ''),
