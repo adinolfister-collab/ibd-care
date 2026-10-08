@@ -60,6 +60,9 @@ const Founders = lazy(() => import('@/pages/Founders'));
 const Invita = lazy(() => import('@/pages/Invita'));
 const PreparaVisita = lazy(() => import('@/pages/PreparaVisita'));
 const CalorieAnalysis = lazy(() => import('@/pages/CalorieAnalysis'));
+const GuideIndex = lazy(() => import('@/pages/GuideIndex'));
+const GuideArticle = lazy(() => import('@/pages/GuideArticle'));
+const AdminGuide = lazy(() => import('@/pages/AdminGuide'));
 const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
 const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
@@ -119,6 +122,10 @@ const AuthenticatedApp = () => {
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/founders" element={<PageTransition><Founders /></PageTransition>} />
         <Route path="/invita" element={<PageTransition><Invita /></PageTransition>} />
+        <Route path="/guide" element={<PageTransition><GuideIndex lang="it" /></PageTransition>} />
+        <Route path="/guide/:slug" element={<PageTransition><GuideArticle lang="it" /></PageTransition>} />
+        <Route path="/en/guide" element={<PageTransition><GuideIndex lang="en" /></PageTransition>} />
+        <Route path="/en/guide/:slug" element={<PageTransition><GuideArticle lang="en" /></PageTransition>} />
         <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />
         <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
         {/* Deprecated /guida -> /demo redirect (SEO/link legacy) */}
@@ -154,6 +161,7 @@ const AuthenticatedApp = () => {
             <Route path="/admin/guest-preview" element={<PageTransition><AdminGuestPreview /></PageTransition>} />
             <Route path="/admin/supporto" element={<PageTransition><AdminSupport /></PageTransition>} />
             <Route path="/admin/access-report" element={<PageTransition><AdminAccessReport /></PageTransition>} />
+            <Route path="/admin/guide" element={<PageTransition><AdminGuide /></PageTransition>} />
             <Route path="/admin/business" element={<PageTransition><AdminBusiness /></PageTransition>} />
             <Route path="/admin/marketing" element={<PageTransition><MarketingAdmin /></PageTransition>} />
             <Route path="/shop/admin" element={<PageTransition><ShopAdmin /></PageTransition>} />
