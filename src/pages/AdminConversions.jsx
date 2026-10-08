@@ -19,6 +19,7 @@ import PageHeader from '@/components/PageHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import ReportTable from '@/components/admin/ReportTable';
 import TrialUsersTable from '@/components/admin/TrialUsersTable';
+import DemoGuestReport from '@/components/admin/DemoGuestReport';
 import AdminCrashes from '@/components/admin/AdminCrashes';
 import DormantRemindersPanel from '@/components/admin/DormantRemindersPanel';
 import ReengagementCampaignButton from '@/components/admin/ReengagementCampaignButton';
@@ -370,6 +371,8 @@ export default function AdminConversions() {
           )}
         </CardContent>
       </Card>
+
+      <DemoGuestReport />
 
       {/* Pagine visitate + Provenienza */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
