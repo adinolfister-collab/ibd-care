@@ -3,11 +3,16 @@ import { SUPPORTED_LANGS, buildNewsPrompt, ARTICLE_JSON_SCHEMA, filterArticles }
 
 export default async function(req) {
   const base44 = createClientFromRequest(req);
-  // Solo admin (il workflow schedulato gira con permessi admin); blocca anonimi.
+  // Chiunque può aggiornare, ma gli utenti non admin hanno un intervallo minimo
+  // di 30 minuti tra un aggiornamento e l'altro (protegge dai costi).
   let user = null;
   try { user = await base44.auth.me(); } catch (_e) { user = null; }
   if (!user || user.role !== 'admin') {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    const latest = await base44.asServiceRole.entities.NewsArticle.list('-created_date', 1);
+    const last = latest[0]?.created_date ? Date.parse(latest[0].created_date) : 0;
+    if (Date.now() - last < 30 * 60 * 1000) {
+      return Response.json({ ok: true, skipped: true, results: [] });
+    }
   }
 
   const fetched = await Promise.all(SUPPORTED_LANGS.map(async (lang) => {

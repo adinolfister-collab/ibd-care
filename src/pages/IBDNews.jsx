@@ -74,7 +74,6 @@ export default function IBDNews() {
   }, [load]);
 
   const handleRefresh = async () => {
-    if (!isAdmin) { load(); return; }
     setRefreshing(true);
     setRefreshResult(null);
     try {
@@ -82,7 +81,7 @@ export default function IBDNews() {
       const results = res.data?.results || [];
       const total = results.reduce((s, r) => s + (r.count || 0), 0);
       const failed = results.filter((r) => r.error).length;
-      setRefreshResult({ ok: true, total, langs: results.filter((r) => r.count > 0).length, failed });
+      setRefreshResult({ ok: true, skipped: !!res.data?.skipped, total, langs: results.filter((r) => r.count > 0).length, failed });
       await load();
     } catch (e) {
       setRefreshResult({ ok: false });
@@ -139,17 +138,20 @@ export default function IBDNews() {
         </div>
         {lastUpdate && (
           <p className="text-xs text-muted-foreground mb-4">
-            Ultimo aggiornamento: {lastUpdate.toLocaleString(locale, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            {t('news.last_update')} {lastUpdate.toLocaleString(locale, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </p>
         )}
         {refreshing && (
-          <p className="text-sm text-muted-foreground mb-4 flex items-center"><Loader2 className="w-4 h-4 animate-spin mr-2" />Aggiornamento notizie in corso, può richiedere circa un minuto…</p>
+          <p className="text-sm text-muted-foreground mb-4 flex items-center"><Loader2 className="w-4 h-4 animate-spin mr-2" />{t('news.refreshing')}</p>
         )}
         {refreshResult && !refreshing && (
           <p className={cn('text-sm mb-4', refreshResult.ok ? 'text-emerald-700' : 'text-rose-700')}>
-            {refreshResult.ok
-              ? `Aggiornate ${refreshResult.total} notizie pertinenti in ${refreshResult.langs} lingue${refreshResult.failed ? ` (${refreshResult.failed} lingue con errori)` : ''}.`
-              : 'Aggiornamento non riuscito. Riprova tra poco.'}
+            {!refreshResult.ok
+              ? t('news.refresh_failed')
+              : refreshResult.skipped
+                ? t('news.refresh_uptodate')
+                : t('news.refresh_done').replace('{total}', refreshResult.total).replace('{langs}', refreshResult.langs)
+                  + (refreshResult.failed ? t('news.refresh_done_errors').replace('{failed}', refreshResult.failed) : '')}
           </p>
         )}
 
