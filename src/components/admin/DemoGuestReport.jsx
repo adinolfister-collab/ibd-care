@@ -9,11 +9,15 @@ const fmt = (ms) => new Date(ms).toLocaleDateString('it-IT', { day: '2-digit', m
 
 export default function DemoGuestReport() {
   const [views, setViews] = useState(null);
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     base44.entities.PageView.list('-entered_at', 5000)
       .then(setViews)
       .catch(() => setViews([]));
+    base44.entities.ConversionEvent.filter({ is_guest: true, feature: 'diary_save', source: 'used' }, '-created_date', 5000)
+      .then(setEvents)
+      .catch(() => setEvents([]));
   }, []);
 
   const rows = useMemo(() => {
@@ -27,14 +31,16 @@ export default function DemoGuestReport() {
       r.days.add(new Date(ts).toISOString().slice(0, 10));
       map.set(v.visitor_id, r);
     });
+    const saves = {};
+    events.forEach((e) => { if (e.visitor_id) saves[e.visitor_id] = (saves[e.visitor_id] || 0) + 1; });
     const now = Date.now();
     return [...map.values()]
       .map((r) => {
         const end = r.first + DEMO_TRIAL_DAYS * DAY_MS;
-        return { ...r, end, left: Math.ceil((end - now) / DAY_MS) };
+        return { ...r, saves: saves[r.id] || 0, end, left: Math.ceil((end - now) / DAY_MS) };
       })
       .sort((a, b) => b.first - a.first);
-  }, [views]);
+  }, [views, events]);
 
   const active = rows.filter((r) => r.left > 0).length;
 
@@ -61,6 +67,7 @@ export default function DemoGuestReport() {
                   <tr className="text-left text-xs uppercase text-muted-foreground border-b">
                     <th className="py-2 pr-3">Visitatore</th>
                     <th className="py-2 pr-3">Giorni attivi</th>
+                    <th className="py-2 pr-3">Salvataggi diario</th>
                     <th className="py-2 pr-3">Prima visita</th>
                     <th className="py-2 pr-3">Scadenza</th>
                     <th className="py-2">Stato</th>
@@ -71,6 +78,7 @@ export default function DemoGuestReport() {
                     <tr key={r.id} className="border-b last:border-0">
                       <td className="py-2 pr-3 font-mono text-xs">{r.id.slice(0, 8)}</td>
                       <td className="py-2 pr-3">{r.days.size}</td>
+                      <td className="py-2 pr-3">{r.saves}</td>
                       <td className="py-2 pr-3">{fmt(r.first)}</td>
                       <td className="py-2 pr-3">{fmt(r.end)}</td>
                       <td className="py-2">{r.left > 0 ? `${r.left} gg rimasti` : 'Scaduta'}</td>
