@@ -93,6 +93,8 @@ export default function IBDNews() {
 
   const visible = filter === 'all' ? articles : articles.filter((a) => (a.lang || 'it') === filter);
   const locale = lang === 'it' ? 'it-IT' : undefined;
+  const lastTs = articles.reduce((m, a) => Math.max(m, a.created_date ? Date.parse(a.created_date) : 0), 0);
+  const lastUpdate = lastTs ? new Date(lastTs) : null;
 
   const handleCreate = async (data) => {
     setOpen(false);
@@ -135,6 +137,11 @@ export default function IBDNews() {
             <RefreshCw className={cn('w-5 h-5', (loading || refreshing) && 'animate-spin')} />
           </Button>
         </div>
+        {lastUpdate && (
+          <p className="text-xs text-muted-foreground mb-4">
+            Ultimo aggiornamento: {lastUpdate.toLocaleString(locale, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+          </p>
+        )}
         {refreshing && (
           <p className="text-sm text-muted-foreground mb-4 flex items-center"><Loader2 className="w-4 h-4 animate-spin mr-2" />Aggiornamento notizie in corso, può richiedere circa un minuto…</p>
         )}
