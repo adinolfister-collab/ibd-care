@@ -8,6 +8,7 @@ import MedsFrame from '@/components/screenshots/MedsFrame';
 import ReportFrame from '@/components/screenshots/ReportFrame';
 import MapFrame from '@/components/screenshots/MapFrame';
 import AssistantFrame from '@/components/screenshots/AssistantFrame';
+import RealScreenshotCapture from '@/components/screenshots/RealScreenshotCapture';
 import FeatureGraphicFrame from '@/components/screenshots/FeatureGraphicFrame';
 import { Button } from '@/components/ui/button';
 import { Download, Loader2, Upload } from 'lucide-react';
@@ -110,6 +111,8 @@ export default function ScreenshotGenerator() {
             Ogni frame è uno screenshot tablet orizzontale 1280×800 per Google Play: scaricalo con il pulsante sotto.
           </p>
         </header>
+
+        <RealScreenshotCapture />
 
         {/* Feature graphic 1024×500 esportabile */}
         <section className="mb-10">
