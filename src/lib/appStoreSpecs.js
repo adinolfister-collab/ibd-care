@@ -20,12 +20,16 @@ export const APP_STORE_CATEGORIES = [
   },
   {
     id: 'tablet',
-    label: 'Schermate tablet (7" e 10")',
+    label: 'Schermate tablet da 10 pollici',
     requirement:
-      'PNG o JPEG, massimo 8 MB. Fino a 8 immagini per tipo di tablet. Ogni lato tra 320 e 3840 px; il lato lungo non può superare il doppio del lato corto.',
+      'PNG o JPEG, massimo 8 MB ciascuna. Fino a 8 immagini. Proporzioni 16:9 o 9:16; ogni lato tra 1080 e 7680 px.',
     mimes: ['image/png', 'image/jpeg'],
     maxBytes: 8 * MB,
-    dimOk: screenshotDims,
+    dimOk: (w, h) => {
+      const min = Math.min(w, h);
+      const max = Math.max(w, h);
+      return min >= 1080 && max <= 7680 && Math.abs(max * 9 - min * 16) <= 16;
+    },
     max: 8,
   },
   {
