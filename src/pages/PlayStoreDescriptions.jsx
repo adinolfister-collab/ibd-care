@@ -25,10 +25,10 @@ export default function PlayStoreDescriptions() {
           ))}
         </div>
         <h2 className="font-heading text-xl font-semibold text-foreground mt-10">
-          Immagini per l'App Store Apple
+          Immagini per il Google Play Store
         </h2>
         <p className="text-sm text-muted-foreground mt-1 mb-4">
-          Carica i file: vengono controllati formato e misura in pixel. Nulla viene ridimensionato né salvato su un server.
+          Carica i file: vengono controllati formato, misura in pixel e peso. Nulla viene ridimensionato né salvato su un server.
         </p>
         <div className="space-y-5">
           {APP_STORE_CATEGORIES.map((cat) => (

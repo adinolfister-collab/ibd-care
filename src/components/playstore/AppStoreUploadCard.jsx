@@ -79,7 +79,7 @@ export default function AppStoreUploadCard({ cat }) {
               <p className="text-xs text-muted-foreground">Trovato: {it.w}×{it.h} px, {it.file.type || 'tipo sconosciuto'}</p>
               <p className={`mt-1 flex items-center gap-1 text-xs font-medium ${it.ok ? 'text-emerald-700' : 'text-rose-700'}`}>
                 {it.ok ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-                {it.ok ? 'Conforme' : !it.mimeOk ? 'Formato non ammesso' : 'Misura non conforme'}
+                {it.ok ? 'Conforme' : !it.mimeOk ? 'Formato non ammesso' : 'Misura o peso non conformi'}
               </p>
               <div className="mt-2 flex gap-1">
                 <Button size="icon" variant="outline" title="Scarica" disabled={!it.ok} onClick={() => download(it)}>
