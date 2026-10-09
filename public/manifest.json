@@ -1,1 +1,56 @@
-{"name": "IBD Care", "short_name": "IBD Care", "description": "Diario sintomi IBD, alimentazione e terapie per chi vive con il morbo di Crohn e la colite ulcerosa.", "lang": "it", "start_url": "/", "scope": "/", "display": "standalone", "orientation": "portrait", "theme_color": "#1f4f4f", "background_color": "#fbfaf6", "categories": ["health", "medical", "lifestyle"], "icons": [{"src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}, {"src": "https://media.base44.com/images/public/6a80de4be246a7b03417c238/3cbe11905_generated_image.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]}
+{
+  "id": "/",
+  "name": "IBD Care",
+  "short_name": "IBDCare",
+  "description": "Applicazione di supporto clinico e monitoraggio terapeutico per pazienti con Malattie Infiammatorie Croniche Intestinali (Crohn e Colite Ulcerosa).",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0F766E",
+  "background_color": "#F8FAFC",
+  "lang": "it",
+  "dir": "ltr",
+  "categories": ["medical", "health", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "https://media.base44.com/images/public/6a80de4be246a7b03417c238/3cbe11905_generated_image.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Diario Sintomi",
+      "short_name": "Diario",
+      "description": "Registra i sintomi e scariche giornaliere",
+      "url": "/symptoms"
+    },
+    {
+      "name": "Promemoria Terapie",
+      "short_name": "Farmaci",
+      "description": "Controlla le dosi dei farmaci e infusioni",
+      "url": "/meds"
+    },
+    {
+      "name": "Contatta Centro MICI",
+      "short_name": "Centro MICI",
+      "description": "Contatti del team gastroenterologico",
+      "url": "/contact"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "it.ibdcare.app",
+      "url": "https://play.google.com/store/apps/details?id=it.ibdcare.app"
+    }
+  ]
+}
