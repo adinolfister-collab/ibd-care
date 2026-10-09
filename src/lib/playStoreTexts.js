@@ -28,23 +28,23 @@ export const PLAY_STORE_TEXTS = [
     label: 'Descrizione completa (IT)',
     hint: 'Campo "Descrizione" del Play Console, massimo 4000 caratteri.',
     limit: 4000,
-    text: `IBD Care è l'app pensata per chi vive con il morbo di Crohn o la colite ulcerosa. Ti aiuta a tenere tutto sotto controllo in un unico posto, con un'interfaccia calma e riservata.
+    text: `IBD Care è l'applicazione pensata per chi vive con il morbo di Crohn o la colite ulcerosa. Ti aiuta a tenere tutto sotto controllo in un unico posto, con un'interfaccia calma e riservata.
 
 - Diario dei sintomi: registra dolore, stanchezza, frequenza delle evacuazioni e consistenza con la scala di Bristol.
 - Diario alimentare: annota i pasti e scopri quali cibi scatenano i tuoi fastidi.
-- Gestione terapie: promemoria per non dimenticare i farmaci e calendario delle dosi.
-- Indici clinici: calcola Harvey-Bradshaw e Partial Mayo Score in pochi tocchi.
-- Report PDF: genera un report mensile chiaro e pronto da mostrare al tuo gastroenterologo.
-- Cary, l'assistente IA: risponde alle tue domande e ti aiuta a interpretare i tuoi dati.
+- Gestione delle terapie: promemoria per non dimenticare i farmaci e calendario delle dosi.
+- Indici clinici: calcola l'indice di Harvey-Bradshaw e il punteggio di Mayo parziale in pochi tocchi.
+- Relazione in PDF: crea una relazione mensile chiara e pronta da mostrare al tuo gastroenterologo.
+- Cary, l'assistente con intelligenza artificiale: risponde alle tue domande e ti aiuta a interpretare i tuoi dati.
 - Mappa dei centri IBD: trova centri di riferimento, farmacie e bagni pubblici vicino a te.
 - Notizie aggiornate sulle malattie infiammatorie intestinali.
-- Community: confrontati con altri pazienti in modo riservato.
+- Comunità: confrontati con altri pazienti in modo riservato.
 
 I tuoi dati sono tuoi, restano privati e protetti.
 
-IBD Care non è un dispositivo medico e non sostituisce il parere del tuo medico. Usalo come supporto al dialogo con il tuo gastroenterologo.
+IBD Care non è un dispositivo medico e non sostituisce il parere del tuo medico. Usala come supporto al dialogo con il tuo gastroenterologo.
 
-Prova gratis, sblocca report e indici clinici avanzati con Premium.`,
+Provala gratis e sblocca le relazioni e gli indici clinici avanzati con l'abbonamento a pagamento.`,
   },
   {
     id: 'short_en',
