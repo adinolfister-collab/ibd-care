@@ -101,14 +101,13 @@ export default function ScreenshotGenerator() {
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-900 py-8">
-      <div className="max-w-2xl mx-auto px-4">
+      <div className="max-w-3xl mx-auto px-4">
         <header className="mb-6 text-center">
           <h1 className="font-heading text-2xl font-semibold text-slate-800 dark:text-slate-100">
             Generatore di screenshot
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Apri questa pagina sul telefono e cattura uno screenshot per ogni frame.
-            Le didascalie sono già pronte per la scheda Google Play.
+            Ogni frame è uno screenshot tablet orizzontale 1280×800 per Google Play: scaricalo con il pulsante sotto.
           </p>
         </header>
 
@@ -204,7 +203,7 @@ export default function ScreenshotGenerator() {
               key={i}
               caption={CAPTIONS[i]}
               index={i}
-              fileName={`ibd-care-${FRAME_SLUGS[i]}-${String(i + 1).padStart(2, '0')}.png`}
+              fileName={`ibd-care-tablet-${FRAME_SLUGS[i]}-${String(i + 1).padStart(2, '0')}.png`}
             >
               <FrameContent />
             </Frame>
