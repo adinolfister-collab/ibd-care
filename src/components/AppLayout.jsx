@@ -7,6 +7,7 @@ import MobileBottomNav from '@/components/MobileBottomNav';
 import SiteMenu from '@/components/SiteMenu';
 import ExploreLabel from '@/components/ExploreLabel';
 import DemoExpiredGate from '@/components/DemoExpiredGate';
+import TrialReminderBanner from '@/components/TrialReminderBanner';
 import ScrollToTopButton from '@/components/ScrollToTopButton';
 import ShareMenu from '@/components/ShareMenu';
 import PageRatingWidget from '@/components/PageRatingWidget';
@@ -92,6 +93,7 @@ export default function AppLayout({ children }) {
           <DemoExpiredGate />
         ) : (
           <>
+            <TrialReminderBanner />
             <ExploreLabel />
             {children}
             <div className="mt-8 md:mt-10 flex items-center gap-3 py-4 border-y border-border">
