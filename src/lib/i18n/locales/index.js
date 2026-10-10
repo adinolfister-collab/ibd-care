@@ -11,7 +11,12 @@ import ro from './ro';
 import sq from './sq';
 import zh from './zh';
 
-export const dictionaries = { it, en, es, fr, de, pt, ru, pl, ro, sq, zh };
+import accessCopy from './accessCopy';
+
+const base = { it, en, es, fr, de, pt, ru, pl, ro, sq, zh };
+export const dictionaries = Object.fromEntries(
+  Object.entries(base).map(([code, dict]) => [code, { ...dict, ...(accessCopy[code] || {}) }])
+);
 
 export const supportedLanguages = [
   { code: 'it', label: 'Italiano', flag: '🇮🇹' },
