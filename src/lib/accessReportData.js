@@ -50,8 +50,6 @@ export const ACCESS_REPORT = {
         { area: 'Abbonamento', can: '/abbonamento — visualizzazione piani Premium' },
         { area: 'Founders', can: '/founders — classifica campagna founder' },
         { area: 'Auth', can: 'Login / Register / Forgot / Reset — avvio registrazione' },
-        { area: 'Demo', can: '/demo — interfaccia con dati simulati' },
-        { area: 'Pagine demo-enabled', can: '/symptoms, /food, /meds, /esami, /trends… → entra in Demo-Trial' },
       ],
     },
     {
@@ -106,7 +104,6 @@ export const ACCESS_REPORT = {
 
   notes: [
     'Le funzioni Premium con vere chiamate AI/LLM (Scanner, Assistente, PDF, correlazioni) consumano credit di integrazione — per questo sono gated.',
-    'Per guest/demo le risposte AI sono simulate (demoResponses) per mostrare valore senza consumare crediti né innescare paywall (try before you buy).',
     'Piani Stripe attivi: €49,99/anno, €4,99/mese.',
     'Founder: grant lifetime o three_months bypassano Stripe (Premium gratuito permanente o per 3 mesi).',
   ],

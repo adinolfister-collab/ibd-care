@@ -74,7 +74,6 @@ const PAGE_LABELS = {
   '/': 'Home',
   '/about': 'Chi siamo',
   '/privacy': 'Privacy',
-  '/demo': 'Demo',
   '/scarica': 'Scarica app',
   '/contact': 'Contatti',
   '/founders': 'Founders',

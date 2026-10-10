@@ -85,7 +85,6 @@ export const APP_BASE_URL = 'https://ibd-care.it';
 export const APP_PAGES = [
   { path: '', label: 'Nessun link' },
   { path: '/', label: 'Home' },
-  { path: '/demo', label: 'Demo interattiva' },
   { path: '/scarica', label: 'Scarica app' },
   { path: '/founders', label: 'Campagna Founder' },
   { path: '/abbonamento', label: 'Abbonamento' },
