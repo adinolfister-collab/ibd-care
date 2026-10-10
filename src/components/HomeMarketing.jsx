@@ -6,7 +6,6 @@ import { Image } from '@/components/ui/image';
 import { themeImage } from '@/lib/themeImages';
 import AppLayout from '@/components/AppLayout';
 import PublicFooter from '@/components/PublicFooter';
-import FoundersBanner from '@/components/FoundersBanner';
 import TopRightActions from '@/components/TopRightActions';
 import LanguageMenu from '@/components/LanguageMenu';
 import { Button } from '@/components/ui/button';
@@ -48,14 +47,8 @@ export default function HomeMarketing() {
               {t('landing.hero_subtitle')}
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              <Link to="/demo">
-                <button className="inline-flex items-center gap-2 h-14 px-8 rounded-xl bg-terracotta text-terracotta-foreground font-semibold text-base hover:bg-terracotta/90 transition-all shadow-lg shadow-terracotta/30 hover:shadow-xl hover:-translate-y-0.5">
-                  <Play className="w-5 h-5" />
-                  {t('landing.hero_cta_demo')}
-                </button>
-              </Link>
               <Link to="/register">
-                <button className="inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-primary-foreground/10 text-primary-foreground font-medium text-sm border border-primary-foreground/40 hover:bg-primary-foreground/20 transition-colors">
+                <button className="inline-flex items-center gap-2 h-14 px-8 rounded-xl bg-terracotta text-terracotta-foreground font-semibold text-base hover:bg-terracotta/90 transition-all shadow-lg shadow-terracotta/30 hover:shadow-xl hover:-translate-y-0.5">
                   {t('landing.hero_cta_register')}
                 </button>
               </Link>
@@ -92,24 +85,6 @@ export default function HomeMarketing() {
               );
             })}
           </div>
-        </section>
-
-        {/* DEMO PROMO */}
-        <section className="mb-10">
-          <Link to="/demo" className="block rounded-2xl border-2 border-terracotta/50 bg-gradient-to-br from-terracotta/10 to-accent/40 p-6 md:p-8 hover:shadow-md transition-shadow">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-terracotta/20 flex items-center justify-center shrink-0">
-                <Play className="w-6 h-6 text-terracotta" />
-              </div>
-              <div>
-                <h2 className="font-heading text-xl md:text-2xl font-semibold text-foreground">{t('home.demo_title')}</h2>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed mt-2 max-w-md">{t('home.demo_desc')}</p>
-                <span className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-terracotta">
-                  {t('home.demo_cta')} <ArrowRight className="w-4 h-4" />
-                </span>
-              </div>
-            </div>
-          </Link>
         </section>
 
         {/* CARY + REPORT */}
@@ -182,7 +157,6 @@ export default function HomeMarketing() {
           </div>
         </section>
 
-        <div className="mb-8"><FoundersBanner /></div>
 
         {/* CTA FINALE */}
         <section className="mb-10">

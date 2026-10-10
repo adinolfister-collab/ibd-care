@@ -2,13 +2,14 @@ import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import { BiometricLockProvider } from '@/lib/biometric';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import RequireLogin from '@/components/RequireLogin';
 import { LanguageProvider } from '@/lib/i18n';
 import { GuestPreviewProvider } from '@/lib/GuestPreviewContext';
 import { ThemeProvider } from 'next-themes';
@@ -22,16 +23,13 @@ import { useAndroidBack } from '@/hooks/useAndroidBack';
 // Route-based code-splitting: each page is loaded on demand to keep the
 // initial WebView bundle small and speed up first paint.
 const Home = lazy(() => import('@/pages/Home'));
-const Symptoms = lazy(() => import('@/pages/Symptoms'));
 const Food = lazy(() => import('@/pages/Food'));
 const Meds = lazy(() => import('@/pages/Meds'));
 const MedicationCalendarPage = lazy(() => import('@/pages/MedicationCalendar'));
-const Records = lazy(() => import('@/pages/Records'));
 const ServicesMap = lazy(() => import('@/pages/ServicesMap'));
 const Trends = lazy(() => import('@/pages/Trends'));
 const SymptomCharts = lazy(() => import('@/pages/SymptomCharts'));
 const Assistant = lazy(() => import('@/pages/Assistant'));
-const Community = lazy(() => import('@/pages/Community'));
 const Summary = lazy(() => import('@/pages/Summary'));
 const Settings = lazy(() => import('@/pages/Settings'));
 const Abbonamento = lazy(() => import('@/pages/Abbonamento'));
@@ -56,18 +54,13 @@ const MarketingAdmin = lazy(() => import('@/pages/MarketingAdmin'));
 const ScreenshotGenerator = lazy(() => import('@/pages/ScreenshotGenerator'));
 const PlayStoreDescriptions = lazy(() => import('@/pages/PlayStoreDescriptions'));
 const ProductDetail = lazy(() => import('@/pages/ProductDetail'));
-const Founders = lazy(() => import('@/pages/Founders'));
 const Invita = lazy(() => import('@/pages/Invita'));
 const PreparaVisita = lazy(() => import('@/pages/PreparaVisita'));
 const CalorieAnalysis = lazy(() => import('@/pages/CalorieAnalysis'));
-const GuideIndex = lazy(() => import('@/pages/GuideIndex'));
-const GuideArticle = lazy(() => import('@/pages/GuideArticle'));
-const AdminGuide = lazy(() => import('@/pages/AdminGuide'));
 const Login = lazy(() => import('@/pages/Login'));
 const Register = lazy(() => import('@/pages/Register'));
 const ForgotPassword = lazy(() => import('@/pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
-const Demo = lazy(() => import('@/pages/Demo'));
 const SharedReport = lazy(() => import('@/pages/SharedReport'));
 const ScaricaApp = lazy(() => import('@/pages/ScaricaApp'));
 const Supporto = lazy(() => import('@/pages/Supporto'));
@@ -112,56 +105,46 @@ const AuthenticatedApp = () => {
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
         <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
         <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
-        {/* Public pages: navigable without login. Diario usable as guest (local). */}
+        {/* Public pages: solo Home e About (piu' informativa privacy e link report condivisi) */}
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
-        <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
         <Route path="/report/:shareId" element={<SharedReport />} />
-        <Route path="/scarica" element={<PageTransition><ScaricaApp /></PageTransition>} />
-        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-        <Route path="/founders" element={<PageTransition><Founders /></PageTransition>} />
-        <Route path="/invita" element={<PageTransition><Invita /></PageTransition>} />
-        <Route path="/guide" element={<PageTransition><GuideIndex lang="it" /></PageTransition>} />
-        <Route path="/guide/:slug" element={<PageTransition><GuideArticle lang="it" /></PageTransition>} />
-        <Route path="/en/guide" element={<PageTransition><GuideIndex lang="en" /></PageTransition>} />
-        <Route path="/en/guide/:slug" element={<PageTransition><GuideArticle lang="en" /></PageTransition>} />
-        <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />
-        <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
-        {/* Deprecated /guida -> /demo redirect (SEO/link legacy) */}
-        <Route path="/guida" element={<Navigate to="/demo" replace />} />
-        <Route path="/community" element={null} />
-        <Route path="/supporto" element={<PageTransition><Supporto /></PageTransition>} />
-        <Route path="/symptoms" element={null} />
-        <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
-        <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
-        <Route path="/meds/calendar" element={<PageTransition><MedicationCalendarPage /></PageTransition>} />
-        <Route path="/visita" element={<PageTransition><PreparaVisita /></PageTransition>} />
-        <Route path="/records" element={null} />
-        <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
-        <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
-        <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
-        <Route path="/correlazioni" element={<PageTransition><Correlazioni /></PageTransition>} />
-        <Route path="/analisi" element={<PageTransition><Analisi /></PageTransition>} />
-        <Route path="/trend-mensili" element={<PageTransition><TrendMensili /></PageTransition>} />
-        <Route path="/calorie-analysis" element={<PageTransition><CalorieAnalysis /></PageTransition>} />
-        <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
-        <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
-        <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
-        <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
-        {/* Shop is public (standby vetrina for all visitors); account/settings/admin require login */}
-        <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-        <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
-        {/* Login required: account, settings, admin */}
-        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        {/* Tutto il resto richiede registrazione (trial 45 giorni, poi sola lettura) */}
+        <Route element={<ProtectedRoute unauthenticatedElement={<RequireLogin />} />}>
+          <Route path="/scarica" element={<PageTransition><ScaricaApp /></PageTransition>} />
+          <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+          <Route path="/invita" element={<PageTransition><Invita /></PageTransition>} />
+          <Route path="/news" element={<PageTransition><IBDNews /></PageTransition>} />
+          <Route path="/news/:id" element={<PageTransition><ArticleDetail /></PageTransition>} />
+          <Route path="/community" element={null} />
+          <Route path="/supporto" element={<PageTransition><Supporto /></PageTransition>} />
+          <Route path="/symptoms" element={null} />
+          <Route path="/food" element={<PageTransition><Food /></PageTransition>} />
+          <Route path="/meds" element={<PageTransition><Meds /></PageTransition>} />
+          <Route path="/meds/calendar" element={<PageTransition><MedicationCalendarPage /></PageTransition>} />
+          <Route path="/visita" element={<PageTransition><PreparaVisita /></PageTransition>} />
+          <Route path="/records" element={null} />
+          <Route path="/esami" element={<PageTransition><Esami /></PageTransition>} />
+          <Route path="/trends" element={<PageTransition><Trends /></PageTransition>} />
+          <Route path="/symptom-charts" element={<PageTransition><SymptomCharts /></PageTransition>} />
+          <Route path="/correlazioni" element={<PageTransition><Correlazioni /></PageTransition>} />
+          <Route path="/analisi" element={<PageTransition><Analisi /></PageTransition>} />
+          <Route path="/trend-mensili" element={<PageTransition><TrendMensili /></PageTransition>} />
+          <Route path="/calorie-analysis" element={<PageTransition><CalorieAnalysis /></PageTransition>} />
+          <Route path="/assistant" element={<PageTransition><Assistant /></PageTransition>} />
+          <Route path="/map" element={<PageTransition><ServicesMap /></PageTransition>} />
+          <Route path="/summary" element={<PageTransition><Summary /></PageTransition>} />
+          <Route path="/abbonamento" element={<PageTransition><Abbonamento /></PageTransition>} />
+          <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+          <Route path="/shop/:slug" element={<PageTransition><ProductDetail /></PageTransition>} />
           <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
           <Route path="/account" element={<PageTransition><Account /></PageTransition>} />
-          <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} requireRole="admin" />}>
+          <Route element={<ProtectedRoute unauthenticatedElement={<RequireLogin />} requireRole="admin" />}>
             <Route path="/admin/conversioni" element={<PageTransition><AdminConversions /></PageTransition>} />
             <Route path="/admin/guest-preview" element={<PageTransition><AdminGuestPreview /></PageTransition>} />
             <Route path="/admin/supporto" element={<PageTransition><AdminSupport /></PageTransition>} />
             <Route path="/admin/access-report" element={<PageTransition><AdminAccessReport /></PageTransition>} />
-            <Route path="/admin/guide" element={<PageTransition><AdminGuide /></PageTransition>} />
             <Route path="/admin/business" element={<PageTransition><AdminBusiness /></PageTransition>} />
             <Route path="/admin/marketing" element={<PageTransition><MarketingAdmin /></PageTransition>} />
             <Route path="/shop/admin" element={<PageTransition><ShopAdmin /></PageTransition>} />

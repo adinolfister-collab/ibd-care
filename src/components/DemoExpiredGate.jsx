@@ -55,9 +55,6 @@ export default function DemoExpiredGate() {
           </Button>
         </Link>
       </div>
-      <Link to="/founders" className="mt-4 inline-flex items-center gap-1.5 text-sm text-terracotta font-medium hover:underline">
-        <Crown className="w-4 h-4" /> {t('demo.expired_cta_founders')}
-      </Link>
     </div>
   );
 }

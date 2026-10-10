@@ -44,7 +44,6 @@ const RISORSE = [
   { to: '/assistant', key: 'nav.assistant', icon: Bot },
   { to: '/trend-mensili', key: 'nav.trend_mensili', icon: CalendarRange },
   { to: '/map', key: 'nav.map', icon: MapPin },
-  { to: '/demo', key: 'nav.guide', icon: BookOpen },
   { to: '/about', key: 'nav.about', icon: Info },
   { to: '/contact', key: 'nav.contact', icon: Mail },
 ];
@@ -52,7 +51,6 @@ const RISORSE = [
 // Account: mostra Impostazioni/Profilo solo se autenticato.
 const ACCOUNT_BASE = [
   { to: '/abbonamento', key: 'nav.abbonamento', icon: CreditCard },
-  { to: '/founders', key: 'nav.founders', icon: Crown, founder: true },
   { to: '/shop', key: 'nav.shop', icon: ShoppingBag },
 ];
 const ACCOUNT_AUTH = [

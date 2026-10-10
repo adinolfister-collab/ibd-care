@@ -13,7 +13,6 @@ import LanguageMenu from '@/components/LanguageMenu';
 import NativeAppButton from '@/components/NativeAppButton';
 import AbbonamentoFeatures from '@/components/AbbonamentoFeatures';
 import AbbonamentoPreview from '@/components/AbbonamentoPreview';
-import FoundersBanner from '@/components/FoundersBanner';
 
 // Public subscription page. Serves as the redirect target when a visitor
 // tries to use a protected page without being logged in / subscribed.
@@ -45,7 +44,6 @@ export default function Abbonamento() {
       <div className="w-full max-w-2xl">
         <PageHeader title={t('abb.premium_title')} subtitle={t('premium.subtitle')} />
         <PageEditorial pageKey="abbonamento" />
-        <div className="mb-6"><FoundersBanner /></div>
         <AbbonamentoPreview />
         <AbbonamentoFeatures />
 

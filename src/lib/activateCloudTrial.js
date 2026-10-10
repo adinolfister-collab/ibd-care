@@ -10,17 +10,15 @@ import { getDemoTrialState, clearDemoTrialFlag } from '@/lib/demoTrial';
 // Una sola trial per account: idempotente, non riattiva se free_until già
 // presente (futuro o passato).
 
-export const TRIAL_FRESH_DAYS = 30;
+export const TRIAL_FRESH_DAYS = 45;
 export const GRACE_DAYS = 7;
 const DAY_MS = 86400000;
 
 // Calcola i giorni di trial cloud e la sorgente, in base allo stato demo.
 // Funzione pura (nessun side effect), riusabile lato client.
 export function computeCloudTrialDays() {
-  const demo = getDemoTrialState();
-  if (!demo.started) return { days: TRIAL_FRESH_DAYS, source: 'fresh' };
-  if (demo.expired) return { days: GRACE_DAYS, source: 'grace' };
-  return { days: Math.max(1, demo.daysRemaining), source: 'demo_transfer' };
+  // La demo e' stata rimossa: ogni nuovo account riceve 45 giorni pieni.
+  return { days: TRIAL_FRESH_DAYS, source: 'fresh' };
 }
 
 // Attiva la trial cloud per l'utente autenticato, se non ne ha già una.

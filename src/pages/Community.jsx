@@ -8,7 +8,6 @@ import PageHeader from '@/components/PageHeader';
 import PageEditorial from '@/components/PageEditorial';
 import EditorialBlock from '@/components/EditorialBlock';
 import MagazineEssay from '@/components/MagazineEssay';
-import CommunityFoundersRanking from '@/components/CommunityFoundersRanking';
 import ShareMenu from '@/components/ShareMenu';
 import AppLayout from '@/components/AppLayout';
 import GuestSignupCard from '@/components/GuestSignupCard';
@@ -71,7 +70,6 @@ export default function Community() {
       />
       <ReadonlyBanner />
       <PageEditorial pageKey="community" />
-      <CommunityFoundersRanking />
 
       {/* Tabs */}
       <div className="flex items-center gap-2 mb-5 border-b border-border">

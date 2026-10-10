@@ -1,5 +1,6 @@
 import React, { createContext, lazy, Suspense, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
 
 // Context che comunica ad AppLayout se e' il tab "attivo" (visibile) o un tab
 // persistente inattivo (intero layout nascosto via display:none). Predefinito
@@ -27,6 +28,7 @@ const PERSISTENT_PATHS = PERSISTENT.map((p) => p.path);
 // scroll del tab al rientro.
 export default function PersistentTabs() {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
   const activePath = location.pathname;
   const scrollRef = useRef({});
   const lastPathRef = useRef(null);
@@ -49,6 +51,8 @@ export default function PersistentTabs() {
       return () => window.clearTimeout(id);
     }
   }, [activePath]);
+
+  if (!isAuthenticated) return null;
 
   return (
     <Suspense fallback={null}>
