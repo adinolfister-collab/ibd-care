@@ -12,10 +12,11 @@ import sq from './sq';
 import zh from './zh';
 
 import accessCopy from './accessCopy';
+import inviteCopy from './inviteCopy';
 
 const base = { it, en, es, fr, de, pt, ru, pl, ro, sq, zh };
 export const dictionaries = Object.fromEntries(
-  Object.entries(base).map(([code, dict]) => [code, { ...dict, ...(accessCopy[code] || {}) }])
+  Object.entries(base).map(([code, dict]) => [code, { ...dict, ...(accessCopy[code] || {}), ...(inviteCopy[code] || {}) }])
 );
 
 export const supportedLanguages = [
