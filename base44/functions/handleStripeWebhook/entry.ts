@@ -27,6 +27,12 @@ export default async function(req: Request): Promise<Response> {
     const appId = obj && obj.metadata ? obj.metadata.base44_app_id : undefined;
     const ownAppId = Deno.env.get('BASE44_APP_ID');
 
+    // Ignora i pagamenti di self-test di Base44
+    if ((event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded')
+      && obj?.metadata?.base44_test_checkout === 'true') {
+      return Response.json({ received: true, type: event.type, skipped: true });
+    }
+
     // Ignora eventi provenienti da altre app che condividono lo stesso account Stripe
     if (appId && ownAppId && appId !== ownAppId) {
       console.log(`Stripe event ${event.type} skipped: foreign app=${appId}`);
