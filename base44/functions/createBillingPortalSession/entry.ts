@@ -21,7 +21,8 @@ export default async function(req: Request): Promise<Response> {
     const customer = (custData.data || []).find((c) => (c.email || '').toLowerCase() === user.email.toLowerCase());
     if (!customer) return Response.json({ error: 'Nessun cliente Stripe trovato' }, { status: 404 });
 
-    const origin = new URL(req.url).origin;
+    const origin = (req.headers.get('X-Base44-App-Url') || '').replace(/\/$/, '');
+    if (!origin) return Response.json({ error: 'App URL mancante' }, { status: 400 });
     const body = new URLSearchParams();
     body.set('customer', customer.id);
     body.set('return_url', `${origin}/abbonamento`);

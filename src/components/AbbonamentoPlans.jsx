@@ -25,7 +25,7 @@ export default function AbbonamentoPlans() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('checkout') === 'success') setStatus('success');
+    if (params.get('checkout') === 'success') { setStatus('success'); clearSubscriptionCache(); }
     if (params.get('checkout') === 'cancel') setStatus('cancel');
     (async () => {
       try {
@@ -54,17 +54,22 @@ export default function AbbonamentoPlans() {
         throw new Error(data?.error || t('premium.checkout_error'));
       }
       // Stripe web fallback
-      if (window.self !== window.top) {
-        setError(t('premium.iframe_blocked'));
-        setLoading(null);
-        return;
-      }
-      const res = await base44.functions.invoke('createSubscriptionCheckout', { plan });
-      if (res.data?.url) {
-        window.location.href = res.data.url;
-      } else {
-        setError(res.data?.error || t('premium.checkout_error'));
-        setLoading(null);
+      const isFramed = window.self !== window.top;
+      const checkoutTab = isFramed ? window.open('', '_blank') : null;
+      if (isFramed && !checkoutTab) throw new Error('Allow popups to continue to checkout.');
+      if (checkoutTab) checkoutTab.opener = null;
+      try {
+        const res = await base44.functions.invoke('createSubscriptionCheckout', { plan });
+        if (!res.data?.url) throw new Error(res.data?.error || t('premium.checkout_error'));
+        if (checkoutTab) {
+          checkoutTab.location.replace(res.data.url);
+          setLoading(null);
+        } else {
+          window.location.assign(res.data.url);
+        }
+      } catch (err) {
+        checkoutTab?.close();
+        throw err;
       }
     } catch (e) {
       setError(e.message || t('premium.checkout_error'));
@@ -73,21 +78,22 @@ export default function AbbonamentoPlans() {
   };
 
   const manage = async () => {
-    if (window.self !== window.top) {
-      setError(t('premium.iframe_blocked'));
-      return;
-    }
     setManageLoading(true);
     setError('');
+    const isFramed = window.self !== window.top;
+    const tab = isFramed ? window.open('', '_blank') : null;
+    if (tab) tab.opener = null;
     try {
       const res = await base44.functions.invoke('createBillingPortalSession', {});
-      if (res.data?.url) {
-        window.location.href = res.data.url;
-      } else {
-        setError(res.data?.error || t('premium.checkout_error'));
+      if (!res.data?.url) throw new Error(res.data?.error || t('premium.checkout_error'));
+      if (tab) {
+        tab.location.replace(res.data.url);
         setManageLoading(false);
+      } else {
+        window.location.assign(res.data.url);
       }
     } catch (e) {
+      tab?.close();
       setError(e.message || t('premium.checkout_error'));
       setManageLoading(false);
     }

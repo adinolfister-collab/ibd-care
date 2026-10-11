@@ -24,7 +24,8 @@ export default async function(req: Request): Promise<Response> {
     if (!secretKey) return Response.json({ error: 'Stripe non configurato' }, { status: 500 });
     if (!priceId) return Response.json({ error: 'Piano non ancora configurato' }, { status: 503 });
 
-    const origin = new URL(req.url).origin;
+    const origin = (req.headers.get('X-Base44-App-Url') || '').replace(/\/$/, '');
+    if (!origin) return Response.json({ error: 'App URL mancante' }, { status: 400 });
     const successUrl = `${origin}/abbonamento?checkout=success`;
     const cancelUrl = `${origin}/abbonamento?checkout=cancel`;
 
