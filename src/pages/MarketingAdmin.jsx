@@ -10,6 +10,7 @@ import PlatformPreview from '@/components/marketing/PlatformPreview';
 import FounderInvitations from '@/components/marketing/FounderInvitations';
 import UserMonitor from '@/components/marketing/UserMonitor';
 import LogoGenerator from '@/components/marketing/LogoGenerator';
+import SocialImageGenerator from '@/components/marketing/SocialImageGenerator';
 import { SOCIAL_TEMPLATES, PLATFORMS, TONES, LANGS, APP_BASE_URL, APP_PAGES } from '@/lib/socialTemplates';
 import { Image } from '@/components/ui/image';
 import { Card, CardContent } from '@/components/ui/card';
@@ -105,7 +106,7 @@ export default function MarketingAdmin() {
       />
 
       {/* Section switch */}
-      <div className="mb-6 flex gap-2 border-b border-border">
+      <div className="mb-6 flex gap-2 border-b border-border overflow-x-auto">
         <button
           onClick={() => setSection('social')}
           className={cn(
@@ -142,6 +143,15 @@ export default function MarketingAdmin() {
         >
           <Sparkles className="w-3.5 h-3.5" /> Generatore Logo
         </button>
+        <button
+          onClick={() => setSection('image')}
+          className={cn(
+            'px-4 py-2 text-sm border-b-2 -mb-px transition-colors flex items-center gap-1.5 whitespace-nowrap',
+            section === 'image' ? 'border-terracotta text-terracotta font-medium' : 'border-transparent text-muted-foreground hover:text-foreground'
+          )}
+        >
+          <Sparkles className="w-3.5 h-3.5" /> Immagini post
+        </button>
       </div>
 
       {section === 'founders' ? (
@@ -150,6 +160,8 @@ export default function MarketingAdmin() {
         <UserMonitor />
       ) : section === 'logo' ? (
         <LogoGenerator />
+      ) : section === 'image' ? (
+        <SocialImageGenerator initialText={postFor(platformKey)?.text || topic} />
       ) : (
         <>
           {/* Template library */}
