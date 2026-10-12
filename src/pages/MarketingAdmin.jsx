@@ -161,7 +161,10 @@ export default function MarketingAdmin() {
       ) : section === 'logo' ? (
         <LogoGenerator />
       ) : section === 'image' ? (
-        <SocialImageGenerator initialText={postFor(platformKey)?.text || topic} />
+        <SocialImageGenerator
+          initialText={postFor(platformKey)?.text || topic}
+          posts={result ? (result.platform === 'all' ? result.posts || {} : { [result.platform]: result.post }) : {}}
+        />
       ) : (
         <>
           {/* Template library */}

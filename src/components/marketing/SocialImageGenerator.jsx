@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import PlatformPreview from '@/components/marketing/PlatformPreview';
 
 const FORMATS = [
   { id: 'square', label: 'Quadrato' },
@@ -14,7 +15,15 @@ const FORMATS = [
   { id: 'landscape', label: 'Orizzontale' },
 ];
 
-export default function SocialImageGenerator({ initialText = '' }) {
+const PREVIEW_PLATFORMS = [
+  { id: 'facebook', label: 'Facebook' },
+  { id: 'instagram', label: 'Instagram' },
+  { id: 'linkedin', label: 'LinkedIn' },
+  { id: 'x', label: 'X' },
+];
+
+export default function SocialImageGenerator({ initialText = '', posts = {} }) {
+  const [previewPlatform, setPreviewPlatform] = useState('facebook');
   const [text, setText] = useState(initialText);
   const [format, setFormat] = useState('square');
   const [loading, setLoading] = useState(false);
@@ -120,6 +129,28 @@ export default function SocialImageGenerator({ initialText = '' }) {
             <div className="space-y-3">
               <div className="rounded-xl overflow-hidden border border-border bg-muted/30">
                 <Image src={url} alt="Immagine generata" fittingType="fit" className="w-full" />
+              </div>
+              <div className="pt-3 border-t border-border">
+                <p className="text-xs text-muted-foreground mb-2">Anteprima del post prima di condividere</p>
+                <div className="flex gap-1.5 mb-3 overflow-x-auto">
+                  {PREVIEW_PLATFORMS.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => setPreviewPlatform(p.id)}
+                      className={cn(
+                        'px-3 py-1 rounded-full text-sm border whitespace-nowrap transition-colors',
+                        previewPlatform === p.id ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border hover:bg-accent'
+                      )}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+                <PlatformPreview
+                  platform={previewPlatform}
+                  post={posts[previewPlatform] || { text }}
+                  imageUrl={url}
+                />
               </div>
               <div className="flex gap-2">
                 <Button onClick={download} className="bg-terracotta text-terracotta-foreground hover:bg-terracotta/90">

@@ -11,7 +11,12 @@ function assembled(post) {
   return parts.join('\n');
 }
 
-export default function PlatformPreview({ platform, post }) {
+function Media({ imageUrl, className, children }) {
+  if (imageUrl) return <img src={imageUrl} alt="Immagine del post" className="w-full object-cover" />;
+  return <div className={className}>{children}</div>;
+}
+
+export default function PlatformPreview({ platform, post, imageUrl }) {
   const text = assembled(post);
   if (!post || !post.text) {
     return (
@@ -22,13 +27,13 @@ export default function PlatformPreview({ platform, post }) {
   }
   switch (platform) {
     case 'facebook':
-      return <FacebookPreview text={text} />;
+      return <FacebookPreview text={text} imageUrl={imageUrl} />;
     case 'linkedin':
-      return <LinkedInPreview text={text} />;
+      return <LinkedInPreview text={text} imageUrl={imageUrl} />;
     case 'x':
-      return <XPreview text={text} />;
+      return <XPreview text={text} imageUrl={imageUrl} />;
     case 'instagram':
-      return <InstagramPreview text={text} />;
+      return <InstagramPreview text={text} imageUrl={imageUrl} />;
     default:
       return null;
   }
@@ -42,7 +47,7 @@ function Avatar() {
   );
 }
 
-function FacebookPreview({ text }) {
+function FacebookPreview({ text, imageUrl }) {
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="p-3 flex items-start gap-2.5">
@@ -54,9 +59,9 @@ function FacebookPreview({ text }) {
         <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
       </div>
       <p className="px-3 pb-3 text-sm whitespace-pre-wrap leading-relaxed">{text}</p>
-      <div className="h-32 bg-gradient-to-br from-primary/10 via-terracotta/10 to-accent/40 flex items-center justify-center">
+      <Media imageUrl={imageUrl} className="h-32 bg-gradient-to-br from-primary/10 via-terracotta/10 to-accent/40 flex items-center justify-center">
         <HeartPulse className="w-10 h-10 text-primary/40" />
-      </div>
+      </Media>
       <div className="flex items-center justify-between px-3 py-2 text-xs text-muted-foreground border-t border-border">
         <span className="flex items-center gap-1"><ThumbsUp className="w-3.5 h-3.5 text-blue-600" /> Piace</span>
         <span>12 commenti · 4 condivisioni</span>
@@ -70,7 +75,7 @@ function FacebookPreview({ text }) {
   );
 }
 
-function LinkedInPreview({ text }) {
+function LinkedInPreview({ text, imageUrl }) {
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="p-3 flex items-start gap-2.5">
@@ -82,10 +87,10 @@ function LinkedInPreview({ text }) {
         <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
       </div>
       <p className="px-3 pb-3 text-sm whitespace-pre-wrap leading-relaxed">{text}</p>
-      <div className="h-28 bg-gradient-to-br from-sky-100 to-primary/10 flex items-center justify-center gap-2 text-primary/50">
+      <Media imageUrl={imageUrl} className="h-28 bg-gradient-to-br from-sky-100 to-primary/10 flex items-center justify-center gap-2 text-primary/50">
         <Briefcase className="w-8 h-8" />
         <span className="text-sm font-medium">ibd-care.it</span>
-      </div>
+      </Media>
       <div className="flex items-center justify-between px-3 py-2 text-xs text-muted-foreground border-t border-border">
         <span>👍 48 · ❤️ 12</span>
         <span>3 commenti</span>
@@ -100,7 +105,7 @@ function LinkedInPreview({ text }) {
   );
 }
 
-function XPreview({ text }) {
+function XPreview({ text, imageUrl }) {
   return (
     <div className="rounded-xl border border-border bg-card p-3">
       <div className="flex items-start gap-2.5">
@@ -112,6 +117,7 @@ function XPreview({ text }) {
             <span className="text-muted-foreground text-sm">· ora</span>
           </div>
           <p className="text-sm whitespace-pre-wrap leading-relaxed mt-0.5">{text}</p>
+          {imageUrl && <img src={imageUrl} alt="Immagine del post" className="w-full rounded-xl border border-border mt-2" />}
           <div className="flex items-center gap-4 mt-3 text-muted-foreground text-xs">
             <span className="flex items-center gap-1"><MessageCircle className="w-3.5 h-3.5" /> 8</span>
             <span className="flex items-center gap-1"><Send className="w-3.5 h-3.5" /> 5</span>
@@ -123,7 +129,7 @@ function XPreview({ text }) {
   );
 }
 
-function InstagramPreview({ text }) {
+function InstagramPreview({ text, imageUrl }) {
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="p-2.5 flex items-center gap-2.5">
@@ -131,9 +137,9 @@ function InstagramPreview({ text }) {
         <p className="font-semibold text-sm leading-tight">ibdcare</p>
         <MoreHorizontal className="w-4 h-4 text-muted-foreground ml-auto" />
       </div>
-      <div className="aspect-square bg-gradient-to-br from-primary/20 via-terracotta/20 to-pink-200 flex items-center justify-center">
+      <Media imageUrl={imageUrl} className="aspect-square bg-gradient-to-br from-primary/20 via-terracotta/20 to-pink-200 flex items-center justify-center">
         <HeartPulse className="w-16 h-16 text-primary/40" />
-      </div>
+      </Media>
       <div className="flex items-center gap-4 px-3 py-2">
         <HeartPulse className="w-5 h-5" />
         <MessageCircle className="w-5 h-5" />
