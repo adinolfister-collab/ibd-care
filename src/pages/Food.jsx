@@ -27,6 +27,7 @@ import EmptyState from '@/components/EmptyState';
 import FoodFormDialog from '@/components/FoodFormDialog';
 import FoodCatalogManager from '@/components/FoodCatalogManager';
 import DailyNutrition from '@/components/DailyNutrition';
+import MealPhotoButton from '@/components/food/MealPhotoButton';
 import FoodDateNavigator from '@/components/food/FoodDateNavigator';
 import CalorieBalanceCard from '@/components/food/CalorieBalanceCard';
 import ManualActivityForm from '@/components/food/ManualActivityForm';
@@ -213,6 +214,7 @@ export default function Food() {
               <Button onClick={() => setTplMgrOpen(true)} variant="outline" className="rounded-xl"><BookMarked className="w-4 h-4 mr-1.5" />{t('food.templates')}</Button>
             )}
             <Button onClick={openNew} className="rounded-xl"><Plus className="w-4 h-4 mr-1.5" />{t('food.add')}</Button>
+            {isAuthenticated && <MealPhotoButton guard={guard} onSaved={refresh} />}
             <FoodReportButton foods={items} />
           </div>
         }

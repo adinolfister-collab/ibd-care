@@ -35,8 +35,8 @@ export default async function(req) {
     const fileUrl = body && body.file_url;
     if (!validFileUrl(fileUrl)) return Response.json({ error: 'file_url non valido' }, { status: 400 });
 
-    // 1) Classificazione
-    const cls = await base44.asServiceRole.integrations.Core.InvokeLLM({
+    // 1) Classificazione (saltata se il chiamante sa gia' che e' un piatto)
+    const cls = body.category_hint === 'piatto' ? { category: 'piatto' } : await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt: `Sei Cary. Osserva l'immagine o il documento allegato e classificalo in UNA di queste categorie:
 - "referto_medico": referto, esame, visita, lettera medica, prescrizione o altro documento sanitario
 - "attivita": schermata di un'app di salute/fitness (Samsung Health, Apple Health, Google Fit, Fitbit) che mostra passi, calorie consumate o distanza
