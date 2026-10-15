@@ -1,4 +1,5 @@
-import React, { createContext, lazy, Suspense, useEffect, useRef } from 'react';
+import React, { createContext, Suspense, useEffect, useRef } from 'react';
+import { lazyWithRetry as lazy } from '@/lib/lazyWithRetry';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 
