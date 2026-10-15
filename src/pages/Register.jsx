@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -33,9 +33,15 @@ function captureReferral() {
   } catch (e) { /* ignore */ }
 }
 
+// Eventi del funnel di registrazione (non bloccanti).
+function step(name) {
+  try { base44.analytics.track({ eventName: name }); } catch (e) { /* noop */ }
+}
+
 export default function Register() {
   const { t } = useI18n();
   captureReferral();
+  useEffect(() => { step('register_form_viewed'); }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -57,12 +63,15 @@ export default function Register() {
       setError(t('register.consent_required'));
       return;
     }
+    step('register_submit');
     setLoading(true);
     try {
       await base44.auth.register({ email, password });
       try { base44.analytics.track({ eventName: 'user_registered' }); } catch (e) { /* non blocking */ }
+      step('register_otp_shown');
       setShowOtp(true);
     } catch (err) {
+      step('register_submit_error');
       setError(err.message || t('common.error'));
     } finally {
       setLoading(false);
@@ -77,6 +86,7 @@ export default function Register() {
       if (result?.access_token) {
         base44.auth.setToken(result.access_token);
       }
+      step('register_completed');
       // Attiva la trial cloud di 30gg (o giorni residui demo / 7gg grace).
       // Account appena creato: free_until è sicuramente vuoto, nessun
       // controllo idempotenza necessario — calcolo puro + updateMe unificato.
@@ -120,6 +130,7 @@ export default function Register() {
   };
 
   const handleGoogle = () => {
+    step('register_google_click');
     base44.auth.loginWithProvider("google", safeReturnTo());
   };
 

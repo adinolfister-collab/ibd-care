@@ -10,7 +10,7 @@ const SESSION_KEY = 'ibd_session_id';
 const SESSION_TS_KEY = 'ibd_session_ts';
 const GAP_MS = 30 * 60 * 1000; // 30 min di inattivita' -> nuova sessione
 // Account admin builder da escludere dai report (come PageView).
-const EXCLUDED_ADMIN_ID = '6a80de4be246a7b03417c238';
+const EXCLUDED_ADMIN_ID = '6a80de4be246a7b03417c239';
 
 let currentUser = null;
 let installed = false;

@@ -48,6 +48,12 @@ export default function PageViewBeacon() {
 
     // Non tracciare le visite dell'account admin escluso
     if (user?.id === EXCLUDED_ADMIN_ID) return;
+    // Non tracciare il traffico interno: anteprima del builder (iframe) o
+    // visite provenienti da base44.com
+    try {
+      if (window.self !== window.top) return;
+      if (/(^|\.)base44\.com$/.test(new URL(document.referrer).host)) return;
+    } catch (_) { /* referrer assente o iframe cross-origin */ }
 
     const section = mapPathToSection(path);
     const sessionId = getSessionId();

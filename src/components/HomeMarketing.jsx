@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import InstallAppButton from '@/components/InstallAppButton';
 import ShareMenu from '@/components/ShareMenu';
 import HomeCompanionReport from '@/components/HomeCompanionReport';
+import HomeValueSection from '@/components/HomeValueSection';
 
 const STEPS = [
   { icon: Activity, key: 'landing.step1_title', desc: 'landing.step1_desc', color: 'text-emerald-600 bg-emerald-50' },
@@ -65,6 +66,8 @@ export default function HomeMarketing() {
             </div>
           </div>
         </section>
+
+        <HomeValueSection />
 
         {/* 3 STEPS */}
         <section className="mb-10">
